@@ -1,0 +1,94 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<nav class="nav">
+  <div class="nav-inner">
+    <a href={`${base}index.html`} style="text-decoration:none"><div class="brand">
+      <span class="brand-mark" style="color:#fff;font-size:22px;font-weight:500">North Meck Insights</span>
+    </div></a>
+    <div class="nav-links">
+      <a class="nav-link" data-page="home" href={`${base}index.html`} style="font-weight:500" data-es="Inicio">Home</a>
+      <div class="nav-dd">
+        <span class="nav-link" onclick="toggleDD(event,this)" style="font-weight:500"><span data-es="Temas">Topics</span> <i class="ti ti-chevron-down"></i></span>
+        <div class="dd-menu" style="min-width:340px">
+          <a class="dd-item" href={`${base}data.html`}>
+            <span class="dd-ic"><i class="ti ti-layout-grid"></i></span>
+            <span class="dd-tx"><span class="dd-t" data-es="Todos los datos">All data</span><span class="dd-s">Every dashboard in one place</span></span>
+          </a>
+          <a class="dd-item" href={`${base}housing.html`}>
+            <span class="dd-ic"><i class="ti ti-building-community"></i></span>
+            <span class="dd-tx"><span class="dd-t" data-es="Vivienda">Housing</span><span class="dd-s">Affordability, rents, evictions, and cost</span></span>
+            <span class="dd-tag live">Active</span>
+          </a>
+          <a class="dd-item" href={`${base}education.html`}>
+            <span class="dd-ic"><i class="ti ti-school"></i></span>
+            <span class="dd-tx"><span class="dd-t" data-es="Educación">Education</span><span class="dd-s">K&#8211;12 enrollment, outcomes, and access</span></span>
+          </a>
+          <a class="dd-item" href={`${base}healthcare.html`}>
+            <span class="dd-ic"><i class="ti ti-heartbeat"></i></span>
+            <span class="dd-tx"><span class="dd-t" data-es="Salud">Healthcare</span><span class="dd-s">Access, coverage, and outcomes</span></span>
+          </a>
+        </div>
+      </div>
+      <a class="nav-link" data-page="blog" href={`${base}blog.html`} style="font-weight:500" data-es="Historias">Stories</a>
+      <div class="nav-dd">
+        <span class="nav-link" data-page="nbhd-data" onclick="toggleDD(event,this)" style="font-weight:500"><span>United Neighborhoods</span> <i class="ti ti-chevron-down"></i></span>
+        <div class="dd-menu" style="min-width:320px">
+          <a class="dd-item" href={`${base}neighborhoods.html`}>
+            <span class="dd-ic"><i class="ti ti-map-2"></i></span>
+            <span class="dd-tx"><span class="dd-t">All neighborhoods</span><span class="dd-s">History, stories &amp; overview</span></span>
+          </a>
+          <a class="dd-item" href={`${base}nbhd-data.html?nbhd=pottstown`}>
+            <span class="dd-ic"><i class="ti ti-map-pin"></i></span>
+            <span class="dd-tx"><span class="dd-t">Pottstown</span><span class="dd-s">Huntersville &#183; est. 1909</span></span>
+          </a>
+          <a class="dd-item" href={`${base}nbhd-data.html?nbhd=westdavidson`}>
+            <span class="dd-ic"><i class="ti ti-map-pin"></i></span>
+            <span class="dd-tx"><span class="dd-t">West Davidson</span><span class="dd-s">Davidson &#183; early 1900s</span></span>
+          </a>
+          <a class="dd-item" href={`${base}nbhd-data.html?nbhd=smithville`}>
+            <span class="dd-ic"><i class="ti ti-map-pin"></i></span>
+            <span class="dd-tx"><span class="dd-t">Smithville</span><span class="dd-s">Cornelius &#183; est. 1908</span></span>
+          </a>
+          <a class="dd-item" href={`${base}nbhd-data.html?nbhd=huntingtongreen`}>
+            <span class="dd-ic"><i class="ti ti-map-pin"></i></span>
+            <span class="dd-tx"><span class="dd-t">Huntington Green</span><span class="dd-s">Huntersville &#183; post-1990</span></span>
+          </a>
+          <a class="dd-item" href={`${base}nbhd-data.html?nbhd=eastcatawba`} style="opacity:0.6">
+            <span class="dd-ic"><i class="ti ti-map-pin"></i></span>
+            <span class="dd-tx"><span class="dd-t">East Catawba</span><span class="dd-s">Cornelius &#183; data coming soon</span></span>
+          </a>
+        </div>
+      </div>
+      <div class="nav-dd">
+        <span class="nav-link" onclick="toggleDD(event,this)" style="font-weight:500"><span data-es="Recursos">Resources</span> <i class="ti ti-chevron-down"></i></span>
+        <div class="dd-menu" style="min-width:280px">
+          <div class="dd-item" onclick="openGlossary()">
+            <span class="dd-ic"><i class="ti ti-book-2"></i></span>
+            <span class="dd-tx"><span class="dd-t" data-es="Glosario">Glossary</span><span class="dd-s">Plain definitions of key terms</span></span>
+          </div>
+          <a class="dd-item" href={`${base}data.html`}>
+            <span class="dd-ic"><i class="ti ti-list-details"></i></span>
+            <span class="dd-tx"><span class="dd-t" data-es="Biblioteca de datos">Data Library</span><span class="dd-s">Datasets to filter &amp; download</span></span>
+          </a>
+          <a class="dd-item" href={`${base}data.html`}>
+            <span class="dd-ic"><i class="ti ti-books"></i></span>
+            <span class="dd-tx"><span class="dd-t" data-es="Fuentes">Sources</span><span class="dd-s">Full data bibliography</span></span>
+          </a>
+        </div>
+      </div>
+      <a class="nav-link" data-page="about" href={`${base}about.html`} style="font-weight:500" data-es="Acerca de">About</a>
+    </div>
+    <div class="nav-right">
+      <div class="nav-search" id="navSearchWrap">
+        <button class="nav-search-icon" onclick="navSearchExpand()" aria-label="Search" id="navSearchIconBtn"><i class="ti ti-search"></i></button>
+        <input type="search" id="navSearch" placeholder="Search the portal&#8230;" data-es-placeholder="Buscar en el portal&#8230;" aria-label="Search the portal" oninput="navSearchInput(this)" onkeydown="navSearchKey(event)" onfocus="navSearchInput(this)" onblur="setTimeout(navSearchCollapse,180)">
+        <div class="nav-search-dd" id="navSearchDd"></div>
+      </div>
+      <div class="lang-toggle" role="group" aria-label="Language / Idioma">
+        <button type="button" class="lang-opt on" data-lang="en" onclick="setLang('en')">EN</button>
+        <button type="button" class="lang-opt" data-lang="es" onclick="setLang('es')">ES</button>
+      </div>
+    </div>
+  </div>
+</nav>

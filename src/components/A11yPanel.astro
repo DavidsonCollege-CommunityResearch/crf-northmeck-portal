@@ -1,0 +1,67 @@
+---
+---
+<!-- ════ ACCESSIBILITY PANEL ════ -->
+<button class="a11y-btn" id="a11yBtn" aria-label="Accessibility options" onclick="toggleA11y()" title="Accessibility">
+  <i class="ti ti-accessible"></i>
+</button>
+<div class="a11y-panel" id="a11yPanel" role="dialog" aria-label="Accessibility options">
+  <div class="a11y-head">
+    <span class="a11y-head-t">Accessibility</span>
+    <button class="a11y-close" onclick="toggleA11y()" aria-label="Close"><i class="ti ti-x"></i></button>
+  </div>
+
+  <div class="a11y-section">Content</div>
+  <div class="a11y-grid">
+    <button class="a11y-tile" id="a11y-text" onclick="a11yStep('text',4)" aria-label="Text size">
+      <i class="ti ti-text-size"></i>
+      <span class="a11y-tile-t">Text size</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="text" data-v="1"></span><span class="a11y-lvbar" data-k="text" data-v="2"></span><span class="a11y-lvbar" data-k="text" data-v="3"></span><span class="a11y-lvbar" data-k="text" data-v="4"></span></div>
+    </button>
+    <button class="a11y-tile" id="a11y-lh" onclick="a11yStep('lh',3)" aria-label="Line height">
+      <i class="ti ti-line-height"></i>
+      <span class="a11y-tile-t">Line height</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="lh" data-v="1"></span><span class="a11y-lvbar" data-k="lh" data-v="2"></span><span class="a11y-lvbar" data-k="lh" data-v="3"></span></div>
+    </button>
+    <button class="a11y-tile" id="a11y-spacing" onclick="a11yToggle('spacing')" aria-pressed="false">
+      <i class="ti ti-spacing"></i>
+      <span class="a11y-tile-t">Text spacing</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="spacing" data-v="1"></span></div>
+    </button>
+    <button class="a11y-tile" id="a11y-dyslexia" onclick="a11yToggle('dyslexia')" aria-pressed="false">
+      <i class="ti ti-letter-d"></i>
+      <span class="a11y-tile-t">Dyslexia font</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="dyslexia" data-v="1"></span></div>
+    </button>
+    <button class="a11y-tile" id="a11y-contrast" onclick="a11yToggle('contrast')" aria-pressed="false">
+      <i class="ti ti-circle-half-2"></i>
+      <span class="a11y-tile-t">High contrast</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="contrast" data-v="1"></span></div>
+    </button>
+    <button class="a11y-tile" id="a11y-motion" onclick="a11yToggle('motion')" aria-pressed="false">
+      <i class="ti ti-player-pause"></i>
+      <span class="a11y-tile-t">Reduce motion</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="motion" data-v="1"></span></div>
+    </button>
+    <button class="a11y-tile" id="a11y-sr" onclick="a11yStep('sr',3)" aria-label="Screen reader speed">
+      <i class="ti ti-volume"></i>
+      <span class="a11y-tile-t">Screen reader</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="sr" data-v="1"></span><span class="a11y-lvbar" data-k="sr" data-v="2"></span><span class="a11y-lvbar" data-k="sr" data-v="3"></span></div>
+    </button>
+  </div>
+
+  <div class="a11y-section">Display</div>
+  <div class="a11y-grid">
+    <button class="a11y-tile" id="a11y-cursor" onclick="a11yStep('cursor',3)" aria-label="Cursor size">
+      <i class="ti ti-pointer"></i>
+      <span class="a11y-tile-t">Cursor size</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="cursor" data-v="1"></span><span class="a11y-lvbar" data-k="cursor" data-v="2"></span><span class="a11y-lvbar" data-k="cursor" data-v="3"></span></div>
+    </button>
+    <button class="a11y-tile" id="a11y-noimages" onclick="a11yToggle('noimages')" aria-pressed="false">
+      <i class="ti ti-photo-off"></i>
+      <span class="a11y-tile-t">Hide images</span>
+      <div class="a11y-levels"><span class="a11y-lvbar" data-k="noimages" data-v="1"></span></div>
+    </button>
+  </div>
+
+  <button class="a11y-reset" onclick="a11yReset()">↺ Reset all settings</button>
+</div>

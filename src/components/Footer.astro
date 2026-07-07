@@ -1,0 +1,39 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <span class="brand-mark">North Meck <b>Insights</b></span>
+        <p class="foot-about" data-es="Un proyecto de los Community Research Fellows de Davidson College.">A Davidson College Community Research Fellows project. Public-interest data for North Mecklenburg, NC.</p>
+        <div class="a11y"><span class="a11y-chip">WCAG 2.1 AA</span><span class="a11y-chip">Viridis palette</span><span class="a11y-chip">Open data only</span></div>
+      </div>
+      <div>
+        <div class="foot-t">Topics</div>
+        <a class="foot-l" href={`${base}data.html`}>All dashboards</a>
+        <a class="foot-l" href={`${base}housing.html`}>Housing</a>
+        <a class="foot-l" href={`${base}education.html`}>Education</a>
+        <a class="foot-l" href={`${base}healthcare.html`}>Healthcare</a>
+      </div>
+      <div>
+        <div class="foot-t">Resources</div>
+        <span class="foot-l" onclick="openGlossary()">Glossary</span>
+        <a class="foot-l" href={`${base}data.html`}>Data Library</a>
+        <a class="foot-l" href={`${base}blog.html`}>Stories</a>
+        <a class="foot-l" href={`${base}data.html`}>Download data</a>
+      </div>
+      <div>
+        <div class="foot-t">About</div>
+        <a class="foot-l" href={`${base}about.html`}>The CRF program</a>
+        <a class="foot-l" href={`${base}about.html`}>Our partners</a>
+        <a class="foot-l" href={`${base}about.html`}>Contact</a>
+        <a class="foot-l" href="https://northmeckconnect.org" target="_blank" rel="noopener" style="text-decoration:none">North Meck Connect <i class="ti ti-arrow-up-right" style="font-size:12px"></i></a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&#169; 2026 Davidson College Community Research Fellows &#183; Davidson, NC</span>
+      <span>Built to be extended &#183; open-source data only</span>
+    </div>
+  </div>
+</footer>

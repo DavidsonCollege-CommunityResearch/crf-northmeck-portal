@@ -1,0 +1,39 @@
+---
+---
+<!-- ════ MAP MODAL ════ -->
+<div class="nmap-modal" id="nmapModal" aria-hidden="true">
+  <div class="nmap-backdrop" onclick="closeMap()"></div>
+  <div class="nmap-dialog" role="dialog" aria-modal="true" aria-label="Map of North Mecklenburg">
+    <button class="nmap-close" onclick="closeMap()" aria-label="Close map"><i class="ti ti-x"></i></button>
+    <div class="nmap-head">
+      <span class="eyebrow">Where you are</span>
+      <h3>North Mecklenburg</h3>
+      <p>Three towns (Davidson, Cornelius, and Huntersville) and five neighborhoods with deep roots. Hover any place to explore. <em style="color:var(--ink-3)">Boundaries are approximate, for orientation.</em></p>
+    </div>
+    <div class="nmap-stage" id="nmapStage">
+      <svg viewBox="0 48 1000 692" role="img" aria-label="Schematic map of Davidson, Cornelius, and Huntersville with focused neighborhoods.">
+        <path class="nmap-water" d="M0,0 L150,0 C172,95 118,150 152,232 C184,312 110,362 150,452 C186,542 116,602 150,692 C168,742 128,762 150,780 L0,780 Z"></path>
+        <text class="nmap-water-label" x="60" y="392" transform="rotate(-90 60 392)" text-anchor="middle">Lake Norman</text>
+        <polygon class="nmap-town" data-nmap data-name="Davidson" fill="#b2c1da" stroke="#8093b4" stroke-width="2.5" points="520,95 700,82 860,100 882,250 838,372 540,372 512,210"></polygon>
+        <polygon class="nmap-town" data-nmap data-name="Cornelius" fill="#b6cab8" stroke="#8aa68d" stroke-width="2.5" points="205,128 520,95 512,210 540,372 250,360 162,250"></polygon>
+        <polygon class="nmap-town" data-nmap data-name="Huntersville" fill="#e2d0ac" stroke="#c4ab78" stroke-width="2.5" points="250,360 540,372 838,372 884,430 866,628 712,716 405,724 182,656 150,452"></polygon>
+        <text class="nmap-tlabel" x="712" y="158">Davidson</text>
+        <text class="nmap-tlabel" x="332" y="172">Cornelius</text>
+        <text class="nmap-tlabel" x="430" y="612">Huntersville</text>
+        <g class="nmap-pin" data-nmap data-name="West Davidson" data-town="Davidson"><circle class="ring" cx="600" cy="222" r="9"></circle><circle class="dot" cx="600" cy="222" r="4"></circle><text class="nmap-pin-label" x="616" y="227">West Davidson</text></g>
+        <g class="nmap-pin" data-nmap data-name="Smithville" data-town="Cornelius"><circle class="ring" cx="335" cy="258" r="9"></circle><circle class="dot" cx="335" cy="258" r="4"></circle><text class="nmap-pin-label" x="351" y="263">Smithville</text></g>
+        <g class="nmap-pin" data-nmap data-name="Huntington Green" data-town="Huntersville"><circle class="ring" cx="648" cy="468" r="9"></circle><circle class="dot" cx="648" cy="468" r="4"></circle><text class="nmap-pin-label" x="632" y="473" text-anchor="end">Huntington Green</text></g>
+        <g class="nmap-pin" data-nmap data-name="Pottstown" data-town="Huntersville"><circle class="ring" cx="512" cy="556" r="9"></circle><circle class="dot" cx="512" cy="556" r="4"></circle><text class="nmap-pin-label" x="528" y="561">Pottstown</text></g>
+        <g class="nmap-pin" data-nmap data-name="East Catawba" data-town="Cornelius"><circle class="ring" cx="380" cy="310" r="9"></circle><circle class="dot" cx="380" cy="310" r="4"></circle><text class="nmap-pin-label" x="396" y="315">East Catawba</text></g>
+      </svg>
+      <div class="nmap-tip" id="nmapTip"></div>
+    </div>
+    <div class="nmap-legend">
+      <span><i style="background:#b2c1da"></i> Davidson</span>
+      <span><i style="background:#b6cab8"></i> Cornelius</span>
+      <span><i style="background:#e2d0ac"></i> Huntersville</span>
+      <span class="sep"></span>
+      <span><i class="pinkey"></i> Focused neighborhood</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+---
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import GlossaryModal from '../components/GlossaryModal.astro';
+import VizModal from '../components/VizModal.astro';
+import MapModal from '../components/MapModal.astro';
+import FactsBar from '../components/FactsBar.astro';
+import A11yPanel from '../components/A11yPanel.astro';
+import Fab from '../components/Fab.astro';
+import ChartTooltip from '../components/ChartTooltip.astro';
+import MotherDuckBootstrap from '../components/MotherDuckBootstrap.astro';
+
+interface Props {
+  title: string;
+  includeMotherDuck?: boolean;
+}
+
+const { title, includeMotherDuck = false } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{title}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href={`${base}css/styles.css`}>
+<script src="https://cdn.jsdelivr.net/npm/d3@6"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{includeMotherDuck && <MotherDuckBootstrap />}
+</head>
+<body>
+<Nav />
+<slot />
+<Footer />
+<GlossaryModal />
+<VizModal />
+<MapModal />
+<FactsBar />
+<A11yPanel />
+<Fab />
+<ChartTooltip />
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
+<script is:inline src={`${base}js/main.js`}></script>
+<slot name="page-scripts" />
+</body>
+</html>
