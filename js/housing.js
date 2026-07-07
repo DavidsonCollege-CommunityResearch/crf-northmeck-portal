@@ -1,8 +1,9 @@
 // Housing page scripts
+import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client@1.5.4-r.1/+esm";
 
 // Block 1 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
         const TOWN_C = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         const TOWNS = ["Cornelius", "Davidson", "Huntersville"];
@@ -152,8 +153,6 @@
 
 // Block 2 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
 
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
 
@@ -164,16 +163,17 @@
         let housing;
         try {
           const conn = await window.__mdConn;
-          const result = await conn.evaluateQuery(`
+          housing = await window.mdQuery(conn, `
             SELECT town, year, CAST(median_income AS INTEGER) AS median_income, CAST(median_rent AS INTEGER) AS median_rent
             FROM nmidw_cloud.agg_town_economic_trends
             WHERE town IN ('Cornelius', 'Davidson', 'Huntersville')
             ORDER BY town, year
           `);
-          housing = result.data.toRows();
         } catch (err) {
           console.error("MotherDuck connection failed:", err);
           housing = [];
+          window.mdShowError('rent-chart');
+          window.mdShowError('income-rent-chart');
         }
 
         // Clear loading states
@@ -260,25 +260,23 @@
 
 // Block 3 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
 
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
 
         let hvRows;
         try {
           const conn = await window.__mdConn;
-          const res = await conn.evaluateQuery(`
+          hvRows = await window.mdQuery(conn, `
             SELECT town, year,
               CAST(median_income AS INTEGER) AS median_income,
               CAST(median_home_value AS INTEGER) AS median_home_value
             FROM nmidw_cloud.agg_town_economic_trends
             ORDER BY town, year
           `);
-          hvRows = res.data.toRows();
         } catch(e) {
           console.error("MotherDuck error (home value chart):", e);
           hvRows = [];
+          window.mdShowError('home-value-chart');
         }
 
         if (hvRows.length) {
@@ -340,7 +338,6 @@
 
 // Block 4 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
         /* ── HOUSING WAGE CHART ── */
         window.__housingWage = [
@@ -449,7 +446,6 @@
 
 // Block 5 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
         window.__amiGap = [
           {bedrooms:"Studio",ami_level:"30% AMI",max_affordable_rent:590,fmr:1586},
           {bedrooms:"Studio",ami_level:"50% AMI",max_affordable_rent:982,fmr:1586},
@@ -517,8 +513,6 @@
 
 // Block 6 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         document.getElementById("rti-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
@@ -526,7 +520,7 @@
         let afRows;
         try {
           const conn = await window.__mdConn;
-          const r = await conn.evaluateQuery(`
+          afRows = await window.mdQuery(conn, `
             SELECT town, year,
                    ROUND((median_rent * 12.0 / median_income) * 100, 2) AS rti,
                    ROUND(median_home_value * 1.0 / median_income, 2) AS hpti
@@ -535,12 +529,9 @@
               AND median_income > 0
             ORDER BY town, year
           `);
-          afRows = r.data.toRows();
         } catch(e) {
           console.error("Affordability index load failed:", e);
-          ["rti-chart","hpti-chart"].forEach(id =>
-            document.getElementById(id).innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>'
-          );
+          ["rti-chart","hpti-chart"].forEach(id => window.mdShowError(id));
         }
         if (afRows && afRows.length) {
           function renderAffordabilityIndex(town) {
@@ -609,21 +600,18 @@
 
 // Block 7 (module)
 (async function() {
-          import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-          import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
           const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
           document.getElementById("population-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
           let rows;
           try {
             const conn = await window.__mdConn;
-            const r = await conn.evaluateQuery(`
+            rows = await window.mdQuery(conn, `
               SELECT town, year, CAST(total_population AS INTEGER) AS population
               FROM nmidw_cloud.agg_town_demographics
               WHERE town IN ('Cornelius','Davidson','Huntersville')
               ORDER BY town, year
             `);
-            rows = r.data.toRows();
           } catch(e) { console.error(e); rows = []; }
           if (rows.length) {
             function renderPopulation(town) {
@@ -664,14 +652,12 @@
               renderPopulation(activePopTown);
             });
           } else {
-            document.getElementById("population-chart").innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>';
+            window.mdShowError('population-chart');
           }
 })();
 
 // Block 8 (module)
 (async function() {
-          import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-          import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
           const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
           const TENURE_COLORS = { "Owner-occupied": "#3f4e75", "Renter-occupied": "#e05c4b" };
@@ -704,18 +690,17 @@
           try {
             const conn = await window.__mdConn;
             // Total households over time from agg_town_housing_burden
-            const r = await conn.evaluateQuery(`
+            rows = await window.mdQuery(conn, `
               SELECT town, year, CAST(total_households AS INTEGER) AS total_households
               FROM nmidw_cloud.agg_town_housing_burden
               WHERE town IN ('Cornelius','Davidson','Huntersville')
               ORDER BY town, year
             `);
-            rows = r.data.toRows();
             document.getElementById("tenure-chart").innerHTML = "";
             renderTenure();
           } catch(e) {
-            document.getElementById("tenure-chart").innerHTML =
-              `<p style="color:#c00;padding:12px;font-family:'Hanken Grotesk',sans-serif">Error loading data: ${e.message}</p>`;
+            console.error("Tenure chart load failed:", e);
+            window.mdShowError('tenure-chart');
           }
 
           document.querySelectorAll("[data-tenure-town]").forEach(btn => {
@@ -737,7 +722,6 @@
 
 // Block 9 (module)
 (async function() {
-          import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
           const housing_types = [
             {town:"Cornelius", bucket:"Single-family",              count:10417, pct:69.7},
             {town:"Cornelius", bucket:"Small multifamily (2-4 units)", count:622,   pct:4.2},
@@ -789,7 +773,6 @@
 
 // Block 10 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
         const BRACKETS = ["Less than $10k","$10k-$19,999","$20k-$34,999","$35k-$49,999","$50k-$74,999","$75k-$99,999","$100k+"];
         const BURDENS  = ["Not burdened (<30%)","Cost burdened (30-50%)","Severely burdened (50%+)"];
@@ -851,8 +834,6 @@
 
 // Block 11 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
 
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
@@ -860,7 +841,7 @@
         let burdenTrend;
         try {
           const conn = await window.__mdConn;
-          const r = await conn.evaluateQuery(`
+          burdenTrend = await window.mdQuery(conn, `
             SELECT town, year,
                    CAST("housing_burden_rate_%" AS DOUBLE) AS burden_rate,
                    CAST(cost_burdened_households AS INTEGER) AS cost_burdened,
@@ -871,10 +852,9 @@
             WHERE town IN ('Cornelius','Davidson','Huntersville')
             ORDER BY town, year
           `);
-          burdenTrend = r.data.toRows();
         } catch(e) {
           console.error("Burden trend load failed:", e);
-          document.getElementById("burden-trend-chart").innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>';
+          window.mdShowError('burden-trend-chart');
         }
 
         if (burdenTrend) {
@@ -928,8 +908,6 @@
 
 // Block 12 (module)
 (async function() {
-          import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-          import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
           const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
           let rows = [];
@@ -967,18 +945,17 @@
 
           try {
             const conn = await window.__mdConn;
-            const r = await conn.evaluateQuery(`
+            rows = await window.mdQuery(conn, `
               SELECT town, year, severely_cost_burdened_households
               FROM nmidw_cloud.agg_town_housing_burden
               WHERE town IN ('Cornelius','Davidson','Huntersville')
               ORDER BY town, year
             `);
-            rows = r.data.toRows();
             document.getElementById("severely-burdened-chart").innerHTML = "";
             renderSeverelyBurdened();
           } catch(e) {
-            document.getElementById("severely-burdened-chart").innerHTML =
-              `<p style="color:#c00;padding:12px;font-family:'Hanken Grotesk',sans-serif">Error: ${e.message}</p>`;
+            console.error("Severely burdened chart load failed:", e);
+            window.mdShowError('severely-burdened-chart');
           }
 
           document.querySelectorAll("[data-sevburd-town]").forEach(btn => {
@@ -1000,7 +977,6 @@
 
 // Block 13 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
         const CORE_RACES = ["White, not Hispanic","Black or African American","Hispanic or Latino","Asian","Two or more races"];
         const raceData = [{"town":"Cornelius","race":"White alone","total":12014,"owner":8802,"renter":3212,"ownership_rate":73.3,"renter_rate":26.7},{"town":"Davidson","race":"White alone","total":4809,"owner":3934,"renter":875,"ownership_rate":81.8,"renter_rate":18.2},{"town":"Huntersville","race":"White alone","total":18426,"owner":13928,"renter":4498,"ownership_rate":75.6,"renter_rate":24.4},{"town":"Cornelius","race":"Black or African American","total":511,"owner":148,"renter":363,"ownership_rate":29,"renter_rate":71},{"town":"Davidson","race":"Black or African American","total":392,"owner":245,"renter":147,"ownership_rate":62.5,"renter_rate":37.5},{"town":"Huntersville","race":"Black or African American","total":3544,"owner":1679,"renter":1865,"ownership_rate":47.4,"renter_rate":52.6},{"town":"Cornelius","race":"American Indian/Alaska Native","total":61,"owner":8,"renter":53,"ownership_rate":13.1,"renter_rate":86.9},{"town":"Cornelius","race":"Asian","total":325,"owner":166,"renter":159,"ownership_rate":51.1,"renter_rate":48.9},{"town":"Davidson","race":"Asian","total":120,"owner":120,"renter":0,"ownership_rate":100,"renter_rate":0},{"town":"Huntersville","race":"Asian","total":1206,"owner":1100,"renter":106,"ownership_rate":91.2,"renter_rate":8.8},{"town":"Cornelius","race":"Some other race","total":182,"owner":80,"renter":102,"ownership_rate":44,"renter_rate":56},{"town":"Huntersville","race":"Some other race","total":708,"owner":393,"renter":315,"ownership_rate":55.5,"renter_rate":44.5},{"town":"Cornelius","race":"Two or more races","total":791,"owner":446,"renter":345,"ownership_rate":56.4,"renter_rate":43.6},{"town":"Davidson","race":"Two or more races","total":237,"owner":143,"renter":94,"ownership_rate":60.3,"renter_rate":39.7},{"town":"Huntersville","race":"Two or more races","total":1150,"owner":850,"renter":300,"ownership_rate":73.9,"renter_rate":26.1},{"town":"Cornelius","race":"White, not Hispanic","total":11924,"owner":8754,"renter":3170,"ownership_rate":73.4,"renter_rate":26.6},{"town":"Davidson","race":"White, not Hispanic","total":4744,"owner":3882,"renter":862,"ownership_rate":81.8,"renter_rate":18.2},{"town":"Huntersville","race":"White, not Hispanic","total":18158,"owner":13763,"renter":4395,"ownership_rate":75.8,"renter_rate":24.2},{"town":"Cornelius","race":"Hispanic or Latino","total":578,"owner":310,"renter":268,"ownership_rate":53.6,"renter_rate":46.4},{"town":"Davidson","race":"Hispanic or Latino","total":165,"owner":78,"renter":87,"ownership_rate":47.3,"renter_rate":52.7},{"town":"Huntersville","race":"Hispanic or Latino","total":1621,"owner":963,"renter":658,"ownership_rate":59.4,"renter_rate":40.6}];
@@ -1085,7 +1061,6 @@
 
 // Block 14 (module)
 (async function() {
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
 
         const wrap = document.getElementById("race-summary-table-wrap");
@@ -1093,8 +1068,7 @@
           const conn = await window.__mdConn;
 
           // Get column names dynamically
-          const colQ = await conn.evaluateQuery(`DESCRIBE nmidw_cloud.agg_town_demographics`);
-          const colNames = colQ.data.toRows().map(r => r.column_name);
+          const colNames = (await window.mdQuery(conn, `DESCRIBE nmidw_cloud.agg_town_demographics`)).map(r => r.column_name);
 
           // Build race tenure query from available columns
           const races = [
@@ -1112,14 +1086,13 @@
 
           // If we have tenure columns, compute per-race ownership from the race bar chart's hardcoded ACS data
           // and pull total population from MotherDuck to show live numbers
-          const pop = await conn.evaluateQuery(`
+          const popRows = await window.mdQuery(conn, `
             SELECT town,
               ${totalCol ? `CAST(${totalCol} AS INTEGER) AS total_pop` : "0 AS total_pop"}
               ${races.map(r => `, CAST(${r.col} AS INTEGER) AS "${r.label}"`).join("")}
             FROM nmidw_cloud.agg_town_demographics
             WHERE town IN ('Cornelius','Davidson','Huntersville') AND year = 2024
           `);
-          const popRows = pop.data.toRows();
           console.log("pop rows:", popRows);
 
           // Aggregate race populations across all three towns
@@ -1168,21 +1141,18 @@
           `;
         } catch(e) {
           console.error("race table error:", e);
-          wrap.innerHTML = `<p style="color:#e05c4b;font-family:'Hanken Grotesk',sans-serif;font-size:14px">Could not load data: ${e.message}</p>`;
+          window.mdShowError('race-summary-table-wrap');
         }
 })();
 
 // Block 15 (module)
 (async function() {
-          import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-          import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
           const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const RACE_ORDER = ["White","Black","Two or More Races","Asian","Some Other Race","American Indian/Alaska Native","Native Hawaiian/Pacific Islander"];
           const RACE_COLORS = {"White":"#3f4e75","Black":"#e05c4b","Two or More Races":"#f0a500","Asian":"#5a9e8f","Some Other Race":"#a0522d","American Indian/Alaska Native":"#7a9e4e","Native Hawaiian/Pacific Islander":"#b07bbf"};
           try {
             const conn = await window.__mdConn;
-            const colQ = await conn.evaluateQuery(`DESCRIBE nmidw_cloud.agg_town_demographics`);
-            const colNames = colQ.data.toRows().map(r => r.column_name);
+            const colNames = (await window.mdQuery(conn, `DESCRIBE nmidw_cloud.agg_town_demographics`)).map(r => r.column_name);
             const find = (...keys) => colNames.find(c => keys.some(k => c.toLowerCase().includes(k))) || null;
             const totalCol    = find("total_pop","total_population","population");
             const whiteCol    = find("white");
@@ -1195,10 +1165,8 @@
             const otherCol    = find("some_other","other_race");
             const yearCol     = find("year");
             const townCol     = find("town");
-            const maxYearQ    = await conn.evaluateQuery(`SELECT MAX(${yearCol}) as yr FROM nmidw_cloud.agg_town_demographics`);
-            const maxYear     = maxYearQ.data.toRows()[0].yr;
-            const q = await conn.evaluateQuery(`SELECT ${townCol} as town, ${totalCol} as total, ${whiteCol} as white, ${blackCol} as black, ${asianCol} as asian, ${hispanicCol} as hispanic, ${twoMoreCol || "0"} as two_more, ${nativeCol || "0"} as native, ${nhpiCol || "0"} as nhpi, ${otherCol || "0"} as other FROM nmidw_cloud.agg_town_demographics WHERE ${yearCol} = ${maxYear} AND ${townCol} IN ('Cornelius','Davidson','Huntersville')`);
-            const rows = q.data.toRows();
+            const maxYear     = (await window.mdQuery(conn, `SELECT MAX(${yearCol}) as yr FROM nmidw_cloud.agg_town_demographics`))[0].yr;
+            const rows = await window.mdQuery(conn, `SELECT ${townCol} as town, ${totalCol} as total, ${whiteCol} as white, ${blackCol} as black, ${asianCol} as asian, ${hispanicCol} as hispanic, ${twoMoreCol || "0"} as two_more, ${nativeCol || "0"} as native, ${nhpiCol || "0"} as nhpi, ${otherCol || "0"} as other FROM nmidw_cloud.agg_town_demographics WHERE ${yearCol} = ${maxYear} AND ${townCol} IN ('Cornelius','Davidson','Huntersville')`);
             const raceMap = {
               "White": r => r.white,
               "Black": r => r.black,
@@ -1259,14 +1227,13 @@
               renderRaceComp(activeRaceCompTown);
             });
           } catch(e) {
-            document.getElementById("race-comp-chart").innerHTML = `<p style="color:#e05c4b;font-family:'Hanken Grotesk',sans-serif;font-size:14px;padding:12px">Error loading data: ${e.message}</p>`;
+            console.error("race-comp-chart error:", e);
+            window.mdShowError('race-comp-chart');
           }
 })();
 
 // Block 16 (module)
 (async function() {
-          import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-          import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
           const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const RACE_COLORS = {
             "White": "#3f4e75", "Black": "#e05c4b",
@@ -1278,8 +1245,7 @@
             const conn = await window.__mdConn;
 
             // Use DESCRIBE to get column names (native DuckDB, works in MotherDuck WASM)
-            const colQ = await conn.evaluateQuery(`DESCRIBE nmidw_cloud.agg_town_demographics`);
-            const colNames = colQ.data.toRows().map(r => r.column_name);
+            const colNames = (await window.mdQuery(conn, `DESCRIBE nmidw_cloud.agg_town_demographics`)).map(r => r.column_name);
             console.log("race chart — agg_town_demographics columns:", colNames.join(", "));
 
             // Map to actual column names (case-insensitive partial match)
@@ -1302,24 +1268,19 @@
               asianCol    ? `CAST(${asianCol} AS INTEGER) AS asian`       : "0 AS asian",
             ].join(", ");
 
-            const r = await conn.evaluateQuery(`
+            rawRows = await window.mdQuery(conn, `
               SELECT town, year, ${selects}
               FROM nmidw_cloud.agg_town_demographics
               WHERE town IN ('Cornelius','Davidson','Huntersville')
               ORDER BY town, year
             `);
-            rawRows = r.data.toRows();
           } catch(e) {
             console.error("race-trend-chart error:", e);
-            document.getElementById("race-trend-chart").innerHTML =
-              `<p style="color:#e05c4b;padding:12px;font-family:'Hanken Grotesk',sans-serif">Error: ${e.message}</p>`;
             rawRows = [];
           }
 
           if (!rawRows || !rawRows.length) {
-            if (!document.getElementById("race-trend-chart").querySelector("p")) {
-              document.getElementById("race-trend-chart").innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>';
-            }
+            window.mdShowError('race-trend-chart');
           } else {
 
           // Expand to long format: one row per town × year × race
@@ -1387,8 +1348,6 @@
 
 // Block 17 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
 
@@ -1423,17 +1382,17 @@
 
         try {
           const conn = await window.__mdConn;
-          const r = await conn.evaluateQuery(`
+          dpRows = await window.mdQuery(conn, `
             SELECT town, median_home_value, median_income,
               ROUND((median_home_value * 0.20) / (median_income * 0.10), 2) AS years
             FROM nmidw_cloud.agg_town_economic_trends
             WHERE year = (SELECT MAX(year) FROM nmidw_cloud.agg_town_economic_trends)
             ORDER BY years DESC
           `);
-          dpRows = r.data.toRows();
           renderDownPayment(window.__masterTown || "All");
         } catch(e) {
-          document.getElementById("down-payment-chart").innerHTML = '<p style="color:#c00;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error loading data.</p>';
+          console.error("Down payment chart load failed:", e);
+          window.mdShowError('down-payment-chart');
         }
 
         document.addEventListener("masterTownChange", ({ detail: { town } }) => renderDownPayment(town));
@@ -1441,7 +1400,6 @@
 
 // Block 18 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
         const PTR_BRACKETS = ["Less than $10k","$10k-$19,999","$20k-$34,999","$35k-$49,999","$50k-$74,999","$75k-$99,999","$100k-$149,999"];
         const ptrData = window.__dlibPtrData = [{"town":"Cornelius","home_value":564571,"income_bracket":"Less than $10k","midpoint":5000,"ratio":112.9},{"town":"Cornelius","home_value":564571,"income_bracket":"$10k-$19,999","midpoint":15000,"ratio":37.6},{"town":"Cornelius","home_value":564571,"income_bracket":"$20k-$34,999","midpoint":27500,"ratio":20.5},{"town":"Cornelius","home_value":564571,"income_bracket":"$35k-$49,999","midpoint":42500,"ratio":13.3},{"town":"Cornelius","home_value":564571,"income_bracket":"$50k-$74,999","midpoint":62500,"ratio":9},{"town":"Cornelius","home_value":564571,"income_bracket":"$75k-$99,999","midpoint":87500,"ratio":6.5},{"town":"Cornelius","home_value":564571,"income_bracket":"$100k-$149,999","midpoint":125000,"ratio":4.5},{"town":"Davidson","home_value":692969,"income_bracket":"Less than $10k","midpoint":5000,"ratio":138.6},{"town":"Davidson","home_value":692969,"income_bracket":"$10k-$19,999","midpoint":15000,"ratio":46.2},{"town":"Davidson","home_value":692969,"income_bracket":"$20k-$34,999","midpoint":27500,"ratio":25.2},{"town":"Davidson","home_value":692969,"income_bracket":"$35k-$49,999","midpoint":42500,"ratio":16.3},{"town":"Davidson","home_value":692969,"income_bracket":"$50k-$74,999","midpoint":62500,"ratio":11.1},{"town":"Davidson","home_value":692969,"income_bracket":"$75k-$99,999","midpoint":87500,"ratio":7.9},{"town":"Davidson","home_value":692969,"income_bracket":"$100k-$149,999","midpoint":125000,"ratio":5.5},{"town":"Huntersville","home_value":552195,"income_bracket":"Less than $10k","midpoint":5000,"ratio":110.4},{"town":"Huntersville","home_value":552195,"income_bracket":"$10k-$19,999","midpoint":15000,"ratio":36.8},{"town":"Huntersville","home_value":552195,"income_bracket":"$20k-$34,999","midpoint":27500,"ratio":20.1},{"town":"Huntersville","home_value":552195,"income_bracket":"$35k-$49,999","midpoint":42500,"ratio":13},{"town":"Huntersville","home_value":552195,"income_bracket":"$50k-$74,999","midpoint":62500,"ratio":8.8},{"town":"Huntersville","home_value":552195,"income_bracket":"$75k-$99,999","midpoint":87500,"ratio":6.3},{"town":"Huntersville","home_value":552195,"income_bracket":"$100k-$149,999","midpoint":125000,"ratio":4.4}];
@@ -1527,21 +1485,18 @@
 
 // Block 19 (module)
 (async function() {
-          import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-          import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
           const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
           document.getElementById("median-income-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
           let rows;
           try {
             const conn = await window.__mdConn;
-            const r = await conn.evaluateQuery(`
+            rows = await window.mdQuery(conn, `
               SELECT town, year, CAST(median_household_income AS INTEGER) AS income
               FROM nmidw_cloud.agg_town_demographics
               WHERE town IN ('Cornelius','Davidson','Huntersville')
               ORDER BY town, year
             `);
-            rows = r.data.toRows();
           } catch(e) { console.error(e); rows = []; }
           if (rows.length) {
             function renderMedianIncome(town) {
@@ -1568,14 +1523,12 @@
             window.__renders['income'] = renderMedianIncome;
             document.addEventListener('masterTownChange', ({ detail: { town } }) => renderMedianIncome(town));
           } else {
-            document.getElementById("median-income-chart").innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>';
+            window.mdShowError('median-income-chart');
           }
 })();
 
 // Block 20 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
 
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
@@ -1586,7 +1539,7 @@
         let trends;
         try {
           const conn = await window.__mdConn;
-          const r = await conn.evaluateQuery(`
+          trends = await window.mdQuery(conn, `
             SELECT town, year,
                    ROUND(income_inequality_gini, 4) AS gini,
                    CAST(median_home_value AS INTEGER) AS home_value,
@@ -1596,12 +1549,9 @@
             WHERE town IN ('Cornelius','Davidson','Huntersville')
             ORDER BY town, year
           `);
-          trends = r.data.toRows();
         } catch(e) {
           console.error("Trends load failed:", e);
-          ["gini-chart","ptr-trend-chart"].forEach(id =>
-            document.getElementById(id).innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>'
-          );
+          ["gini-chart","ptr-trend-chart"].forEach(id => window.mdShowError(id));
         }
 
         if (trends) {
@@ -1668,8 +1618,6 @@
 
 // Block 21 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         const SEGMENTS = ["Below FPL", "ALICE", "Above ALICE threshold"];
@@ -1682,26 +1630,24 @@
         let townRows, countyRows;
         try {
           const conn = await window.__mdConn;
-          const [rTown, rCounty] = await Promise.all([
-            conn.evaluateQuery(`
+          const [townRows2, countyRows2] = await Promise.all([
+            window.mdQuery(conn, `
               SELECT town, year, total_households, poverty_households, alice_households, above_alice_households
               FROM nmidw.agg_town_alice_household
               WHERE town IN ('Cornelius','Davidson','Huntersville')
               ORDER BY town, year
             `),
-            conn.evaluateQuery(`
+            window.mdQuery(conn, `
               SELECT county, year, total_households, poverty_households, alice_households, above_alice_households
               FROM nmidw.agg_county_alice_household
               ORDER BY county, year
             `)
           ]);
-          townRows  = rTown.data.toRows();
-          countyRows = rCounty.data.toRows();
+          townRows  = townRows2;
+          countyRows = countyRows2;
         } catch(e) {
           console.error("ALICE load failed:", e);
-          ['alice-bar-chart','alice-trend-chart','alice-county-chart'].forEach(id =>
-            document.getElementById(id).innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>'
-          );
+          ['alice-bar-chart','alice-trend-chart','alice-county-chart'].forEach(id => window.mdShowError(id));
         }
 
         if (townRows && townRows.length) {
@@ -1803,8 +1749,6 @@
 
 // Block 22 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         const METRIC_LABELS = {
@@ -1818,7 +1762,7 @@
         let infraRows;
         try {
           const conn = await window.__mdConn;
-          const r = await conn.evaluateQuery(`
+          infraRows = await window.mdQuery(conn, `
             SELECT town, year,
                    ROUND(renter_no_car_rate_pct, 2) AS renter_no_car,
                    ROUND(owner_no_car_rate_pct, 2) AS owner_no_car,
@@ -1829,10 +1773,9 @@
             WHERE town IN ('Cornelius','Davidson','Huntersville')
             ORDER BY town, year
           `);
-          infraRows = r.data.toRows();
         } catch(e) {
           console.error("Infrastructure access load failed:", e);
-          document.getElementById("infra-chart").innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>';
+          window.mdShowError('infra-chart');
         }
         if (infraRows && infraRows.length) {
           let activeMetric = "renter_no_car";
@@ -1866,8 +1809,6 @@
 
 // Block 23 (module)
 (async function() {
-        import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-        import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
         const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         const MOB_LABELS = {
@@ -1879,7 +1820,7 @@
         let mobRows;
         try {
           const conn = await window.__mdConn;
-          const r = await conn.evaluateQuery(`
+          mobRows = await window.mdQuery(conn, `
             SELECT town, year,
                    ROUND(bachelors_masters_rate_pct, 2) AS edu,
                    ROUND(poverty_rate_pct, 2) AS poverty,
@@ -1888,10 +1829,9 @@
             WHERE town IN ('Cornelius','Davidson','Huntersville')
             ORDER BY town, year
           `);
-          mobRows = r.data.toRows();
         } catch(e) {
           console.error("Economic mobility load failed:", e);
-          document.getElementById("mobility-chart").innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Error: '+e.message+'</p>';
+          window.mdShowError('mobility-chart');
         }
         if (mobRows && mobRows.length) {
           let activeMetric = "edu";

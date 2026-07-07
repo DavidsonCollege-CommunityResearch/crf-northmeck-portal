@@ -1,3 +1,38 @@
+/* ── MOTHERDUCK RESILIENCE HELPERS ──
+   MotherDuck's hosted CDN/query channel is intermittently flaky (confirmed
+   independently — connection resets fetching the wasm worker, and transient
+   errors on live queries even after a successful connect). These helpers give
+   every chart a timeout + one retry, and a visible message instead of a
+   silently blank chart when it still fails. */
+window.mdQuery = async function(conn, sql, opts){
+  opts = opts || {};
+  var retries = opts.retries != null ? opts.retries : 1;
+  var timeoutMs = opts.timeoutMs || 15000;
+  var lastErr;
+  for (var attempt = 0; attempt <= retries; attempt++){
+    try {
+      var res = await Promise.race([
+        conn.evaluateQuery(sql),
+        new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('MotherDuck query timed out')); }, timeoutMs); })
+      ]);
+      return res.data.toRows();
+    } catch (err) {
+      lastErr = err;
+      console.error('mdQuery attempt ' + (attempt + 1) + ' failed:', err);
+      if (attempt < retries) await new Promise(function(r){ setTimeout(r, 700 * (attempt + 1)); });
+    }
+  }
+  throw lastErr;
+};
+
+window.mdShowError = function(containerId){
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '<div class="md-error" style="padding:24px 12px;text-align:center;color:var(--ink-3);font-family:\'Hanken Grotesk\',sans-serif;font-size:13.5px">'
+    + '<i class="ti ti-cloud-off" style="font-size:22px;display:block;margin-bottom:6px;opacity:.55"></i>'
+    + "Couldn't load this chart right now.<br><a href=\"javascript:location.reload()\" style=\"color:var(--accent)\">Try refreshing the page</a></div>";
+};
+
 // Set active nav link based on current page
 document.addEventListener('DOMContentLoaded', function() {
   var path = window.location.pathname.split('/').pop() || 'index.html';
@@ -673,11 +708,28 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
   /* ── MotherDuck connection for data library ── */
   function getMDConn(){
     if (window.__mdConn) return window.__mdConn;
-    return import('https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm').then(function(m){
+    window.__mdConn = (async function(){
       var MD_TOKEN='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc';
-      window.__mdConn=m.MDConnection.create({mdToken:MD_TOKEN});
-      return window.__mdConn;
-    });
+      var m = await import('https://cdn.jsdelivr.net/npm/@motherduck/wasm-client@1.5.4-r.1/+esm');
+      var lastErr;
+      for (var attempt = 0; attempt <= 2; attempt++){
+        try {
+          var conn = m.MDConnection.create({ mdToken: MD_TOKEN });
+          await Promise.race([
+            conn.evaluateQuery('SELECT 1'),
+            new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('MotherDuck connect verification timed out')); }, 10000); })
+          ]);
+          return conn;
+        } catch (err) {
+          lastErr = err;
+          console.error('MotherDuck connect attempt ' + (attempt + 1) + ' failed:', err);
+          if (attempt < 2) await new Promise(function(r){ setTimeout(r, 900 * (attempt + 1)); });
+        }
+      }
+      window.__mdConn = null;
+      throw lastErr;
+    })();
+    return window.__mdConn;
   }
 
   /* ── main download handler ── */
@@ -707,8 +759,7 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
 
       if (ds.mdQuery){
         var conn=await getMDConn();
-        var result=await conn.evaluateQuery(ds.mdQuery);
-        rows=result.data.toRows();
+        rows=await window.mdQuery(conn, ds.mdQuery);
       } else if (ds.jsonKey){
         rows=getInlineData(ds.jsonKey);
         if (!rows.length) throw new Error('Inline data not available — try visiting the Housing section first.');

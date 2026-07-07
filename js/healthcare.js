@@ -1,4 +1,6 @@
 // Healthcare page scripts
+import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
+import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client@1.5.4-r.1/+esm";
 
 // Block 1 (plain)
 (function() {
@@ -441,7 +443,6 @@
 
 // Block 2 (module)
 (async function() {
-      import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
       const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
       const conn = MDConnection.create({ mdToken: MD_TOKEN });
       const sql = `
@@ -474,8 +475,8 @@
         ORDER BY hi.year, hi.town
       `;
       try {
-        const result = await (await conn).evaluateQuery(sql);
-        window.window.HC_INS_DATA = result.data.toRows().map(r => {
+        const rows = await window.mdQuery(await conn, sql);
+        window.window.HC_INS_DATA = rows.map(r => {
           const out = {};
           Object.keys(r).forEach(k => { out[k] = typeof r[k] === 'bigint' ? Number(r[k]) : r[k]; });
           return out;
@@ -766,28 +767,35 @@
 
 // Block 4 (module)
 (async function() {
-      const conn = await window.__mdConn;
-      const r = await conn.evaluateQuery(`
-        SELECT
-          ANY_VALUE(facility_name) AS facility_name,
-          ANY_VALUE(street1)       AS street1,
-          ANY_VALUE(city)          AS city,
-          latitude,
-          longitude,
-          STRING_AGG(DISTINCT facility_type_label, ', ') AS types
-        FROM nmidw.agg_mhsu_facility_detail
-        WHERE latitude IS NOT NULL AND longitude IS NOT NULL
-        GROUP BY latitude, longitude
-      `);
-      const facilities = r.data.toRows().map(function(d){
-        return {
-          name: d.facility_name,
-          address: (d.street1||'') + (d.city ? ', '+d.city : ''),
-          lat: Number(d.latitude),
-          lng: Number(d.longitude),
-          type: d.types || ''
-        };
-      });
+      let facilities;
+      try {
+        const conn = await window.__mdConn;
+        const rows = await window.mdQuery(conn, `
+          SELECT
+            ANY_VALUE(facility_name) AS facility_name,
+            ANY_VALUE(street1)       AS street1,
+            ANY_VALUE(city)          AS city,
+            latitude,
+            longitude,
+            STRING_AGG(DISTINCT facility_type_label, ', ') AS types
+          FROM nmidw.agg_mhsu_facility_detail
+          WHERE latitude IS NOT NULL AND longitude IS NOT NULL
+          GROUP BY latitude, longitude
+        `);
+        facilities = rows.map(function(d){
+          return {
+            name: d.facility_name,
+            address: (d.street1||'') + (d.city ? ', '+d.city : ''),
+            lat: Number(d.latitude),
+            lng: Number(d.longitude),
+            type: d.types || ''
+          };
+        });
+      } catch(e) {
+        console.error('MotherDuck facility map load failed:', e);
+        window.mdShowError('mh-facility-map');
+        return;
+      }
 
       const map = L.map('mh-facility-map').setView([35.48, -80.85], 11);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

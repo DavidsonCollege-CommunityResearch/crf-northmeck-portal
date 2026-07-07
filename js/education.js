@@ -1,8 +1,8 @@
 // Education page scripts
+import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
 // Block 1 (module)
 (async function() {
-          import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm';
           const TOWN_COLORS = {Cornelius:'#4e79a7',Davidson:'#f28e2b',Huntersville:'#59a14f'};
           const rawData = [
             {town:'Cornelius',year:2018,k12:5233},{town:'Cornelius',year:2019,k12:5439},{town:'Cornelius',year:2021,k12:5944},{town:'Cornelius',year:2022,k12:5581},{town:'Cornelius',year:2023,k12:5643},
@@ -33,7 +33,6 @@
 
 // Block 2 (module)
 (async function() {
-          import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm';
           const byTown = {
             Cornelius: [{year:2018,elem14:1851,elem58:1069,hs:1927},{year:2019,elem14:1923,elem58:1229,hs:1982},{year:2021,elem14:1771,elem58:1944,hs:2010},{year:2022,elem14:1557,elem58:1764,hs:1989},{year:2023,elem14:1541,elem58:1971,hs:1906}],
             Davidson: [{year:2018,elem14:735,elem58:819,hs:642},{year:2019,elem14:761,elem58:939,hs:571},{year:2021,elem14:857,elem58:933,hs:602},{year:2022,elem14:810,elem58:847,hs:648},{year:2023,elem14:778,elem58:844,hs:819}],
@@ -81,7 +80,6 @@
 
 // Block 3 (module)
 (async function() {
-          import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm';
           const TOWN_COLORS = {Cornelius:'#4e79a7',Davidson:'#f28e2b',Huntersville:'#59a14f'};
           const rawData = [
             {town:'Cornelius',year:2018,bach_plus:54.49},{town:'Cornelius',year:2019,bach_plus:53.53},{town:'Cornelius',year:2021,bach_plus:55.69},{town:'Cornelius',year:2022,bach_plus:58.62},{town:'Cornelius',year:2023,bach_plus:59.63},
@@ -97,7 +95,7 @@
               width: w, height: 320,
               marginLeft: 55, marginRight: 20, marginTop: 20, marginBottom: 40,
               x: {label: 'Year', tickFormat: d => String(d)},
-              y: {label: 'Bachelor's+ (%)', grid: true, domain: [20, 85]},
+              y: {label: "Bachelor's+ (%)", grid: true, domain: [20, 85]},
               color: {domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: town === 'All'},
               marks: [
                 Plot.line(data, {x:'year', y:'bach_plus', stroke:'town', strokeWidth: town === 'All' ? 2 : 3}),
@@ -112,29 +110,28 @@
 
 // Block 4 (module)
 (async function() {
-          import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm';
           const breakdown = [
             {town:'Cornelius',level:'Less than HS',pct:2.75,order:0},
             {town:'Cornelius',level:'HS/GED',pct:10.31,order:1},
             {town:'Cornelius',level:'Some College',pct:19.02,order:2},
-            {town:'Cornelius',level:'Associate's',pct:9.3,order:3},
-            {town:'Cornelius',level:'Bachelor's',pct:39.03,order:4},
+            {town:'Cornelius',level:"Associate's",pct:9.3,order:3},
+            {town:'Cornelius',level:"Bachelor's",pct:39.03,order:4},
             {town:'Cornelius',level:'Graduate/Prof',pct:19.59,order:5},
             {town:'Davidson',level:'Less than HS',pct:10.52,order:0},
             {town:'Davidson',level:'HS/GED',pct:1.78,order:1},
             {town:'Davidson',level:'Some College',pct:13.44,order:2},
-            {town:'Davidson',level:'Associate's',pct:41.01,order:3},
-            {town:'Davidson',level:'Bachelor's',pct:21.41,order:4},
+            {town:'Davidson',level:"Associate's",pct:41.01,order:3},
+            {town:'Davidson',level:"Bachelor's",pct:21.41,order:4},
             {town:'Davidson',level:'Graduate/Prof',pct:11.84,order:5},
             {town:'Huntersville',level:'Less than HS',pct:3.24,order:0},
             {town:'Huntersville',level:'HS/GED',pct:13.84,order:1},
             {town:'Huntersville',level:'Some College',pct:17.68,order:2},
-            {town:'Huntersville',level:'Associate's',pct:9.23,order:3},
-            {town:'Huntersville',level:'Bachelor's',pct:36.41,order:4},
+            {town:'Huntersville',level:"Associate's",pct:9.23,order:3},
+            {town:'Huntersville',level:"Bachelor's",pct:36.41,order:4},
             {town:'Huntersville',level:'Graduate/Prof',pct:19.58,order:5}
           ];
-          const LEVEL_COLORS = {'Less than HS':'#d73027','HS/GED':'#fc8d59','Some College':'#fee090','Associate's':'#e0f3f8','Bachelor's':'#74add1','Graduate/Prof':'#4575b4'};
-          const LEVELS = ['Less than HS','HS/GED','Some College','Associate's','Bachelor's','Graduate/Prof'];
+          const LEVEL_COLORS = {'Less than HS':'#d73027','HS/GED':'#fc8d59','Some College':'#fee090',"Associate's":'#e0f3f8',"Bachelor's":'#74add1','Graduate/Prof':'#4575b4'};
+          const LEVELS = ['Less than HS','HS/GED','Some College',"Associate's","Bachelor's",'Graduate/Prof'];
           const el = document.getElementById('chart-attainment-breakdown');
           function render(town) {
             const data = town === 'All' ? breakdown : breakdown.filter(d => d.town === town);
@@ -163,23 +160,22 @@
 
 // Block 5 (module)
 (async function() {
-          import * as Plot from 'https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm';
           const TOWN_COLORS = {Cornelius:'#4e79a7',Davidson:'#f28e2b',Huntersville:'#59a14f'};
-          const LEVEL_ORDER = ['Less than HS','HS Diploma','Some College','Bachelor's','Graduate/Prof'];
+          const LEVEL_ORDER = ['Less than HS','HS Diploma','Some College',"Bachelor's",'Graduate/Prof'];
           const earningsRaw = [
             {town:'Cornelius',level:'Less than HS',earnings:25255},
             {town:'Cornelius',level:'HS Diploma',earnings:44030},
             {town:'Cornelius',level:'Some College',earnings:59510},
-            {town:'Cornelius',level:'Bachelor's',earnings:88510},
+            {town:'Cornelius',level:"Bachelor's",earnings:88510},
             {town:'Cornelius',level:'Graduate/Prof',earnings:111383},
             {town:'Davidson',level:'Less than HS',earnings:27750},
             {town:'Davidson',level:'Some College',earnings:46319},
-            {town:'Davidson',level:'Bachelor's',earnings:135211},
+            {town:'Davidson',level:"Bachelor's",earnings:135211},
             {town:'Davidson',level:'Graduate/Prof',earnings:151226},
             {town:'Huntersville',level:'Less than HS',earnings:24041},
             {town:'Huntersville',level:'HS Diploma',earnings:45963},
             {town:'Huntersville',level:'Some College',earnings:60143},
-            {town:'Huntersville',level:'Bachelor's',earnings:90507},
+            {town:'Huntersville',level:"Bachelor's",earnings:90507},
             {town:'Huntersville',level:'Graduate/Prof',earnings:103843}
           ];
           const el = document.getElementById('chart-earnings');

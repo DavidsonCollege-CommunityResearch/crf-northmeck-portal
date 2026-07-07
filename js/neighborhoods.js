@@ -1,8 +1,8 @@
 // Neighborhoods / nbhd-data page scripts
+import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
 // Block 1 (module)
 (async function() {
-      import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
       const STYLE = { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" };
       const ACCENT = "#3f4e75";
 
