@@ -1,0 +1,757 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<BaseLayout title="Housing · North Meck Insights" includeMotherDuck={true}>
+
+<div class="page active" style="display:block">
+
+  <div class="wrap">
+    <div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span>Housing</span></div>
+    <div class="dash-hero" style="margin-bottom:56px">
+      <div class="split" style="align-items:flex-start">
+        <div>
+          <span class="eyebrow" style="font-size:15px">Housing affordability</span>
+          <h1 class="dash-h1">Can people afford to live in North Meck?</h1>
+          <p class="lead dash-lead" style="margin-bottom:0">Rents have risen twice as fast as incomes since 2018. Home values have nearly doubled. This section follows the data to show who is affected, where the pressure is highest, and what it means for the communities that make North Meck work.</p>
+        </div>
+        <img src="images/housing-hero.jpg" alt="A North Meck neighborhood street with a For Rent sign" style="width:100%;max-height:320px;object-fit:cover;border-radius:var(--rl);display:block">
+      </div>
+    </div>
+    <div class="tabs" id="housing-tabs">
+      <span class="tab active" data-tab="overview" onclick="setTab(this)">Overview</span>
+      <span class="tab" data-tab="affordability" onclick="setTab(this)">Affordability</span>
+      <span class="tab" data-tab="supply" onclick="setTab(this)">Supply</span>
+      <span class="tab" data-tab="displacement" onclick="setTab(this)">Displacement Risk</span>
+      <span class="tab" data-tab="homeownership" onclick="setTab(this)">Homeownership &amp; Equity</span>
+      <span class="tab" data-tab="income" onclick="setTab(this)">Income &amp; Need</span>
+    </div>
+  </div>
+  <div class="wrap dash-filter">
+    <div class="filterbar">
+      <span class="lbl">Area:</span>
+      <span class="chip on" onclick="setChip(this)">All North Meck</span>
+      <span class="chip" onclick="setChip(this)">Cornelius</span>
+      <span class="chip" onclick="setChip(this)">Davidson</span>
+      <span class="chip" onclick="setChip(this)">Huntersville</span>
+      <span class="hint">filters every chart</span>
+    </div>
+  </div>
+
+  <!-- TAB: overview -->
+  <div class="tabpane active" data-pane="overview">
+    <div class="wrap">
+
+      <!-- Overview: 4 spotlight fact rows -->
+      <div class="stat-rows" style="margin-bottom:48px" id="ov-fact-rows">
+
+        <!-- Fact 1: 52% rent rise -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">52%</div>
+            <p class="stat-l">rent rise in Huntersville since 2018, from $1,196 to $1,820/mo</p>
+            <span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</span>
+          </div>
+          <div class="card viz-host">
+            <div class="card-t">Median Rent by Town (2018–2024)</div>
+            <div class="card-s"></div>
+            <div id="ovf-rent" style="width:100%"></div>
+          </div>
+        </div>
+
+        <!-- Fact 2: 20+ years -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">20+ yrs</div>
+            <p class="stat-l">of gross income to buy the median home, for a $20k–$35k household</p>
+            <span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
+          </div>
+          <div class="card viz-host">
+            <div class="card-t">Years of Income to Buy the Median Home, by Bracket (2024)</div>
+            <div class="card-s"></div>
+            <div id="ovf-ptr" style="width:100%"></div>
+          </div>
+        </div>
+
+        <!-- Fact 3: $693k -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n"><span class="cur">$</span>693k</div>
+            <p class="stat-l">median home price in Davidson, 4× the U.S. national median</p>
+            <span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
+          </div>
+          <div class="card viz-host">
+            <div class="card-t">Median Home Value by Town vs. U.S. Median (2024)</div>
+            <div class="card-s">U.S. median ~$179k</div>
+            <div id="ovf-home" style="width:100%"></div>
+          </div>
+        </div>
+
+        <!-- Fact 4: ~10 years -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n">~10 yrs</div>
+            <p class="stat-l">to save a 20% down payment at a 10% annual savings rate</p>
+            <span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
+          </div>
+          <div class="card viz-host">
+            <div class="card-t">Years to Save a 20% Down Payment, by Town (2024)</div>
+            <div class="card-s">Assumes 10% annual savings rate on median household income</div>
+            <div id="ovf-dp" style="width:100%"></div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- Overview hero chart: Rent vs. Income indexed -->
+      <div class="card viz-host" id="income-rent-chart-host" style="margin-bottom:24px">
+        <div class="card-t">Rent vs. Income Growth, Indexed to 2018</div>
+        <div class="card-s">When the rent line rises above the income line, affordability is eroding · North Mecklenburg</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span class="lbl">Town:</span>
+          <button class="chip on" data-rent-town="All">All towns</button>
+          <button class="chip" data-rent-town="Cornelius">Cornelius</button>
+          <button class="chip" data-rent-town="Davidson">Davidson</button>
+          <button class="chip" data-rent-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="income-rent-chart" style="width:100%"></div>
+        <div class="callout warn"><div class="callout-t">In Davidson, rents rose 68% between 2018 and 2024 while incomes rose 37%. The gap is widest here, but every town shows the same divergence.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024 · index set to 100 in 2018 so towns can be compared on the same scale regardless of starting dollar values</div></div>
+      </div>
+
+      <div class="g2" style="margin-top:8px">
+        <div class="callout info">
+          <div class="callout-t"><strong>The story behind the numbers:</strong> North Meck's three towns look wealthy on the surface: median incomes of $113K–$156K and homeownership above 70% read as prosperity. But that aggregate picture conceals deep pressure on renters, low-income households, and communities of color who keep these towns running.</div>
+          <div class="callout-s">Explore each tab to see who is affected, where the pressure is highest, and what it means for communities like Davidson West.</div>
+        </div>
+        <div class="map-ph">
+          <i class="ti ti-map-2"></i>
+          <div class="t">Cost burden by neighborhood</div>
+          <div class="s">Choropleth map · click a neighborhood to filter every chart</div>
+          <div class="scale"></div>
+          <div class="scale-lbl">low → high cost burden · Viridis · alt text provided</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: affordability -->
+  <div class="tabpane" data-pane="affordability">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Affordability</span><h2 class="sec-h">How much does it actually cost to live here, and who can afford it?</h2></div>
+
+      <!-- Block 1: Rents over time -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How have rents changed across Davidson, Cornelius, and Huntersville?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Median rent by town, 2018–2024. Each line tracks what renters paid in that year's ACS survey.</p>
+        <div class="card viz-host" id="rent-chart-host">
+          <div class="card-t">Median Rent by Town (2018–2024)</div>
+          <div class="card-s">Cornelius, Davidson, Huntersville</div>
+          <div class="filterbar" style="margin-bottom:14px">
+            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+            <button class="chip on" data-rent-town="All">All towns</button>
+            <button class="chip" data-rent-town="Cornelius">Cornelius</button>
+            <button class="chip" data-rent-town="Davidson">Davidson</button>
+            <button class="chip" data-rent-town="Huntersville">Huntersville</button>
+          </div>
+          <div id="rent-chart" style="width:100%"></div>
+          <div class="callout"><div class="callout-t">A two-bedroom in Huntersville that rented for roughly $1,196 in 2018 now goes for $1,820, a 52% increase. Rent rose fastest in Cornelius and Huntersville after 2020, while Davidson (already the priciest) saw slower growth from a higher base.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+        </div>
+      </div>
+
+      <!-- Block 2: Home value trends -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How have home prices changed, and is buying becoming out of reach?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Home values indexed to 2018 alongside median income, showing how ownership affordability has shifted.</p>
+      </div>
+
+      <!-- Shared MotherDuck singleton — one connection reused by all script blocks -->
+
+
+
+
+      <!-- Chart 3: Home Value vs Income Growth -->
+      <div class="card viz-host" id="home-value-chart-host" style="margin-top:22px">
+        <div class="card-t">Home Value vs. Income Growth, Indexed to 2018</div>
+        <div class="card-s">Home values have risen far faster than incomes, making ownership increasingly out of reach</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+          <button class="chip on" data-hv-town="All">All towns</button>
+          <button class="chip" data-hv-town="Cornelius">Cornelius</button>
+          <button class="chip" data-hv-town="Davidson">Davidson</button>
+          <button class="chip" data-hv-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="home-value-chart" style="width:100%"></div>
+        <div class="callout"><div class="callout-t">In Cornelius, home values rose 91% between 2018 and 2024. Median incomes rose just 28% over the same period.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+      </div>
+
+
+      <!-- Block 3: Housing wage -->
+      <div style="margin-top:36px;margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How much does someone need to earn per hour to afford rent without being cost-burdened?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The "housing wage" is the hourly pay a full-time worker needs so rent does not exceed 30% of income. No common local occupation reaches it.</p>
+        <div class="card viz-host" style="margin-bottom:20px">
+          <div class="card-t">Housing Wage vs. Most Common Local Occupations</div>
+          <div class="card-s">Hourly wages for Charlotte-area occupations vs. the housing wage needed to afford a 2-bedroom without being cost-burdened</div>
+          <div id="chart-housing-wage"></div>
+          <div class="callout"><div class="callout-t">At $35.08/hr, the housing wage is out of reach for nearly every common occupation in the Charlotte area. Only registered nurses ($40.42/hr) earn enough — most workers in retail, food service, and logistics earn less than half the housing wage.</div><div class="callout-s">Source: NLIHC <em>Out of Reach</em> 2024 · BLS Occupational Employment &amp; Wages, Charlotte-Concord-Gastonia MSA 2023</div></div>
+        </div>
+        <!-- Block 4: Rent by bedroom size -->
+        <div class="card viz-host">
+          <div class="card-t">Fair Market Rent by Bedroom Size (2025)</div>
+          <div class="card-s">HUD Fair Market Rents for Charlotte vs. Raleigh and Atlanta — how local rents compare across metro peers</div>
+          <div id="chart-fmr-bedroom"></div>
+          <div class="callout"><div class="callout-t">Charlotte's Fair Market Rents are broadly comparable to Atlanta's and below Raleigh's for smaller units, but the gap closes — and reverses for 4-bedroom units — as family size grows. A 4-bedroom unit in Charlotte runs $2,852/month, $309 above Atlanta.</div><div class="callout-s">Source: HUD FY2025 Fair Market Rents</div></div>
+        </div>
+      </div>
+
+
+      <!-- Block 5: Affordability gap by income level -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Who can afford to live in North Meck at different income levels?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Income limits and maximum affordable rent at each AMI bracket compared to fair market rent, showing the monthly gap households face at each income tier.</p>
+        <div class="card viz-host">
+          <div class="card-t">Affordable Rent vs. Fair Market Rent by AMI Bracket</div>
+          <div class="card-s">Max affordable rent (30% of income rule) vs. HUD Fair Market Rent across bedroom sizes — Charlotte-Mecklenburg metro, FY2025</div>
+          <div id="chart-ami-gap"></div>
+          <div class="callout"><div class="callout-t">Households earning 30% or 50% of AMI face a severe monthly shortfall — they can afford far less than market rents require. Even at 80% AMI, most bedroom sizes remain out of reach. Only households at 100% AMI can afford the fair market rent for all unit sizes.</div><div class="callout-s">Source: HUD FY2025 Income Limits &amp; Fair Market Rents · Charlotte-Concord-Gastonia HUD Metro FMR Area</div></div>
+        </div>
+      </div>
+
+
+      <!-- Block 6: Rent-to-income & home price-to-income ratios -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does rent — and homeownership — compare to what residents actually earn?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Rent-to-income ratio measures what share of median household income goes to rent. A home price-to-income ratio above 4× is considered unaffordable for first-time buyers without significant savings. Both ratios have climbed sharply since 2018.</p>
+        <div class="g2" style="margin-bottom:16px">
+          <div class="card viz-host" id="rti-chart-host">
+            <div class="card-t">Rent-to-Income Ratio by Town (2018–2024)</div>
+            <div class="card-s">Median rent ÷ median household income · 30% HUD threshold shown</div>
+            <div class="filterbar" style="margin-bottom:14px">
+              <span class="lbl">Town:</span>
+              <button class="chip on" data-af-town="All">All towns</button>
+              <button class="chip" data-af-town="Cornelius">Cornelius</button>
+              <button class="chip" data-af-town="Davidson">Davidson</button>
+              <button class="chip" data-af-town="Huntersville">Huntersville</button>
+            </div>
+            <div id="rti-chart" style="width:100%"></div>
+            <div class="callout"><div class="callout-t">In all three towns, rent now consumes a larger share of household income than it did in 2018. The dashed line marks the 30% cost-burden threshold — once crossed, households have less to spend on food, healthcare, and savings.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024 · ratio = (median annual rent) ÷ (median household income)</div></div>
+          </div>
+          <div class="card viz-host" id="hpti-chart-host">
+            <div class="card-t">Home Price-to-Income Ratio by Town (2018–2024)</div>
+            <div class="card-s">Median home value ÷ median household income · 4× threshold shown</div>
+            <div class="filterbar" style="margin-bottom:14px">
+              <span class="lbl">Town:</span>
+              <button class="chip on" data-af-town="All">All towns</button>
+              <button class="chip" data-af-town="Cornelius">Cornelius</button>
+              <button class="chip" data-af-town="Davidson">Davidson</button>
+              <button class="chip" data-af-town="Huntersville">Huntersville</button>
+            </div>
+            <div id="hpti-chart" style="width:100%"></div>
+            <div class="callout"><div class="callout-t">All three towns have crossed the 4× home price-to-income threshold, meaning a median-priced home now costs more than four years of median household income — well above the historical affordability benchmark for first-time buyers.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024 · ratio = median home value ÷ median household income</div></div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- TAB: supply -->
+  <div class="tabpane" data-pane="supply">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Supply</span><h2 class="sec-h">Is there enough housing in North Meck, and is it the right kind?</h2></div>
+
+      <!-- Population growth chart -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How fast is North Meck growing, and is housing supply keeping up with population?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Total population by town, 2018–2024. Rapid growth increases demand for all housing types, particularly affordable rentals.</p>
+        <div class="card viz-host" id="population-chart-host">
+          <div class="card-t">Population Growth by Town (2018–2024)</div>
+          <div class="card-s">Cornelius, Davidson, Huntersville</div>
+          <div class="filterbar" style="margin-bottom:14px">
+            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+            <button class="chip on" data-pop-town="All">All towns</button>
+            <button class="chip" data-pop-town="Cornelius">Cornelius</button>
+            <button class="chip" data-pop-town="Davidson">Davidson</button>
+            <button class="chip" data-pop-town="Huntersville">Huntersville</button>
+          </div>
+          <div id="population-chart" style="width:100%"></div>
+          <div class="callout"><div class="callout-t">Huntersville added the most residents: its population grew by over 10,000 between 2018 and 2024. That kind of growth without matching affordable supply is a core driver of the cost pressure seen in the Affordability tab.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+        </div>
+
+      </div>
+
+      <div style="margin-bottom:28px">
+        <!-- Block 1: Total housing units -->
+        <div style="margin-bottom:0">
+          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">How many households are in each town, and how has that changed?</h3>
+          <div class="card viz-host" id="tenure-chart-host">
+            <div class="card-t">Total Households by Town (2018–2024)</div>
+            <div class="card-s"></div>
+            <div class="filterbar" style="margin-bottom:14px">
+              <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+              <button class="chip on" data-tenure-town="All">All towns</button>
+              <button class="chip" data-tenure-town="Cornelius">Cornelius</button>
+              <button class="chip" data-tenure-town="Davidson">Davidson</button>
+              <button class="chip" data-tenure-town="Huntersville">Huntersville</button>
+            </div>
+            <div id="tenure-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+            <div class="callout"><div class="callout-t">Owner-occupied households dominate all three towns (70–80% of households), but Huntersville has added the most renter households in absolute terms since 2018, reflecting its rapid growth.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Block 2: Housing types (full width) -->
+      <div style="margin-bottom:28px">
+        <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">What is the mix of single-family, multifamily, duplex, manufactured, and condo units?</h3>
+        <div class="card viz-host" id="housing-types-host">
+          <div class="card-t">Housing Types by Town (2024)</div>
+          <div class="card-s">Share of housing units by structure type</div>
+          <div id="housing-types-chart" style="width:100%"></div>
+          <div class="callout"><div class="callout-t">All three towns are majority single-family, but Cornelius has the highest share of large multifamily (25%), reflecting its denser, more transit-accessible development pattern.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B25024</div></div>
+        </div>
+      </div>
+      <div class="g2" style="display:none">
+
+      </div>
+
+      <div class="g2" style="margin-bottom:28px">
+        <!-- Block 3: Age of housing stock -->
+        <div style="margin-bottom:0">
+          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">How old is the housing, and what does that mean for maintenance and habitability?</h3>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Age of housing stock</div>
+            <div class="card-s">Grouped bar by decade of construction across North Meck towns</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: ACS Table B25034 (needs Census pull)</div>
+            </div>
+          </div>
+        </div>
+        <!-- Block 4: Vacancy rates -->
+        <div style="margin-bottom:0">
+          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">Is the rental market tight? Low vacancy means less bargaining power for renters.</h3>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Vacancy rates over time</div>
+            <div class="card-s">Line chart: vacancy rate by town, 2018–2024</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: ACS Table B25004 (needs Census pull)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="g2" style="margin-bottom:28px">
+        <!-- Block 5: Subsidized units -->
+        <div style="margin-bottom:0">
+          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">How many units in North Meck are subsidized, and how has that changed?</h3>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Subsidized and affordable units</div>
+            <div class="card-s">Bar chart: total vs. subsidized vs. units affordable at 80% AMI</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: HUD Picture of Subsidized Households + LIHTC database</div>
+            </div>
+          </div>
+        </div>
+        <!-- Block 6: New construction -->
+        <div style="margin-bottom:0">
+          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">Where is new housing being built, and does it serve lower-income households?</h3>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">New construction vs. existing stock</div>
+            <div class="card-s">Bar chart of building permits by year, with notes on typical price points</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: Mecklenburg County building permits / GIS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB: displacement risk -->
+  <div class="tabpane" data-pane="displacement">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Displacement Risk</span><h2 class="sec-h">Who is at risk of losing their housing, and where is the pressure greatest?</h2></div>
+
+      <!-- Block 1: Renter cost burden rates -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What share of renters in each town spend more than 30% of income on housing?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Cost burden broken down by income bracket and tenure. Davidson has the highest severe burden rate (27%) despite its highest median income, likely driven by a small renter population that skews low-income.</p>
+      </div>
+
+      <!-- Chart 4: Cost Burden by Income Bracket -->
+      <div class="card viz-host" id="burden-chart-host" style="margin-top:22px">
+        <div class="card-t">Cost Burden by Income Bracket</div>
+        <div class="card-s">Households by housing cost burden level · North Mecklenburg</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+          <button class="chip on" data-burden-town="Cornelius">Cornelius</button>
+          <button class="chip" data-burden-town="Davidson">Davidson</button>
+          <button class="chip" data-burden-town="Huntersville">Huntersville</button>
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin:0 8px 0 16px">Tenure:</span>
+          <button class="chip on" data-burden-tenure="Renter">Renter</button>
+          <button class="chip" data-burden-tenure="Owner">Owner</button>
+        </div>
+        <div id="burden-chart" style="width:100%"></div>
+        <div class="callout warn"><div class="callout-t">Nearly all renters earning under $20k are severely cost-burdened, spending more than half their income on housing.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · CHAS via HUD</div></div>
+      </div>
+
+
+      <!-- Burden trend over time — live MotherDuck query -->
+      <div class="card viz-host" id="burden-trend-host" style="margin-top:22px">
+        <div class="card-t">Renter Cost Burden Rate Over Time</div>
+        <div class="card-s">Share of renter households spending 30%+ of income on housing · 2018–2024 · North Mecklenburg</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Show:</span>
+          <button class="chip on" data-btrend-metric="rate">Burden rate (%)</button>
+          <button class="chip" data-btrend-metric="count">Household count</button>
+          <button class="chip" data-btrend-metric="severe">Severely burdened (%)</button>
+        </div>
+        <div id="burden-trend-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+        <div class="callout warn"><div class="callout-t">In Cornelius, the share of cost-burdened renters rose from 28% in 2018 to 46% in 2023, nearly doubling in just five years.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+      </div>
+
+      <!-- Block 2: Burden trend over time -->
+      <div style="margin-top:36px;margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is cost burden getting better or worse over time?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Trend in burden rate, household count, and severe burden since 2018. 2020–2021 marked the COVID-era eviction moratorium period.</p>
+      </div>
+
+      <!-- Block 4: At-risk renter households -->
+      <div style="margin-top:36px;margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many renter households are at high displacement risk?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Severely cost-burdened households (50%+ of income on rent) have less than half their income left after housing. They are one unexpected expense away from eviction.</p>
+        <div class="card viz-host" id="severely-burdened-host">
+          <div class="card-t">Severely Cost-Burdened Households by Town (2018–2024)</div>
+          <div class="card-s">Households spending 50%+ of income on housing</div>
+          <div class="filterbar" style="margin-bottom:14px">
+            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+            <button class="chip on" data-sevburd-town="All">All towns</button>
+            <button class="chip" data-sevburd-town="Cornelius">Cornelius</button>
+            <button class="chip" data-sevburd-town="Davidson">Davidson</button>
+            <button class="chip" data-sevburd-town="Huntersville">Huntersville</button>
+          </div>
+          <div id="severely-burdened-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+          <div class="callout warn"><div class="callout-t">Severely cost-burdened households have less than half their income left for food, healthcare, transportation, and emergencies, just one unexpected expense away from eviction.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+        </div>
+
+      </div>
+
+      <!-- Block 5: ALICE households -->
+      <div style="margin-top:36px;margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many North Meck households are financially vulnerable but invisible to traditional poverty measures?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The Federal Poverty Level (FPL) was designed in the 1960s and does not account for regional cost differences. In North Meck, where costs are high, the FPL misses a large share of struggling households. The ALICE framework (Asset Limited, Income Constrained, Employed) fills this gap.</p>
+        <div class="callout info" style="margin-bottom:16px"><div class="callout-t"><strong>"Standard poverty data makes it look like North Meck doesn't need services. ALICE shows the real picture."</strong></div><div class="callout-s">— Diane Means, Ada Jenkins Center · Davidson West</div></div>
+        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">ALICE households and the hidden gap</div>
+          <div class="card-s">Three-segment stacked bar: below FPL / ALICE / financially stable · Mecklenburg County</div>
+          <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Data source: United Way NC ALICE report, Mecklenburg County download · unitedforalice.org</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB: homeownership & equity -->
+  <div class="tabpane" data-pane="homeownership">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Homeownership &amp; Equity</span><h2 class="sec-h">Who gets to build wealth through homeownership, and who is locked out?</h2></div>
+
+      <!-- Block 1: Homeownership rates over time -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What share of households own vs. rent in each town, and how has that changed?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Key numbers (2024): Davidson 84%, Cornelius 72%, Huntersville 72%. But the trend matters: ownership shares have shifted as rents push some residents out while attracting higher-income buyers.</p>
+        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Homeownership rates over time</div>
+          <div class="card-s">Line chart: owner share (owner-occupied ÷ total occupied) by town, 2018–2024</div>
+          <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Data source: ACS 2018–2024</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Block 2: Homeownership gap by race -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is there a racial gap in homeownership, and has it widened or narrowed?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Nationally, the Black-white homeownership gap is larger today than it was before the Fair Housing Act. North Meck's own numbers tell a local version of that story.</p>
+        <div class="card viz-host" id="race-chart-host" style="margin-bottom:24px">
+        <div class="card-t">Homeownership Rate by Race &amp; Ethnicity</div>
+        <div class="card-s">Owner-occupied households as share of all households by group · North Mecklenburg</div>
+        <div class="filterbar" style="margin-bottom:6px">
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">View:</span>
+          <button class="chip on" data-race-view="ownership">Ownership rate</button>
+          <button class="chip" data-race-view="counts">Raw counts</button>
+        </div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+          <button class="chip on" data-race-town="All">All towns</button>
+          <button class="chip" data-race-town="Cornelius">Cornelius</button>
+          <button class="chip" data-race-town="Davidson">Davidson</button>
+          <button class="chip" data-race-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="race-chart" style="width:100%"></div>
+        <div class="callout"><div class="callout-t">White residents own at 73–82% across the three towns. Black residents own at 29–62%, a gap that reflects decades of structural barriers to wealth-building.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Census tenure by race</div></div>
+      </div>
+
+
+      <div id="race-summary-table-wrap" style="margin-top:32px">
+        <p style="color:#888;font-family:'Hanken Grotesk',sans-serif;font-size:14px;padding:8px 0">Loading data…</p>
+      </div>
+      <div class="callout" style="margin-top:24px;max-width:760px"><div class="callout-t">53% of Black renter households are cost-burdened, compared with 37% of White renter households. One in ten Hispanic households lives in overcrowded conditions.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
+      </div>
+
+
+      <!-- Racial composition 2024 snapshot -->
+      <div style="margin-top:36px;margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What is the racial makeup of each town today?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">2024 population share by race/ethnicity across the three North Meck towns.</p>
+        <div class="card viz-host" id="race-comp-host">
+          <div class="card-t">Population Share by Race (2024)</div>
+          <div class="card-s">Share of total population by race/ethnicity</div>
+          <div class="filterbar" style="margin-bottom:14px">
+            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+            <button class="chip on" data-racecomp-town="All">All towns</button>
+            <button class="chip" data-racecomp-town="Cornelius">Cornelius</button>
+            <button class="chip" data-racecomp-town="Davidson">Davidson</button>
+            <button class="chip" data-racecomp-town="Huntersville">Huntersville</button>
+          </div>
+          <div id="race-comp-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+          <div class="callout"><div class="callout-t">Huntersville is the most diverse town, with Black residents at 13.6% and Asian residents at 6.4%. Cornelius and Davidson both remain over 80% white.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
+        </div>
+
+      </div>
+
+      <!-- Racial composition change over time -->
+      <div style="margin-top:36px;margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How has the racial composition of each town changed since 2018?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Demographic change shapes who can access homeownership and who gets displaced. Rising prices pull in higher-income, whiter households while pushing out lower-income residents of color.</p>
+        <div class="card viz-host" id="race-trend-chart-host">
+          <div class="card-t">Racial Composition by Town (2018–2024)</div>
+          <div class="card-s">Share of total population by race/ethnicity</div>
+          <div class="filterbar" style="margin-bottom:8px">
+            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+            <button class="chip on" data-racetrend-town="Cornelius">Cornelius</button>
+            <button class="chip" data-racetrend-town="Davidson">Davidson</button>
+            <button class="chip" data-racetrend-town="Huntersville">Huntersville</button>
+          </div>
+          <div class="filterbar" style="margin-bottom:14px">
+            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Race:</span>
+            <button class="chip on" data-racetrend-race="White">White</button>
+            <button class="chip on" data-racetrend-race="Black">Black</button>
+            <button class="chip on" data-racetrend-race="Hispanic">Hispanic</button>
+            <button class="chip on" data-racetrend-race="Asian">Asian</button>
+            <button class="chip on" data-racetrend-race="Other">Other</button>
+          </div>
+          <div id="race-trend-chart" style="width:100%"></div>
+          <div class="callout"><div class="callout-t">North Meck's towns are becoming more diverse, but at very different rates. Huntersville's Black population has grown significantly since 2018, while Davidson remains predominantly white. Tracking these shifts matters for equity in housing access.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+        </div>
+
+      </div>
+
+      <!-- Down payment savings chart -->
+      <div class="card viz-host" id="down-payment-chart-host" style="margin-bottom:32px">
+        <div class="card-t">Years to Save for a 20% Down Payment, by Town</div>
+        <div class="card-s">Assumes 10% annual savings rate on median household income</div>
+        <div id="down-payment-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+        <div class="callout warn"><div class="callout-t">At current prices, a household earning the median income would need nearly a decade just to save for a down payment, assuming they save 10% of gross income every year with no competing savings goals.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · formula: (median home value × 20%) ÷ (median income × 10%)</div></div>
+      </div>
+
+
+      <!-- Block 6: Years of income to buy by bracket -->
+      <div style="margin-top:36px;margin-bottom:6px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What does it take to buy a home at different income levels?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Years of gross income needed to buy the median home, by income bracket and town. The lower-income brackets reveal the true scale of exclusion: a household earning $20k–$35k would need over 20 years with nothing spent on anything else.</p>
+      </div>
+      <!-- Chart: Price-to-Income Ratio by Income Bracket -->
+      <div class="card viz-host" id="ptr-chart-host" style="margin-bottom:32px">
+        <div class="card-t">Years of Income to Buy a Home, by Income Bracket</div>
+        <div class="card-s">Median home value ÷ income bracket midpoint, showing how many years of gross income to buy</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+          <button class="chip on" data-ptr-town="all">All towns</button>
+          <button class="chip" data-ptr-town="Cornelius">Cornelius</button>
+          <button class="chip" data-ptr-town="Davidson">Davidson</button>
+          <button class="chip" data-ptr-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="ptr-chart" style="width:100%"></div>
+        <div class="callout warn"><div class="callout-t">A household earning $20k–$35k would need over 20 years of gross income to buy a median home in any North Meck town, with no money spent on anything else.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- TAB: income & need -->
+  <div class="tabpane" data-pane="income">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Income &amp; Need</span><h2 class="sec-h">What do residents earn, and does it reflect true financial vulnerability in North Meck?</h2><p class="lead">Standard poverty measures miss a significant share of struggling households here. This tab explains why, and shows what the data actually reveals.</p></div>
+
+      <!-- ALICE framing callout -->
+      <div class="callout info" style="margin-bottom:36px"><div class="callout-t"><strong>Why we show ALICE alongside traditional poverty data:</strong> The Federal Poverty Level (FPL) was calculated in the 1960s based on food costs and hasn't kept pace with housing, childcare, or healthcare. In wealthy suburbs like North Meck, it makes need nearly invisible. ALICE (Asset Limited, Income Constrained, Employed) measures households that earn above the FPL but still can't cover basic costs — the households who need services at places like the Ada Jenkins Center in Davidson West.</div><div class="callout-s">This is a methodological transparency note, not a political statement. Every data choice on this portal is documented.</div></div>
+
+      <!-- Block 1: Median income by town -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What is the income distribution across North Meck's three towns?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Median household income by town over time. The high medians conceal wide variation: income inequality within each town is substantial.</p>
+        <div class="card viz-host" id="median-income-chart-host">
+          <div class="card-t">Median Household Income by Town (2018–2024)</div>
+          <div class="card-s">Cornelius, Davidson, Huntersville</div>
+          <div class="filterbar" style="margin:10px 0 4px">
+            <span class="chip on" data-econ-chart="income" data-econ-town="All" onclick="econChip(this)">All</span>
+            <span class="chip" data-econ-chart="income" data-econ-town="Cornelius" onclick="econChip(this)">Cornelius</span>
+            <span class="chip" data-econ-chart="income" data-econ-town="Davidson" onclick="econChip(this)">Davidson</span>
+            <span class="chip" data-econ-chart="income" data-econ-town="Huntersville" onclick="econChip(this)">Huntersville</span>
+          </div>
+          <div id="median-income-chart" style="width:100%"></div>
+          <div class="callout"><div class="callout-t">Davidson's median household income rose from $117k in 2018 to $156k in 2024, but the high median conceals a wide gap: the Gini data shows income inequality within Davidson is growing alongside that headline number.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+        </div>
+
+      </div>
+
+      <!-- Block 2: Gini index -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How unequal is income distribution within each town?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The Gini coefficient measures income inequality: 0 = perfect equality, 1 = maximum inequality. Cornelius (0.52) has significantly higher inequality than the national average (~0.40), meaning the gap between its wealthiest and most financially vulnerable residents is unusually wide.</p>
+
+      <!-- Live charts: Gini + PTR over time — shared MotherDuck query -->
+
+
+      <!-- PTR over time chart -->
+      <div class="card viz-host" id="ptr-trend-host" style="margin-bottom:22px">
+        <div class="card-t">Home Price-to-Income Ratio Over Time</div>
+        <div class="card-s">Median home value ÷ median household income, years of income to buy</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span class="lbl">Town:</span>
+          <button class="chip on" data-ptr-town="All">All towns</button>
+          <button class="chip" data-ptr-town="Cornelius">Cornelius</button>
+          <button class="chip" data-ptr-town="Davidson">Davidson</button>
+          <button class="chip" data-ptr-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="ptr-trend-chart" style="width:100%"></div>
+        <div class="callout warn"><div class="callout-t">Davidson's PTR jumped from 3.3× in 2018 to 4.1× in 2024. A ratio above 3× is widely considered unaffordable for first-time buyers. Cornelius went from 3.2× to 4.8×, the steepest rise in North Meck.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+      </div>
+
+      <!-- Gini coefficient chart -->
+      <div class="card viz-host" id="gini-chart-host" style="margin-bottom:22px">
+        <div class="card-t">Income Inequality Over Time (Gini Coefficient)</div>
+        <div class="card-s">0 = perfect equality · 1 = maximum inequality</div>
+        <div class="filterbar" style="margin:10px 0 4px">
+          <span class="chip on" data-econ-chart="gini" data-econ-town="All" onclick="econChip(this)">All</span>
+          <span class="chip" data-econ-chart="gini" data-econ-town="Cornelius" onclick="econChip(this)">Cornelius</span>
+          <span class="chip" data-econ-chart="gini" data-econ-town="Davidson" onclick="econChip(this)">Davidson</span>
+          <span class="chip" data-econ-chart="gini" data-econ-town="Huntersville" onclick="econChip(this)">Huntersville</span>
+        </div>
+        <div id="gini-chart" style="width:100%"></div>
+        <div class="callout warn"><div class="callout-t">Cornelius has seen the sharpest rise in inequality: its Gini coefficient climbed from 0.48 in 2018 to 0.53 in 2023, approaching levels seen in major cities. Inequality in Cornelius now far exceeds the national average (~0.40).</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+      </div>
+      </div>
+
+      <!-- Block 3: ALICE gap -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many North Meck households are financially vulnerable but above the federal poverty line?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The ALICE gap is the share of households earning above the FPL but below the ALICE Threshold — the minimum cost of living for housing, food, childcare, transportation, healthcare, and technology. In North Meck, the FPL alone drastically undercounts who is struggling.</p>
+
+        <div class="g2" style="margin-bottom:22px">
+          <!-- Snapshot: latest year stacked bar by town -->
+          <div class="card viz-host" id="alice-bar-host">
+            <div class="card-t">Household financial stability by town (latest year)</div>
+            <div class="card-s">Below FPL · ALICE · Above ALICE threshold</div>
+            <div class="filterbar" style="margin:10px 0 4px">
+              <span class="chip on" data-econ-chart="alice-bar" data-econ-town="All" onclick="econChip(this)">All</span>
+              <span class="chip" data-econ-chart="alice-bar" data-econ-town="Cornelius" onclick="econChip(this)">Cornelius</span>
+              <span class="chip" data-econ-chart="alice-bar" data-econ-town="Davidson" onclick="econChip(this)">Davidson</span>
+              <span class="chip" data-econ-chart="alice-bar" data-econ-town="Huntersville" onclick="econChip(this)">Huntersville</span>
+            </div>
+            <div id="alice-bar-chart" style="width:100%"></div>
+            <div class="callout warn" style="margin-top:16px"><div class="callout-t">The FPL was designed in the 1960s and does not account for the true cost of living in high-cost suburbs. ALICE households earn above poverty but still can't cover basics — making them invisible in traditional need measures.</div><div class="callout-s">Source: <span class="gloss-link" data-term="alice" role="button" tabindex="0" onclick="glossTerm('alice')">ALICE</span> Report · United Way</div></div>
+          </div>
+          <!-- County comparison: towns vs Mecklenburg -->
+          <div class="card viz-host" id="alice-county-host">
+            <div class="card-t">North Meck vs Mecklenburg County (latest year)</div>
+            <div class="card-s">Share below ALICE threshold · towns vs county benchmark</div>
+            <div id="alice-county-chart" style="width:100%"></div>
+            <div class="callout info" style="margin-top:16px"><div class="callout-t">Comparing North Meck towns to Mecklenburg County as a whole reveals whether suburban wealth conceals vulnerability relative to the broader county population.</div><div class="callout-s">Source: <span class="gloss-link" data-term="alice" role="button" tabindex="0" onclick="glossTerm('alice')">ALICE</span> Report · United Way</div></div>
+          </div>
+        </div>
+
+        <!-- Lollipop: combined % below ALICE threshold by town -->
+        <div class="card viz-host">
+          <div class="card-t">Combined share below ALICE threshold by town</div>
+          <div class="card-s">Poverty + ALICE households as % of all households · latest available year</div>
+          <div id="alice-trend-chart" style="width:100%"></div>
+          <div class="callout" style="margin-top:16px"><div class="callout-t">Nearly one in four households in each North Meck town earns above the federal poverty line but still cannot cover basic costs — making them financially invisible in most need measures. Multi-year trend data will be added when available.</div><div class="callout-s">Source: <span class="gloss-link" data-term="alice" role="button" tabindex="0" onclick="glossTerm('alice')">ALICE</span> Report · United Way</div></div>
+        </div>
+      </div>
+
+
+
+      <!-- Block 5: Infrastructure access gaps -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Who lacks access to cars, internet, and health insurance?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Select a metric below to see how it varies across towns over time. Renters are consistently more likely than owners to lack a vehicle — a significant barrier in a car-dependent suburb.</p>
+        <div class="card viz-host" id="infra-chart-host">
+          <div class="card-t">Access Gaps by Town (2018–2024)</div>
+          <div class="card-s">One metric at a time</div>
+          <div class="filterbar" style="margin-bottom:14px">
+            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Metric:</span>
+            <button class="chip on" data-infra-metric="renter_no_car">Renter no-car rate</button>
+            <button class="chip" data-infra-metric="owner_no_car">Owner no-car rate</button>
+            <button class="chip" data-infra-metric="no_internet">No internet</button>
+            <button class="chip" data-infra-metric="labor_uninsured">Workers uninsured</button>
+            <button class="chip" data-infra-metric="senior_uninsured">Seniors uninsured</button>
+          </div>
+          <div id="infra-chart" style="width:100%"></div>
+          <div class="callout"><div class="callout-t">Households without broadband face higher barriers to remote work, telehealth, and benefit enrollment. Renters — who are also more likely to lack a car — face a compounding access gap that standard poverty measures don't capture.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+        </div>
+      </div>
+
+
+      <!-- Block 6: Education attainment & economic mobility -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does educational attainment relate to poverty and employment across towns?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">High average attainment conceals real pockets of poverty and unemployment. Select a metric to see how each town compares.</p>
+        <div class="card viz-host" id="mobility-chart-host">
+          <div class="card-t">Education &amp; Economic Mobility by Town (2018–2024)</div>
+          <div class="card-s">One metric at a time</div>
+          <div class="filterbar" style="margin-bottom:14px">
+            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Metric:</span>
+            <button class="chip on" data-mob-metric="edu">Bachelor's+ rate</button>
+            <button class="chip" data-mob-metric="poverty">Poverty rate</button>
+            <button class="chip" data-mob-metric="unemployment">Unemployment rate</button>
+          </div>
+          <div id="mobility-chart" style="width:100%"></div>
+          <div class="callout"><div class="callout-t">High average education attainment across North Meck coexists with meaningful poverty and unemployment pockets — a reminder that townwide statistics can mask significant variation within each community.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+        </div>
+      </div>
+
+
+      <div class="dlstrip" style="margin-top:48px">
+        <div><div class="dlstrip-t">Take the data with you</div><div class="dlstrip-s">Every chart is available as CSV. Full methodology in the 2026 report.</div></div>
+        <div class="dl-btns"><button class="btn-ghost"><i class="ti ti-download"></i> Download CSV</button><button class="btn-ghost"><i class="ti ti-file-text"></i> Methodology PDF</button><button class="btn-ghost">2025 housing report <i class="ti ti-external-link"></i></button></div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<Fragment slot="page-scripts">
+  <script is:inline type="module" src={`${base}js/housing.js`}></script>
+</Fragment>
+</BaseLayout>
