@@ -1,0 +1,282 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<BaseLayout title="Neighborhood Data · North Meck Insights" includeMotherDuck={true}>
+
+<div class="page active" style="display:block">
+
+  <div class="wrap">
+    <div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><a onclick={`window.location='${base}neighborhoods.html'`}>United Neighborhoods</a><i class="ti ti-chevron-right"></i><span id="nbhd-data-crumb">Pottstown</span></div>
+    <div class="dash-hero" style="margin-bottom:36px">
+      <div>
+        <span class="eyebrow" style="font-size:15px">United Neighborhoods · Data Dashboard</span>
+        <h1 class="dash-h1" id="nbhd-data-title">Pottstown</h1>
+        <p class="lead dash-lead" style="margin-bottom:0" id="nbhd-data-subtitle">Block-group level data from the U.S. Census American Community Survey for the Pottstown area.</p>
+      </div>
+    </div>
+
+    <!-- Neighborhood selector -->
+    <div class="nbhd-selector" style="margin-bottom:24px">
+      <button class="nbhd-sel-btn active" data-nbhd="pottstown" onclick="setNbhdData(this)">Pottstown</button>
+      <button class="nbhd-sel-btn" data-nbhd="westdavidson" onclick="setNbhdData(this)">West Davidson</button>
+      <button class="nbhd-sel-btn" data-nbhd="smithville" onclick="setNbhdData(this)">Smithville</button>
+      <button class="nbhd-sel-btn" data-nbhd="huntingtongreen" onclick="setNbhdData(this)">Huntington Green</button>
+      <button class="nbhd-sel-btn no-data" data-nbhd="eastcatawba" onclick="setNbhdData(this)">East Catawba</button>
+    </div>
+
+    <!-- Block-group disclaimer -->
+    <div class="nbhd-disclaimer">
+      <i class="ti ti-info-circle"></i>
+      <div id="nbhd-disclaimer-text"><strong>Data note:</strong> Neighborhood boundaries don't align perfectly with U.S. Census geography. The data shown here is from the <strong>ACS block group</strong> that best approximates each neighborhood — the smallest geographic unit the Census publishes. This means the numbers may include some residents just outside the neighborhood boundary. All data comes from the American Community Survey 5-year estimates.</div>
+    </div>
+
+    <!-- Sub-topic tabs -->
+    <div class="tabs" id="nbhd-data-tabs">
+      <span class="tab active" data-tab="nd-demographics" onclick="setTab(this)">Demographics</span>
+      <span class="tab" data-tab="nd-economic" onclick="setTab(this)">Economic Profile</span>
+      <span class="tab" data-tab="nd-housing" onclick="setTab(this)">Housing</span>
+      <span class="tab" data-tab="nd-education" onclick="setTab(this)">Education</span>
+      <span class="tab" data-tab="nd-transportation" onclick="setTab(this)">Transportation</span>
+      <span class="tab" data-tab="nd-childcare" onclick="setTab(this)">Childcare</span>
+    </div>
+  </div>
+
+  <!-- ── EAST CATAWBA: no data ── -->
+  <div id="nbhd-panel-eastcatawba" class="nbhd-panel">
+    <div class="wrap">
+      <div class="nbhd-no-data" style="margin-top:48px">
+        <i class="ti ti-database-off"></i>
+        <div class="nbhd-no-data-h">Data not yet available for East Catawba</div>
+        <p class="nbhd-no-data-p">East Catawba is the fifth United Neighborhood. We are still collecting and verifying block-group data for this area. Check back as the research progresses, or explore the neighborhood's history in the <a onclick={`window.location='${base}neighborhoods.html#nbhd-eastcatawba'`} style="color:var(--accent);cursor:pointer">neighborhood overview</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DATA PANELS (shared for all 4 data neighborhoods) ── -->
+  <div id="nbhd-panel-data" class="nbhd-panel active">
+
+    <!-- TAB: Demographics -->
+    <div class="tabpane active" data-pane="nd-demographics">
+      <div class="wrap">
+        <div class="nbhd-sub-section" style="margin-top:40px">
+          <div class="nbhd-sub-h">Population &amp; Race</div>
+          <p class="nbhd-sub-lead">Total population and racial/ethnic composition of the block group approximating this neighborhood, from ACS 5-year estimates.</p>
+          <div class="g2">
+            <div class="card viz-host" id="pott-pop-host">
+              <div class="card-t">Total Population (2020–2024)</div>
+              <div class="card-s">Summed across both block groups that approximate Pottstown</div>
+              <div id="pott-pop-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+            </div>
+            <div class="card viz-host" id="pott-race-host">
+              <div class="card-t">Racial &amp; Ethnic Composition (2024)</div>
+              <div class="card-s">Share of population by race/ethnicity, most recent year</div>
+              <div id="pott-race-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="nbhd-sub-section">
+          <div class="nbhd-sub-h">Ethnicity</div>
+          <p class="nbhd-sub-lead">Hispanic or Latino share of total population, 2020–2024, summed across both block groups.</p>
+          <div class="g2">
+            <div class="card viz-host" id="pott-hl-host">
+              <div class="card-t">Hispanic or Latino Population Rate</div>
+              <div class="card-s">% of residents identifying as Hispanic or Latino</div>
+              <div id="pott-hl-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Foreign-Born Population Rate</div>
+              <div class="card-s">% of residents born outside the United States</div>
+              <div class="nbhd-no-data" style="padding:40px 24px">
+                <i class="ti ti-database-off"></i>
+                <div class="nbhd-no-data-h" style="font-size:15px">Data not yet available</div>
+                <p class="nbhd-no-data-p">Foreign-born population data for Pottstown's block groups was not included in this ACS release.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- TAB: Economic Profile -->
+    <div class="tabpane" data-pane="nd-economic">
+      <div class="wrap">
+        <div class="nbhd-sub-section" style="margin-top:40px">
+          <div class="nbhd-sub-h">Income</div>
+          <p class="nbhd-sub-lead">Household income distribution and median household income for residents in this block group.</p>
+          <div class="g2">
+            <div class="card viz-host">
+              <div class="card-t">Household Income Distribution</div>
+              <div class="card-s">Share of households in each income bracket</div>
+              <div class="ph" style="height:240px"><i class="ti ti-chart-bar"></i><span>Income distribution chart · coming soon</span></div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Median Household Income (2018–2024)</div>
+              <div class="card-s">Inflation-adjusted to 2024 dollars</div>
+              <div class="ph" style="height:240px"><i class="ti ti-chart-line"></i><span>Median income trend · coming soon</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="nbhd-sub-section">
+          <div class="nbhd-sub-h">Poverty &amp; Inequality</div>
+          <p class="nbhd-sub-lead">Poverty rate and income inequality (Gini index) for the block group.</p>
+          <div class="g2">
+            <div class="card viz-host">
+              <div class="card-t">Poverty Rate (2018–2024)</div>
+              <div class="card-s">% of residents below the federal poverty line</div>
+              <div class="ph" style="height:200px"><i class="ti ti-chart-line"></i><span>Poverty rate trend · coming soon</span></div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Income Inequality (Gini Index)</div>
+              <div class="card-s">0 = perfect equality, 1 = maximum inequality</div>
+              <div class="ph" style="height:200px"><i class="ti ti-chart-line"></i><span>Gini index trend · coming soon</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Housing -->
+    <div class="tabpane" data-pane="nd-housing">
+      <div class="wrap">
+        <div class="nbhd-sub-section" style="margin-top:40px">
+          <div class="nbhd-sub-h">Tenure &amp; Home Values</div>
+          <p class="nbhd-sub-lead">Who owns versus rents in this neighborhood, and how home values and rents compare.</p>
+          <div class="g2">
+            <div class="card viz-host">
+              <div class="card-t">Owner vs. Renter Occupied</div>
+              <div class="card-s">Share of occupied housing units by tenure</div>
+              <div class="ph" style="height:220px"><i class="ti ti-chart-donut"></i><span>Tenure chart · coming soon</span></div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Median Gross Rent &amp; Home Value</div>
+              <div class="card-s">Most recent ACS estimate</div>
+              <div class="ph" style="height:220px"><i class="ti ti-chart-bar"></i><span>Rent &amp; home value chart · coming soon</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="nbhd-sub-section">
+          <div class="nbhd-sub-h">Cost Burden</div>
+          <p class="nbhd-sub-lead">Share of renter households spending 30%+ of income on rent — the standard definition of cost-burdened.</p>
+          <div class="card viz-host">
+            <div class="card-t">Housing Cost Burden Rate</div>
+            <div class="card-s">% of renter households paying ≥30% of income on rent (2018–2024)</div>
+            <div class="ph" style="height:220px"><i class="ti ti-chart-line"></i><span>Cost burden trend · coming soon</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Education -->
+    <div class="tabpane" data-pane="nd-education">
+      <div class="wrap">
+        <div class="nbhd-sub-section" style="margin-top:40px">
+          <div class="nbhd-sub-h">Educational Attainment</div>
+          <p class="nbhd-sub-lead">Highest level of education completed by residents 25 and older in this block group.</p>
+          <div class="g2">
+            <div class="card viz-host">
+              <div class="card-t">Attainment by Level</div>
+              <div class="card-s">Share of adults 25+ by education level (most recent year)</div>
+              <div class="ph" style="height:240px"><i class="ti ti-chart-bar"></i><span>Attainment chart · coming soon</span></div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Bachelor's Degree or Higher Rate</div>
+              <div class="card-s">% of adults 25+ with a bachelor's degree or above (2018–2024)</div>
+              <div class="ph" style="height:240px"><i class="ti ti-chart-line"></i><span>Bachelor's rate trend · coming soon</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="nbhd-sub-section">
+          <div class="nbhd-sub-h">School Enrollment</div>
+          <p class="nbhd-sub-lead">Number of children enrolled in K–12 in this block group.</p>
+          <div class="card viz-host">
+            <div class="card-t">K–12 Enrollment</div>
+            <div class="card-s">Number of residents 3+ enrolled in kindergarten through grade 12</div>
+            <div class="ph" style="height:200px"><i class="ti ti-chart-bar"></i><span>K–12 enrollment chart · coming soon</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Transportation -->
+    <div class="tabpane" data-pane="nd-transportation">
+      <div class="wrap">
+        <div class="nbhd-sub-section" style="margin-top:40px">
+          <div class="nbhd-sub-h">Commute Mode</div>
+          <p class="nbhd-sub-lead">How residents get to work — driving alone, transit, walking, cycling, or working from home.</p>
+          <div class="g2">
+            <div class="card viz-host">
+              <div class="card-t">Commute Mode Share</div>
+              <div class="card-s">% of workers by primary mode of transportation</div>
+              <div class="ph" style="height:240px"><i class="ti ti-chart-donut"></i><span>Commute mode chart · coming soon</span></div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Average Commute Time</div>
+              <div class="card-s">Average one-way commute in minutes (2018–2024)</div>
+              <div class="ph" style="height:240px"><i class="ti ti-chart-line"></i><span>Commute time trend · coming soon</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="nbhd-sub-section">
+          <div class="nbhd-sub-h">Vehicle Access</div>
+          <p class="nbhd-sub-lead">Households with no vehicle available — a key indicator of transportation hardship in a car-dependent region.</p>
+          <div class="card viz-host">
+            <div class="card-t">Zero-Vehicle Households</div>
+            <div class="card-s">Number of households with no car, truck, or van</div>
+            <div class="ph" style="height:200px"><i class="ti ti-chart-bar"></i><span>Zero-vehicle households chart · coming soon</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Childcare -->
+    <div class="tabpane" data-pane="nd-childcare">
+      <div class="wrap">
+        <div class="nbhd-sub-section" style="margin-top:40px">
+          <div class="nbhd-sub-h">Childcare Need</div>
+          <p class="nbhd-sub-lead">Estimated share of young children whose parents are in the labor force — a proxy for households that likely need childcare.</p>
+          <div class="g2">
+            <div class="card viz-host">
+              <div class="card-t">Under-6 Children Likely Needing Childcare</div>
+              <div class="card-s">Children under 6 where all available parents work (% of under-6 children)</div>
+              <div class="ph" style="height:240px"><i class="ti ti-chart-bar"></i><span>Under-6 childcare need · coming soon</span></div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Ages 6–17 Likely Needing After-School Care</div>
+              <div class="card-s">Children 6–17 where all available parents work (% of 6–17 children)</div>
+              <div class="ph" style="height:240px"><i class="ti ti-chart-bar"></i><span>After-school care need · coming soon</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="nbhd-sub-section">
+          <div class="nbhd-sub-h">Grandparent Caregivers</div>
+          <p class="nbhd-sub-lead">Households where a grandparent is the primary caregiver for grandchildren under 18.</p>
+          <div class="card viz-host">
+            <div class="card-t">Grandparent Caregiver Households</div>
+            <div class="card-s">Number of grandparent-headed households responsible for grandchildren</div>
+            <div class="ph" style="height:200px"><i class="ti ti-chart-bar"></i><span>Grandparent caregiver chart · coming soon</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /nbhd-panel-data -->
+
+</div>
+
+<Fragment slot="page-scripts">
+  <script is:inline type="module" src={`${base}js/neighborhoods.js`}></script>
+  <script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    var params = new URLSearchParams(window.location.search);
+    var nbhd = params.get('nbhd');
+    if (nbhd && window.setNbhdDataByKey) {
+      window.setNbhdDataByKey(nbhd);
+    } else if (window.setNbhdDataByKey) {
+      window.setNbhdDataByKey('pottstown');
+    }
+  });
+  </script>
+</Fragment>
+</BaseLayout>
