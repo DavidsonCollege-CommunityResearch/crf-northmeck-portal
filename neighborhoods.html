@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>North Meck Insights</title>
+<title>Neighborhoods · North Meck Insights</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -108,168 +108,177 @@
 </nav>
 <div class="page active" style="display:block">
 
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-text">
-        <span class="eyebrow hero-eyebrow" style="margin-bottom:6px;line-height:0;font-size:0"></span>
-        <h1 class="hero-h1" style="font-family:Times;font-size:56px;color:rgb(0,0,0)"><span data-es="Entendiendo el norte de Mecklenburg,">Understanding North Mecklenburg,</span> <span style="color:var(--accent)" data-es="un vecino a la vez.">one neighbor at a time.</span></h1>
-        <p class="hero-sub" data-es="Datos públicos y claros sobre vivienda, educación y salud en el norte de Mecklenburg, investigados por estudiantes de Davidson College y creados para quienes viven aquí.">Clear, public data on housing, education, and healthcare in North Mecklenburg, researched by Davidson College students and built for the people who live here.</p>
-        <div class="hero-btns">
-          <button class="btn btn-p" onclick="window.location='data.html'"><i class="ti ti-chart-histogram"></i> <span data-es="Explora los datos">Explore the data</span></button>
-          <button class="btn btn-o" onclick="openMap()"><i class="ti ti-map-2"></i> <span data-es="Explora el mapa">Explore the map</span></button>
-        </div>
-      </div>
-      <div class="hero-media">
-        <img class="hero-media-single" src="images/hero.jpg" alt="Neighbors walking together in a North Meck park" style="width:100%;height:100%;object-fit:cover;border-radius:var(--rl)">
-      </div>
+  <div class="wrap"><div class="crumb"><a onclick="window.location='index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Focused Neighborhoods</span></div></div>
+  <section class="section"><div class="wrap">
+    <div class="sec-head" style="max-width:720px">
+      <span class="eyebrow" style="font-size:15px">Focused Neighborhoods</span>
+      <h2 class="sec-h" style="font-size:32px">The neighborhoods that built North Meck</h2>
+      <p class="lead">Davidson, Cornelius, and Huntersville each hold neighborhoods with deep roots, several founded by Black families in the generations after Emancipation. Their histories are rich, and at risk of being lost. This is where we gather their stories, the data, and the record, so that North Meck remembers and its residents stay informed.</p>
     </div>
-  </section>
-
-  <!-- DATA SPOTLIGHT -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head spot-head">
-        <div class="spot-eyebrow-row">
-          <span class="eyebrow" style="font-size:15px" data-es="Dato destacado">Data Spotlight</span>
-        </div>
-        <h2 class="sec-h spot-h" id="spotH" style="font-size:32px">The housing squeeze, in four numbers</h2>
-        <button class="spot-topic" id="spotTopic" type="button" data-topic="housing" title="Open the Housing dashboard" onclick="window.location.href=(this.dataset.topic||'housing')+'.html'"><i class="ti ti-building-community" id="spotTopicIcon"></i><span id="spotTopicName" style="font-size:14px">Housing</span><i class="ti ti-arrow-narrow-right spot-topic-go"></i></button>
-        <p class="lead spot-lead" id="spotLead">A quick read on affordability in North Meck. The fuller picture lives in the topic dashboards.</p>
+    <div class="scaffold-note"><i class="ti ti-pencil"></i><div><strong>Scaffold.</strong> The copy, figures, and reports below are placeholders for the team to replace with verified history and data. Italicised grey text and dashes mark what still needs filling in.</div></div>
+    <div class="ph" style="width:100%;height:300px;border-radius:var(--rl);border:1px solid var(--line);margin-top:26px"><i class="ti ti-photo"></i><span>A street, church, or landmark from one of the focused neighborhoods</span></div>
+    <div style="margin-top:44px">
+      <span class="eyebrow" style="display:block;font-size:15px">Where they are</span>
+      <h3 class="sec-h" style="font-size:24px;margin-top:10px">Five neighborhoods, three towns</h3>
+      <div class="loc">
+        <div class="loc-town"><div class="loc-town-h"><i class="ti ti-map-pin"></i> Davidson</div><div class="loc-town-sub">Northern Mecklenburg</div><div class="loc-pills"><span class="loc-pill" onclick="scrollToNbhd('nbhd-westdavidson')">West Davidson</span></div></div>
+        <div class="loc-town"><div class="loc-town-h"><i class="ti ti-map-pin"></i> Cornelius</div><div class="loc-town-sub">Northern Mecklenburg</div><div class="loc-pills"><span class="loc-pill" onclick="scrollToNbhd('nbhd-smithville')">Smithville</span><span class="loc-pill" onclick="scrollToNbhd('nbhd-eastcatawba')">East Catawba</span></div></div>
+        <div class="loc-town"><div class="loc-town-h"><i class="ti ti-map-pin"></i> Huntersville</div><div class="loc-town-sub">Northern Mecklenburg</div><div class="loc-pills"><span class="loc-pill" onclick="scrollToNbhd('nbhd-pottstown')">Pottstown</span><span class="loc-pill" onclick="scrollToNbhd('nbhd-huntingtongreen')">Huntington Green</span></div></div>
       </div>
-      <div class="spot-carousel">
-        <button class="spot-arrow spot-prev" id="spotPrev" aria-label="Previous topic" onclick="spotStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow spot-next" id="spotNext" aria-label="Next topic" onclick="spotStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="spot-track" id="spotTrack">
-          <div class="spot-slide" data-topic="housing">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">52%</div><div class="stat-l">rent rise in Huntersville, 2018–2024 ($1,196 → $1,820/mo)</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</span></div>
-              <div class="stat"><div class="stat-n warn">20+ yrs</div><div class="stat-l">of gross income to buy the median home, for a $20k–$35k household</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n"><span class="cur">$</span>693k</div><div class="stat-l">median home in Davidson, 4× the U.S. national median</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">~10 yrs</div><div class="stat-l">to save a 20% down payment at a 10% annual savings rate</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+      <p class="meta" style="margin-top:12px;font-size:13px;color:var(--ink-3)">Pottstown, West Davidson, and Smithville are historic communities founded in the generations after Emancipation; Huntington Green is a modern subdivision shown for contrast.</p>
+    </div>
+    <div class="nbhd-list">
+
+      <!-- POTTSTOWN -->
+      <div class="nbhd" id="nbhd-pottstown">
+        <div class="nbhd-top"><span class="nbhd-name">Pottstown</span><span class="nbhd-town-badge">HUNTERSVILLE</span></div>
+        <div class="nbhd-kicker">Huntersville's oldest Black community · established 1909</div>
+        <div class="nbhd-grid2">
+          <div class="nbhd-prose">
+            <p>Pottstown is the oldest African American community in Huntersville, established in 1909 by formerly enslaved people and free Black families in the decades after the Civil War. It is named for Ortho Potts, a farmer and sought-after brick mason who settled here from the Asheville area; the families who followed built their own homes, churches, and schools on land they owned themselves.</p>
+            <p>At its heart stands the Torrence-Lytle School, opened in 1937 and, until it closed in 1966, the only high school for Black children in northern Mecklenburg County. Much of Pottstown's land is still held by descendants of those original families. As Huntersville's growth closes in, residents have organized through the Pottstown Heritage Group and the Huntersville Community Development Association to resist displacement; in 2022 they persuaded Mecklenburg County to buy the bordering 30-acre Valea Village tract for parkland, and a Pottstown Preservation Plan went before the town in 2025.</p>
+            <p class="meta">Demographics: a small, close-knit historically African American neighborhood of roughly 150 homes, many owned by the descendants of the formerly enslaved families who founded it. Four historic Black churches anchor its streets.</p>
+            <div class="reports"><div class="reports-h">Articles &amp; reports</div>
+              <div class="report-item" onclick="window.open('https://www.pridemagazineonline.com/keeping-history-alive-in-pottstown-a-huntersville-treasure/','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Keeping History Alive in Pottstown: a Huntersville Treasure</div><div class="report-m"><span class="report-kind">Article</span> Pride Magazine · 2024</div></div></div>
+              <div class="report-item" onclick="window.open('https://www.wcnc.com/article/news/local/pottstown-preservation-huntersville-nc-10-9-2025/275-37a7e517-043e-4cc3-b681-a05e57b2b662','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Pottstown residents fight to save historic Black neighborhood</div><div class="report-m"><span class="report-kind">Report</span> WCNC Charlotte · 2025</div></div></div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="housing" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
-          <div class="spot-slide" data-topic="education">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">63%</div><div class="stat-l" data-es="de los alumnos de 3.º grado leen al nivel de su grado">of 3rd graders reading at grade level</div><span class="stat-src">NC DPI, 2024</span></div>
-              <div class="stat"><div class="stat-n">19:1</div><div class="stat-l" data-es="proporción de alumnos por maestro en escuelas públicas">student-to-teacher ratio in public schools</div><span class="stat-src">NC DPI, 2024</span></div>
-              <div class="stat"><div class="stat-n"><span class="cur">$</span>14,320</div><div class="stat-l" data-es="gasto por alumno, por debajo del promedio estatal">per-pupil spending, below the state average</div><span class="stat-src">NCES, 2024</span></div>
-              <div class="stat"><div class="stat-n warn" data-es="1 de 4">1 in 4</div><div class="stat-l" data-es="estudiantes de secundaria con ausentismo crónico en 2024">high schoolers chronically absent in 2024</div><span class="stat-src" data-es="CMS AF2024">CMS FY24</span></div>
+          <div>
+            <div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+            <div class="nstats">
+              <div class="nstat"><div class="nstat-n">1909</div><div class="nstat-l">Established by formerly enslaved &amp; free Black families</div></div>
+              <div class="nstat"><div class="nstat-n">~150</div><div class="nstat-l">Homes in the historic community</div></div>
+              <div class="nstat"><div class="nstat-n">$1.72M</div><div class="nstat-l">County purchase of the 30-acre Valea Village tract, 2022</div></div>
+              <div class="nstat"><div class="nstat-n">1937</div><div class="nstat-l">Torrence-Lytle School built; closed 1966</div></div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="education" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
-          </div>
-          <div class="spot-slide" data-topic="healthcare">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">5%</div><div class="stat-l">of residents uninsured in Cornelius &amp; Huntersville — thousands without a safety net</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n warn">26–34</div><div class="stat-l">age group with the highest uninsured rate — off parental plans, often no employer coverage</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">3×</div><div class="stat-l">more likely to be uninsured if your household earns under k vs. over k</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">93%</div><div class="stat-l">of employed residents have coverage — vs. under 70% for unemployed residents</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+            <div class="minichart"><div class="minichart-h">Huntersville population, 1990–2020</div>
+              <div class="bars"><div class="bar" style="height:6%"><span class="bv">3.0k</span></div><div class="bar" style="height:41%"><span class="bv">25k</span></div><div class="bar" style="height:76%"><span class="bv">47k</span></div><div class="bar bar-now" style="height:100%"><span class="bv">61k</span></div></div>
+              <div class="bars-x"><span>1990</span><span>2000</span><span>2010</span><span>2020</span></div>
+              <div class="minichart-cap">The town around Pottstown grew roughly 20× in 30 years. Source: U.S. Census.</div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="healthcare" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
-          </div>
-        </div>
-        <div class="spot-dots" id="spotDots"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TOPICS -->
-  <section class="section alt">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="Temas">Topics</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="¿Qué define la vida diaria aquí?">What shapes daily life here?</h2>
-        <p class="lead" data-es="Cada tema tiene su propio panel. La asequibilidad es el hilo que recorre todos ellos.">Each topic gets its own dashboard. Affordability is the thread that runs through all of them.</p>
-      </div>
-      <div class="topics-carousel">
-        <div class="topics" id="topicsTrack">
-          <div class="tcard is-active" onclick="window.location='housing.html'">
-            <div class="tc-icon"><i class="ti ti-building-community"></i></div>
-            <div class="tc-t" data-es="Vivienda">Housing</div>
-            <div class="tc-b" data-es="Rentas, carga de costo, desalojos y la brecha de asequibilidad en North Meck.">Rents, cost burden, evictions, and the affordability gap across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jun 2026">Last Updated: Jun 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
-          </div>
-          <div class="tcard" onclick="window.location='education.html'">
-            <div class="tc-icon"><i class="ti ti-school"></i></div>
-            <div class="tc-t" data-es="Educación">Education</div>
-            <div class="tc-b" data-es="Matrícula K–12, composición escolar y acceso por vecindario.">K–12 enrollment, school composition, and access by neighborhood.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="En desarrollo · 2026">In development · 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
-          </div>
-          <div class="tcard" onclick="window.location='healthcare.html'">
-            <div class="tc-icon"><i class="ti ti-heartbeat"></i></div>
-            <div class="tc-t" data-es="Salud">Healthcare</div>
-            <div class="tc-b" data-es="Acceso a la atención, cobertura de seguro y resultados de salud en North Meck.">Access to care, insurance coverage, and health outcomes across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot">In development · 2026</span><span class="tc-go">Open →</span></div>
           </div>
         </div>
       </div>
-      <p class="topics-note"><i class="ti ti-seeding"></i> <span data-es="La seguridad alimentaria y otros temas son agregados por cada nueva generación de Fellows cada verano.">New topics are added by each incoming cohort of CRF Fellows.</span></p>
-    </div>
-  </section>
 
-  <!-- UNITED NEIGHBORHOODS TEASER -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="VECINDARIOS UNIDOS">UNITED NEIGHBORHOODS</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Los lugares con historias que contar">The places with stories to tell</h2>
-        <p class="lead" data-es="Dentro de Davidson, Cornelius y Huntersville hay cinco vecindarios que cargan generaciones de historia.">Within Davidson, Cornelius, and Huntersville are five neighborhoods carrying generations of history. Explore who they are and why they matter.</p>
-      </div>
-      <div class="nbhd-carousel">
-        <button class="spot-arrow nbhd-prev" id="nbhdPrev" aria-label="Previous neighborhoods" onclick="nbhdStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow nbhd-next" id="nbhdNext" aria-label="More neighborhoods" onclick="nbhdStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="nbhd-grid" id="nbhdTrack">
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-pottstown'"><span class="town">HUNTERSVILLE</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Pottstown</span><span class="ds" data-es="Un vecindario históricamente afroamericano con raíces profundas en Huntersville.">A historically African American neighborhood with deep roots in Huntersville.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-westdavidson'"><span class="town">Davidson</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>West Davidson</span><span class="ds" data-es="Una comunidad arraigada en el lado oeste del pueblo, con su propia historia.">A long-standing community on the west side of town, with its own history.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-smithville'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Smithville</span><span class="ds" data-es="Una de las comunidades afroamericanas más antiguas de Cornelius, enfrentando cambios.">One of Cornelius's oldest African American communities, facing change.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-huntingtongreen'"><span class="town">Huntersville</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Huntington Green</span><span class="ds" data-es="Un vecindario en Huntersville con una historia que vale la pena contar.">A neighborhood in Huntersville with a story worth telling.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-eastcatawba'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>East Catawba</span><span class="ds" data-es="El quinto vecindario unido; su historia y datos aún se están recopilando.">The fifth united neighborhood. Its history and data are still being gathered.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
+      <!-- WEST DAVIDSON -->
+      <div class="nbhd" id="nbhd-westdavidson">
+        <div class="nbhd-top"><span class="nbhd-name">West Davidson</span><span class="nbhd-town-badge"><i class="ti ti-map-pin"></i> Davidson</span></div>
+        <div class="nbhd-kicker">Davidson's historically Black enclave · west of the railroad</div>
+        <div class="nbhd-grid2">
+          <div class="nbhd-prose">
+            <p>West Davidson is the town's historically African American neighborhood, which took shape in the early twentieth century on a small area west of the railroad, near the cotton mills, lumberyard, and the other industries where many residents worked. By the mid-1920s its streets were lined with one-story frame bungalows and shotgun houses, a Black Baptist church, and a community meeting hall.</p>
+            <p>Its anchor is the old Davidson Colored School, built in 1937 to serve as both classroom and gathering place for the community, today restored as the Ada Jenkins Center, a nonprofit serving families across North Meck. The neighborhood lies within the Davidson Historic District, listed on the National Register in 2009, even as new commercial construction along Griffith Street presses against its edges.</p>
+            <p class="meta">Demographics: a long-standing African American community woven into Davidson's mill-town past, its modest cottages and churches still intact within the town's protected historic core.</p>
+            <div class="reports"><div class="reports-h">Articles &amp; reports</div>
+              <div class="report-item" onclick="window.open('https://files.nc.gov/ncdcr/nr/MK2442.pdf','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Davidson Historic District: National Register Nomination</div><div class="report-m"><span class="report-kind">Report</span> NC Historic Preservation Office</div></div></div>
+              <div class="report-item" onclick="window.open('http://www.ci.davidson.nc.us/129/Town-History-Timeline','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Town History Timeline</div><div class="report-m"><span class="report-kind">Resource</span> Town of Davidson</div></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+            <div class="nstats">
+              <div class="nstat"><div class="nstat-n">1920s</div><div class="nstat-l">Neighborhood established west of the railroad</div></div>
+              <div class="nstat"><div class="nstat-n">1937</div><div class="nstat-l">Davidson Colored School built, now the Ada Jenkins Center</div></div>
+              <div class="nstat"><div class="nstat-n">2009</div><div class="nstat-l">Listed within the Davidson Historic District</div></div>
+              <div class="nstat"><div class="nstat-n">398</div><div class="nstat-l">Contributing historic resources in the district</div></div>
+            </div>
+            <div class="minichart"><div class="minichart-h">Davidson population, 1990–2020</div>
+              <div class="bars"><div class="bar" style="height:27%"><span class="bv">4.0k</span></div><div class="bar" style="height:47%"><span class="bv">7.1k</span></div><div class="bar" style="height:72%"><span class="bv">11k</span></div><div class="bar bar-now" style="height:100%"><span class="bv">15k</span></div></div>
+              <div class="bars-x"><span>1990</span><span>2000</span><span>2010</span><span>2020</span></div>
+              <div class="minichart-cap">Davidson nearly quadrupled since 1990. Source: U.S. Census.</div>
+            </div>
+          </div>
         </div>
       </div>
-      <button class="btn btn-o" style="margin-top:26px" onclick="window.location='neighborhoods.html'"><i class="ti ti-map-2"></i> <span data-es="Explora los vecindarios">Explore the neighborhoods</span></button>
-    </div>
-  </section>
 
-  <!-- STORIES PREVIEW -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="HISTORIAS">STORIES</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Lo que encontramos y por qué importa">What we found, and why it matters</h2>
-        <p class="lead" data-es="Lecturas breves para quienes viven aquí: claras, cortas y sin tecnicismos.">Short reads for the people who live here that are clear, brief, and jargon-free.</p>
-      </div>
-      <div class="blog-carousel">
-        <button class="spot-arrow blog-prev" id="blogPrev" aria-label="Previous posts" onclick="blogStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow blog-next" id="blogNext" aria-label="More posts" onclick="blogStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="blog-track" id="blogTrack">
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-cash"></i><span>Housing post thumbnail</span></div><span class="bcard-tag" data-es="Vivienda">Housing</span><h3 class="bcard-t" data-es="Por qué ahora se necesitan $31 por hora para pagar un apartamento de una habitación">Why it now takes $31 an hour to afford a one-bedroom</h3><div class="bcard-meta" data-es="Junio 2026 · 3 min de lectura">June 2026 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-scale"></i><span>Equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad">Equity</span><h3 class="bcard-t" data-es="Los inquilinos negros tienen el doble de probabilidad de estar sobrecargados por el costo">Black renters are twice as likely to be cost-burdened</h3><div class="bcard-meta" data-es="Julio 2026 · 4 min de lectura">July 2026 · 4 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-trending-up"></i><span>Evictions post thumbnail</span></div><span class="bcard-tag" data-es="Desalojos">Evictions</span><h3 class="bcard-t" data-es="52,000 demandas: lo que los datos de desalojo realmente nos dicen">52,000 filings: what the eviction data really tells us</h3><div class="bcard-meta" data-es="Agosto 2026 · 5 min de lectura">August 2026 · 5 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-school"></i><span>Education post thumbnail</span></div><span class="bcard-tag" data-es="Educación">Education</span><h3 class="bcard-t" data-es="La composición racial de las escuelas de North Meck, explicada">The racial makeup of North Meck schools, explained</h3><div class="bcard-meta" data-es="Mayo 2025 · 3 min de lectura">May 2025 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-chart-bar"></i><span>Data equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad de datos">Data equity</span><h3 class="bcard-t" data-es="Por qué algunos vecindarios quedan fuera de los datos">Why some neighborhoods get left out of the data</h3><div class="bcard-meta" data-es="Marzo 2025 · 3 min de lectura">March 2025 · 3 min read</div></article>
+      <!-- SMITHVILLE -->
+      <div class="nbhd" id="nbhd-smithville">
+        <div class="nbhd-top"><span class="nbhd-name">Smithville</span><span class="nbhd-town-badge"><i class="ti ti-map-pin"></i> Cornelius</span></div>
+        <div class="nbhd-kicker">The largest intact Black community in Mecklenburg County</div>
+        <div class="nbhd-grid2">
+          <div class="nbhd-prose">
+            <p>Smithville is the freedmen's community of Cornelius and the largest intact historically African American community in Mecklenburg County. Its roots reach to the 1860s, but it took its name and shape in 1908, when landowner Jacob L. Smith began parceling out his land to Black families, selling to those who could pay and giving it freely to those who could not, so families of formerly enslaved sharecroppers could own homes and stay together.</p>
+            <p>For generations Smithville sustained itself through its churches, its Rosenwald school, and tight-knit civic life; resident Nannie Potts went on to become Cornelius's first Black and first female mayor. Denied town services for decades, Smithville was finally annexed by Cornelius in the 1970s. Today, hemmed in by lakefront wealth, the Smithville Community Coalition is leading a resident-authored revitalization plan to add affordable housing without displacing anyone.</p>
+            <p class="meta">Demographics: a predominantly Black neighborhood east of I-77, long redlined and underserved, with many aging residents who are direct descendants of the families Jacob Smith first sold land to in 1908.</p>
+            <div class="reports"><div class="reports-h">Articles &amp; reports</div>
+              <div class="report-item" onclick="window.open('https://www.wfae.org/local-news/2019-02-24/finding-home-the-fight-to-save-smithville','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Finding Home: The Fight to Save Smithville</div><div class="report-m"><span class="report-kind">Report</span> WFAE 90.7 · 2019</div></div></div>
+              <div class="report-item" onclick="window.open('https://smithvillecommunitycoalition.org/history-smithville','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Smithville History &amp; Revitalization Plan</div><div class="report-m"><span class="report-kind">Resource</span> Smithville Community Coalition</div></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+            <div class="nstats">
+              <div class="nstat"><div class="nstat-n">1908</div><div class="nstat-l">Jacob L. Smith parcels land to Black families</div></div>
+              <div class="nstat"><div class="nstat-n">#1</div><div class="nstat-l">Largest intact Black community in Mecklenburg County</div></div>
+              <div class="nstat"><div class="nstat-n">155</div><div class="nstat-l">New homes &amp; apartments in the revitalization plan</div></div>
+              <div class="nstat"><div class="nstat-n">$500K</div><div class="nstat-l">State preservation funding secured, 2022</div></div>
+            </div>
+            <div class="minichart"><div class="minichart-h">Cornelius population, 1990–2020</div>
+              <div class="bars"><div class="bar" style="height:8%"><span class="bv">2.6k</span></div><div class="bar" style="height:38%"><span class="bv">12k</span></div><div class="bar" style="height:79%"><span class="bv">25k</span></div><div class="bar bar-now" style="height:100%"><span class="bv">31k</span></div></div>
+              <div class="bars-x"><span>1990</span><span>2000</span><span>2010</span><span>2020</span></div>
+              <div class="minichart-cap">Cornelius grew 12× as Smithville held its ground. Source: U.S. Census.</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- CBR / ABOUT -->
-  <section class="section alt">
-    <div class="wrap split" style="align-items:stretch">
-      <div>
-        <div class="sec-head" style="margin-bottom:18px">
-          <span class="eyebrow" style="font-size:15px" data-es="Nuestro enfoque">Our approach</span>
-          <h2 class="sec-h" style="margin-bottom:9px;font-size:32px" data-es="¿Qué es la investigación basada en la comunidad?">What is community-based research?</h2>
-          <p class="lead" data-es="Investigación que parte de las necesidades de la propia comunidad, no desde afuera hacia adentro.">Research that begins with the needs of the community itself and not from the outside in.</p>
+      <!-- HUNTINGTON GREEN -->
+      <div class="nbhd" id="nbhd-huntingtongreen">
+        <div class="nbhd-top"><span class="nbhd-name">Huntington Green</span><span class="nbhd-town-badge"><i class="ti ti-map-pin"></i> Huntersville</span></div>
+        <div class="nbhd-kicker">A modern residential neighborhood in Huntersville</div>
+        <div class="nbhd-grid2">
+          <div class="nbhd-prose">
+            <p>Huntington Green is a residential subdivision in Huntersville, set between Old Huntersville and Cedarfield. Unlike Pottstown, Smithville, and West Davidson, whose roots run back to the generations just after Emancipation, Huntington Green is a product of the modern suburban growth that has reshaped northern Mecklenburg since the 1990s, when Lake Norman and Interstate 77 turned former farmland into family neighborhoods.</p>
+            <p>Today it's a small, walkable community of well-kept homes organized around a neighborhood pool and playground, the kind of place residents describe as quiet, friendly, and close to schools and shopping. Its story is less about preservation than about the rapid new development that the area's historic neighborhoods are now working to hold at bay.</p>
+            <p class="meta">Demographics: a compact, family-oriented subdivision of a few hundred residents; one of the many master-planned neighborhoods built during Huntersville's post-1990 boom.</p>
+            <div class="reports"><div class="reports-h">Articles &amp; reports</div>
+              <div class="report-item" onclick="window.open('https://lkn-law.com/2025/09/23/the-history-of-huntersville-north-carolina/','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Huntersville, NC: A Journey Through Time and Growth</div><div class="report-m"><span class="report-kind">Article</span> LKN Law · 2025</div></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+            <div class="nstats">
+              <div class="nstat"><div class="nstat-n">322</div><div class="nstat-l">Residents (U.S. Census neighborhood estimate)</div></div>
+              <div class="nstat"><div class="nstat-n">post-1990</div><div class="nstat-l">Built during Huntersville's suburban boom</div></div>
+              <div class="nstat"><div class="nstat-n">Pool</div><div class="nstat-l">Community pool &amp; playground at its center</div></div>
+              <div class="nstat"><div class="nstat-n">Walkable</div><div class="nstat-l">Close to schools, shopping, and amenities</div></div>
+            </div>
+            <div class="minichart"><div class="minichart-h">Huntersville population, 1990–2020</div>
+              <div class="bars"><div class="bar" style="height:6%"><span class="bv">3.0k</span></div><div class="bar" style="height:41%"><span class="bv">25k</span></div><div class="bar" style="height:76%"><span class="bv">47k</span></div><div class="bar bar-now" style="height:100%"><span class="bv">61k</span></div></div>
+              <div class="bars-x"><span>1990</span><span>2000</span><span>2010</span><span>2020</span></div>
+              <div class="minichart-cap">Neighborhoods like Huntington Green drove this growth. Source: U.S. Census.</div>
+            </div>
+          </div>
         </div>
-        <div class="prose" style="max-width:560px">
-          <p data-es="La investigación basada en la comunidad se define como una forma de investigación en la que la pregunta surge de las necesidades de un grupo de personas.">Community-based research is defined as a form of investigation in which the question arises from the needs of a group of individuals. The Community Research Fellows use this approach, including the voices of community members and leaders within data collection and presentation, to produce the most comprehensive and accurate picture of North Mecklenburg possible.</p>
-          <p class="meta" style="margin-top:2px">Beckman &amp; Long, 2016, p. 1</p>
-        </div>
-        <button class="btn btn-o" style="font-size:13.5px;padding:10px 18px;margin-top:24px" onclick="window.location='about.html';setTimeout(function(){var e=document.getElementById('about-partners');if(e)window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-90,behavior:'smooth'});},130)" data-es="Conoce a nuestros socios">Meet our partners</button>
       </div>
-      <img src="images/cbr-photo.jpg" alt="Davidson students talking with a North Meck resident" style="width:100%;height:100%;min-height:360px;object-fit:cover;border-radius:var(--rl);display:block">
+
+      <!-- EAST CATAWBA -->
+      <div class="nbhd" id="nbhd-eastcatawba">
+        <div class="nbhd-top"><span class="nbhd-name">East Catawba</span><span class="nbhd-town-badge"><i class="ti ti-map-pin"></i> Cornelius</span></div>
+        <div class="nbhd-kicker">Newly added · history, town, and data to be verified by the team</div>
+        <div class="nbhd-grid2">
+          <div class="nbhd-prose">
+            <p class="nph">East Catawba joins the project as the fifth United Neighborhood. Its founding story, families, and landmarks have not yet been documented here. This section is a scaffold for the research team to complete with verified history.</p>
+            <p class="nph">Add the neighborhood's origins, the institutions that anchor it (churches, schools, civic groups), and the pressures it faces today, each with a public source.</p>
+            <p class="meta nph">Demographics: to be confirmed.</p>
+            <div class="reports"><div class="reports-h">Articles &amp; reports</div>
+              <div class="report-item" style="cursor:default"><i class="ti ti-file-plus"></i><div class="report-tx"><div class="report-t nph">Add verified articles &amp; reports for East Catawba</div><div class="report-m"><span class="report-kind">Placeholder</span> source to be added</div></div></div>
+            </div>
+          </div>
+          <div>
+            <div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+            <div class="nstats">
+              <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">Year established, to be verified</div></div>
+              <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">Homes in the community, to be verified</div></div>
+              <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">Key landmark or institution, to be verified</div></div>
+              <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">A defining statistic, to be verified</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </section>
+  </div></section>
 
 </div>
 <footer>
@@ -508,5 +517,6 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
 <script src="js/main.js"></script>
+<script src="js/neighborhoods.js"></script>
 </body>
 </html>

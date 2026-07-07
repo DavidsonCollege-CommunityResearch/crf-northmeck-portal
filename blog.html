@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>North Meck Insights</title>
+<title>Stories · North Meck Insights</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -108,168 +108,100 @@
 </nav>
 <div class="page active" style="display:block">
 
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-text">
-        <span class="eyebrow hero-eyebrow" style="margin-bottom:6px;line-height:0;font-size:0"></span>
-        <h1 class="hero-h1" style="font-family:Times;font-size:56px;color:rgb(0,0,0)"><span data-es="Entendiendo el norte de Mecklenburg,">Understanding North Mecklenburg,</span> <span style="color:var(--accent)" data-es="un vecino a la vez.">one neighbor at a time.</span></h1>
-        <p class="hero-sub" data-es="Datos públicos y claros sobre vivienda, educación y salud en el norte de Mecklenburg, investigados por estudiantes de Davidson College y creados para quienes viven aquí.">Clear, public data on housing, education, and healthcare in North Mecklenburg, researched by Davidson College students and built for the people who live here.</p>
-        <div class="hero-btns">
-          <button class="btn btn-p" onclick="window.location='data.html'"><i class="ti ti-chart-histogram"></i> <span data-es="Explora los datos">Explore the data</span></button>
-          <button class="btn btn-o" onclick="openMap()"><i class="ti ti-map-2"></i> <span data-es="Explora el mapa">Explore the map</span></button>
-        </div>
-      </div>
-      <div class="hero-media">
-        <img class="hero-media-single" src="images/hero.jpg" alt="Neighbors walking together in a North Meck park" style="width:100%;height:100%;object-fit:cover;border-radius:var(--rl)">
-      </div>
+  <div class="wrap"><div class="crumb"><a onclick="window.location='index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Stories</span></div></div>
+  <section class="section"><div class="wrap">
+    <div class="sec-head"><span class="eyebrow" style="font-size:15px">Stories</span><h2 class="sec-h" style="font-size:32px">Research in plain English</h2><p class="lead">Short posts for North Meck residents that are clear, brief, and jargon-free.</p></div>
+    <div class="blog-grid">
+      <article class="bcard" id="post-housing" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-cash"></i><span>Housing post thumbnail</span></div><span class="bcard-tag" style="font-size:13px">Housing</span><h3 class="bcard-t">Why it now takes $31 an hour to afford a one-bedroom</h3><div class="bcard-meta">June 2026 · 3 min read</div></article>
+      <article class="bcard"><div class="bcard-thumb ph"><i class="ti ti-scale"></i><span>Equity post thumbnail</span></div><span class="bcard-tag" style="font-size:13px">Equity</span><h3 class="bcard-t">Black renters are twice as likely to be cost-burdened</h3><div class="bcard-meta">July 2026 · 4 min read</div></article>
+      <article class="bcard"><div class="bcard-thumb ph"><i class="ti ti-trending-up"></i><span>Evictions post thumbnail</span></div><span class="bcard-tag" style="font-size:13px">Evictions</span><h3 class="bcard-t">52,000 filings: what the eviction data really tells us</h3><div class="bcard-meta">August 2026 · 5 min read</div></article>
+      <article class="bcard" id="post-education"><div class="bcard-thumb ph"><i class="ti ti-school"></i><span>Education post thumbnail</span></div><span class="bcard-tag" style="font-size:13px">Education</span><h3 class="bcard-t">The racial makeup of North Meck schools, explained</h3><div class="bcard-meta">May 2025 · 3 min read</div></article>
+      <article class="bcard"><div class="bcard-thumb ph"><i class="ti ti-chart-bar"></i><span>Data equity post thumbnail</span></div><span class="bcard-tag" style="font-size:13px">Data equity</span><h3 class="bcard-t">Why some neighborhoods get left out of the data</h3><div class="bcard-meta">March 2025 · 3 min read</div></article>
     </div>
-  </section>
+  </div></section>
 
-  <!-- DATA SPOTLIGHT -->
-  <section class="section">
+
+  <div class="wrap"><div class="crumb"><a onclick="window.location='index.html'">Home</a><i class="ti ti-chevron-right"></i><a onclick="window.location='blog.html'">Stories</a><i class="ti ti-chevron-right"></i><span>Housing</span></div></div>
+  <article class="post">
     <div class="wrap">
-      <div class="sec-head spot-head">
-        <div class="spot-eyebrow-row">
-          <span class="eyebrow" style="font-size:15px" data-es="Dato destacado">Data Spotlight</span>
+      <header class="post-head">
+        <span class="eyebrow" style="font-size:13px">Housing · Analysis</span>
+        <h1 class="post-title" style="font-size:48px;text-align:left">Why it now takes $31 an hour to afford a one-bedroom home</h1>
+        <p class="post-dek">Rents across North Mecklenburg climbed 40% in a decade. Local wages didn't keep up. Here is what that gap actually looks like for the people living it.</p>
+        <div class="post-byline">
+          <div class="post-author-ph"><i class="ti ti-user"></i></div>
+          <div><div class="by-n">Arnav Biyani</div><div class="by-m">2026 Community Research Fellow · June 2026 · 3 min read</div></div>
         </div>
-        <h2 class="sec-h spot-h" id="spotH" style="font-size:32px">The housing squeeze, in four numbers</h2>
-        <button class="spot-topic" id="spotTopic" type="button" data-topic="housing" title="Open the Housing dashboard" onclick="window.location.href=(this.dataset.topic||'housing')+'.html'"><i class="ti ti-building-community" id="spotTopicIcon"></i><span id="spotTopicName" style="font-size:14px">Housing</span><i class="ti ti-arrow-narrow-right spot-topic-go"></i></button>
-        <p class="lead spot-lead" id="spotLead">A quick read on affordability in North Meck. The fuller picture lives in the topic dashboards.</p>
-      </div>
-      <div class="spot-carousel">
-        <button class="spot-arrow spot-prev" id="spotPrev" aria-label="Previous topic" onclick="spotStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow spot-next" id="spotNext" aria-label="Next topic" onclick="spotStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="spot-track" id="spotTrack">
-          <div class="spot-slide" data-topic="housing">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">52%</div><div class="stat-l">rent rise in Huntersville, 2018–2024 ($1,196 → $1,820/mo)</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</span></div>
-              <div class="stat"><div class="stat-n warn">20+ yrs</div><div class="stat-l">of gross income to buy the median home, for a $20k–$35k household</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n"><span class="cur">$</span>693k</div><div class="stat-l">median home in Davidson, 4× the U.S. national median</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">~10 yrs</div><div class="stat-l">to save a 20% down payment at a 10% annual savings rate</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+      </header>
+    </div>
+    <div class="wrap">
+      <figure class="post-media">
+        <div class="ph" style="width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid var(--line)"><i class="ti ti-building-community"></i><span>A North Meck apartment block or a For Rent sign</span></div>
+        <figcaption class="post-figcap">A one-bedroom in North Mecklenburg now rents for roughly $1,647 a month at fair market rate.</figcaption>
+      </figure>
+    </div>
+    <div class="wrap">
+      <div class="post-body">
+        <p class="post-lead">Ask anyone renting in Cornelius, Davidson, or Huntersville and you will hear a version of the same story: the rent keeps climbing, and the paycheck does not. The numbers back them up and they are starker than most people expect.</p>
+        <h2>The number that started it</h2>
+        <p>Every year the National Low Income Housing Coalition calculates a "housing wage," which is the hourly pay a full-time worker needs to afford a modest home without spending more than 30% of their income on rent. For the Charlotte–Mecklenburg metro in 2025, the one-bedroom housing wage is <strong>$31.67 an hour</strong>.</p>
+        <p>That is more than four times the federal minimum wage, and well above what many of the jobs that keep North Meck running actually pay.</p>
+        <figure class="post-figure">
+          <div class="card">
+            <div class="card-t">The wage you'd need vs. what local jobs pay</div>
+            <div class="card-s">Hourly wage to afford a 1-bed at fair market rent, vs. typical Charlotte-metro pay, 2025</div>
+            <div class="bars">
+              <div class="bc"><div class="bar hi" style="height:100%" data-val="$31.67/hr" data-label="Housing wage needed" data-src="NLIHC Out of Reach 2025"></div><div class="bc-lbl"><b>$31.67</b>1-bed need</div></div>
+              <div class="bc"><div class="bar" style="height:72%" data-val="$27.85/hr" data-label="Teacher" data-src="BLS 2025"></div><div class="bc-lbl"><b>$27.85</b>Teacher</div></div>
+              <div class="bc"><div class="bar" style="height:70%" data-val="$26.94/hr" data-label="Electrician" data-src="BLS 2025"></div><div class="bc-lbl"><b>$26.94</b>Electrician</div></div>
+              <div class="bc"><div class="bar" style="height:54%" data-val="$21.34/hr" data-label="Firefighter" data-src="BLS 2025"></div><div class="bc-lbl"><b>$21.34</b>Firefighter</div></div>
+              <div class="bc"><div class="bar" style="height:46%" data-val="$18.33/hr" data-label="Nursing aide" data-src="BLS 2025"></div><div class="bc-lbl"><b>$18.33</b>Nursing aide</div></div>
+              <div class="bc"><div class="bar lo" style="height:18%" data-val="$7.25/hr" data-label="Minimum wage" data-src="Federal minimum wage"></div><div class="bc-lbl"><b>$7.25</b>Min. wage</div></div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="housing" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
-          <div class="spot-slide" data-topic="education">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">63%</div><div class="stat-l" data-es="de los alumnos de 3.º grado leen al nivel de su grado">of 3rd graders reading at grade level</div><span class="stat-src">NC DPI, 2024</span></div>
-              <div class="stat"><div class="stat-n">19:1</div><div class="stat-l" data-es="proporción de alumnos por maestro en escuelas públicas">student-to-teacher ratio in public schools</div><span class="stat-src">NC DPI, 2024</span></div>
-              <div class="stat"><div class="stat-n"><span class="cur">$</span>14,320</div><div class="stat-l" data-es="gasto por alumno, por debajo del promedio estatal">per-pupil spending, below the state average</div><span class="stat-src">NCES, 2024</span></div>
-              <div class="stat"><div class="stat-n warn" data-es="1 de 4">1 in 4</div><div class="stat-l" data-es="estudiantes de secundaria con ausentismo crónico en 2024">high schoolers chronically absent in 2024</div><span class="stat-src" data-es="CMS AF2024">CMS FY24</span></div>
+          <figcaption class="post-figcap">Source: NLIHC Out of Reach 2025 · U.S. Bureau of Labor Statistics.</figcaption>
+        </figure>
+        <h2>Rent went one way. Wages went another.</h2>
+        <p>A decade ago, the median rent in Mecklenburg County was about $1,262 a month in today's dollars. By 2024 it had reached $1,762, representing a 40% jump after adjusting for inflation. Over the same stretch, pay for many local roles barely moved.</p>
+        <figure class="post-figure">
+          <div class="card">
+            <div class="card-t">Rent rose 40% in a decade</div>
+            <div class="card-s">Inflation-adjusted median monthly rent, Mecklenburg County, 2014–2024</div>
+            <div class="bars">
+              <div class="bc"><div class="bar" style="height:33%" data-val="$1,262/mo" data-label="2014" data-src="ACS 2024"></div><div class="bc-lbl"><b>$1,262</b>2014</div></div>
+              <div class="bc"><div class="bar" style="height:43%"></div><div class="bc-lbl">2016</div></div>
+              <div class="bc"><div class="bar" style="height:52%"></div><div class="bc-lbl">2018</div></div>
+              <div class="bc"><div class="bar" style="height:67%"></div><div class="bc-lbl">2021</div></div>
+              <div class="bc"><div class="bar" style="height:79%"></div><div class="bc-lbl">2022</div></div>
+              <div class="bc"><div class="bar" style="height:88%"></div><div class="bc-lbl">2023</div></div>
+              <div class="bc"><div class="bar hi" style="height:100%" data-val="$1,762/mo" data-label="2024" data-src="ACS 2024"></div><div class="bc-lbl"><b>$1,762</b>2024</div></div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="education" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
-          <div class="spot-slide" data-topic="healthcare">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">5%</div><div class="stat-l">of residents uninsured in Cornelius &amp; Huntersville — thousands without a safety net</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n warn">26–34</div><div class="stat-l">age group with the highest uninsured rate — off parental plans, often no employer coverage</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">3×</div><div class="stat-l">more likely to be uninsured if your household earns under k vs. over k</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">93%</div><div class="stat-l">of employed residents have coverage — vs. under 70% for unemployed residents</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-            </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="healthcare" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
-          </div>
-        </div>
-        <div class="spot-dots" id="spotDots"></div>
+          <figcaption class="post-figcap">Source: U.S. Census ACS 2024, inflation-adjusted.</figcaption>
+        </figure>
+        <blockquote class="post-quote">A minimum-wage worker would need 175 hours of work a week to afford a one-bedroom. A week only has 168.</blockquote>
+        <h2>Who feels it first</h2>
+        <p>When rent outpaces wages, the squeeze does not land evenly. Households with the lowest incomes and renters of color, after generations of housing discrimination, are pushed hardest. Today roughly half of all renter households in the county are "cost-burdened," meaning housing eats up more than 30% of what they earn.</p>
+        <div class="callout info" style="margin:28px 0"><div class="callout-t"><strong>1 in 2</strong> renter households in Mecklenburg County now spend more than they can comfortably afford on housing, up from about 38% a decade ago.</div><div class="callout-s">Source: ACS 2024</div></div>
+        <figure class="post-media" style="margin:30px 0">
+          <div class="ph" style="width:100%;aspect-ratio:3/2;border-radius:14px;border:1px solid var(--line)"><i class="ti ti-users"></i><span>Residents at a community meeting</span></div>
+          <figcaption class="post-figcap">Fellows hear the same theme in interviews across North Meck: stable housing is getting harder to hold onto.</figcaption>
+        </figure>
+        <h2>What this means</h2>
+        <p>The gap between rent and wages is not abstract, as it shows up as longer commutes, doubled-up households, and a rising tide of eviction filings. Understanding the size of the gap is the first step toward closing it, and it is why every figure on this site links back to its public source.</p>
+        <p>The full picture, neighborhood by neighborhood, lives in the Housing dashboard.</p>
+        <button class="btn btn-p" style="margin:6px 0 8px" onclick="window.location='housing.html'"><i class="ti ti-chart-histogram"></i> Explore the housing data</button>
+        <h2 class="post-sources-h">Sources</h2>
+        <ul class="post-sources">
+          <li>National Low Income Housing Coalition, <em>Out of Reach 2025</em></li>
+          <li>U.S. Census Bureau, American Community Survey, 2024 (inflation-adjusted)</li>
+          <li>Mecklenburg County, eviction filing records, FY25</li>
+          <li>U.S. Bureau of Labor Statistics, occupational wage estimates, Charlotte metro</li>
+        </ul>
       </div>
     </div>
-  </section>
-
-  <!-- TOPICS -->
-  <section class="section alt">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="Temas">Topics</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="¿Qué define la vida diaria aquí?">What shapes daily life here?</h2>
-        <p class="lead" data-es="Cada tema tiene su propio panel. La asequibilidad es el hilo que recorre todos ellos.">Each topic gets its own dashboard. Affordability is the thread that runs through all of them.</p>
-      </div>
-      <div class="topics-carousel">
-        <div class="topics" id="topicsTrack">
-          <div class="tcard is-active" onclick="window.location='housing.html'">
-            <div class="tc-icon"><i class="ti ti-building-community"></i></div>
-            <div class="tc-t" data-es="Vivienda">Housing</div>
-            <div class="tc-b" data-es="Rentas, carga de costo, desalojos y la brecha de asequibilidad en North Meck.">Rents, cost burden, evictions, and the affordability gap across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jun 2026">Last Updated: Jun 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
-          </div>
-          <div class="tcard" onclick="window.location='education.html'">
-            <div class="tc-icon"><i class="ti ti-school"></i></div>
-            <div class="tc-t" data-es="Educación">Education</div>
-            <div class="tc-b" data-es="Matrícula K–12, composición escolar y acceso por vecindario.">K–12 enrollment, school composition, and access by neighborhood.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="En desarrollo · 2026">In development · 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
-          </div>
-          <div class="tcard" onclick="window.location='healthcare.html'">
-            <div class="tc-icon"><i class="ti ti-heartbeat"></i></div>
-            <div class="tc-t" data-es="Salud">Healthcare</div>
-            <div class="tc-b" data-es="Acceso a la atención, cobertura de seguro y resultados de salud en North Meck.">Access to care, insurance coverage, and health outcomes across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot">In development · 2026</span><span class="tc-go">Open →</span></div>
-          </div>
-        </div>
-      </div>
-      <p class="topics-note"><i class="ti ti-seeding"></i> <span data-es="La seguridad alimentaria y otros temas son agregados por cada nueva generación de Fellows cada verano.">New topics are added by each incoming cohort of CRF Fellows.</span></p>
-    </div>
-  </section>
-
-  <!-- UNITED NEIGHBORHOODS TEASER -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="VECINDARIOS UNIDOS">UNITED NEIGHBORHOODS</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Los lugares con historias que contar">The places with stories to tell</h2>
-        <p class="lead" data-es="Dentro de Davidson, Cornelius y Huntersville hay cinco vecindarios que cargan generaciones de historia.">Within Davidson, Cornelius, and Huntersville are five neighborhoods carrying generations of history. Explore who they are and why they matter.</p>
-      </div>
-      <div class="nbhd-carousel">
-        <button class="spot-arrow nbhd-prev" id="nbhdPrev" aria-label="Previous neighborhoods" onclick="nbhdStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow nbhd-next" id="nbhdNext" aria-label="More neighborhoods" onclick="nbhdStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="nbhd-grid" id="nbhdTrack">
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-pottstown'"><span class="town">HUNTERSVILLE</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Pottstown</span><span class="ds" data-es="Un vecindario históricamente afroamericano con raíces profundas en Huntersville.">A historically African American neighborhood with deep roots in Huntersville.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-westdavidson'"><span class="town">Davidson</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>West Davidson</span><span class="ds" data-es="Una comunidad arraigada en el lado oeste del pueblo, con su propia historia.">A long-standing community on the west side of town, with its own history.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-smithville'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Smithville</span><span class="ds" data-es="Una de las comunidades afroamericanas más antiguas de Cornelius, enfrentando cambios.">One of Cornelius's oldest African American communities, facing change.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-huntingtongreen'"><span class="town">Huntersville</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Huntington Green</span><span class="ds" data-es="Un vecindario en Huntersville con una historia que vale la pena contar.">A neighborhood in Huntersville with a story worth telling.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-eastcatawba'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>East Catawba</span><span class="ds" data-es="El quinto vecindario unido; su historia y datos aún se están recopilando.">The fifth united neighborhood. Its history and data are still being gathered.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-        </div>
-      </div>
-      <button class="btn btn-o" style="margin-top:26px" onclick="window.location='neighborhoods.html'"><i class="ti ti-map-2"></i> <span data-es="Explora los vecindarios">Explore the neighborhoods</span></button>
-    </div>
-  </section>
-
-  <!-- STORIES PREVIEW -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="HISTORIAS">STORIES</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Lo que encontramos y por qué importa">What we found, and why it matters</h2>
-        <p class="lead" data-es="Lecturas breves para quienes viven aquí: claras, cortas y sin tecnicismos.">Short reads for the people who live here that are clear, brief, and jargon-free.</p>
-      </div>
-      <div class="blog-carousel">
-        <button class="spot-arrow blog-prev" id="blogPrev" aria-label="Previous posts" onclick="blogStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow blog-next" id="blogNext" aria-label="More posts" onclick="blogStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="blog-track" id="blogTrack">
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-cash"></i><span>Housing post thumbnail</span></div><span class="bcard-tag" data-es="Vivienda">Housing</span><h3 class="bcard-t" data-es="Por qué ahora se necesitan $31 por hora para pagar un apartamento de una habitación">Why it now takes $31 an hour to afford a one-bedroom</h3><div class="bcard-meta" data-es="Junio 2026 · 3 min de lectura">June 2026 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-scale"></i><span>Equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad">Equity</span><h3 class="bcard-t" data-es="Los inquilinos negros tienen el doble de probabilidad de estar sobrecargados por el costo">Black renters are twice as likely to be cost-burdened</h3><div class="bcard-meta" data-es="Julio 2026 · 4 min de lectura">July 2026 · 4 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-trending-up"></i><span>Evictions post thumbnail</span></div><span class="bcard-tag" data-es="Desalojos">Evictions</span><h3 class="bcard-t" data-es="52,000 demandas: lo que los datos de desalojo realmente nos dicen">52,000 filings: what the eviction data really tells us</h3><div class="bcard-meta" data-es="Agosto 2026 · 5 min de lectura">August 2026 · 5 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-school"></i><span>Education post thumbnail</span></div><span class="bcard-tag" data-es="Educación">Education</span><h3 class="bcard-t" data-es="La composición racial de las escuelas de North Meck, explicada">The racial makeup of North Meck schools, explained</h3><div class="bcard-meta" data-es="Mayo 2025 · 3 min de lectura">May 2025 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-chart-bar"></i><span>Data equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad de datos">Data equity</span><h3 class="bcard-t" data-es="Por qué algunos vecindarios quedan fuera de los datos">Why some neighborhoods get left out of the data</h3><div class="bcard-meta" data-es="Marzo 2025 · 3 min de lectura">March 2025 · 3 min read</div></article>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CBR / ABOUT -->
-  <section class="section alt">
-    <div class="wrap split" style="align-items:stretch">
-      <div>
-        <div class="sec-head" style="margin-bottom:18px">
-          <span class="eyebrow" style="font-size:15px" data-es="Nuestro enfoque">Our approach</span>
-          <h2 class="sec-h" style="margin-bottom:9px;font-size:32px" data-es="¿Qué es la investigación basada en la comunidad?">What is community-based research?</h2>
-          <p class="lead" data-es="Investigación que parte de las necesidades de la propia comunidad, no desde afuera hacia adentro.">Research that begins with the needs of the community itself and not from the outside in.</p>
-        </div>
-        <div class="prose" style="max-width:560px">
-          <p data-es="La investigación basada en la comunidad se define como una forma de investigación en la que la pregunta surge de las necesidades de un grupo de personas.">Community-based research is defined as a form of investigation in which the question arises from the needs of a group of individuals. The Community Research Fellows use this approach, including the voices of community members and leaders within data collection and presentation, to produce the most comprehensive and accurate picture of North Mecklenburg possible.</p>
-          <p class="meta" style="margin-top:2px">Beckman &amp; Long, 2016, p. 1</p>
-        </div>
-        <button class="btn btn-o" style="font-size:13.5px;padding:10px 18px;margin-top:24px" onclick="window.location='about.html';setTimeout(function(){var e=document.getElementById('about-partners');if(e)window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-90,behavior:'smooth'});},130)" data-es="Conoce a nuestros socios">Meet our partners</button>
-      </div>
-      <img src="images/cbr-photo.jpg" alt="Davidson students talking with a North Meck resident" style="width:100%;height:100%;min-height:360px;object-fit:cover;border-radius:var(--rl);display:block">
-    </div>
-  </section>
+    <div class="wrap"><div class="post-foot"><span class="post-back" onclick="window.location='blog.html'"><i class="ti ti-arrow-narrow-left"></i> All stories</span></div></div>
+  </article>
 
 </div>
 <footer>

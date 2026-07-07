@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>North Meck Insights</title>
+<title>Education · North Meck Insights</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,7 +12,11 @@
 <script src="https://cdn.jsdelivr.net/npm/d3@6"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
+<script type="module">
+  import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client/+esm";
+  const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
+  window.__mdConn = MDConnection.create({ mdToken: MD_TOKEN });
+</script>
 </head>
 <body>
 <nav class="nav">
@@ -108,168 +112,349 @@
 </nav>
 <div class="page active" style="display:block">
 
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-text">
-        <span class="eyebrow hero-eyebrow" style="margin-bottom:6px;line-height:0;font-size:0"></span>
-        <h1 class="hero-h1" style="font-family:Times;font-size:56px;color:rgb(0,0,0)"><span data-es="Entendiendo el norte de Mecklenburg,">Understanding North Mecklenburg,</span> <span style="color:var(--accent)" data-es="un vecino a la vez.">one neighbor at a time.</span></h1>
-        <p class="hero-sub" data-es="Datos públicos y claros sobre vivienda, educación y salud en el norte de Mecklenburg, investigados por estudiantes de Davidson College y creados para quienes viven aquí.">Clear, public data on housing, education, and healthcare in North Mecklenburg, researched by Davidson College students and built for the people who live here.</p>
-        <div class="hero-btns">
-          <button class="btn btn-p" onclick="window.location='data.html'"><i class="ti ti-chart-histogram"></i> <span data-es="Explora los datos">Explore the data</span></button>
-          <button class="btn btn-o" onclick="openMap()"><i class="ti ti-map-2"></i> <span data-es="Explora el mapa">Explore the map</span></button>
+  <div class="wrap">
+    <div class="crumb"><a onclick="window.location='index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Education</span></div>
+    <div class="dash-hero" style="margin-bottom:56px">
+      <div class="split" style="align-items:flex-start">
+        <div>
+          <span class="eyebrow" style="font-size:15px">K–12 Education</span>
+          <h1 class="dash-h1">Are North Meck schools keeping pace with rapid growth?</h1>
+          <p class="lead dash-lead" style="margin-bottom:0">Enrollment has surged as families move into Cornelius, Davidson, and Huntersville — but school capacity, staffing, and resources haven't always kept up. This section follows the data on who is in the classroom, how schools are performing, and where gaps are widest.</p>
         </div>
-      </div>
-      <div class="hero-media">
-        <img class="hero-media-single" src="images/hero.jpg" alt="Neighbors walking together in a North Meck park" style="width:100%;height:100%;object-fit:cover;border-radius:var(--rl)">
       </div>
     </div>
-  </section>
+    <div class="tabs" id="education-tabs">
+      <span class="tab active" data-tab="ed-overview" onclick="setTab(this)">Overview</span>
+      <span class="tab" data-tab="ed-enrollment" onclick="setTab(this)">Enrollment &amp; Growth</span>
+      <span class="tab" data-tab="ed-demographics" onclick="setTab(this)">School Demographics</span>
+      <span class="tab" data-tab="ed-performance" onclick="setTab(this)">Academic Performance</span>
+      <span class="tab" data-tab="ed-resources" onclick="setTab(this)">Resources &amp; Staffing</span>
+      <span class="tab" data-tab="ed-attainment" onclick="setTab(this)">Educational Attainment</span>
+    </div>
+  </div>
+  <div class="wrap dash-filter">
+    <div class="filterbar">
+      <span class="lbl">Area:</span>
+      <span class="chip on" onclick="setChip(this)">All North Meck</span>
+      <span class="chip" onclick="setChip(this)">Cornelius</span>
+      <span class="chip" onclick="setChip(this)">Davidson</span>
+      <span class="chip" onclick="setChip(this)">Huntersville</span>
+      <span class="hint">filters every chart</span>
+    </div>
+  </div>
 
-  <!-- DATA SPOTLIGHT -->
-  <section class="section">
+  <!-- TAB: overview -->
+  <div class="tabpane active" data-pane="ed-overview">
     <div class="wrap">
-      <div class="sec-head spot-head">
-        <div class="spot-eyebrow-row">
-          <span class="eyebrow" style="font-size:15px" data-es="Dato destacado">Data Spotlight</span>
-        </div>
-        <h2 class="sec-h spot-h" id="spotH" style="font-size:32px">The housing squeeze, in four numbers</h2>
-        <button class="spot-topic" id="spotTopic" type="button" data-topic="housing" title="Open the Housing dashboard" onclick="window.location.href=(this.dataset.topic||'housing')+'.html'"><i class="ti ti-building-community" id="spotTopicIcon"></i><span id="spotTopicName" style="font-size:14px">Housing</span><i class="ti ti-arrow-narrow-right spot-topic-go"></i></button>
-        <p class="lead spot-lead" id="spotLead">A quick read on affordability in North Meck. The fuller picture lives in the topic dashboards.</p>
-      </div>
-      <div class="spot-carousel">
-        <button class="spot-arrow spot-prev" id="spotPrev" aria-label="Previous topic" onclick="spotStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow spot-next" id="spotNext" aria-label="Next topic" onclick="spotStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="spot-track" id="spotTrack">
-          <div class="spot-slide" data-topic="housing">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">52%</div><div class="stat-l">rent rise in Huntersville, 2018–2024 ($1,196 → $1,820/mo)</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</span></div>
-              <div class="stat"><div class="stat-n warn">20+ yrs</div><div class="stat-l">of gross income to buy the median home, for a $20k–$35k household</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n"><span class="cur">$</span>693k</div><div class="stat-l">median home in Davidson, 4× the U.S. national median</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">~10 yrs</div><div class="stat-l">to save a 20% down payment at a 10% annual savings rate</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+      <div class="stat-rows" style="margin-bottom:48px">
+
+        <!-- Stat 1: Enrollment growth -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">+37%</div>
+            <p class="stat-l">enrollment growth at North Meck schools since 2018, outpacing the state average and straining classroom capacity</p>
+            <span class="stat-src">NCES CCD · data coming</span>
+          </div>
+          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Total enrollment by school (2018–2023)</div>
+            <div class="card-s">Charlotte-Mecklenburg Schools · North Meck zone</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD School Universe Survey · leaid 3702970</div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="housing" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
-          <div class="spot-slide" data-topic="education">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">63%</div><div class="stat-l" data-es="de los alumnos de 3.º grado leen al nivel de su grado">of 3rd graders reading at grade level</div><span class="stat-src">NC DPI, 2024</span></div>
-              <div class="stat"><div class="stat-n">19:1</div><div class="stat-l" data-es="proporción de alumnos por maestro en escuelas públicas">student-to-teacher ratio in public schools</div><span class="stat-src">NC DPI, 2024</span></div>
-              <div class="stat"><div class="stat-n"><span class="cur">$</span>14,320</div><div class="stat-l" data-es="gasto por alumno, por debajo del promedio estatal">per-pupil spending, below the state average</div><span class="stat-src">NCES, 2024</span></div>
-              <div class="stat"><div class="stat-n warn" data-es="1 de 4">1 in 4</div><div class="stat-l" data-es="estudiantes de secundaria con ausentismo crónico en 2024">high schoolers chronically absent in 2024</div><span class="stat-src" data-es="CMS AF2024">CMS FY24</span></div>
+        </div>
+
+        <!-- Stat 2: Free & reduced lunch -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">~1 in 4</div>
+            <p class="stat-l">students at some North Meck schools qualify for free or reduced-price lunch, a key indicator of economic disadvantage</p>
+            <span class="stat-src">NCES CCD · data coming</span>
+          </div>
+          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Free &amp; reduced lunch eligibility by school (2023)</div>
+            <div class="card-s">Share of students qualifying for federal lunch assistance</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD Lunch Program · free &amp; reduced eligibility</div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="education" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
-          <div class="spot-slide" data-topic="healthcare">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">5%</div><div class="stat-l">of residents uninsured in Cornelius &amp; Huntersville — thousands without a safety net</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n warn">26–34</div><div class="stat-l">age group with the highest uninsured rate — off parental plans, often no employer coverage</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">3×</div><div class="stat-l">more likely to be uninsured if your household earns under k vs. over k</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">93%</div><div class="stat-l">of employed residents have coverage — vs. under 70% for unemployed residents</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+        </div>
+
+        <!-- Stat 3: Graduation rate -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n">~90%</div>
+            <p class="stat-l">4-year cohort graduation rate at North Meck high schools, above the CMS district average but with variation between schools</p>
+            <span class="stat-src">NC DPI · data coming</span>
+          </div>
+          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">4-year graduation rate by high school (2018–2023)</div>
+            <div class="card-s">Hough High &amp; North Mecklenburg High · cohort graduation</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: NC Department of Public Instruction · Graduation &amp; Dropout reports</div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="healthcare" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
         </div>
-        <div class="spot-dots" id="spotDots"></div>
+
+        <!-- Stat 4: Teacher-student ratio -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">16:1</div>
+            <p class="stat-l">average student-to-teacher ratio across North Meck schools, higher than recommended at rapidly growing campuses</p>
+            <span class="stat-src">NCES CCD · data coming</span>
+          </div>
+          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Pupil-to-teacher ratio by school (2018–2023)</div>
+            <div class="card-s">Full-time equivalent teachers vs. total enrollment</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD Staff Universe Survey · FTE teachers</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- TOPICS -->
-  <section class="section alt">
+  <!-- TAB: enrollment & growth -->
+  <div class="tabpane" data-pane="ed-enrollment">
     <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="Temas">Topics</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="¿Qué define la vida diaria aquí?">What shapes daily life here?</h2>
-        <p class="lead" data-es="Cada tema tiene su propio panel. La asequibilidad es el hilo que recorre todos ellos.">Each topic gets its own dashboard. Affordability is the thread that runs through all of them.</p>
-      </div>
-      <div class="topics-carousel">
-        <div class="topics" id="topicsTrack">
-          <div class="tcard is-active" onclick="window.location='housing.html'">
-            <div class="tc-icon"><i class="ti ti-building-community"></i></div>
-            <div class="tc-t" data-es="Vivienda">Housing</div>
-            <div class="tc-b" data-es="Rentas, carga de costo, desalojos y la brecha de asequibilidad en North Meck.">Rents, cost burden, evictions, and the affordability gap across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jun 2026">Last Updated: Jun 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
-          </div>
-          <div class="tcard" onclick="window.location='education.html'">
-            <div class="tc-icon"><i class="ti ti-school"></i></div>
-            <div class="tc-t" data-es="Educación">Education</div>
-            <div class="tc-b" data-es="Matrícula K–12, composición escolar y acceso por vecindario.">K–12 enrollment, school composition, and access by neighborhood.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="En desarrollo · 2026">In development · 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
-          </div>
-          <div class="tcard" onclick="window.location='healthcare.html'">
-            <div class="tc-icon"><i class="ti ti-heartbeat"></i></div>
-            <div class="tc-t" data-es="Salud">Healthcare</div>
-            <div class="tc-b" data-es="Acceso a la atención, cobertura de seguro y resultados de salud en North Meck.">Access to care, insurance coverage, and health outcomes across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot">In development · 2026</span><span class="tc-go">Open →</span></div>
-          </div>
-        </div>
-      </div>
-      <p class="topics-note"><i class="ti ti-seeding"></i> <span data-es="La seguridad alimentaria y otros temas son agregados por cada nueva generación de Fellows cada verano.">New topics are added by each incoming cohort of CRF Fellows.</span></p>
-    </div>
-  </section>
+      <div class="sec-head"><span class="eyebrow">Enrollment &amp; Growth</span><h2 class="sec-h">North Meck schools are growing faster than almost anywhere in the district.</h2><p class="lead">Population growth in Cornelius, Davidson, and Huntersville has sent school enrollment surging over the past decade. Understanding which schools are most stressed — and how growth has varied by school level — matters for planning, bonds, and staffing decisions.</p></div>
 
-  <!-- UNITED NEIGHBORHOODS TEASER -->
-  <section class="section">
+      <!-- K-12 Enrollment Trend -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">K–12 Enrollment Trend</div>
+        <div class="card-s">Total residents enrolled in K–12 school · by town</div>
+        <div id="chart-k12-trend"></div>
+        <div class="callout">
+          <div class="callout-t">Huntersville has added over 1,000 K–12 students since 2018 — the largest absolute gain. Davidson is the smallest in total enrollment but has among the highest enrollment rates relative to its population size.</div>
+          <div class="callout-s">Source: ACS 2018–2023 · Table B14001 · counts residents enrolled in school, not CMS school-level enrollment</div>
+        </div>
+        
+      </div>
+
+      <!-- Enrollment by School Level -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Enrollment by School Level</div>
+        <div class="card-s">Residents enrolled by grade band · Grades 1–4, 5–8, and High School</div>
+        <div id="chart-level-trend"></div>
+        <div class="callout">
+          <div class="callout-t">Elementary enrollment (grades 1–8) has held relatively steady, while high school enrollment has grown as the wave of students who moved in during 2015–2020 ages through the system.</div>
+          <div class="callout-s">Source: ACS 2018–2023 · Table B14001</div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: school demographics -->
+  <div class="tabpane" data-pane="ed-demographics">
     <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="VECINDARIOS UNIDOS">UNITED NEIGHBORHOODS</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Los lugares con historias que contar">The places with stories to tell</h2>
-        <p class="lead" data-es="Dentro de Davidson, Cornelius y Huntersville hay cinco vecindarios que cargan generaciones de historia.">Within Davidson, Cornelius, and Huntersville are five neighborhoods carrying generations of history. Explore who they are and why they matter.</p>
-      </div>
-      <div class="nbhd-carousel">
-        <button class="spot-arrow nbhd-prev" id="nbhdPrev" aria-label="Previous neighborhoods" onclick="nbhdStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow nbhd-next" id="nbhdNext" aria-label="More neighborhoods" onclick="nbhdStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="nbhd-grid" id="nbhdTrack">
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-pottstown'"><span class="town">HUNTERSVILLE</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Pottstown</span><span class="ds" data-es="Un vecindario históricamente afroamericano con raíces profundas en Huntersville.">A historically African American neighborhood with deep roots in Huntersville.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-westdavidson'"><span class="town">Davidson</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>West Davidson</span><span class="ds" data-es="Una comunidad arraigada en el lado oeste del pueblo, con su propia historia.">A long-standing community on the west side of town, with its own history.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-smithville'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Smithville</span><span class="ds" data-es="Una de las comunidades afroamericanas más antiguas de Cornelius, enfrentando cambios.">One of Cornelius's oldest African American communities, facing change.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-huntingtongreen'"><span class="town">Huntersville</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Huntington Green</span><span class="ds" data-es="Un vecindario en Huntersville con una historia que vale la pena contar.">A neighborhood in Huntersville with a story worth telling.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-eastcatawba'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>East Catawba</span><span class="ds" data-es="El quinto vecindario unido; su historia y datos aún se están recopilando.">The fifth united neighborhood. Its history and data are still being gathered.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
+      <div class="sec-head"><span class="eyebrow">School Demographics</span><h2 class="sec-h">Who is in the classroom, and how has that changed?</h2><p class="lead">The racial, ethnic, and economic composition of North Meck schools reflects — and sometimes diverges from — the communities they serve. Tracking these patterns over time reveals how growth, attendance zones, and school choice interact with equity.</p></div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Racial &amp; ethnic composition by school (2023)</div>
+          <div class="card-s">% enrolled by race/ethnicity</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Racial composition trends over time</div>
+          <div class="card-s">Change in % by race group</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD</div>
+          </div>
         </div>
       </div>
-      <button class="btn btn-o" style="margin-top:26px" onclick="window.location='neighborhoods.html'"><i class="ti ti-map-2"></i> <span data-es="Explora los vecindarios">Explore the neighborhoods</span></button>
-    </div>
-  </section>
 
-  <!-- STORIES PREVIEW -->
-  <section class="section">
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Free &amp; reduced lunch eligibility by school</div>
+          <div class="card-s">Economic disadvantage proxy · % qualifying students</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD Lunch Program Survey</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">English Language Learner &amp; IEP rates by school</div>
+          <div class="card-s">% ELL and % students with disabilities</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD / EDFacts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: academic performance -->
+  <div class="tabpane" data-pane="ed-performance">
     <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="HISTORIAS">STORIES</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Lo que encontramos y por qué importa">What we found, and why it matters</h2>
-        <p class="lead" data-es="Lecturas breves para quienes viven aquí: claras, cortas y sin tecnicismos.">Short reads for the people who live here that are clear, brief, and jargon-free.</p>
-      </div>
-      <div class="blog-carousel">
-        <button class="spot-arrow blog-prev" id="blogPrev" aria-label="Previous posts" onclick="blogStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow blog-next" id="blogNext" aria-label="More posts" onclick="blogStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="blog-track" id="blogTrack">
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-cash"></i><span>Housing post thumbnail</span></div><span class="bcard-tag" data-es="Vivienda">Housing</span><h3 class="bcard-t" data-es="Por qué ahora se necesitan $31 por hora para pagar un apartamento de una habitación">Why it now takes $31 an hour to afford a one-bedroom</h3><div class="bcard-meta" data-es="Junio 2026 · 3 min de lectura">June 2026 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-scale"></i><span>Equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad">Equity</span><h3 class="bcard-t" data-es="Los inquilinos negros tienen el doble de probabilidad de estar sobrecargados por el costo">Black renters are twice as likely to be cost-burdened</h3><div class="bcard-meta" data-es="Julio 2026 · 4 min de lectura">July 2026 · 4 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-trending-up"></i><span>Evictions post thumbnail</span></div><span class="bcard-tag" data-es="Desalojos">Evictions</span><h3 class="bcard-t" data-es="52,000 demandas: lo que los datos de desalojo realmente nos dicen">52,000 filings: what the eviction data really tells us</h3><div class="bcard-meta" data-es="Agosto 2026 · 5 min de lectura">August 2026 · 5 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-school"></i><span>Education post thumbnail</span></div><span class="bcard-tag" data-es="Educación">Education</span><h3 class="bcard-t" data-es="La composición racial de las escuelas de North Meck, explicada">The racial makeup of North Meck schools, explained</h3><div class="bcard-meta" data-es="Mayo 2025 · 3 min de lectura">May 2025 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-chart-bar"></i><span>Data equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad de datos">Data equity</span><h3 class="bcard-t" data-es="Por qué algunos vecindarios quedan fuera de los datos">Why some neighborhoods get left out of the data</h3><div class="bcard-meta" data-es="Marzo 2025 · 3 min de lectura">March 2025 · 3 min read</div></article>
-        </div>
-      </div>
-    </div>
-  </section>
+      <div class="sec-head"><span class="eyebrow">Academic Performance</span><h2 class="sec-h">How are students performing, and which schools are improving?</h2><p class="lead">NC end-of-grade proficiency rates, school performance grades, and graduation rates paint a picture of academic outcomes across North Meck schools — and how they compare to the district and state.</p></div>
 
-  <!-- CBR / ABOUT -->
-  <section class="section alt">
-    <div class="wrap split" style="align-items:stretch">
-      <div>
-        <div class="sec-head" style="margin-bottom:18px">
-          <span class="eyebrow" style="font-size:15px" data-es="Nuestro enfoque">Our approach</span>
-          <h2 class="sec-h" style="margin-bottom:9px;font-size:32px" data-es="¿Qué es la investigación basada en la comunidad?">What is community-based research?</h2>
-          <p class="lead" data-es="Investigación que parte de las necesidades de la propia comunidad, no desde afuera hacia adentro.">Research that begins with the needs of the community itself and not from the outside in.</p>
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Reading proficiency rate by school (2018–2023)</div>
+          <div class="card-s">% students at or above grade level</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NC DPI School Report Cards</div>
+          </div>
         </div>
-        <div class="prose" style="max-width:560px">
-          <p data-es="La investigación basada en la comunidad se define como una forma de investigación en la que la pregunta surge de las necesidades de un grupo de personas.">Community-based research is defined as a form of investigation in which the question arises from the needs of a group of individuals. The Community Research Fellows use this approach, including the voices of community members and leaders within data collection and presentation, to produce the most comprehensive and accurate picture of North Mecklenburg possible.</p>
-          <p class="meta" style="margin-top:2px">Beckman &amp; Long, 2016, p. 1</p>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Math proficiency rate by school (2018–2023)</div>
+          <div class="card-s">% students at or above grade level</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NC DPI School Report Cards</div>
+          </div>
         </div>
-        <button class="btn btn-o" style="font-size:13.5px;padding:10px 18px;margin-top:24px" onclick="window.location='about.html';setTimeout(function(){var e=document.getElementById('about-partners');if(e)window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-90,behavior:'smooth'});},130)" data-es="Conoce a nuestros socios">Meet our partners</button>
       </div>
-      <img src="images/cbr-photo.jpg" alt="Davidson students talking with a North Meck resident" style="width:100%;height:100%;min-height:360px;object-fit:cover;border-radius:var(--rl);display:block">
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">NC School Performance Grades (A–F) by school</div>
+          <div class="card-s">Annual letter grades assigned by NC DPI</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NC DPI School Performance Grades</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">4-year graduation rate — North Meck high schools vs. CMS avg</div>
+          <div class="card-s">Cohort graduation rate · Hough High &amp; North Mecklenburg High</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NC DPI Graduation &amp; Dropout reports</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card viz-host" style="margin-bottom:28px;border:1px dashed var(--line-2);background:var(--paper-2)">
+        <div class="card-t" style="color:var(--ink-2)">Chronic absenteeism rate by school</div>
+        <div class="card-s">% students missing 10%+ of school days</div>
+        <div style="padding:64px 0;text-align:center;color:var(--ink-3)">
+          <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+          <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+          <div style="font-size:12px;margin-top:4px">Source: EDFacts / NC DPI chronic absence data</div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
+
+  <!-- TAB: resources & staffing -->
+  <div class="tabpane" data-pane="ed-resources">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Resources &amp; Staffing</span><h2 class="sec-h">Are schools adequately staffed and funded as enrollment climbs?</h2><p class="lead">Teacher-to-student ratios, per-pupil expenditure, and staff counts reveal whether resources are keeping pace with growth — and whether all North Meck schools receive equitable investment.</p></div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Pupil-to-teacher ratio by school (2018–2023)</div>
+          <div class="card-s">Total enrollment ÷ FTE teachers Staff Universe Survey</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD Staff Universe Survey</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Per-pupil expenditure — CMS vs. NC average (2018–2022)</div>
+          <div class="card-s">Total spending per student Finance Survey (F-33)</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD F-33 Finance Survey</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Instructional vs. administrative spending breakdown</div>
+          <div class="card-s">Share of per-pupil budget by expenditure category</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD F-33 Finance Survey</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Total staff count per school over time</div>
+          <div class="card-s">FTE teachers, aides, and administrators</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD Staff Universe Survey</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: educational attainment -->
+  <div class="tabpane" data-pane="ed-attainment">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Educational Attainment</span><h2 class="sec-h">What is the education level of the adults who live here?</h2><p class="lead">Resident educational attainment shapes the workforce, economic mobility, and civic life of a community. In North Meck, attainment varies meaningfully across the three towns — and has shifted as the population has grown.</p></div>
+
+      <!-- Bachelor's+ Rate Trend -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Bachelor's+ Rate Trend</div>
+        <div class="card-s">% adults 25+ with a bachelor's degree or higher · 2018–2023</div>
+        <div id="chart-bach-trend"></div>
+        <div class="callout">
+          <div class="callout-t">Davidson's highly educated population (home to Davidson College) keeps its attainment rate among the highest in the region. Cornelius has climbed steadily to nearly 60% bachelor's or higher by 2023.</div>
+          <div class="callout-s">Source: ACS 2018–2023 · Table B15003 · adults 25+ · Note: Davidson figures show year-to-year variation typical of small-population ACS estimates · Huntersville 2023 excluded (data anomaly)</div>
+        </div>
+        
+      </div>
+
+      <!-- Attainment Breakdown 2022 -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Attainment Breakdown, 2022</div>
+        <div class="card-s">Distribution of educational attainment for adults 25+ · by town</div>
+        <div id="chart-attainment-breakdown"></div>
+        <div class="callout">
+          <div class="callout-t">Cornelius and Huntersville show similar attainment profiles. Davidson's 2022 snapshot reflects ACS sample variability — its 2023 figure (75.6% bachelor's or higher) better reflects the long-run pattern.</div>
+          <div class="callout-s">Source: ACS 2022 · Table B15003 · 2022 used for consistent cross-town comparison · Note: Davidson 2022 shows ACS sampling artifact; 2023 value is 75.6%</div>
+        </div>
+        
+      </div>
+
+      <!-- Median Earnings by Education Level -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Median Earnings by Education Level, 2024</div>
+        <div class="card-s">Annual median earnings for full-time year-round workers 25+ · by education level and town</div>
+        <div id="chart-earnings"></div>
+        <div class="callout">
+          <div class="callout-t">A bachelor's degree is worth roughly $44,000–$90,000 more per year than a high school diploma across all three towns. Davidson's graduate-degree earners average over $150k annually — among the highest in the Charlotte metro.</div>
+          <div class="callout-s">Source: ACS 2024 · Table S1501 · median earnings for full-time year-round workers 25+ · Davidson HS-diploma figure suppressed by Census (small sample)</div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
 
 </div>
 <footer>
@@ -508,5 +693,6 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.js"></script>
 <script src="js/main.js"></script>
+<script type="module" src="js/education.js"></script>
 </body>
 </html>

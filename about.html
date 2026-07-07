@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>North Meck Insights</title>
+<title>About · North Meck Insights</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -108,168 +108,99 @@
 </nav>
 <div class="page active" style="display:block">
 
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-text">
-        <span class="eyebrow hero-eyebrow" style="margin-bottom:6px;line-height:0;font-size:0"></span>
-        <h1 class="hero-h1" style="font-family:Times;font-size:56px;color:rgb(0,0,0)"><span data-es="Entendiendo el norte de Mecklenburg,">Understanding North Mecklenburg,</span> <span style="color:var(--accent)" data-es="un vecino a la vez.">one neighbor at a time.</span></h1>
-        <p class="hero-sub" data-es="Datos públicos y claros sobre vivienda, educación y salud en el norte de Mecklenburg, investigados por estudiantes de Davidson College y creados para quienes viven aquí.">Clear, public data on housing, education, and healthcare in North Mecklenburg, researched by Davidson College students and built for the people who live here.</p>
-        <div class="hero-btns">
-          <button class="btn btn-p" onclick="window.location='data.html'"><i class="ti ti-chart-histogram"></i> <span data-es="Explora los datos">Explore the data</span></button>
-          <button class="btn btn-o" onclick="openMap()"><i class="ti ti-map-2"></i> <span data-es="Explora el mapa">Explore the map</span></button>
+  <div class="wrap"><div class="crumb"><a onclick="window.location='index.html'">Home</a><i class="ti ti-chevron-right"></i><span>About</span></div></div>
+  <section class="section"><div class="wrap">
+    <div class="split" style="align-items:stretch;grid-template-columns:1fr 1.15fr">
+      <div class="prose">
+        <span class="eyebrow" style="font-size:15px">About the project</span>
+        <h2 class="sec-h" style="margin:14px 0 18px;font-size:32px">Community Research Fellows</h2>
+        <p>The Community Research Fellows program at Davidson College pairs students with faculty advisors and community partners to produce public-interest research. Cohorts take on a range of community-driven projects; the work gathered on this portal focuses on North Mecklenburg, each summer adding one new community determinant to the site.</p>
+        <p>We use open public data only. The U.S. Census Bureau, HUD, Mecklenburg County records, and published reports. Everything is cited and downloadable.</p>
+        <div class="callout info" style="margin-top:8px;max-width:none"><div class="callout-t">Data equity is central to how we work. We apply a diversity, equity, and inclusion lens to how we collect, analyze, and present data, amplifying voices often left out of official statistics.</div><div class="callout-s">Beckman &amp; Long, 2016 · Urban Institute Data Equity Framework, 2021</div></div>
+        <p style="margin-top:20px">Every cohort, its team, and its project now live on a dedicated Community Research Fellows site with a fuller record of six years of work than this portal can hold.</p>
+        <div class="crf-cta">
+          <a class="btn btn-o" href="#" onclick="return false" title="URL coming soon">Explore all CRF work <i class="ti ti-arrow-up-right"></i></a>
+          <span class="crf-soon">Link coming soon</span>
         </div>
       </div>
-      <div class="hero-media">
-        <img class="hero-media-single" src="images/hero.jpg" alt="Neighbors walking together in a North Meck park" style="width:100%;height:100%;object-fit:cover;border-radius:var(--rl)">
-      </div>
+      <div class="ph" style="width:100%;height:100%;min-height:360px;border-radius:var(--rl);border:1px solid var(--line)"><i class="ti ti-users"></i><span>Community Research Fellows at work in North Meck</span></div>
     </div>
-  </section>
 
-  <!-- DATA SPOTLIGHT -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head spot-head">
-        <div class="spot-eyebrow-row">
-          <span class="eyebrow" style="font-size:15px" data-es="Dato destacado">Data Spotlight</span>
-        </div>
-        <h2 class="sec-h spot-h" id="spotH" style="font-size:32px">The housing squeeze, in four numbers</h2>
-        <button class="spot-topic" id="spotTopic" type="button" data-topic="housing" title="Open the Housing dashboard" onclick="window.location.href=(this.dataset.topic||'housing')+'.html'"><i class="ti ti-building-community" id="spotTopicIcon"></i><span id="spotTopicName" style="font-size:14px">Housing</span><i class="ti ti-arrow-narrow-right spot-topic-go"></i></button>
-        <p class="lead spot-lead" id="spotLead">A quick read on affordability in North Meck. The fuller picture lives in the topic dashboards.</p>
-      </div>
-      <div class="spot-carousel">
-        <button class="spot-arrow spot-prev" id="spotPrev" aria-label="Previous topic" onclick="spotStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow spot-next" id="spotNext" aria-label="Next topic" onclick="spotStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="spot-track" id="spotTrack">
-          <div class="spot-slide" data-topic="housing">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">52%</div><div class="stat-l">rent rise in Huntersville, 2018–2024 ($1,196 → $1,820/mo)</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</span></div>
-              <div class="stat"><div class="stat-n warn">20+ yrs</div><div class="stat-l">of gross income to buy the median home, for a $20k–$35k household</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n"><span class="cur">$</span>693k</div><div class="stat-l">median home in Davidson, 4× the U.S. national median</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">~10 yrs</div><div class="stat-l">to save a 20% down payment at a 10% annual savings rate</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+    <!-- PARTNERS -->
+    <div style="margin-top:52px" id="about-partners">
+      <span class="eyebrow" style="font-size:15px">Our partners</span>
+      <h2 class="sec-h" style="margin:14px 0 12px;font-size:32px">Who we build this for</h2>
+      <p class="lead" style="max-width:720px">This portal is made with and for the institutions working on the ground in North Mecklenburg, specifically the people who turn data into services, programs, and policy.</p>
+      <div class="partners">
+
+        <!-- Mulliss Center -->
+        <div class="partner">
+          <div class="partner-body">
+            <span class="partner-eyebrow">A program of the Martin Institute</span>
+            <h3 class="partner-name">William F. and Betty G. Mulliss Center for Civic Engagement</h3>
+            <p class="partner-desc">Formerly Davidson's Center for Civic Engagement, the Mulliss Center connects students, faculty, and staff with public and nonprofit organizations to drive positive, community-driven change. It is the campus home of the Community Research Fellows program behind this portal, and the bridge between Davidson's classrooms and the towns of North Mecklenburg. The center sits within the D.G. and Harriet Wall Martin Institute for Public Good, Davidson's civic hub launched in 2025 with $47 million in support, and serves as its civic-engagement program area.</p>
+            <p class="partner-desc">Its programming runs from introductory service experiences to immersive summer internships, community-based learning courses, and leadership development, pairing rigorous academic work with real community needs. Renamed in 2026 for William F. '33 and Betty G. Mulliss, the center's directorship is now endowed to sustain that work for the long term, ensuring each new cohort of fellows can build on the last.</p>
+            <div class="partner-facts">
+              <span class="partner-fact">Community-based learning</span>
+              <span class="partner-fact">Summer internships</span>
+              <span class="partner-fact">Home of the CRF program</span>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="housing" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
-          <div class="spot-slide" data-topic="education">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">63%</div><div class="stat-l" data-es="de los alumnos de 3.º grado leen al nivel de su grado">of 3rd graders reading at grade level</div><span class="stat-src">NC DPI, 2024</span></div>
-              <div class="stat"><div class="stat-n">19:1</div><div class="stat-l" data-es="proporción de alumnos por maestro en escuelas públicas">student-to-teacher ratio in public schools</div><span class="stat-src">NC DPI, 2024</span></div>
-              <div class="stat"><div class="stat-n"><span class="cur">$</span>14,320</div><div class="stat-l" data-es="gasto por alumno, por debajo del promedio estatal">per-pupil spending, below the state average</div><span class="stat-src">NCES, 2024</span></div>
-              <div class="stat"><div class="stat-n warn" data-es="1 de 4">1 in 4</div><div class="stat-l" data-es="estudiantes de secundaria con ausentismo crónico en 2024">high schoolers chronically absent in 2024</div><span class="stat-src" data-es="CMS AF2024">CMS FY24</span></div>
+          <div class="partner-aside">
+            <div class="partner-logo"><img src="images/mulliss-logo.png" alt="William F. and Betty G. Mulliss Center for Civic Engagement" style="width:260px;max-width:100%;height:132px;object-fit:contain;display:block"></div>
+            <div class="partner-recent">
+              <p class="partner-recent-h">Recent work</p>
+              <ul>
+                <li><i class="ti ti-point-filled"></i><a href="https://www.davidson.edu/news/2026/02/26/davidson-college-secures-47-million-launch-martin-institute-public-good" target="_blank" rel="noopener">Renamed for William F. '33 and Betty G. Mulliss (2026)</a></li>
+                <li><i class="ti ti-point-filled"></i><a href="https://www.davidson.edu/news/2026/02/26/davidson-college-secures-47-million-launch-martin-institute-public-good" target="_blank" rel="noopener">Director's chair endowed by Katie '90 &amp; Stan Humphries '90</a></li>
+                <li><i class="ti ti-point-filled"></i><a href="#" onclick="return false">Anchors the Community Research Fellows program</a></li>
+              </ul>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="education" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
+            <div class="partner-cta"><a class="btn btn-o" href="https://www.davidson.edu/offices-and-services/civic-engagement" target="_blank" rel="noopener">Visit the Mulliss Center <i class="ti ti-arrow-up-right"></i></a></div>
           </div>
-          <div class="spot-slide" data-topic="healthcare">
-            <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">5%</div><div class="stat-l">of residents uninsured in Cornelius &amp; Huntersville — thousands without a safety net</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n warn">26–34</div><div class="stat-l">age group with the highest uninsured rate — off parental plans, often no employer coverage</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">3×</div><div class="stat-l">more likely to be uninsured if your household earns under k vs. over k</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">93%</div><div class="stat-l">of employed residents have coverage — vs. under 70% for unemployed residents</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+        </div>
+
+        <!-- Ada Jenkins -->
+        <div class="partner">
+          <div class="partner-body">
+            <span class="partner-eyebrow">COMMUNITY PARTNER · DAVIDSON COLLEGE</span>
+            <h3 class="partner-name">Ada Jenkins Center</h3>
+            <p class="partner-desc">Born from a 1937 schoolhouse and reopened as a family-services center in 1994, the Ada Jenkins Center helps families in Cornelius, Davidson, and Huntersville create lasting solutions for health, education, and economic stability. It has grown into a resource hub for all of North Mecklenburg and a well-respected model for community centers across the region.</p>
+            <p class="partner-desc">Using a two-generation, "client-partner" model, it brings education, food security, and economic mobility under one roof: the LEARN Works afterschool program, a Nourish Up food-pantry site, Free Tax Prep Meck, emergency financial assistance, and rapid-rehousing support. Together these reach more than 5,000 people each year. The center also powers North Meck Connect, a free directory that links North Mecklenburg residents to dozens of local partner agencies for food, housing, health, and financial help.</p>
+            <div class="partner-facts">
+              <span class="partner-fact">5,000+ people served a year</span>
+              <span class="partner-fact">LEARN Works afterschool · 25+ yrs</span>
+              <span class="partner-fact">Nourish Up food pantry site</span>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="healthcare" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
+          </div>
+          <div class="partner-aside">
+            <div class="partner-logo"><img src="images/ada-jenkins-logo.png" alt="Ada Jenkins Center" style="width:260px;max-width:100%;height:132px;object-fit:contain;display:block"></div>
+            <div class="partner-recent">
+              <p class="partner-recent-h">Recent work</p>
+              <ul>
+                <li><i class="ti ti-point-filled"></i><a href="https://northmeckconnect.org" target="_blank" rel="noopener">North Meck Connect: a 59-agency resource directory</a></li>
+                <li><i class="ti ti-point-filled"></i><a href="https://www.adajenkins.org/about-us/news/" target="_blank" rel="noopener">Curry Brand renovates the center's gym and basketball court</a></li>
+                <li><i class="ti ti-point-filled"></i><a href="https://www.adajenkins.org/services/education/" target="_blank" rel="noopener">LEARN Works, the area's only free reading-focused afterschool program</a></li>
+              </ul>
+            </div>
+            <div class="partner-cta" style="display:flex;flex-wrap:wrap;gap:10px"><a class="btn btn-o" href="https://adajenkins.org" target="_blank" rel="noopener">Visit the Ada Jenkins Center <i class="ti ti-arrow-up-right"></i></a><a class="btn btn-o" href="https://northmeckconnect.org" target="_blank" rel="noopener">North Meck Connect <i class="ti ti-arrow-up-right"></i></a></div>
           </div>
         </div>
-        <div class="spot-dots" id="spotDots"></div>
-      </div>
-    </div>
-  </section>
 
-  <!-- TOPICS -->
-  <section class="section alt">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="Temas">Topics</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="¿Qué define la vida diaria aquí?">What shapes daily life here?</h2>
-        <p class="lead" data-es="Cada tema tiene su propio panel. La asequibilidad es el hilo que recorre todos ellos.">Each topic gets its own dashboard. Affordability is the thread that runs through all of them.</p>
       </div>
-      <div class="topics-carousel">
-        <div class="topics" id="topicsTrack">
-          <div class="tcard is-active" onclick="window.location='housing.html'">
-            <div class="tc-icon"><i class="ti ti-building-community"></i></div>
-            <div class="tc-t" data-es="Vivienda">Housing</div>
-            <div class="tc-b" data-es="Rentas, carga de costo, desalojos y la brecha de asequibilidad en North Meck.">Rents, cost burden, evictions, and the affordability gap across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jun 2026">Last Updated: Jun 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
-          </div>
-          <div class="tcard" onclick="window.location='education.html'">
-            <div class="tc-icon"><i class="ti ti-school"></i></div>
-            <div class="tc-t" data-es="Educación">Education</div>
-            <div class="tc-b" data-es="Matrícula K–12, composición escolar y acceso por vecindario.">K–12 enrollment, school composition, and access by neighborhood.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="En desarrollo · 2026">In development · 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
-          </div>
-          <div class="tcard" onclick="window.location='healthcare.html'">
-            <div class="tc-icon"><i class="ti ti-heartbeat"></i></div>
-            <div class="tc-t" data-es="Salud">Healthcare</div>
-            <div class="tc-b" data-es="Acceso a la atención, cobertura de seguro y resultados de salud en North Meck.">Access to care, insurance coverage, and health outcomes across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot">In development · 2026</span><span class="tc-go">Open →</span></div>
-          </div>
-        </div>
-      </div>
-      <p class="topics-note"><i class="ti ti-seeding"></i> <span data-es="La seguridad alimentaria y otros temas son agregados por cada nueva generación de Fellows cada verano.">New topics are added by each incoming cohort of CRF Fellows.</span></p>
     </div>
-  </section>
 
-  <!-- UNITED NEIGHBORHOODS TEASER -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="VECINDARIOS UNIDOS">UNITED NEIGHBORHOODS</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Los lugares con historias que contar">The places with stories to tell</h2>
-        <p class="lead" data-es="Dentro de Davidson, Cornelius y Huntersville hay cinco vecindarios que cargan generaciones de historia.">Within Davidson, Cornelius, and Huntersville are five neighborhoods carrying generations of history. Explore who they are and why they matter.</p>
-      </div>
-      <div class="nbhd-carousel">
-        <button class="spot-arrow nbhd-prev" id="nbhdPrev" aria-label="Previous neighborhoods" onclick="nbhdStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow nbhd-next" id="nbhdNext" aria-label="More neighborhoods" onclick="nbhdStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="nbhd-grid" id="nbhdTrack">
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-pottstown'"><span class="town">HUNTERSVILLE</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Pottstown</span><span class="ds" data-es="Un vecindario históricamente afroamericano con raíces profundas en Huntersville.">A historically African American neighborhood with deep roots in Huntersville.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-westdavidson'"><span class="town">Davidson</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>West Davidson</span><span class="ds" data-es="Una comunidad arraigada en el lado oeste del pueblo, con su propia historia.">A long-standing community on the west side of town, with its own history.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-smithville'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Smithville</span><span class="ds" data-es="Una de las comunidades afroamericanas más antiguas de Cornelius, enfrentando cambios.">One of Cornelius's oldest African American communities, facing change.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-huntingtongreen'"><span class="town">Huntersville</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Huntington Green</span><span class="ds" data-es="Un vecindario en Huntersville con una historia que vale la pena contar.">A neighborhood in Huntersville with a story worth telling.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-eastcatawba'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>East Catawba</span><span class="ds" data-es="El quinto vecindario unido; su historia y datos aún se están recopilando.">The fifth united neighborhood. Its history and data are still being gathered.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-        </div>
-      </div>
-      <button class="btn btn-o" style="margin-top:26px" onclick="window.location='neighborhoods.html'"><i class="ti ti-map-2"></i> <span data-es="Explora los vecindarios">Explore the neighborhoods</span></button>
-    </div>
-  </section>
-
-  <!-- STORIES PREVIEW -->
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="HISTORIAS">STORIES</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Lo que encontramos y por qué importa">What we found, and why it matters</h2>
-        <p class="lead" data-es="Lecturas breves para quienes viven aquí: claras, cortas y sin tecnicismos.">Short reads for the people who live here that are clear, brief, and jargon-free.</p>
-      </div>
-      <div class="blog-carousel">
-        <button class="spot-arrow blog-prev" id="blogPrev" aria-label="Previous posts" onclick="blogStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow blog-next" id="blogNext" aria-label="More posts" onclick="blogStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
-        <div class="blog-track" id="blogTrack">
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-cash"></i><span>Housing post thumbnail</span></div><span class="bcard-tag" data-es="Vivienda">Housing</span><h3 class="bcard-t" data-es="Por qué ahora se necesitan $31 por hora para pagar un apartamento de una habitación">Why it now takes $31 an hour to afford a one-bedroom</h3><div class="bcard-meta" data-es="Junio 2026 · 3 min de lectura">June 2026 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-scale"></i><span>Equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad">Equity</span><h3 class="bcard-t" data-es="Los inquilinos negros tienen el doble de probabilidad de estar sobrecargados por el costo">Black renters are twice as likely to be cost-burdened</h3><div class="bcard-meta" data-es="Julio 2026 · 4 min de lectura">July 2026 · 4 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-trending-up"></i><span>Evictions post thumbnail</span></div><span class="bcard-tag" data-es="Desalojos">Evictions</span><h3 class="bcard-t" data-es="52,000 demandas: lo que los datos de desalojo realmente nos dicen">52,000 filings: what the eviction data really tells us</h3><div class="bcard-meta" data-es="Agosto 2026 · 5 min de lectura">August 2026 · 5 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-school"></i><span>Education post thumbnail</span></div><span class="bcard-tag" data-es="Educación">Education</span><h3 class="bcard-t" data-es="La composición racial de las escuelas de North Meck, explicada">The racial makeup of North Meck schools, explained</h3><div class="bcard-meta" data-es="Mayo 2025 · 3 min de lectura">May 2025 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-chart-bar"></i><span>Data equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad de datos">Data equity</span><h3 class="bcard-t" data-es="Por qué algunos vecindarios quedan fuera de los datos">Why some neighborhoods get left out of the data</h3><div class="bcard-meta" data-es="Marzo 2025 · 3 min de lectura">March 2025 · 3 min read</div></article>
-        </div>
+    <!-- ACCESSIBILITY -->
+    <div style="margin-top:28px">
+      <span class="eyebrow" style="display:block;font-size:15px">Accessibility</span>
+      <div class="a11y" style="margin-top:14px">
+        <span class="a11y-chip" style="color:var(--ink-3);border-color:var(--line-2)">WCAG 2.1 AA</span>
+        <span class="a11y-chip" style="color:var(--ink-3);border-color:var(--line-2)">Viridis palette</span>
+        <span class="a11y-chip" style="color:var(--ink-3);border-color:var(--line-2)">Alt text on visuals</span>
+        <span class="a11y-chip" style="color:var(--ink-3);border-color:var(--line-2)">Plain language</span>
       </div>
     </div>
-  </section>
-
-  <!-- CBR / ABOUT -->
-  <section class="section alt">
-    <div class="wrap split" style="align-items:stretch">
-      <div>
-        <div class="sec-head" style="margin-bottom:18px">
-          <span class="eyebrow" style="font-size:15px" data-es="Nuestro enfoque">Our approach</span>
-          <h2 class="sec-h" style="margin-bottom:9px;font-size:32px" data-es="¿Qué es la investigación basada en la comunidad?">What is community-based research?</h2>
-          <p class="lead" data-es="Investigación que parte de las necesidades de la propia comunidad, no desde afuera hacia adentro.">Research that begins with the needs of the community itself and not from the outside in.</p>
-        </div>
-        <div class="prose" style="max-width:560px">
-          <p data-es="La investigación basada en la comunidad se define como una forma de investigación en la que la pregunta surge de las necesidades de un grupo de personas.">Community-based research is defined as a form of investigation in which the question arises from the needs of a group of individuals. The Community Research Fellows use this approach, including the voices of community members and leaders within data collection and presentation, to produce the most comprehensive and accurate picture of North Mecklenburg possible.</p>
-          <p class="meta" style="margin-top:2px">Beckman &amp; Long, 2016, p. 1</p>
-        </div>
-        <button class="btn btn-o" style="font-size:13.5px;padding:10px 18px;margin-top:24px" onclick="window.location='about.html';setTimeout(function(){var e=document.getElementById('about-partners');if(e)window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-90,behavior:'smooth'});},130)" data-es="Conoce a nuestros socios">Meet our partners</button>
-      </div>
-      <img src="images/cbr-photo.jpg" alt="Davidson students talking with a North Meck resident" style="width:100%;height:100%;min-height:360px;object-fit:cover;border-radius:var(--rl);display:block">
-    </div>
-  </section>
+  </div></section>
 
 </div>
 <footer>
