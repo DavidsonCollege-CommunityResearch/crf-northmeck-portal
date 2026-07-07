@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<BaseLayout title="About · North Meck Insights">
+
+<div class="page active" style="display:block">
+
+  <div class="wrap"><div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span>About</span></div></div>
+  <section class="section"><div class="wrap">
+    <div class="split" style="align-items:stretch;grid-template-columns:1fr 1.15fr">
+      <div class="prose">
+        <span class="eyebrow" style="font-size:15px">About the project</span>
+        <h2 class="sec-h" style="margin:14px 0 18px;font-size:32px">Community Research Fellows</h2>
+        <p>The Community Research Fellows program at Davidson College pairs students with faculty advisors and community partners to produce public-interest research. Cohorts take on a range of community-driven projects; the work gathered on this portal focuses on North Mecklenburg, each summer adding one new community determinant to the site.</p>
+        <p>We use open public data only. The U.S. Census Bureau, HUD, Mecklenburg County records, and published reports. Everything is cited and downloadable.</p>
+        <div class="callout info" style="margin-top:8px;max-width:none"><div class="callout-t">Data equity is central to how we work. We apply a diversity, equity, and inclusion lens to how we collect, analyze, and present data, amplifying voices often left out of official statistics.</div><div class="callout-s">Beckman &amp; Long, 2016 · Urban Institute Data Equity Framework, 2021</div></div>
+        <p style="margin-top:20px">Every cohort, its team, and its project now live on a dedicated Community Research Fellows site with a fuller record of six years of work than this portal can hold.</p>
+        <div class="crf-cta">
+          <a class="btn btn-o" href="#" onclick="return false" title="URL coming soon">Explore all CRF work <i class="ti ti-arrow-up-right"></i></a>
+          <span class="crf-soon">Link coming soon</span>
+        </div>
+      </div>
+      <div class="ph" style="width:100%;height:100%;min-height:360px;border-radius:var(--rl);border:1px solid var(--line)"><i class="ti ti-users"></i><span>Community Research Fellows at work in North Meck</span></div>
+    </div>
+
+    <!-- PARTNERS -->
+    <div style="margin-top:52px" id="about-partners">
+      <span class="eyebrow" style="font-size:15px">Our partners</span>
+      <h2 class="sec-h" style="margin:14px 0 12px;font-size:32px">Who we build this for</h2>
+      <p class="lead" style="max-width:720px">This portal is made with and for the institutions working on the ground in North Mecklenburg, specifically the people who turn data into services, programs, and policy.</p>
+      <div class="partners">
+
+        <!-- Mulliss Center -->
+        <div class="partner">
+          <div class="partner-body">
+            <span class="partner-eyebrow">A program of the Martin Institute</span>
+            <h3 class="partner-name">William F. and Betty G. Mulliss Center for Civic Engagement</h3>
+            <p class="partner-desc">Formerly Davidson's Center for Civic Engagement, the Mulliss Center connects students, faculty, and staff with public and nonprofit organizations to drive positive, community-driven change. It is the campus home of the Community Research Fellows program behind this portal, and the bridge between Davidson's classrooms and the towns of North Mecklenburg. The center sits within the D.G. and Harriet Wall Martin Institute for Public Good, Davidson's civic hub launched in 2025 with $47 million in support, and serves as its civic-engagement program area.</p>
+            <p class="partner-desc">Its programming runs from introductory service experiences to immersive summer internships, community-based learning courses, and leadership development, pairing rigorous academic work with real community needs. Renamed in 2026 for William F. '33 and Betty G. Mulliss, the center's directorship is now endowed to sustain that work for the long term, ensuring each new cohort of fellows can build on the last.</p>
+            <div class="partner-facts">
+              <span class="partner-fact">Community-based learning</span>
+              <span class="partner-fact">Summer internships</span>
+              <span class="partner-fact">Home of the CRF program</span>
+            </div>
+          </div>
+          <div class="partner-aside">
+            <div class="partner-logo"><img src="images/mulliss-logo.png" alt="William F. and Betty G. Mulliss Center for Civic Engagement" style="width:260px;max-width:100%;height:132px;object-fit:contain;display:block"></div>
+            <div class="partner-recent">
+              <p class="partner-recent-h">Recent work</p>
+              <ul>
+                <li><i class="ti ti-point-filled"></i><a href="https://www.davidson.edu/news/2026/02/26/davidson-college-secures-47-million-launch-martin-institute-public-good" target="_blank" rel="noopener">Renamed for William F. '33 and Betty G. Mulliss (2026)</a></li>
+                <li><i class="ti ti-point-filled"></i><a href="https://www.davidson.edu/news/2026/02/26/davidson-college-secures-47-million-launch-martin-institute-public-good" target="_blank" rel="noopener">Director's chair endowed by Katie '90 &amp; Stan Humphries '90</a></li>
+                <li><i class="ti ti-point-filled"></i><a href="#" onclick="return false">Anchors the Community Research Fellows program</a></li>
+              </ul>
+            </div>
+            <div class="partner-cta"><a class="btn btn-o" href="https://www.davidson.edu/offices-and-services/civic-engagement" target="_blank" rel="noopener">Visit the Mulliss Center <i class="ti ti-arrow-up-right"></i></a></div>
+          </div>
+        </div>
+
+        <!-- Ada Jenkins -->
+        <div class="partner">
+          <div class="partner-body">
+            <span class="partner-eyebrow">COMMUNITY PARTNER · DAVIDSON COLLEGE</span>
+            <h3 class="partner-name">Ada Jenkins Center</h3>
+            <p class="partner-desc">Born from a 1937 schoolhouse and reopened as a family-services center in 1994, the Ada Jenkins Center helps families in Cornelius, Davidson, and Huntersville create lasting solutions for health, education, and economic stability. It has grown into a resource hub for all of North Mecklenburg and a well-respected model for community centers across the region.</p>
+            <p class="partner-desc">Using a two-generation, "client-partner" model, it brings education, food security, and economic mobility under one roof: the LEARN Works afterschool program, a Nourish Up food-pantry site, Free Tax Prep Meck, emergency financial assistance, and rapid-rehousing support. Together these reach more than 5,000 people each year. The center also powers North Meck Connect, a free directory that links North Mecklenburg residents to dozens of local partner agencies for food, housing, health, and financial help.</p>
+            <div class="partner-facts">
+              <span class="partner-fact">5,000+ people served a year</span>
+              <span class="partner-fact">LEARN Works afterschool · 25+ yrs</span>
+              <span class="partner-fact">Nourish Up food pantry site</span>
+            </div>
+          </div>
+          <div class="partner-aside">
+            <div class="partner-logo"><img src="images/ada-jenkins-logo.png" alt="Ada Jenkins Center" style="width:260px;max-width:100%;height:132px;object-fit:contain;display:block"></div>
+            <div class="partner-recent">
+              <p class="partner-recent-h">Recent work</p>
+              <ul>
+                <li><i class="ti ti-point-filled"></i><a href="https://northmeckconnect.org" target="_blank" rel="noopener">North Meck Connect: a 59-agency resource directory</a></li>
+                <li><i class="ti ti-point-filled"></i><a href="https://www.adajenkins.org/about-us/news/" target="_blank" rel="noopener">Curry Brand renovates the center's gym and basketball court</a></li>
+                <li><i class="ti ti-point-filled"></i><a href="https://www.adajenkins.org/services/education/" target="_blank" rel="noopener">LEARN Works, the area's only free reading-focused afterschool program</a></li>
+              </ul>
+            </div>
+            <div class="partner-cta" style="display:flex;flex-wrap:wrap;gap:10px"><a class="btn btn-o" href="https://adajenkins.org" target="_blank" rel="noopener">Visit the Ada Jenkins Center <i class="ti ti-arrow-up-right"></i></a><a class="btn btn-o" href="https://northmeckconnect.org" target="_blank" rel="noopener">North Meck Connect <i class="ti ti-arrow-up-right"></i></a></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ACCESSIBILITY -->
+    <div style="margin-top:28px">
+      <span class="eyebrow" style="display:block;font-size:15px">Accessibility</span>
+      <div class="a11y" style="margin-top:14px">
+        <span class="a11y-chip" style="color:var(--ink-3);border-color:var(--line-2)">WCAG 2.1 AA</span>
+        <span class="a11y-chip" style="color:var(--ink-3);border-color:var(--line-2)">Viridis palette</span>
+        <span class="a11y-chip" style="color:var(--ink-3);border-color:var(--line-2)">Alt text on visuals</span>
+        <span class="a11y-chip" style="color:var(--ink-3);border-color:var(--line-2)">Plain language</span>
+      </div>
+    </div>
+  </div></section>
+
+</div>
+</BaseLayout>
