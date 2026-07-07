@@ -1,0 +1,358 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<BaseLayout title="Education · North Meck Insights">
+
+<div class="page active" style="display:block">
+
+  <div class="wrap">
+    <div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span>Education</span></div>
+    <div class="dash-hero" style="margin-bottom:56px">
+      <div class="split" style="align-items:flex-start">
+        <div>
+          <span class="eyebrow" style="font-size:15px">K–12 Education</span>
+          <h1 class="dash-h1">Are North Meck schools keeping pace with rapid growth?</h1>
+          <p class="lead dash-lead" style="margin-bottom:0">Enrollment has surged as families move into Cornelius, Davidson, and Huntersville — but school capacity, staffing, and resources haven't always kept up. This section follows the data on who is in the classroom, how schools are performing, and where gaps are widest.</p>
+        </div>
+      </div>
+    </div>
+    <div class="tabs" id="education-tabs">
+      <span class="tab active" data-tab="ed-overview" onclick="setTab(this)">Overview</span>
+      <span class="tab" data-tab="ed-enrollment" onclick="setTab(this)">Enrollment &amp; Growth</span>
+      <span class="tab" data-tab="ed-demographics" onclick="setTab(this)">School Demographics</span>
+      <span class="tab" data-tab="ed-performance" onclick="setTab(this)">Academic Performance</span>
+      <span class="tab" data-tab="ed-resources" onclick="setTab(this)">Resources &amp; Staffing</span>
+      <span class="tab" data-tab="ed-attainment" onclick="setTab(this)">Educational Attainment</span>
+    </div>
+  </div>
+  <div class="wrap dash-filter">
+    <div class="filterbar">
+      <span class="lbl">Area:</span>
+      <span class="chip on" onclick="setChip(this)">All North Meck</span>
+      <span class="chip" onclick="setChip(this)">Cornelius</span>
+      <span class="chip" onclick="setChip(this)">Davidson</span>
+      <span class="chip" onclick="setChip(this)">Huntersville</span>
+      <span class="hint">filters every chart</span>
+    </div>
+  </div>
+
+  <!-- TAB: overview -->
+  <div class="tabpane active" data-pane="ed-overview">
+    <div class="wrap">
+      <div class="stat-rows" style="margin-bottom:48px">
+
+        <!-- Stat 1: Enrollment growth -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">+37%</div>
+            <p class="stat-l">enrollment growth at North Meck schools since 2018, outpacing the state average and straining classroom capacity</p>
+            <span class="stat-src">NCES CCD · data coming</span>
+          </div>
+          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Total enrollment by school (2018–2023)</div>
+            <div class="card-s">Charlotte-Mecklenburg Schools · North Meck zone</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD School Universe Survey · leaid 3702970</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat 2: Free & reduced lunch -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">~1 in 4</div>
+            <p class="stat-l">students at some North Meck schools qualify for free or reduced-price lunch, a key indicator of economic disadvantage</p>
+            <span class="stat-src">NCES CCD · data coming</span>
+          </div>
+          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Free &amp; reduced lunch eligibility by school (2023)</div>
+            <div class="card-s">Share of students qualifying for federal lunch assistance</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD Lunch Program · free &amp; reduced eligibility</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat 3: Graduation rate -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n">~90%</div>
+            <p class="stat-l">4-year cohort graduation rate at North Meck high schools, above the CMS district average but with variation between schools</p>
+            <span class="stat-src">NC DPI · data coming</span>
+          </div>
+          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">4-year graduation rate by high school (2018–2023)</div>
+            <div class="card-s">Hough High &amp; North Mecklenburg High · cohort graduation</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: NC Department of Public Instruction · Graduation &amp; Dropout reports</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat 4: Teacher-student ratio -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">16:1</div>
+            <p class="stat-l">average student-to-teacher ratio across North Meck schools, higher than recommended at rapidly growing campuses</p>
+            <span class="stat-src">NCES CCD · data coming</span>
+          </div>
+          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Pupil-to-teacher ratio by school (2018–2023)</div>
+            <div class="card-s">Full-time equivalent teachers vs. total enrollment</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD Staff Universe Survey · FTE teachers</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: enrollment & growth -->
+  <div class="tabpane" data-pane="ed-enrollment">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Enrollment &amp; Growth</span><h2 class="sec-h">North Meck schools are growing faster than almost anywhere in the district.</h2><p class="lead">Population growth in Cornelius, Davidson, and Huntersville has sent school enrollment surging over the past decade. Understanding which schools are most stressed — and how growth has varied by school level — matters for planning, bonds, and staffing decisions.</p></div>
+
+      <!-- K-12 Enrollment Trend -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">K–12 Enrollment Trend</div>
+        <div class="card-s">Total residents enrolled in K–12 school · by town</div>
+        <div id="chart-k12-trend"></div>
+        <div class="callout">
+          <div class="callout-t">Huntersville has added over 1,000 K–12 students since 2018 — the largest absolute gain. Davidson is the smallest in total enrollment but has among the highest enrollment rates relative to its population size.</div>
+          <div class="callout-s">Source: ACS 2018–2023 · Table B14001 · counts residents enrolled in school, not CMS school-level enrollment</div>
+        </div>
+
+      </div>
+
+      <!-- Enrollment by School Level -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Enrollment by School Level</div>
+        <div class="card-s">Residents enrolled by grade band · Grades 1–4, 5–8, and High School</div>
+        <div id="chart-level-trend"></div>
+        <div class="callout">
+          <div class="callout-t">Elementary enrollment (grades 1–8) has held relatively steady, while high school enrollment has grown as the wave of students who moved in during 2015–2020 ages through the system.</div>
+          <div class="callout-s">Source: ACS 2018–2023 · Table B14001</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: school demographics -->
+  <div class="tabpane" data-pane="ed-demographics">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">School Demographics</span><h2 class="sec-h">Who is in the classroom, and how has that changed?</h2><p class="lead">The racial, ethnic, and economic composition of North Meck schools reflects — and sometimes diverges from — the communities they serve. Tracking these patterns over time reveals how growth, attendance zones, and school choice interact with equity.</p></div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Racial &amp; ethnic composition by school (2023)</div>
+          <div class="card-s">% enrolled by race/ethnicity</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Racial composition trends over time</div>
+          <div class="card-s">Change in % by race group</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Free &amp; reduced lunch eligibility by school</div>
+          <div class="card-s">Economic disadvantage proxy · % qualifying students</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD Lunch Program Survey</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">English Language Learner &amp; IEP rates by school</div>
+          <div class="card-s">% ELL and % students with disabilities</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD / EDFacts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: academic performance -->
+  <div class="tabpane" data-pane="ed-performance">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Academic Performance</span><h2 class="sec-h">How are students performing, and which schools are improving?</h2><p class="lead">NC end-of-grade proficiency rates, school performance grades, and graduation rates paint a picture of academic outcomes across North Meck schools — and how they compare to the district and state.</p></div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Reading proficiency rate by school (2018–2023)</div>
+          <div class="card-s">% students at or above grade level</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NC DPI School Report Cards</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Math proficiency rate by school (2018–2023)</div>
+          <div class="card-s">% students at or above grade level</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NC DPI School Report Cards</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">NC School Performance Grades (A–F) by school</div>
+          <div class="card-s">Annual letter grades assigned by NC DPI</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NC DPI School Performance Grades</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">4-year graduation rate — North Meck high schools vs. CMS avg</div>
+          <div class="card-s">Cohort graduation rate · Hough High &amp; North Mecklenburg High</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NC DPI Graduation &amp; Dropout reports</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card viz-host" style="margin-bottom:28px;border:1px dashed var(--line-2);background:var(--paper-2)">
+        <div class="card-t" style="color:var(--ink-2)">Chronic absenteeism rate by school</div>
+        <div class="card-s">% students missing 10%+ of school days</div>
+        <div style="padding:64px 0;text-align:center;color:var(--ink-3)">
+          <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+          <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+          <div style="font-size:12px;margin-top:4px">Source: EDFacts / NC DPI chronic absence data</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: resources & staffing -->
+  <div class="tabpane" data-pane="ed-resources">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Resources &amp; Staffing</span><h2 class="sec-h">Are schools adequately staffed and funded as enrollment climbs?</h2><p class="lead">Teacher-to-student ratios, per-pupil expenditure, and staff counts reveal whether resources are keeping pace with growth — and whether all North Meck schools receive equitable investment.</p></div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Pupil-to-teacher ratio by school (2018–2023)</div>
+          <div class="card-s">Total enrollment ÷ FTE teachers Staff Universe Survey</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD Staff Universe Survey</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Per-pupil expenditure — CMS vs. NC average (2018–2022)</div>
+          <div class="card-s">Total spending per student Finance Survey (F-33)</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD F-33 Finance Survey</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:28px">
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Instructional vs. administrative spending breakdown</div>
+          <div class="card-s">Share of per-pupil budget by expenditure category</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD F-33 Finance Survey</div>
+          </div>
+        </div>
+        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Total staff count per school over time</div>
+          <div class="card-s">FTE teachers, aides, and administrators</div>
+          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
+            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+            <div style="font-size:12px;margin-top:4px">Source: NCES CCD Staff Universe Survey</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: educational attainment -->
+  <div class="tabpane" data-pane="ed-attainment">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Educational Attainment</span><h2 class="sec-h">What is the education level of the adults who live here?</h2><p class="lead">Resident educational attainment shapes the workforce, economic mobility, and civic life of a community. In North Meck, attainment varies meaningfully across the three towns — and has shifted as the population has grown.</p></div>
+
+      <!-- Bachelor's+ Rate Trend -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Bachelor's+ Rate Trend</div>
+        <div class="card-s">% adults 25+ with a bachelor's degree or higher · 2018–2023</div>
+        <div id="chart-bach-trend"></div>
+        <div class="callout">
+          <div class="callout-t">Davidson's highly educated population (home to Davidson College) keeps its attainment rate among the highest in the region. Cornelius has climbed steadily to nearly 60% bachelor's or higher by 2023.</div>
+          <div class="callout-s">Source: ACS 2018–2023 · Table B15003 · adults 25+ · Note: Davidson figures show year-to-year variation typical of small-population ACS estimates · Huntersville 2023 excluded (data anomaly)</div>
+        </div>
+
+      </div>
+
+      <!-- Attainment Breakdown 2022 -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Attainment Breakdown, 2022</div>
+        <div class="card-s">Distribution of educational attainment for adults 25+ · by town</div>
+        <div id="chart-attainment-breakdown"></div>
+        <div class="callout">
+          <div class="callout-t">Cornelius and Huntersville show similar attainment profiles. Davidson's 2022 snapshot reflects ACS sample variability — its 2023 figure (75.6% bachelor's or higher) better reflects the long-run pattern.</div>
+          <div class="callout-s">Source: ACS 2022 · Table B15003 · 2022 used for consistent cross-town comparison · Note: Davidson 2022 shows ACS sampling artifact; 2023 value is 75.6%</div>
+        </div>
+
+      </div>
+
+      <!-- Median Earnings by Education Level -->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Median Earnings by Education Level, 2024</div>
+        <div class="card-s">Annual median earnings for full-time year-round workers 25+ · by education level and town</div>
+        <div id="chart-earnings"></div>
+        <div class="callout">
+          <div class="callout-t">A bachelor's degree is worth roughly $44,000–$90,000 more per year than a high school diploma across all three towns. Davidson's graduate-degree earners average over $150k annually — among the highest in the Charlotte metro.</div>
+          <div class="callout-s">Source: ACS 2024 · Table S1501 · median earnings for full-time year-round workers 25+ · Davidson HS-diploma figure suppressed by Census (small sample)</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<Fragment slot="page-scripts">
+  <script is:inline type="module" src={`${base}js/education.js`}></script>
+</Fragment>
+</BaseLayout>
