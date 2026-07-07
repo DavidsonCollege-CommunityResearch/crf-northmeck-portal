@@ -1,0 +1,458 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<BaseLayout title="Healthcare · North Meck Insights" includeMotherDuck={true}>
+
+<div class="page active" style="display:block">
+
+  <div class="wrap">
+    <div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span>Healthcare</span></div>
+    <div class="dash-hero" style="margin-bottom:56px">
+      <div class="split" style="align-items:flex-start">
+        <div>
+          <span class="eyebrow" style="font-size:15px">Healthcare access &amp; outcomes</span>
+          <h1 class="dash-h1">Who can get care in North Meck, and what does it cost them?</h1>
+          <p class="lead dash-lead" style="margin-bottom:0">Insurance coverage, provider access, mental health, and chronic disease are all shaped by income and geography. This section follows the data to show where gaps are widest and who bears the highest burden.</p>
+        </div>
+      </div>
+    </div>
+    <div class="tabs" id="healthcare-tabs">
+      <span class="tab active" data-tab="hc-overview" onclick="setTab(this)">Overview</span>
+      <span class="tab" data-tab="hc-insurance" onclick="setTab(this)">Health Insurance</span>
+      <span class="tab" data-tab="hc-access" onclick="setTab(this)">Access to Care</span>
+      <span class="tab" data-tab="hc-mental" onclick="setTab(this)">Mental Health</span>
+      <span class="tab" data-tab="hc-maternal" onclick="setTab(this)">Maternal &amp; Child Health</span>
+      <span class="tab" data-tab="hc-chronic" onclick="setTab(this)">Chronic Disease</span>
+    </div>
+  </div>
+  <div class="wrap dash-filter">
+    <div class="filterbar">
+      <span class="lbl">Area:</span>
+      <span class="chip on" onclick="setChip(this)">All North Meck</span>
+      <span class="chip" onclick="setChip(this)">Cornelius</span>
+      <span class="chip" onclick="setChip(this)">Davidson</span>
+      <span class="chip" onclick="setChip(this)">Huntersville</span>
+      <span class="hint">filters every chart</span>
+    </div>
+  </div>
+
+  <!-- TAB: overview -->
+  <div class="tabpane active" data-pane="hc-overview">
+    <div class="wrap">
+      <div class="stat-rows" style="margin-bottom:48px">
+
+        <!-- Stat 1: Uninsured rate -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">~1 in 10</div>
+            <p class="stat-l">working-age adults in North Meck lack health insurance, leaving them exposed to catastrophic medical costs</p>
+            <span class="stat-src">ACS · data coming</span>
+          </div>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Uninsured rate by town &amp; age group</div>
+            <div class="card-s">Adults 18–64 without any health insurance coverage · ACS</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: ACS Table B27001 · Health insurance coverage by age</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat 2: Mental health -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">1 in 5</div>
+            <p class="stat-l">adults experiences a mental health condition each year, yet most do not receive treatment in communities with limited provider access</p>
+            <span class="stat-src">SAMHSA · data coming</span>
+          </div>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Mental health provider availability by town</div>
+            <div class="card-s">Psychiatrists, psychologists, and licensed counselors per 10,000 residents</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: HRSA Health Workforce · SAMHSA behavioral health data</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat 3: Provider shortage -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">HPSA</div>
+            <p class="stat-l">parts of North Meck fall within Health Professional Shortage Areas, meaning residents travel further or wait longer for primary care</p>
+            <span class="stat-src">HRSA · data coming</span>
+          </div>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Primary care providers per 10,000 residents</div>
+            <div class="card-s">Active primary care physicians by zip code · HRSA HPSA designations</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: HRSA Data Warehouse · Health Professional Shortage Areas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat 4: Chronic disease -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">~11%</div>
+            <p class="stat-l">of Mecklenburg adults have diagnosed diabetes, with rates highest among lower-income and minority populations</p>
+            <span class="stat-src">CDC PLACES · data coming</span>
+          </div>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Chronic disease prevalence by town</div>
+            <div class="card-s">Diabetes, obesity, and hypertension rates · CDC PLACES census-tract estimates</div>
+            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+              <div style="font-size:12px;margin-top:4px">Data source: CDC PLACES · Local-level health estimates, 2024 release</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: health insurance -->
+  <div class="tabpane" data-pane="hc-insurance">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Health Insurance</span><h2 class="sec-h">Who has coverage, and who is one medical bill away from a financial crisis?</h2><p class="lead">Insurance status is a primary driver of whether people seek preventive care or delay treatment until a condition becomes an emergency. In North Meck, income and employment type shape coverage more than geography alone.</p></div>
+
+      <!-- Dot chart: always all three towns -->
+      <div id="hc-ins-dot-wrap" style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many residents are uninsured?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Each dot represents one person per 100 residents. Orange dots are uninsured.</p>
+        <div class="card viz-host" style="padding:24px 20px 16px">
+          <div class="card-t">Overall insurance coverage rate by town (2024)</div>
+          <div class="card-s">ACS 2024 · 1 dot = 1 person per 100 residents · all three towns</div>
+          <div id="hc-ins-dot" style="overflow-x:auto;margin-top:12px"></div>
+        </div>
+        <div class="callout info" style="margin-top:16px"><div class="callout-t">Davidson has the lowest uninsured rate in North Meck — roughly 3 in 100 residents lack coverage — while Cornelius and Huntersville each sit around 5 in 100. Even these low rates represent thousands of residents without a safety net for medical emergencies.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
+      </div>
+
+      <!-- Coverage type: heatmap (all towns) or bar chart (single town) -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How do people get their insurance — employer, marketplace, Medicaid, or none?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Coverage type reveals economic vulnerability. Employer-sponsored insurance disappears with job loss. Medicaid enrollment signals low income. Marketplace coverage comes with cost and enrollment barriers.</p>
+        <div class="card viz-host" style="padding:24px 20px 16px">
+          <div class="card-t" id="hc-ins-heatmap-title">Insurance coverage type by town (2024)</div>
+          <div class="card-s" id="hc-ins-heatmap-sub">ACS Table B27010 · % of total population · all three towns shown</div>
+          <div class="filterbar" style="margin:10px 0 8px">
+            <span class="chip on" data-hcins-global="all" onclick="hcInsGlobalChip(this)">All towns</span>
+            <span class="chip" data-hcins-global="Cornelius" onclick="hcInsGlobalChip(this)">Cornelius</span>
+            <span class="chip" data-hcins-global="Davidson" onclick="hcInsGlobalChip(this)">Davidson</span>
+            <span class="chip" data-hcins-global="Huntersville" onclick="hcInsGlobalChip(this)">Huntersville</span>
+          </div>
+          <div id="hc-ins-heatmap" style="overflow-x:auto;margin-top:12px"></div>
+        </div>
+        <div class="callout" style="margin-top:16px"><div class="callout-t">Employer-based insurance dominates across all three towns, reflecting North Meck's relatively high employment rate. However, Huntersville shows notably higher Medicaid enrollment than Cornelius or Davidson — a signal of greater income diversity and lower-wage employment in its fastest-growing corridors. Uninsured rates remain low overall, but even a 5–7% gap represents thousands of residents without coverage.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27010</div></div>
+      </div>
+
+      <!-- Income + Age side by side, each with own chips -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Who faces the greatest coverage gap?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Lower-income households and working-age adults aged 26–64 carry the highest uninsured rates.</p>
+        <div class="g2">
+          <div class="card viz-host" style="padding:20px 16px 12px">
+            <div class="card-t">By income bracket (2024)</div>
+            <div class="card-s">ACS B27016 · insured vs. uninsured rate</div>
+            <div class="filterbar" style="margin:10px 0 4px">
+              <span class="chip on" data-hcins-chart="income" data-hcins-town="all" onclick="hcInsLocalChip(this)">All</span>
+              <span class="chip" data-hcins-chart="income" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
+              <span class="chip" data-hcins-chart="income" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
+              <span class="chip" data-hcins-chart="income" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
+            </div>
+            <div id="hc-ins-income"></div>
+            <div class="callout info" style="margin-top:16px"><div class="callout-t">The coverage gap widens sharply at lower incomes — households earning under $25k are uninsured at nearly 3× the rate of those earning $75k or more, reflecting Medicaid eligibility gaps and the inability to afford marketplace premiums without employer contributions.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27016</div></div>
+          </div>
+          <div class="card viz-host" style="padding:20px 16px 12px">
+            <div class="card-t">By age group (2024)</div>
+            <div class="card-s">ACS B27001 · insured vs. uninsured rate</div>
+            <div class="filterbar" style="margin:10px 0 4px">
+              <span class="chip on" data-hcins-chart="age" data-hcins-town="all" onclick="hcInsLocalChip(this)">All</span>
+              <span class="chip" data-hcins-chart="age" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
+              <span class="chip" data-hcins-chart="age" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
+              <span class="chip" data-hcins-chart="age" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
+            </div>
+            <div id="hc-ins-age"></div>
+            <div class="callout warn" style="margin-top:16px"><div class="callout-t">Adults aged 26–34 carry the highest uninsured rate of any age group — they've aged off parental plans and often work gig or service jobs without employer coverage. Children under 19 and seniors 65+ show near-universal coverage through CHIP and Medicare respectively.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27001</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trend + Employment side by side, each with own chips -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is coverage improving, and does employment predict it?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Coverage rates have remained relatively stable since 2017 — but small shifts matter for thousands of residents. Employment status is strongly predictive of whether someone has a plan at all.</p>
+        <div class="g2">
+          <div class="card viz-host" style="padding:20px 16px 12px">
+            <div class="card-t">Insurance coverage trend (2017–2024)</div>
+            <div class="card-s">ACS 5-year estimates · all years</div>
+            <div class="filterbar" style="margin:10px 0 4px">
+              <span class="chip on" data-hcins-chart="trend" data-hcins-town="all" onclick="hcInsLocalChip(this)">All</span>
+              <span class="chip" data-hcins-chart="trend" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
+              <span class="chip" data-hcins-chart="trend" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
+              <span class="chip" data-hcins-chart="trend" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
+            </div>
+            <div id="hc-ins-trend"></div>
+            <div class="callout" style="margin-top:16px"><div class="callout-t">Overall coverage rates have held steady at 92–95% since 2017, but the trend masks variation: Davidson has consistently led all three towns in coverage while Huntersville — despite rapid population growth — has seen the slowest improvement per capita.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2017–2024</div></div>
+          </div>
+          <div class="card viz-host" style="padding:20px 16px 12px">
+            <div class="card-t">By employment status (2024)</div>
+            <div class="card-s">ACS B27011 · employed vs. unemployed</div>
+            <div class="filterbar" style="margin:10px 0 4px">
+              <span class="chip on" data-hcins-chart="emp" data-hcins-town="all" onclick="hcInsLocalChip(this)">All</span>
+              <span class="chip" data-hcins-chart="emp" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
+              <span class="chip" data-hcins-chart="emp" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
+              <span class="chip" data-hcins-chart="emp" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
+            </div>
+            <div id="hc-ins-emp"></div>
+            <div class="callout warn" style="margin-top:16px"><div class="callout-t">Employment is the single strongest predictor of coverage: employed residents are insured at ~93%, versus under 70% for unemployed residents. Job loss without a safety net leaves families immediately exposed — and North Meck's service-sector workforce has the least cushion.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27011</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── D3 Insurance Charts ─────────────────────────────────────── -->
+
+
+    <!-- ── Healthcare insurance data: MotherDuck loader ──────────────── -->
+
+    <!-- ─────────────────────────────────────────────────────────────── -->
+  </div>
+
+  <!-- TAB: access to care -->
+  <div class="tabpane" data-pane="hc-access">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Access to Care</span><h2 class="sec-h">Can residents actually get to a doctor when they need one?</h2><p class="lead">Having insurance is not the same as having access. Provider shortages, distance, wait times, and cost-sharing all determine whether care is truly reachable. North Meck's rapid growth has outpaced healthcare infrastructure in several corridors.</p></div>
+
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many primary care providers serve each town, relative to population?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The standard benchmark is one primary care physician per 2,500 residents. Areas falling below this are designated Health Professional Shortage Areas (HPSAs) by federal health agencies.</p>
+        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Primary care providers per 10,000 residents by town</div>
+          <div class="card-s">Active PCPs · HRSA NPPES provider data · 2024</div>
+          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: HRSA NPPES · National Plan and Provider Enumeration System</div></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are residents getting preventive care — checkups, screenings, and vaccinations?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Preventive care utilization is a leading indicator of system access. Low screening and vaccination rates suggest either cost barriers, lack of providers, or both.</p>
+        <div class="g2">
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Preventive care &amp; screening rates</div>
+            <div class="card-s">Annual checkup, cancer screening, flu vaccination rates · CDC PLACES</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
+          </div>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Proximity to nearest hospital or urgent care</div>
+            <div class="card-s">Drive time in minutes by neighborhood · CMS facility data</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does cost-sharing affect whether people actually use their coverage?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">High deductibles and copays can make insured residents functionally uninsured for non-emergency care. This is especially common among marketplace and high-deductible employer plans.</p>
+        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Cost as a barrier to care — delayed or forgone treatment</div>
+          <div class="card-s">Share of adults who delayed care due to cost in the past year · BRFSS</div>
+          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC BRFSS · Behavioral Risk Factor Surveillance System</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: mental health -->
+  <div class="tabpane" data-pane="hc-mental">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Mental Health</span><h2 class="sec-h">Is mental healthcare reachable for North Meck residents who need it?</h2><p class="lead">Mental health conditions are common and treatable, but access to care is constrained by provider shortages, insurance limits, stigma, and cost. The gap between need and treatment is widest in communities with fewer resources.</p></div>
+
+      <!-- Section 1: Depression prevalence -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How prevalent is depression in North Meck communities?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">CDC PLACES provides model estimates of depression prevalence using behavioral surveillance data — allowing comparison across towns and years.</p>
+        <div class="g2">
+          <div class="card viz-host" id="mh-dumbbell-host">
+            <div class="card-t">Depression Rate: 2019 vs 2023</div>
+            <div class="card-s">Age-adjusted prevalence among adults · CDC PLACES</div>
+            <div id="mh-dumbbell-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
+          </div>
+          <div class="card viz-host" id="mh-depbar-host">
+            <div class="card-t">Depression Prevalence by Year</div>
+            <div class="card-s">2019, 2021, 2023 · Age-adjusted · CDC PLACES</div>
+            <div id="mh-depbar-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Frequent mental distress -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How often do residents report poor mental health days?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Frequent mental distress — 14 or more mentally unhealthy days in the past 30 — is a CDC PLACES indicator of chronic psychological burden in a community.</p>
+        <div class="card viz-host" id="mh-distress-host">
+          <div class="card-t">Frequent Mental Distress (2023)</div>
+          <div class="card-s">% adults reporting 14+ poor mental health days · CDC PLACES</div>
+          <div id="mh-distress-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
+        </div>
+      </div>
+
+      <!-- Section 3: Facility map -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Where are mental health and substance use facilities located?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">DHHS-licensed mental health and substance use facilities in Mecklenburg County. Search your address to find facilities within a given radius.</p>
+        <div class="card" id="mh-map-card">
+          <div class="card-t">Mental Health &amp; Substance Use Facility Locations</div>
+          <div class="card-s">57 licensed facilities · Mecklenburg County · NC DHHS</div>
+          <div style="display:flex;gap:8px;margin:14px 0 10px">
+            <input id="mh-address-input" type="text" placeholder="Enter your address" style="flex:1;padding:8px 12px;border:1px solid var(--line-2);border-radius:8px;font-size:13px;font-family:'Hanken Grotesk',sans-serif;background:var(--paper);color:var(--ink);outline:none">
+            <button id="mh-address-btn" style="padding:8px 18px;background:#2E86AB;color:#fff;border:none;border-radius:8px;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;font-weight:500">Search</button>
+          </div>
+          <div id="mh-facility-map" style="height:420px;border-radius:8px;overflow:hidden;border:1px solid var(--line)"></div>
+          <div class="filterbar" style="margin-top:12px;margin-bottom:0">
+            <button class="chip on" data-mh-radius="all">All</button>
+            <button class="chip" data-mh-radius="5">5 miles</button>
+            <button class="chip" data-mh-radius="15">15 miles</button>
+            <button class="chip" data-mh-radius="25">25 miles</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Provider shortage coming soon -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does mental health burden vary by income and race?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Mental health outcomes are not evenly distributed. Lower-income residents and communities of color report higher rates of distress, yet face the greatest barriers to treatment access.</p>
+        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Mental distress rate by income bracket &amp; race</div>
+          <div class="card-s">Cross-tabulated distress rates · BRFSS county-level data</div>
+          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC BRFSS · Mecklenburg County module</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Mental Health CDC charts (D3, inline data) ── -->
+
+
+    <!-- ── Facility map (MotherDuck → Leaflet) ── -->
+
+  </div>
+
+  <!-- TAB: maternal & child health -->
+  <div class="tabpane" data-pane="hc-maternal">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Maternal &amp; Child Health</span><h2 class="sec-h">Are mothers and children in North Meck getting the care they need?</h2><p class="lead">Birth outcomes, prenatal access, and early childhood health are foundational indicators of community wellbeing — and persistent markers of racial and economic inequality. The CRF's two-generation lens makes this tab especially central to our research.</p></div>
+
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are mothers receiving prenatal care early enough in their pregnancy?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">First-trimester prenatal care is strongly associated with better birth outcomes. Late or no prenatal care is a marker of access barriers — insurance gaps, provider shortages, or transportation challenges.</p>
+        <div class="g2">
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Prenatal care initiation by trimester</div>
+            <div class="card-s">First / second / third trimester or no care · NC vital stats</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
+          </div>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Low birth weight rate by race &amp; town</div>
+            <div class="card-s">% of births under 2,500g · NC SCHS vital statistics</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is there a racial gap in birth outcomes in North Meck?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Black mothers in Mecklenburg County face significantly higher rates of preterm birth and low birth weight than white mothers — a disparity driven by structural factors, chronic stress, and unequal access to quality care.</p>
+        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Preterm birth rate by race &amp; ethnicity</div>
+          <div class="card-s">% of births before 37 weeks by maternal race · NC SCHS vital statistics</div>
+          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: NC State Center for Health Statistics · Vital statistics births data</div></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are children getting well-child visits and vaccinations on schedule?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Well-child visit rates and childhood vaccination coverage are key indicators of whether families have a consistent healthcare home — and whether children are being screened for developmental delays early enough to intervene.</p>
+        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Childhood vaccination coverage &amp; well-child visit rates</div>
+          <div class="card-s">% of children meeting HEDIS benchmarks · Medicaid claims or NCIR</div>
+          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: NC Immunization Registry · Mecklenburg Health Dept</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: chronic disease -->
+  <div class="tabpane" data-pane="hc-chronic">
+    <div class="wrap">
+      <div class="sec-head"><span class="eyebrow">Chronic Disease &amp; Prevention</span><h2 class="sec-h">How much chronic disease burden does North Meck carry, and is it preventable?</h2><p class="lead">Diabetes, obesity, and hypertension are among the most prevalent and costly chronic conditions in the United States. Their rates are shaped by income, food access, housing stability, and stress — making them direct downstream indicators of the social determinants this portal tracks.</p></div>
+
+      <!-- Section 1: Chronic disease metric charts -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How do diabetes, obesity, and hypertension rates compare across towns?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Age-adjusted prevalence estimates from CDC PLACES (2019, 2021, 2023), allowing trend comparison within and between towns.</p>
+        <div class="g2" style="margin-bottom:20px">
+          <div class="card viz-host" id="cd-diabetes-host">
+            <div class="card-t">Age-adjusted Diabetes Prevalence</div>
+            <div class="card-s">2019 · 2021 · 2023 · CDC PLACES</div>
+            <div id="cd-diabetes-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
+          </div>
+          <div class="card viz-host" id="cd-obesity-host">
+            <div class="card-t">Obesity Prevalence</div>
+            <div class="card-s">2019 · 2021 · 2023 · CDC PLACES</div>
+            <div id="cd-obesity-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
+          </div>
+        </div>
+        <div class="card viz-host" id="cd-hbp-host">
+          <div class="card-t">High Blood Pressure Prevalence</div>
+          <div class="card-s">2019 · 2021 · 2023 · CDC PLACES</div>
+          <div id="cd-hbp-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
+        </div>
+      </div>
+
+      <!-- Section 2: Coming soon -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are high-chronic-disease areas the same as high-cost-burden areas?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Chronic disease and housing cost burden often overlap — residents under financial stress are less likely to maintain preventive care, take medications consistently, or avoid high-stress environments that worsen chronic conditions.</p>
+        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+          <div class="card-t" style="color:var(--ink-2)">Chronic disease rate vs. housing cost burden — scatter by census tract</div>
+          <div class="card-s">CDC PLACES disease rate × ACS cost burden rate · North Meck tracts</div>
+          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC PLACES · ACS Table B25070 · Gross rent as % of income</div></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are residents getting screened for the conditions most likely to affect them?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Screening rates for colorectal cancer, cervical cancer, and cholesterol are lower among uninsured and lower-income populations — allowing preventable conditions to progress untreated.</p>
+        <div class="g2">
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Cancer screening rates by town</div>
+            <div class="card-s">Colorectal, cervical, breast cancer screening · CDC PLACES</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
+          </div>
+          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+            <div class="card-t" style="color:var(--ink-2)">Physical inactivity &amp; sleep deprivation rates</div>
+            <div class="card-s">Behavioral risk factors linked to chronic disease · CDC PLACES</div>
+            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Chronic Disease charts (D3, inline data) ── -->
+
+  </div>
+
+
+</div>
+
+<Fragment slot="page-scripts">
+  <script is:inline type="module" src={`${base}js/healthcare.js`}></script>
+</Fragment>
+</BaseLayout>
