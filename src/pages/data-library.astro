@@ -2,25 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 ---
-<BaseLayout title="Data · North Meck Insights">
+<BaseLayout title="Data Library · North Meck Insights">
 
 <div class="page active" style="display:block">
-
-  <div class="wrap">
-    <div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span data-es="Todos los datos">All data</span></div>
-    <div class="dash-hero" style="margin-bottom:42px">
-      <span class="eyebrow" style="font-size:15px" data-es="Explora los datos">Explore the data</span>
-      <h1 class="dash-h1" data-es="Elige un tema para comenzar">Pick a topic to dig into</h1>
-      <p class="lead dash-lead" style="margin-bottom:0" data-es="Cada tema tiene su propio panel, construido con datos públicos abiertos sobre la vida en el norte de Mecklenburg.">Each topic has its own dashboard, built from open public data on life in North Mecklenburg. Choose where to start, keeping in mind that affordability is the thread that runs through them all.</p>
-    </div>
-    <div class="topic-grid">
-      <div class="tcard" onclick="window.location='housing.html'"><div class="tc-icon"><i class="ti ti-building-community"></i></div><div class="tc-t" data-es="Vivienda">Housing</div><div class="tc-b" data-es="Rentas, carga de costo, desalojos y la brecha de asequibilidad.">Rents, cost burden, evictions, and the affordability gap across North Meck.</div><div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jun 2026">Updated Jun 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div></div>
-      <div class="tcard" onclick="window.location='education.html'"><div class="tc-icon"><i class="ti ti-school"></i></div><div class="tc-t" data-es="Educación">Education</div><div class="tc-b" data-es="Matrícula K–12, composición escolar y acceso por vecindario.">K–12 enrollment, school composition, and access by neighborhood.</div><div class="tc-foot"><span class="badge b-live dot" data-es="En desarrollo · 2026">In development · 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div></div>
-      <div class="tcard" onclick="window.location='healthcare.html'"><div class="tc-icon"><i class="ti ti-heartbeat"></i></div><div class="tc-t" data-es="Salud">Healthcare</div><div class="tc-b" data-es="Acceso a la atención, cobertura de seguro y resultados de salud en North Meck.">Access to care, insurance coverage, and health outcomes across North Meck.</div><div class="tc-foot"><span class="badge b-live dot">In development · 2026</span><span class="tc-go">Open →</span></div></div>
-    </div>
-    <p class="topics-note" style="margin-top:28px;padding-bottom:64px"><i class="ti ti-seeding"></i> <span data-es="La seguridad alimentaria y otros temas son agregados por cada nueva generación de Fellows cada verano.">New topics are added by each incoming cohort of CRF Fellows.</span></p>
-  </div>
-
 
   <div class="wrap"><div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span>Data Library</span></div></div>
   <section class="section"><div class="wrap">
@@ -61,39 +45,6 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         <div class="dlib-row" data-id="demographics" data-name="population households racial composition income by town 2018-2024" data-geo="town" data-topic="demographics economics"><div class="dlib-row-info"><div class="dlib-row-name">Population, households &amp; racial composition by town (2018–2024)</div><div class="dlib-row-desc">Total population, household counts, median household income, and racial/ethnic composition (White, Black, Hispanic, Asian, other) for each town by year. Covers North Meck's rapid growth and evolving diversity.</div><div class="dlib-row-meta"><span class="dlib-tag">Town · 2018–2024</span><span class="dlib-tag">ACS 5-yr estimates</span><span class="dlib-tag">7 rows per town</span></div></div><div class="dlib-row-actions"><button class="dlib-dl" onclick="dlibDownload(event,'CSV')"><i class="ti ti-file-text"></i> CSV</button><button class="dlib-dl" onclick="dlibDownload(event,'Excel')"><i class="ti ti-table"></i> Excel</button><button class="dlib-dl dlib-cb" onclick="dlibDownload(event,'Codebook')"><i class="ti ti-book-2"></i> Codebook</button></div></div>
       </div>
       <div class="dlib-empty" id="dlibEmpty" style="display:none">No datasets match your filters. <button class="dlib-clear" onclick="dlibClear()">Clear filters</button></div>
-    </div>
-  </div></section>
-
-
-  <div class="wrap"><div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span>Sources</span></div></div>
-  <section class="section"><div class="wrap">
-    <div class="sec-head" style="max-width:680px">
-      <span class="eyebrow" style="font-size:15px">Sources</span>
-      <h2 class="sec-h" style="font-size:32px">Every source, in one place</h2>
-      <p class="lead">A full bibliography of the open public data behind the portal. Each number on the site traces back to one of these. Open data only, all of it free to verify and download.</p>
-    </div>
-    <div class="biblio">
-      <div class="biblio-group">
-        <div class="biblio-h" style="font-size:15px">Federal &amp; census</div>
-        <div class="cite"><div class="cite-num">01</div><div class="cite-body"><div class="cite-t">American Community Survey (ACS), 5-year estimates</div><div class="cite-pub">U.S. Census Bureau · 2024 release</div><div class="cite-meta"><span class="tag"><i class="ti ti-database"></i> Rents, cost burden, household demographics</span><span class="cite-link">data.census.gov <i class="ti ti-external-link" style="font-size:13px"></i></span></div></div></div>
-        <div class="cite"><div class="cite-num">02</div><div class="cite-body"><div class="cite-t">FY2025 Income Limits</div><div class="cite-pub">U.S. Dept. of Housing &amp; Urban Development (HUD)</div><div class="cite-meta"><span class="tag"><i class="ti ti-database"></i> AMI thresholds (30% / 50% / 80%)</span><span class="cite-link">huduser.gov <i class="ti ti-external-link" style="font-size:13px"></i></span></div></div></div>
-        <div class="cite"><div class="cite-num">03</div><div class="cite-body"><div class="cite-t">FY2025 Fair Market Rents</div><div class="cite-pub">HUD · Charlotte-Concord-Gastonia MSA</div><div class="cite-meta"><span class="tag"><i class="ti ti-database"></i> 1-bed &amp; 2-bed FMR figures</span><span class="cite-link">huduser.gov <i class="ti ti-external-link" style="font-size:13px"></i></span></div></div></div>
-      </div>
-      <div class="biblio-group">
-        <div class="biblio-h" style="font-size:15px">Local &amp; county</div>
-        <div class="cite"><div class="cite-num">04</div><div class="cite-body"><div class="cite-t">Eviction filing records, FY2025</div><div class="cite-pub">Mecklenburg County</div><div class="cite-meta"><span class="tag"><i class="ti ti-database"></i> Filings, orders granted, year-over-year change</span></div></div></div>
-        <div class="cite"><div class="cite-num">05</div><div class="cite-body"><div class="cite-t">State of Housing Instability &amp; Homelessness, 2025</div><div class="cite-pub">Charlotte-Mecklenburg</div><div class="cite-meta"><span class="tag"><i class="ti ti-database"></i> Disparities by race, NOAH supply loss</span></div></div></div>
-      </div>
-      <div class="biblio-group">
-        <div class="biblio-h" style="font-size:15px">Research &amp; advocacy</div>
-        <div class="cite"><div class="cite-num">06</div><div class="cite-body"><div class="cite-t">Out of Reach 2025</div><div class="cite-pub">National Low Income Housing Coalition (NLIHC)</div><div class="cite-meta"><span class="tag"><i class="ti ti-database"></i> Housing wage ($31.67/hr) &amp; affordability gap</span><span class="cite-link">nlihc.org <i class="ti ti-external-link" style="font-size:13px"></i></span></div></div></div>
-        <div class="cite"><div class="cite-num">07</div><div class="cite-body"><div class="cite-t">Data Equity Framework, 2021</div><div class="cite-pub">Urban Institute</div><div class="cite-meta"><span class="tag"><i class="ti ti-book-2"></i> Methodology for inclusive data practice</span></div></div></div>
-        <div class="cite"><div class="cite-num">08</div><div class="cite-body"><div class="cite-t">Beckman &amp; Long, 2016</div><div class="cite-pub">Community-based research methods</div><div class="cite-meta"><span class="tag"><i class="ti ti-book-2"></i> Framework reference</span></div></div></div>
-      </div>
-    </div>
-    <div class="dlstrip" style="margin-top:52px">
-      <div><div class="dlstrip-t">Want the raw data?</div><div class="dlstrip-s">Every chart on the portal is available as CSV, with the source noted inline.</div></div>
-      <div class="dl-btns"><button class="btn-ghost"><i class="ti ti-download"></i> Download all CSVs</button><button class="btn-ghost"><i class="ti ti-file-text"></i> Methodology PDF</button></div>
     </div>
   </div></section>
 

@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+---
+<BaseLayout title="Topics · North Meck Insights">
+
+<div class="page active" style="display:block">
+
+  <div class="wrap">
+    <div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span data-es="Temas">Topics</span></div>
+    <div class="dash-hero" style="margin-bottom:42px">
+      <span class="eyebrow" style="font-size:15px" data-es="Explora los datos">Explore the data</span>
+      <h1 class="dash-h1" data-es="Elige un tema para comenzar">Pick a topic to dig into</h1>
+      <p class="lead dash-lead" style="margin-bottom:0" data-es="Cada tema tiene su propio panel, construido con datos públicos abiertos sobre la vida en el norte de Mecklenburg.">Each topic has its own dashboard, built from open public data on life in North Mecklenburg. Choose where to start, keeping in mind that affordability is the thread that runs through them all.</p>
+    </div>
+    <div class="topic-grid">
+      <div class="tcard" onclick="window.location='housing.html'"><div class="tc-icon"><i class="ti ti-building-community"></i></div><div class="tc-t" data-es="Vivienda">Housing</div><div class="tc-b" data-es="Rentas, carga de costo, desalojos y la brecha de asequibilidad.">Rents, cost burden, evictions, and the affordability gap across North Meck.</div><div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jun 2026">Updated Jun 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div></div>
+      <div class="tcard" onclick="window.location='education.html'"><div class="tc-icon"><i class="ti ti-school"></i></div><div class="tc-t" data-es="Educación">Education</div><div class="tc-b" data-es="Matrícula K–12, composición escolar y acceso por vecindario.">K–12 enrollment, school composition, and access by neighborhood.</div><div class="tc-foot"><span class="badge b-live dot" data-es="En desarrollo · 2026">In development · 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div></div>
+      <div class="tcard" onclick="window.location='healthcare.html'"><div class="tc-icon"><i class="ti ti-heartbeat"></i></div><div class="tc-t" data-es="Salud">Healthcare</div><div class="tc-b" data-es="Acceso a la atención, cobertura de seguro y resultados de salud en North Meck.">Access to care, insurance coverage, and health outcomes across North Meck.</div><div class="tc-foot"><span class="badge b-live dot">In development · 2026</span><span class="tc-go">Open →</span></div></div>
+    </div>
+    <p class="topics-note" style="margin-top:28px;padding-bottom:64px"><i class="ti ti-seeding"></i> <span data-es="La seguridad alimentaria y otros temas son agregados por cada nueva generación de Fellows cada verano.">New topics are added by each incoming cohort of CRF Fellows.</span></p>
+  </div>
+
+</div>
+</BaseLayout>

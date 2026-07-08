@@ -66,7 +66,7 @@ var NAV_INDEX = [
   { title:'Housing', sub:'Affordability, displacement, homeownership', page:'housing', icon:'ti-building-community' },
   { title:'Healthcare', sub:'Insurance, access, mental health, chronic disease', page:'healthcare', icon:'ti-heartbeat' },
   { title:'Education', sub:'Enrollment, outcomes, early childhood', page:'education', icon:'ti-school' },
-  { title:'Data Library', sub:'Download open datasets', page:'data', icon:'ti-database' },
+  { title:'Data Library', sub:'Download open datasets', page:'data-library', icon:'ti-database' },
   { title:'Neighborhoods', sub:'Cornelius, Davidson, Huntersville, East Catawba', page:'neighborhoods', icon:'ti-map-2' },
   { title:'Stories', sub:'Research in plain English', page:'blog', icon:'ti-newspaper' },
   { title:'About', sub:'Community Research Fellows, Davidson College', page:'about', icon:'ti-users' },
@@ -129,7 +129,7 @@ function navSearchKey(e){
 }
 
 function navSearchGo(page){
-  var pageMap = {home:'index.html',housing:'housing.html',education:'education.html',healthcare:'healthcare.html',blog:'blog.html',about:'about.html',data:'data.html',dictionary:'data.html',sources:'data.html',neighborhoods:'neighborhoods.html','nbhd-data':'nbhd-data.html'};
+  var pageMap = {home:'index.html',housing:'housing.html',education:'education.html',healthcare:'healthcare.html',blog:'blog.html',about:'about.html',topics:'topics.html','data-library':'data-library.html',dictionary:'data-library.html',sources:'sources.html',neighborhoods:'neighborhoods.html','nbhd-data':'nbhd-data.html'};
   window.location = pageMap[page] || (page + '.html');
   var inp = document.getElementById('navSearch');
   if (inp) inp.value = '';

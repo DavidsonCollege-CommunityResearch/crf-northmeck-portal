@@ -11,9 +11,9 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       <div class="nav-dd">
         <span class="nav-link" onclick="toggleDD(event,this)" style="font-weight:500"><span data-es="Temas">Topics</span> <i class="ti ti-chevron-down"></i></span>
         <div class="dd-menu" style="min-width:340px">
-          <a class="dd-item" href={`${base}data.html`}>
+          <a class="dd-item" href={`${base}topics.html`}>
             <span class="dd-ic"><i class="ti ti-layout-grid"></i></span>
-            <span class="dd-tx"><span class="dd-t" data-es="Todos los datos">All data</span><span class="dd-s">Every dashboard in one place</span></span>
+            <span class="dd-tx"><span class="dd-t" data-es="Todos los temas">All topics</span><span class="dd-s">Every dashboard in one place</span></span>
           </a>
           <a class="dd-item" href={`${base}housing.html`}>
             <span class="dd-ic"><i class="ti ti-building-community"></i></span>
@@ -67,11 +67,11 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <span class="dd-ic"><i class="ti ti-book-2"></i></span>
             <span class="dd-tx"><span class="dd-t" data-es="Glosario">Glossary</span><span class="dd-s">Plain definitions of key terms</span></span>
           </div>
-          <a class="dd-item" href={`${base}data.html`}>
+          <a class="dd-item" href={`${base}data-library.html`}>
             <span class="dd-ic"><i class="ti ti-list-details"></i></span>
             <span class="dd-tx"><span class="dd-t" data-es="Biblioteca de datos">Data Library</span><span class="dd-s">Datasets to filter &amp; download</span></span>
           </a>
-          <a class="dd-item" href={`${base}data.html`}>
+          <a class="dd-item" href={`${base}sources.html`}>
             <span class="dd-ic"><i class="ti ti-books"></i></span>
             <span class="dd-tx"><span class="dd-t" data-es="Fuentes">Sources</span><span class="dd-s">Full data bibliography</span></span>
           </a>
