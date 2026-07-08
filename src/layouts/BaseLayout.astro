@@ -8,14 +8,12 @@ import FactsBar from '../components/FactsBar.astro';
 import A11yPanel from '../components/A11yPanel.astro';
 import Fab from '../components/Fab.astro';
 import ChartTooltip from '../components/ChartTooltip.astro';
-import MotherDuckBootstrap from '../components/MotherDuckBootstrap.astro';
 
 interface Props {
   title: string;
-  includeMotherDuck?: boolean;
 }
 
-const { title, includeMotherDuck = false } = Astro.props;
+const { title } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 ---
 <!DOCTYPE html>
@@ -32,7 +30,6 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 <script src="https://cdn.jsdelivr.net/npm/d3@6"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-{includeMotherDuck && <MotherDuckBootstrap />}
 </head>
 <body>
 <Nav />

@@ -1,6 +1,5 @@
 // Housing page scripts
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client@1.5.4-r.1/+esm";
 
 // Block 1 (module)
 (async function() {
@@ -154,23 +153,15 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 // Block 2 (module)
 (async function() {
 
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
-
         // Show loading state
         document.getElementById("rent-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
         document.getElementById("income-rent-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
 
         let housing;
         try {
-          const conn = await window.__mdConn;
-          housing = await window.mdQuery(conn, `
-            SELECT town, year, CAST(median_income AS INTEGER) AS median_income, CAST(median_rent AS INTEGER) AS median_rent
-            FROM nmidw_cloud.agg_town_economic_trends
-            WHERE town IN ('Cornelius', 'Davidson', 'Huntersville')
-            ORDER BY town, year
-          `);
+          housing = await window.loadData('housing-rent-income');
         } catch (err) {
-          console.error("MotherDuck connection failed:", err);
+          console.error("Failed to load housing-rent-income:", err);
           housing = [];
           window.mdShowError('rent-chart');
           window.mdShowError('income-rent-chart');
@@ -261,20 +252,11 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 // Block 3 (module)
 (async function() {
 
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
-
         let hvRows;
         try {
-          const conn = await window.__mdConn;
-          hvRows = await window.mdQuery(conn, `
-            SELECT town, year,
-              CAST(median_income AS INTEGER) AS median_income,
-              CAST(median_home_value AS INTEGER) AS median_home_value
-            FROM nmidw_cloud.agg_town_economic_trends
-            ORDER BY town, year
-          `);
+          hvRows = await window.loadData('housing-value-income');
         } catch(e) {
-          console.error("MotherDuck error (home value chart):", e);
+          console.error("Failed to load housing-value-income:", e);
           hvRows = [];
           window.mdShowError('home-value-chart');
         }
@@ -513,24 +495,14 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 6 (module)
 (async function() {
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         document.getElementById("rti-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
         document.getElementById("hpti-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
         let afRows;
         try {
-          const conn = await window.__mdConn;
-          afRows = await window.mdQuery(conn, `
-            SELECT town, year,
-                   ROUND((median_rent * 12.0 / median_income) * 100, 2) AS rti,
-                   ROUND(median_home_value * 1.0 / median_income, 2) AS hpti
-            FROM nmidw_cloud.agg_town_economic_trends
-            WHERE town IN ('Cornelius','Davidson','Huntersville')
-              AND median_income > 0
-            ORDER BY town, year
-          `);
+          afRows = await window.loadData('housing-affordability-index');
         } catch(e) {
-          console.error("Affordability index load failed:", e);
+          console.error("Failed to load housing-affordability-index:", e);
           ["rti-chart","hpti-chart"].forEach(id => window.mdShowError(id));
         }
         if (afRows && afRows.length) {
@@ -600,19 +572,12 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 7 (module)
 (async function() {
-          const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
           document.getElementById("population-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
           let rows;
           try {
-            const conn = await window.__mdConn;
-            rows = await window.mdQuery(conn, `
-              SELECT town, year, CAST(total_population AS INTEGER) AS population
-              FROM nmidw_cloud.agg_town_demographics
-              WHERE town IN ('Cornelius','Davidson','Huntersville')
-              ORDER BY town, year
-            `);
-          } catch(e) { console.error(e); rows = []; }
+            rows = await window.loadData('town-population');
+          } catch(e) { console.error("Failed to load town-population:", e); rows = []; }
           if (rows.length) {
             function renderPopulation(town) {
               const data = town === "All" ? rows : rows.filter(d => d.town === town);
@@ -658,7 +623,6 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 8 (module)
 (async function() {
-          const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
           const TENURE_COLORS = { "Owner-occupied": "#3f4e75", "Renter-occupied": "#e05c4b" };
 
@@ -688,18 +652,11 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
           }
 
           try {
-            const conn = await window.__mdConn;
-            // Total households over time from agg_town_housing_burden
-            rows = await window.mdQuery(conn, `
-              SELECT town, year, CAST(total_households AS INTEGER) AS total_households
-              FROM nmidw_cloud.agg_town_housing_burden
-              WHERE town IN ('Cornelius','Davidson','Huntersville')
-              ORDER BY town, year
-            `);
+            rows = await window.loadData('town-households');
             document.getElementById("tenure-chart").innerHTML = "";
             renderTenure();
           } catch(e) {
-            console.error("Tenure chart load failed:", e);
+            console.error("Failed to load town-households:", e);
             window.mdShowError('tenure-chart');
           }
 
@@ -778,7 +735,7 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
         const BURDENS  = ["Not burdened (<30%)","Cost burdened (30-50%)","Severely burdened (50%+)"];
         const BCOLORS  = ["#5a9e8f","#f0a500","#e05c4b"];
 
-        const raw = window.__dlibBurdenData = [{"town":"Cornelius","tenure":"Renter","income_bracket":"Less than $10k","burden":"Not burdened (<30%)","count":0},{"town":"Davidson","tenure":"Renter","income_bracket":"Less than $10k","burden":"Not burdened (<30%)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"Less than $10k","burden":"Not burdened (<30%)","count":0},{"town":"Cornelius","tenure":"Renter","income_bracket":"Less than $10k","burden":"Cost burdened (30-50%)","count":0},{"town":"Davidson","tenure":"Renter","income_bracket":"Less than $10k","burden":"Cost burdened (30-50%)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"Less than $10k","burden":"Cost burdened (30-50%)","count":0},{"town":"Cornelius","tenure":"Renter","income_bracket":"Less than $10k","burden":"Severely burdened (50%+)","count":113},{"town":"Davidson","tenure":"Renter","income_bracket":"Less than $10k","burden":"Severely burdened (50%+)","count":127},{"town":"Huntersville","tenure":"Renter","income_bracket":"Less than $10k","burden":"Severely burdened (50%+)","count":145},{"town":"Cornelius","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Not burdened (<30%)","count":0},{"town":"Davidson","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Not burdened (<30%)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Not burdened (<30%)","count":0},{"town":"Cornelius","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Cost burdened (30-50%)","count":0},{"town":"Davidson","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Cost burdened (30-50%)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Cost burdened (30-50%)","count":40},{"town":"Cornelius","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Severely burdened (50%+)","count":188},{"town":"Davidson","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Severely burdened (50%+)","count":38},{"town":"Huntersville","tenure":"Renter","income_bracket":"$10k-$19,999","burden":"Severely burdened (50%+)","count":190},{"town":"Cornelius","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Not burdened (<30%)","count":0},{"town":"Davidson","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Not burdened (<30%)","count":20},{"town":"Huntersville","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Not burdened (<30%)","count":0},{"town":"Cornelius","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Cost burdened (30-50%)","count":46},{"town":"Davidson","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Cost burdened (30-50%)","count":17},{"town":"Huntersville","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Cost burdened (30-50%)","count":37},{"town":"Cornelius","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Severely burdened (50%+)","count":293},{"town":"Davidson","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Severely burdened (50%+)","count":171},{"town":"Huntersville","tenure":"Renter","income_bracket":"$20k-$34,999","burden":"Severely burdened (50%+)","count":392},{"town":"Cornelius","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Not burdened (<30%)","count":98},{"town":"Davidson","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Not burdened (<30%)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Not burdened (<30%)","count":20},{"town":"Cornelius","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Cost burdened (30-50%)","count":435},{"town":"Davidson","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Cost burdened (30-50%)","count":9},{"town":"Huntersville","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Cost burdened (30-50%)","count":422},{"town":"Cornelius","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Severely burdened (50%+)","count":158},{"town":"Davidson","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Severely burdened (50%+)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"$35k-$49,999","burden":"Severely burdened (50%+)","count":328},{"town":"Cornelius","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Not burdened (<30%)","count":259},{"town":"Davidson","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Not burdened (<30%)","count":85},{"town":"Huntersville","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Not burdened (<30%)","count":301},{"town":"Cornelius","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Cost burdened (30-50%)","count":506},{"town":"Davidson","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Cost burdened (30-50%)","count":133},{"town":"Huntersville","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Cost burdened (30-50%)","count":759},{"town":"Cornelius","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Severely burdened (50%+)","count":13},{"town":"Davidson","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Severely burdened (50%+)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"$50k-$74,999","burden":"Severely burdened (50%+)","count":188},{"town":"Cornelius","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Not burdened (<30%)","count":433},{"town":"Davidson","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Not burdened (<30%)","count":120},{"town":"Huntersville","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Not burdened (<30%)","count":1069},{"town":"Cornelius","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Cost burdened (30-50%)","count":149},{"town":"Davidson","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Cost burdened (30-50%)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Cost burdened (30-50%)","count":383},{"town":"Cornelius","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Severely burdened (50%+)","count":0},{"town":"Davidson","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Severely burdened (50%+)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"$75k-$99,999","burden":"Severely burdened (50%+)","count":0},{"town":"Cornelius","tenure":"Renter","income_bracket":"$100k+","burden":"Not burdened (<30%)","count":1212},{"town":"Davidson","tenure":"Renter","income_bracket":"$100k+","burden":"Not burdened (<30%)","count":310},{"town":"Huntersville","tenure":"Renter","income_bracket":"$100k+","burden":"Not burdened (<30%)","count":2338},{"town":"Cornelius","tenure":"Renter","income_bracket":"$100k+","burden":"Cost burdened (30-50%)","count":16},{"town":"Davidson","tenure":"Renter","income_bracket":"$100k+","burden":"Cost burdened (30-50%)","count":17},{"town":"Huntersville","tenure":"Renter","income_bracket":"$100k+","burden":"Cost burdened (30-50%)","count":94},{"town":"Cornelius","tenure":"Renter","income_bracket":"$100k+","burden":"Severely burdened (50%+)","count":0},{"town":"Davidson","tenure":"Renter","income_bracket":"$100k+","burden":"Severely burdened (50%+)","count":0},{"town":"Huntersville","tenure":"Renter","income_bracket":"$100k+","burden":"Severely burdened (50%+)","count":0},{"town":"Cornelius","tenure":"Owner","income_bracket":"Less than $10k","burden":"Not burdened (<30%)","count":0},{"town":"Davidson","tenure":"Owner","income_bracket":"Less than $10k","burden":"Not burdened (<30%)","count":0},{"town":"Huntersville","tenure":"Owner","income_bracket":"Less than $10k","burden":"Not burdened (<30%)","count":0},{"town":"Cornelius","tenure":"Owner","income_bracket":"Less than $10k","burden":"Cost burdened (30-50%)","count":0},{"town":"Davidson","tenure":"Owner","income_bracket":"Less than $10k","burden":"Cost burdened (30-50%)","count":0},{"town":"Huntersville","tenure":"Owner","income_bracket":"Less than $10k","burden":"Cost burdened (30-50%)","count":0},{"town":"Cornelius","tenure":"Owner","income_bracket":"Less than $10k","burden":"Severely burdened (50%+)","count":187},{"town":"Davidson","tenure":"Owner","income_bracket":"Less than $10k","burden":"Severely burdened (50%+)","count":0},{"town":"Huntersville","tenure":"Owner","income_bracket":"Less than $10k","burden":"Severely burdened (50%+)","count":92},{"town":"Cornelius","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Not burdened (<30%)","count":27},{"town":"Davidson","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Not burdened (<30%)","count":43},{"town":"Huntersville","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Not burdened (<30%)","count":0},{"town":"Cornelius","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Cost burdened (30-50%)","count":61},{"town":"Davidson","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Cost burdened (30-50%)","count":25},{"town":"Huntersville","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Cost burdened (30-50%)","count":16},{"town":"Cornelius","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Severely burdened (50%+)","count":94},{"town":"Davidson","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Severely burdened (50%+)","count":22},{"town":"Huntersville","tenure":"Owner","income_bracket":"$10k-$19,999","burden":"Severely burdened (50%+)","count":213},{"town":"Cornelius","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Not burdened (<30%)","count":82},{"town":"Davidson","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Not burdened (<30%)","count":12},{"town":"Huntersville","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Not burdened (<30%)","count":80},{"town":"Cornelius","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Cost burdened (30-50%)","count":72},{"town":"Davidson","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Cost burdened (30-50%)","count":158},{"town":"Huntersville","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Cost burdened (30-50%)","count":127},{"town":"Cornelius","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Severely burdened (50%+)","count":331},{"town":"Davidson","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Severely burdened (50%+)","count":58},{"town":"Huntersville","tenure":"Owner","income_bracket":"$20k-$34,999","burden":"Severely burdened (50%+)","count":238},{"town":"Cornelius","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Not burdened (<30%)","count":371},{"town":"Davidson","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Not burdened (<30%)","count":99},{"town":"Huntersville","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Not burdened (<30%)","count":410},{"town":"Cornelius","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Cost burdened (30-50%)","count":135},{"town":"Davidson","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Cost burdened (30-50%)","count":44},{"town":"Huntersville","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Cost burdened (30-50%)","count":133},{"town":"Cornelius","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Severely burdened (50%+)","count":203},{"town":"Davidson","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Severely burdened (50%+)","count":111},{"town":"Huntersville","tenure":"Owner","income_bracket":"$35k-$49,999","burden":"Severely burdened (50%+)","count":239},{"town":"Cornelius","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Not burdened (<30%)","count":342},{"town":"Davidson","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Not burdened (<30%)","count":73},{"town":"Huntersville","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Not burdened (<30%)","count":1176},{"town":"Cornelius","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Cost burdened (30-50%)","count":117},{"town":"Davidson","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Cost burdened (30-50%)","count":62},{"town":"Huntersville","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Cost burdened (30-50%)","count":457},{"town":"Cornelius","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Severely burdened (50%+)","count":162},{"town":"Davidson","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Severely burdened (50%+)","count":20},{"town":"Huntersville","tenure":"Owner","income_bracket":"$50k-$74,999","burden":"Severely burdened (50%+)","count":139},{"town":"Cornelius","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Not burdened (<30%)","count":611},{"town":"Davidson","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Not burdened (<30%)","count":108},{"town":"Huntersville","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Not burdened (<30%)","count":1508},{"town":"Cornelius","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Cost burdened (30-50%)","count":125},{"town":"Davidson","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Cost burdened (30-50%)","count":107},{"town":"Huntersville","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Cost burdened (30-50%)","count":275},{"town":"Cornelius","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Severely burdened (50%+)","count":47},{"town":"Davidson","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Severely burdened (50%+)","count":29},{"town":"Huntersville","tenure":"Owner","income_bracket":"$75k-$99,999","burden":"Severely burdened (50%+)","count":28},{"town":"Cornelius","tenure":"Owner","income_bracket":"$100k+","burden":"Not burdened (<30%)","count":6275},{"town":"Davidson","tenure":"Owner","income_bracket":"$100k+","burden":"Not burdened (<30%)","count":3299},{"town":"Huntersville","tenure":"Owner","income_bracket":"$100k+","burden":"Not burdened (<30%)","count":12187},{"town":"Cornelius","tenure":"Owner","income_bracket":"$100k+","burden":"Cost burdened (30-50%)","count":292},{"town":"Davidson","tenure":"Owner","income_bracket":"$100k+","burden":"Cost burdened (30-50%)","count":160},{"town":"Huntersville","tenure":"Owner","income_bracket":"$100k+","burden":"Cost burdened (30-50%)","count":491},{"town":"Cornelius","tenure":"Owner","income_bracket":"$100k+","burden":"Severely burdened (50%+)","count":75},{"town":"Davidson","tenure":"Owner","income_bracket":"$100k+","burden":"Severely burdened (50%+)","count":14},{"town":"Huntersville","tenure":"Owner","income_bracket":"$100k+","burden":"Severely burdened (50%+)","count":0}];
+        const raw = await window.loadData('dlib-burden-by-bracket');
 
         let activeTown = "Cornelius", activeTenure = "Renter";
 
@@ -835,25 +792,13 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 // Block 11 (module)
 (async function() {
 
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
 
         let burdenTrend;
         try {
-          const conn = await window.__mdConn;
-          burdenTrend = await window.mdQuery(conn, `
-            SELECT town, year,
-                   CAST("housing_burden_rate_%" AS DOUBLE) AS burden_rate,
-                   CAST(cost_burdened_households AS INTEGER) AS cost_burdened,
-                   CAST(severely_cost_burdened_households AS INTEGER) AS severely_burdened,
-                   CAST(total_households AS INTEGER) AS total_households,
-                   ROUND(severely_cost_burdened_households / total_households * 100, 1) AS severe_rate
-            FROM nmidw_cloud.agg_town_housing_burden
-            WHERE town IN ('Cornelius','Davidson','Huntersville')
-            ORDER BY town, year
-          `);
+          burdenTrend = await window.loadData('housing-burden-trend');
         } catch(e) {
-          console.error("Burden trend load failed:", e);
+          console.error("Failed to load housing-burden-trend:", e);
           window.mdShowError('burden-trend-chart');
         }
 
@@ -908,7 +853,6 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 12 (module)
 (async function() {
-          const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
           let rows = [];
           let activeTown = "All";
@@ -944,17 +888,11 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
           }
 
           try {
-            const conn = await window.__mdConn;
-            rows = await window.mdQuery(conn, `
-              SELECT town, year, severely_cost_burdened_households
-              FROM nmidw_cloud.agg_town_housing_burden
-              WHERE town IN ('Cornelius','Davidson','Huntersville')
-              ORDER BY town, year
-            `);
+            rows = await window.loadData('severely-burdened-households');
             document.getElementById("severely-burdened-chart").innerHTML = "";
             renderSeverelyBurdened();
           } catch(e) {
-            console.error("Severely burdened chart load failed:", e);
+            console.error("Failed to load severely-burdened-households:", e);
             window.mdShowError('severely-burdened-chart');
           }
 
@@ -1061,39 +999,17 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 14 (module)
 (async function() {
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
-
         const wrap = document.getElementById("race-summary-table-wrap");
         try {
-          const conn = await window.__mdConn;
+          const popRows = await window.loadData('race-summary');
 
-          // Get column names dynamically
-          const colNames = (await window.mdQuery(conn, `DESCRIBE nmidw_cloud.agg_town_demographics`)).map(r => r.column_name);
-
-          // Build race tenure query from available columns
-          const races = [
-            { label: "White, not Hispanic", col: colNames.find(c => c.includes("white") && !c.includes("alone")) || colNames.find(c => c.includes("white")) },
-            { label: "Black or African American", col: colNames.find(c => c.includes("black")) },
-            { label: "Hispanic or Latino", col: colNames.find(c => c.includes("hispanic") || c.includes("latino")) },
-            { label: "Asian", col: colNames.find(c => c.includes("asian")) },
-          ].filter(r => r.col);
-
-          console.log("race summary cols:", races.map(r => `${r.label}=${r.col}`).join(", "));
-
-          const totalCol = colNames.find(c => c.includes("total_pop") || c.includes("total_population"));
-          const ownerCol = colNames.find(c => c.includes("owner"));
-          const renterCol = colNames.find(c => c.includes("renter"));
-
-          // If we have tenure columns, compute per-race ownership from the race bar chart's hardcoded ACS data
-          // and pull total population from MotherDuck to show live numbers
-          const popRows = await window.mdQuery(conn, `
-            SELECT town,
-              ${totalCol ? `CAST(${totalCol} AS INTEGER) AS total_pop` : "0 AS total_pop"}
-              ${races.map(r => `, CAST(${r.col} AS INTEGER) AS "${r.label}"`).join("")}
-            FROM nmidw_cloud.agg_town_demographics
-            WHERE town IN ('Cornelius','Davidson','Huntersville') AND year = 2024
-          `);
-          console.log("pop rows:", popRows);
+          // Race columns are resolved server-side (scripts/refresh-data.mjs
+          // replicates the same column-name matching this block used to do
+          // client-side via DESCRIBE) - only include a race here if the
+          // snapshot actually found and populated that column.
+          const races = ["White, not Hispanic", "Black or African American", "Hispanic or Latino", "Asian"]
+            .filter(label => popRows.some(r => label in r))
+            .map(label => ({ label }));
 
           // Aggregate race populations across all three towns
           const raceTotals = {};
@@ -1147,26 +1063,13 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 15 (module)
 (async function() {
-          const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const RACE_ORDER = ["White","Black","Two or More Races","Asian","Some Other Race","American Indian/Alaska Native","Native Hawaiian/Pacific Islander"];
           const RACE_COLORS = {"White":"#3f4e75","Black":"#e05c4b","Two or More Races":"#f0a500","Asian":"#5a9e8f","Some Other Race":"#a0522d","American Indian/Alaska Native":"#7a9e4e","Native Hawaiian/Pacific Islander":"#b07bbf"};
           try {
-            const conn = await window.__mdConn;
-            const colNames = (await window.mdQuery(conn, `DESCRIBE nmidw_cloud.agg_town_demographics`)).map(r => r.column_name);
-            const find = (...keys) => colNames.find(c => keys.some(k => c.toLowerCase().includes(k))) || null;
-            const totalCol    = find("total_pop","total_population","population");
-            const whiteCol    = find("white");
-            const blackCol    = find("black");
-            const asianCol    = find("asian");
-            const hispanicCol = find("hispanic","latino");
-            const twoMoreCol  = find("two_or_more","two or more","multiracial");
-            const nativeCol   = find("american_indian","native_american","aian");
-            const nhpiCol     = find("native_hawaiian","pacific_islander","nhpi");
-            const otherCol    = find("some_other","other_race");
-            const yearCol     = find("year");
-            const townCol     = find("town");
-            const maxYear     = (await window.mdQuery(conn, `SELECT MAX(${yearCol}) as yr FROM nmidw_cloud.agg_town_demographics`))[0].yr;
-            const rows = await window.mdQuery(conn, `SELECT ${townCol} as town, ${totalCol} as total, ${whiteCol} as white, ${blackCol} as black, ${asianCol} as asian, ${hispanicCol} as hispanic, ${twoMoreCol || "0"} as two_more, ${nativeCol || "0"} as native, ${nhpiCol || "0"} as nhpi, ${otherCol || "0"} as other FROM nmidw_cloud.agg_town_demographics WHERE ${yearCol} = ${maxYear} AND ${townCol} IN ('Cornelius','Davidson','Huntersville')`);
+            // Column discovery + latest-year lookup now happen server-side
+            // (scripts/refresh-data.mjs) - this snapshot's rows already have
+            // town/total/white/black/asian/hispanic/two_more/native/nhpi/other.
+            const rows = await window.loadData('race-composition');
             const raceMap = {
               "White": r => r.white,
               "Black": r => r.black,
@@ -1234,7 +1137,6 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 16 (module)
 (async function() {
-          const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const RACE_COLORS = {
             "White": "#3f4e75", "Black": "#e05c4b",
             "Hispanic": "#f0a500", "Asian": "#5a9e8f", "Other": "#aaa"
@@ -1242,40 +1144,11 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
           document.getElementById("race-trend-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
           let rawRows;
           try {
-            const conn = await window.__mdConn;
-
-            // Use DESCRIBE to get column names (native DuckDB, works in MotherDuck WASM)
-            const colNames = (await window.mdQuery(conn, `DESCRIBE nmidw_cloud.agg_town_demographics`)).map(r => r.column_name);
-            console.log("race chart — agg_town_demographics columns:", colNames.join(", "));
-
-            // Map to actual column names (case-insensitive partial match)
-            const find = (...keys) => colNames.find(c => keys.some(k => c.toLowerCase().includes(k))) || null;
-            const totalCol    = find("total_pop", "total_population", "population");
-            const whiteCol    = find("white");
-            const blackCol    = find("black");
-            const hispanicCol = find("hispanic", "latino");
-            const asianCol    = find("asian");
-
-            console.log("mapped cols:", { totalCol, whiteCol, blackCol, hispanicCol, asianCol });
-
-            if (!totalCol || !whiteCol) throw new Error(`Expected race columns not found. Have: ${colNames.join(", ")}`);
-
-            const selects = [
-              `CAST(${totalCol} AS INTEGER) AS total`,
-              whiteCol    ? `CAST(${whiteCol} AS INTEGER) AS white`       : "0 AS white",
-              blackCol    ? `CAST(${blackCol} AS INTEGER) AS black`       : "0 AS black",
-              hispanicCol ? `CAST(${hispanicCol} AS INTEGER) AS hispanic` : "0 AS hispanic",
-              asianCol    ? `CAST(${asianCol} AS INTEGER) AS asian`       : "0 AS asian",
-            ].join(", ");
-
-            rawRows = await window.mdQuery(conn, `
-              SELECT town, year, ${selects}
-              FROM nmidw_cloud.agg_town_demographics
-              WHERE town IN ('Cornelius','Davidson','Huntersville')
-              ORDER BY town, year
-            `);
+            // Column discovery now happens server-side (scripts/refresh-data.mjs)
+            // - this snapshot's rows already have town/year/total/white/black/hispanic/asian.
+            rawRows = await window.loadData('race-trend');
           } catch(e) {
-            console.error("race-trend-chart error:", e);
+            console.error("Failed to load race-trend:", e);
             rawRows = [];
           }
 
@@ -1348,7 +1221,6 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 17 (module)
 (async function() {
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
 
         let dpRows = [];
@@ -1381,14 +1253,7 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
         }
 
         try {
-          const conn = await window.__mdConn;
-          dpRows = await window.mdQuery(conn, `
-            SELECT town, median_home_value, median_income,
-              ROUND((median_home_value * 0.20) / (median_income * 0.10), 2) AS years
-            FROM nmidw_cloud.agg_town_economic_trends
-            WHERE year = (SELECT MAX(year) FROM nmidw_cloud.agg_town_economic_trends)
-            ORDER BY years DESC
-          `);
+          dpRows = await window.loadData('down-payment-years');
           renderDownPayment(window.__masterTown || "All");
         } catch(e) {
           console.error("Down payment chart load failed:", e);
@@ -1402,7 +1267,7 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 (async function() {
 
         const PTR_BRACKETS = ["Less than $10k","$10k-$19,999","$20k-$34,999","$35k-$49,999","$50k-$74,999","$75k-$99,999","$100k-$149,999"];
-        const ptrData = window.__dlibPtrData = [{"town":"Cornelius","home_value":564571,"income_bracket":"Less than $10k","midpoint":5000,"ratio":112.9},{"town":"Cornelius","home_value":564571,"income_bracket":"$10k-$19,999","midpoint":15000,"ratio":37.6},{"town":"Cornelius","home_value":564571,"income_bracket":"$20k-$34,999","midpoint":27500,"ratio":20.5},{"town":"Cornelius","home_value":564571,"income_bracket":"$35k-$49,999","midpoint":42500,"ratio":13.3},{"town":"Cornelius","home_value":564571,"income_bracket":"$50k-$74,999","midpoint":62500,"ratio":9},{"town":"Cornelius","home_value":564571,"income_bracket":"$75k-$99,999","midpoint":87500,"ratio":6.5},{"town":"Cornelius","home_value":564571,"income_bracket":"$100k-$149,999","midpoint":125000,"ratio":4.5},{"town":"Davidson","home_value":692969,"income_bracket":"Less than $10k","midpoint":5000,"ratio":138.6},{"town":"Davidson","home_value":692969,"income_bracket":"$10k-$19,999","midpoint":15000,"ratio":46.2},{"town":"Davidson","home_value":692969,"income_bracket":"$20k-$34,999","midpoint":27500,"ratio":25.2},{"town":"Davidson","home_value":692969,"income_bracket":"$35k-$49,999","midpoint":42500,"ratio":16.3},{"town":"Davidson","home_value":692969,"income_bracket":"$50k-$74,999","midpoint":62500,"ratio":11.1},{"town":"Davidson","home_value":692969,"income_bracket":"$75k-$99,999","midpoint":87500,"ratio":7.9},{"town":"Davidson","home_value":692969,"income_bracket":"$100k-$149,999","midpoint":125000,"ratio":5.5},{"town":"Huntersville","home_value":552195,"income_bracket":"Less than $10k","midpoint":5000,"ratio":110.4},{"town":"Huntersville","home_value":552195,"income_bracket":"$10k-$19,999","midpoint":15000,"ratio":36.8},{"town":"Huntersville","home_value":552195,"income_bracket":"$20k-$34,999","midpoint":27500,"ratio":20.1},{"town":"Huntersville","home_value":552195,"income_bracket":"$35k-$49,999","midpoint":42500,"ratio":13},{"town":"Huntersville","home_value":552195,"income_bracket":"$50k-$74,999","midpoint":62500,"ratio":8.8},{"town":"Huntersville","home_value":552195,"income_bracket":"$75k-$99,999","midpoint":87500,"ratio":6.3},{"town":"Huntersville","home_value":552195,"income_bracket":"$100k-$149,999","midpoint":125000,"ratio":4.4}];
+        const ptrData = await window.loadData('dlib-ptr-by-bracket');
 
         const TOWN_COLORS_PTR = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         const BRACKET_ORDER = PTR_BRACKETS.slice(1);
@@ -1485,18 +1350,11 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 19 (module)
 (async function() {
-          const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
           const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
           document.getElementById("median-income-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
           let rows;
           try {
-            const conn = await window.__mdConn;
-            rows = await window.mdQuery(conn, `
-              SELECT town, year, CAST(median_household_income AS INTEGER) AS income
-              FROM nmidw_cloud.agg_town_demographics
-              WHERE town IN ('Cornelius','Davidson','Huntersville')
-              ORDER BY town, year
-            `);
+            rows = await window.loadData('median-income-trend');
           } catch(e) { console.error(e); rows = []; }
           if (rows.length) {
             function renderMedianIncome(town) {
@@ -1530,7 +1388,6 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 // Block 20 (module)
 (async function() {
 
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
 
         document.getElementById("gini-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
@@ -1538,17 +1395,7 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
         let trends;
         try {
-          const conn = await window.__mdConn;
-          trends = await window.mdQuery(conn, `
-            SELECT town, year,
-                   ROUND(income_inequality_gini, 4) AS gini,
-                   CAST(median_home_value AS INTEGER) AS home_value,
-                   CAST(median_income AS INTEGER) AS income,
-                   ROUND(median_home_value / median_income, 2) AS ptr
-            FROM nmidw_cloud.agg_town_economic_trends
-            WHERE town IN ('Cornelius','Davidson','Huntersville')
-            ORDER BY town, year
-          `);
+          trends = await window.loadData('gini-ptr-trend');
         } catch(e) {
           console.error("Trends load failed:", e);
           ["gini-chart","ptr-trend-chart"].forEach(id => window.mdShowError(id));
@@ -1618,7 +1465,6 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 21 (module)
 (async function() {
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         const SEGMENTS = ["Below FPL", "ALICE", "Above ALICE threshold"];
         const SEG_COLORS = { "Below FPL": "#e05c4b", "ALICE": "#f0a500", "Above ALICE threshold": "#3f4e75" };
@@ -1629,19 +1475,9 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
         let townRows, countyRows;
         try {
-          const conn = await window.__mdConn;
           const [townRows2, countyRows2] = await Promise.all([
-            window.mdQuery(conn, `
-              SELECT town, year, total_households, poverty_households, alice_households, above_alice_households
-              FROM nmidw.agg_town_alice_household
-              WHERE town IN ('Cornelius','Davidson','Huntersville')
-              ORDER BY town, year
-            `),
-            window.mdQuery(conn, `
-              SELECT county, year, total_households, poverty_households, alice_households, above_alice_households
-              FROM nmidw.agg_county_alice_household
-              ORDER BY county, year
-            `)
+            window.loadData('alice-town'),
+            window.loadData('alice-county')
           ]);
           townRows  = townRows2;
           countyRows = countyRows2;
@@ -1749,7 +1585,6 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 22 (module)
 (async function() {
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         const METRIC_LABELS = {
           renter_no_car: "Renter no-car rate (%)",
@@ -1761,18 +1596,7 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
         document.getElementById("infra-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
         let infraRows;
         try {
-          const conn = await window.__mdConn;
-          infraRows = await window.mdQuery(conn, `
-            SELECT town, year,
-                   ROUND(renter_no_car_rate_pct, 2) AS renter_no_car,
-                   ROUND(owner_no_car_rate_pct, 2) AS owner_no_car,
-                   ROUND(household_no_internet_rate_pct, 2) AS no_internet,
-                   ROUND(labor_force_uninsured_rate_pct, 2) AS labor_uninsured,
-                   ROUND(senior_uninsured_rate_pct, 2) AS senior_uninsured
-            FROM nmidw.analytics_infrastructure_accesibility
-            WHERE town IN ('Cornelius','Davidson','Huntersville')
-            ORDER BY town, year
-          `);
+          infraRows = await window.loadData('infrastructure-access');
         } catch(e) {
           console.error("Infrastructure access load failed:", e);
           window.mdShowError('infra-chart');
@@ -1809,7 +1633,6 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 23 (module)
 (async function() {
-        const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
         const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
         const MOB_LABELS = {
           edu: "Adults with bachelor's or higher (%)",
@@ -1819,16 +1642,7 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
         document.getElementById("mobility-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
         let mobRows;
         try {
-          const conn = await window.__mdConn;
-          mobRows = await window.mdQuery(conn, `
-            SELECT town, year,
-                   ROUND(bachelors_masters_rate_pct, 2) AS edu,
-                   ROUND(poverty_rate_pct, 2) AS poverty,
-                   ROUND(labor_unemployment_rate_pct, 2) AS unemployment
-            FROM nmidw.economic_mobility_education
-            WHERE town IN ('Cornelius','Davidson','Huntersville')
-            ORDER BY town, year
-          `);
+          mobRows = await window.loadData('economic-mobility');
         } catch(e) {
           console.error("Economic mobility load failed:", e);
           window.mdShowError('mobility-chart');

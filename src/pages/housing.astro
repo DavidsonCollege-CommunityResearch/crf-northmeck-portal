@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 ---
-<BaseLayout title="Housing · North Meck Insights" includeMotherDuck={true}>
+<BaseLayout title="Housing · North Meck Insights">
 
 <div class="page active" style="display:block">
 
@@ -164,10 +164,6 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How have home prices changed, and is buying becoming out of reach?</h3>
         <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Home values indexed to 2018 alongside median income, showing how ownership affordability has shifted.</p>
       </div>
-
-      <!-- Shared MotherDuck singleton — one connection reused by all script blocks -->
-
-
 
 
       <!-- Chart 3: Home Value vs Income Growth -->
@@ -407,7 +403,6 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       </div>
 
 
-      <!-- Burden trend over time — live MotherDuck query -->
       <div class="card viz-host" id="burden-trend-host" style="margin-top:22px">
         <div class="card-t">Renter Cost Burden Rate Over Time</div>
         <div class="card-s">Share of renter households spending 30%+ of income on housing · 2018–2024 · North Mecklenburg</div>
@@ -629,7 +624,6 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How unequal is income distribution within each town?</h3>
         <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The Gini coefficient measures income inequality: 0 = perfect equality, 1 = maximum inequality. Cornelius (0.52) has significantly higher inequality than the national average (~0.40), meaning the gap between its wealthiest and most financially vulnerable residents is unusually wide.</p>
 
-      <!-- Live charts: Gini + PTR over time — shared MotherDuck query -->
 
 
       <!-- PTR over time chart -->

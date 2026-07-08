@@ -8,22 +8,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
       let rows = [];
       try {
-        const conn = await window.__mdConn;
-        const r = await conn.evaluateQuery(`
-          SELECT
-            year,
-            SUM(total_population)          AS total_population,
-            SUM(race_white_alone)          AS race_white,
-            SUM(race_black_alone)          AS race_black,
-            SUM(race_asian_alone)          AS race_asian,
-            SUM(ethnicity_hispanic_or_latino) AS hispanic_latino,
-            ROUND(SUM(ethnicity_hispanic_or_latino) * 100.0 / NULLIF(SUM(total_population),0), 1) AS hispanic_rate
-          FROM nmidw.agg_neighborhood_demographics
-          WHERE neighborhood_name = 'Pottstown'
-          GROUP BY year
-          ORDER BY year
-        `);
-        rows = r.data.toRows().map(d => ({
+        const r = await window.loadData('pottstown-demographics');
+        rows = r.map(d => ({
           year: Number(d.year),
           total_population: Number(d.total_population),
           race_white: Number(d.race_white),
@@ -33,7 +19,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           hispanic_rate: Number(d.hispanic_rate)
         }));
       } catch(e) {
-        console.error('Pottstown demographics query failed:', e);
+        console.error('Pottstown demographics load failed:', e);
+        rows = [];
+      }
+
+      if (!rows.length) {
         ['pott-pop-chart','pott-race-chart','pott-hl-chart'].forEach(id => {
           const el = document.getElementById(id);
           if (el) el.innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Data unavailable</p>';

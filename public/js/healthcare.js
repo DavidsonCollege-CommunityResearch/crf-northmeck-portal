@@ -1,6 +1,5 @@
 // Healthcare page scripts
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
-import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-client@1.5.4-r.1/+esm";
 
 // Block 1 (plain)
 (function() {
@@ -421,10 +420,8 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
         else if(chart === 'emp')    renderEmp(getSingleRows(town));
       };
 
-      // Data loaded via MotherDuck module script below; render called from there.
+      // Data loaded via the static-JSON module script below; render called from there.
 
-      // REMOVED: inline window.HC_INS_DATA — data now loaded from MotherDuck above
-      // legacy placeholder so variable exists before async resolves:
       /* eslint-disable */ if(false){window.HC_INS_DATA = [{"GEOID":"3714700","Town":"Cornelius","Tot_pop":28052,"year":2017,"emp_insured":12599,"emp_uninsured":1015,"unemp_insured":494,"unemp_uninsured":203,"ins_U25":2303,"no_ins_U25":399,"ins_25_50":3103,"no_ins_25_50":331,"ins_50_75":2983,"no_ins_50_75":374,"ins_75_100":3716,"no_ins_75_100":419,"ins_100_above":13715,"no_ins_100_above":664,"all_ins":25828,"all_unins":2187,"ins_U18":6245,"unins_U18":452,"ins_19_25":1369,"unins_19_25":172,"ins_26_34":2951,"unins_26_34":321,"ins_35_64":11304,"unins_35_64":1175,"ins_65_over":3959,"unins_65_over":67,"emp_based_ins":14332,"dir_purchase_ins":2758,"medicare_cov":3383,"medicaid_cov":1167,"tricare_cov":271,"VA_cov":53,"other_cov_type":1066},{"GEOID":"3716400","Town":"Davidson","Tot_pop":12325,"year":2017,"emp_insured":5221,"emp_uninsured":390,"unemp_insured":217,"unemp_uninsured":12,"ins_U25":655,"no_ins_U25":29,"ins_25_50":675,"no_ins_25_50":211,"ins_50_75":1049,"no_ins_50_75":74,"ins_75_100":802,"no_ins_75_100":77,"ins_100_above":7083,"no_ins_100_above":108,"all_ins":11689,"all_unins":554,"ins_U18":3191,"unins_U18":91,"ins_19_25":1723,"unins_19_25":115,"ins_26_34":800,"unins_26_34":75,"ins_35_64":4506,"unins_35_64":273,"ins_65_over":1469,"unins_65_over":0,"emp_based_ins":6490,"dir_purchase_ins":1135,"medicare_cov":1240,"medicaid_cov":487,"tricare_cov":48,"VA_cov":14,"other_cov_type":407},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":53302,"year":2017,"emp_insured":24907,"emp_uninsured":1965,"unemp_insured":561,"unemp_uninsured":395,"ins_U25":2471,"no_ins_U25":702,"ins_25_50":4854,"no_ins_25_50":857,"ins_50_75":6365,"no_ins_50_75":627,"ins_75_100":7395,"no_ins_75_100":772,"ins_100_above":28528,"no_ins_100_above":421,"all_ins":49627,"all_unins":3389,"ins_U18":15113,"unins_U18":536,"ins_19_25":2279,"unins_19_25":236,"ins_26_34":5595,"unins_26_34":700,"ins_35_64":22047,"unins_35_64":1879,"ins_65_over":4593,"unins_65_over":38,"emp_based_ins":31261,"dir_purchase_ins":3830,"medicare_cov":3737,"medicaid_cov":2112,"tricare_cov":560,"VA_cov":27,"other_cov_type":2224},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":28649,"year":2018,"emp_insured":12833,"emp_uninsured":1146,"unemp_insured":416,"unemp_uninsured":140,"ins_U25":2259,"no_ins_U25":536,"ins_25_50":2768,"no_ins_25_50":362,"ins_50_75":2936,"no_ins_50_75":405,"ins_75_100":3736,"no_ins_75_100":149,"ins_100_above":14518,"no_ins_100_above":907,"all_ins":26225,"all_unins":2359,"ins_U18":6461,"unins_U18":501,"ins_19_25":1368,"unins_19_25":97,"ins_26_34":2746,"unins_26_34":439,"ins_35_64":11823,"unins_35_64":1269,"ins_65_over":3827,"unins_65_over":53,"emp_based_ins":15227,"dir_purchase_ins":2966,"medicare_cov":3214,"medicaid_cov":1072,"tricare_cov":281,"VA_cov":54,"other_cov_type":1191},{"GEOID":"3716400","Town":"Davidson","Tot_pop":12666,"year":2018,"emp_insured":5218,"emp_uninsured":310,"unemp_insured":159,"unemp_uninsured":0,"ins_U25":398,"no_ins_U25":41,"ins_25_50":722,"no_ins_25_50":142,"ins_50_75":1029,"no_ins_50_75":29,"ins_75_100":758,"no_ins_75_100":111,"ins_100_above":7743,"no_ins_100_above":92,"all_ins":12158,"all_unins":431,"ins_U18":3546,"unins_U18":86,"ins_19_25":1621,"unins_19_25":38,"ins_26_34":735,"unins_26_34":102,"ins_35_64":4660,"unins_35_64":205,"ins_65_over":1596,"unins_65_over":0,"emp_based_ins":7153,"dir_purchase_ins":1177,"medicare_cov":1269,"medicaid_cov":454,"tricare_cov":24,"VA_cov":14,"other_cov_type":413},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":54572,"year":2018,"emp_insured":25458,"emp_uninsured":1693,"unemp_insured":588,"unemp_uninsured":285,"ins_U25":2589,"no_ins_U25":708,"ins_25_50":5007,"no_ins_25_50":962,"ins_50_75":6237,"no_ins_50_75":554,"ins_75_100":7041,"no_ins_75_100":379,"ins_100_above":30200,"no_ins_100_above":589,"all_ins":51087,"all_unins":3204,"ins_U18":15528,"unins_U18":645,"ins_19_25":2314,"unins_19_25":237,"ins_26_34":6067,"unins_26_34":649,"ins_35_64":22441,"unins_35_64":1635,"ins_65_over":4737,"unins_65_over":38,"emp_based_ins":31463,"dir_purchase_ins":4085,"medicare_cov":3895,"medicaid_cov":2607,"tricare_cov":519,"VA_cov":48,"other_cov_type":2076},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":29256,"year":2019,"emp_insured":12809,"emp_uninsured":1129,"unemp_insured":346,"unemp_uninsured":167,"ins_U25":2343,"no_ins_U25":455,"ins_25_50":2682,"no_ins_25_50":227,"ins_50_75":3417,"no_ins_50_75":346,"ins_75_100":3053,"no_ins_75_100":196,"ins_100_above":15441,"no_ins_100_above":1018,"all_ins":26943,"all_unins":2242,"ins_U18":6587,"unins_U18":492,"ins_19_25":1682,"unins_19_25":115,"ins_26_34":2160,"unins_26_34":497,"ins_35_64":12182,"unins_35_64":1071,"ins_65_over":4332,"unins_65_over":67,"emp_based_ins":15836,"dir_purchase_ins":3045,"medicare_cov":3643,"medicaid_cov":1204,"tricare_cov":222,"VA_cov":96,"other_cov_type":1252},{"GEOID":"3716400","Town":"Davidson","Tot_pop":12735,"year":2019,"emp_insured":5178,"emp_uninsured":301,"unemp_insured":125,"unemp_uninsured":21,"ins_U25":408,"no_ins_U25":39,"ins_25_50":894,"no_ins_25_50":166,"ins_50_75":1230,"no_ins_50_75":80,"ins_75_100":600,"no_ins_75_100":27,"ins_100_above":7542,"no_ins_100_above":123,"all_ins":12231,"all_unins":435,"ins_U18":3535,"unins_U18":61,"ins_19_25":1659,"unins_19_25":7,"ins_26_34":645,"unins_26_34":123,"ins_35_64":4673,"unins_35_64":229,"ins_65_over":1719,"unins_65_over":15,"emp_based_ins":6831,"dir_purchase_ins":1481,"medicare_cov":1325,"medicaid_cov":508,"tricare_cov":41,"VA_cov":13,"other_cov_type":482},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":55980,"year":2019,"emp_insured":25379,"emp_uninsured":1723,"unemp_insured":670,"unemp_uninsured":178,"ins_U25":2704,"no_ins_U25":568,"ins_25_50":4765,"no_ins_25_50":840,"ins_50_75":6265,"no_ins_50_75":538,"ins_75_100":6715,"no_ins_75_100":467,"ins_100_above":31987,"no_ins_100_above":833,"all_ins":52450,"all_unins":3258,"ins_U18":15894,"unins_U18":697,"ins_19_25":2698,"unins_19_25":225,"ins_26_34":5697,"unins_26_34":542,"ins_35_64":22771,"unins_35_64":1736,"ins_65_over":5390,"unins_65_over":58,"emp_based_ins":31936,"dir_purchase_ins":3963,"medicare_cov":4576,"medicaid_cov":2963,"tricare_cov":639,"VA_cov":38,"other_cov_type":2164},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":30925,"year":2021,"emp_insured":12865,"emp_uninsured":1134,"unemp_insured":406,"unemp_uninsured":170,"ins_U25":1796,"no_ins_U25":311,"ins_25_50":3275,"no_ins_25_50":495,"ins_50_75":2974,"no_ins_50_75":246,"ins_75_100":3598,"no_ins_75_100":270,"ins_100_above":17064,"no_ins_100_above":891,"all_ins":28712,"all_unins":2213,"ins_U18":6957,"unins_U18":495,"ins_19_25":1808,"unins_19_25":103,"ins_26_34":1924,"unins_26_34":503,"ins_35_64":12635,"unins_35_64":1077,"ins_65_over":5388,"unins_65_over":35,"emp_based_ins":16915,"dir_purchase_ins":2500,"medicare_cov":4565,"medicaid_cov":1578,"tricare_cov":224,"VA_cov":154,"other_cov_type":1494},{"GEOID":"3716400","Town":"Davidson","Tot_pop":14644,"year":2021,"emp_insured":5905,"emp_uninsured":406,"unemp_insured":137,"unemp_uninsured":28,"ins_U25":755,"no_ins_U25":201,"ins_25_50":611,"no_ins_25_50":64,"ins_50_75":1226,"no_ins_50_75":60,"ins_75_100":797,"no_ins_75_100":14,"ins_100_above":8999,"no_ins_100_above":285,"all_ins":13950,"all_unins":639,"ins_U18":3601,"unins_U18":95,"ins_19_25":1907,"unins_19_25":18,"ins_26_34":686,"unins_26_34":156,"ins_35_64":5513,"unins_35_64":347,"ins_65_over":2243,"unins_65_over":23,"emp_based_ins":8361,"dir_purchase_ins":1759,"medicare_cov":1668,"medicaid_cov":553,"tricare_cov":59,"VA_cov":9,"other_cov_type":561},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":60166,"year":2021,"emp_insured":26870,"emp_uninsured":1888,"unemp_insured":622,"unemp_uninsured":415,"ins_U25":2369,"no_ins_U25":598,"ins_25_50":5570,"no_ins_25_50":583,"ins_50_75":5600,"no_ins_50_75":684,"ins_75_100":7831,"no_ins_75_100":473,"ins_100_above":35109,"no_ins_100_above":1097,"all_ins":56495,"all_unins":3448,"ins_U18":16246,"unins_U18":747,"ins_19_25":2992,"unins_19_25":252,"ins_26_34":4843,"unins_26_34":963,"ins_35_64":25337,"unins_35_64":1477,"ins_65_over":7077,"unins_65_over":9,"emp_based_ins":35282,"dir_purchase_ins":4334,"medicare_cov":5889,"medicaid_cov":2942,"tricare_cov":505,"VA_cov":77,"other_cov_type":2549},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":31396,"year":2022,"emp_insured":13772,"emp_uninsured":877,"unemp_insured":338,"unemp_uninsured":129,"ins_U25":1267,"no_ins_U25":248,"ins_25_50":3409,"no_ins_25_50":379,"ins_50_75":2896,"no_ins_50_75":118,"ins_75_100":2724,"no_ins_75_100":179,"ins_100_above":19459,"no_ins_100_above":713,"all_ins":29759,"all_unins":1637,"ins_U18":6874,"unins_U18":322,"ins_19_25":1855,"unins_19_25":82,"ins_26_34":2405,"unins_26_34":400,"ins_35_64":12782,"unins_35_64":797,"ins_65_over":5843,"unins_65_over":36,"emp_based_ins":17679,"dir_purchase_ins":2560,"medicare_cov":4699,"medicaid_cov":1106,"tricare_cov":139,"VA_cov":145,"other_cov_type":1721},{"GEOID":"3716400","Town":"Davidson","Tot_pop":15199,"year":2022,"emp_insured":6179,"emp_uninsured":375,"unemp_insured":128,"unemp_uninsured":23,"ins_U25":704,"no_ins_U25":178,"ins_25_50":653,"no_ins_25_50":45,"ins_50_75":1187,"no_ins_50_75":55,"ins_75_100":652,"no_ins_75_100":13,"ins_100_above":9836,"no_ins_100_above":278,"all_ins":14554,"all_unins":581,"ins_U18":3567,"unins_U18":98,"ins_19_25":2029,"unins_19_25":15,"ins_26_34":680,"unins_26_34":140,"ins_35_64":6005,"unins_35_64":309,"ins_65_over":2273,"unins_65_over":19,"emp_based_ins":8973,"dir_purchase_ins":1637,"medicare_cov":1743,"medicaid_cov":513,"tricare_cov":39,"VA_cov":0,"other_cov_type":529},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":61202,"year":2022,"emp_insured":28351,"emp_uninsured":1899,"unemp_insured":851,"unemp_uninsured":443,"ins_U25":1994,"no_ins_U25":619,"ins_25_50":4854,"no_ins_25_50":473,"ins_50_75":6253,"no_ins_50_75":760,"ins_75_100":6366,"no_ins_75_100":258,"ins_100_above":37985,"no_ins_100_above":1327,"all_ins":57485,"all_unins":3450,"ins_U18":15523,"unins_U18":693,"ins_19_25":3413,"unins_19_25":298,"ins_26_34":5247,"unins_26_34":1036,"ins_35_64":25617,"unins_35_64":1414,"ins_65_over":7685,"unins_65_over":9,"emp_based_ins":35450,"dir_purchase_ins":4282,"medicare_cov":6506,"medicaid_cov":2700,"tricare_cov":392,"VA_cov":111,"other_cov_type":2697},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":32009,"year":2023,"emp_insured":13829,"emp_uninsured":852,"unemp_insured":412,"unemp_uninsured":100,"ins_U25":1246,"no_ins_U25":261,"ins_25_50":3107,"no_ins_25_50":425,"ins_50_75":2774,"no_ins_50_75":73,"ins_75_100":2707,"no_ins_75_100":130,"ins_100_above":20624,"no_ins_100_above":659,"all_ins":30461,"all_unins":1548,"ins_U18":7069,"unins_U18":263,"ins_19_25":1855,"unins_19_25":84,"ins_26_34":2434,"unins_26_34":337,"ins_35_64":12899,"unins_35_64":808,"ins_65_over":6204,"unins_65_over":56,"emp_based_ins":18204,"dir_purchase_ins":2498,"medicare_cov":5063,"medicaid_cov":1328,"tricare_cov":40,"VA_cov":186,"other_cov_type":1479},{"GEOID":"3716400","Town":"Davidson","Tot_pop":14852,"year":2023,"emp_insured":6049,"emp_uninsured":252,"unemp_insured":235,"unemp_uninsured":27,"ins_U25":805,"no_ins_U25":162,"ins_25_50":424,"no_ins_25_50":36,"ins_50_75":777,"no_ins_50_75":66,"ins_75_100":595,"no_ins_75_100":12,"ins_100_above":10096,"no_ins_100_above":205,"all_ins":14294,"all_unins":492,"ins_U18":3444,"unins_U18":116,"ins_19_25":1897,"unins_19_25":13,"ins_26_34":630,"unins_26_34":60,"ins_35_64":5992,"unins_35_64":280,"ins_65_over":2331,"unins_65_over":23,"emp_based_ins":8863,"dir_purchase_ins":1591,"medicare_cov":1805,"medicaid_cov":611,"tricare_cov":99,"VA_cov":0,"other_cov_type":512},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":62458,"year":2023,"emp_insured":29602,"emp_uninsured":1769,"unemp_insured":756,"unemp_uninsured":443,"ins_U25":1390,"no_ins_U25":237,"ins_25_50":5206,"no_ins_25_50":362,"ins_50_75":5218,"no_ins_50_75":787,"ins_75_100":6064,"no_ins_75_100":199,"ins_100_above":40958,"no_ins_100_above":1670,"all_ins":58880,"all_unins":3269,"ins_U18":15919,"unins_U18":490,"ins_19_25":3535,"unins_19_25":268,"ins_26_34":5403,"unins_26_34":955,"ins_35_64":26167,"unins_35_64":1525,"ins_65_over":7856,"unins_65_over":31,"emp_based_ins":36709,"dir_purchase_ins":3995,"medicare_cov":6567,"medicaid_cov":2747,"tricare_cov":256,"VA_cov":76,"other_cov_type":2789},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":32783,"year":2024,"emp_insured":14475,"emp_uninsured":860,"unemp_insured":377,"unemp_uninsured":0,"ins_U25":1522,"no_ins_U25":391,"ins_25_50":2725,"no_ins_25_50":424,"ins_50_75":2911,"no_ins_50_75":79,"ins_75_100":2826,"no_ins_75_100":105,"ins_100_above":21208,"no_ins_100_above":562,"all_ins":31193,"all_unins":1561,"ins_U18":7027,"unins_U18":352,"ins_19_25":2083,"unins_19_25":49,"ins_26_34":2950,"unins_26_34":326,"ins_35_64":12635,"unins_35_64":778,"ins_65_over":6498,"unins_65_over":56,"emp_based_ins":17192,"dir_purchase_ins":2894,"medicare_cov":5651,"medicaid_cov":1424,"tricare_cov":137,"VA_cov":93,"other_cov_type":1537},{"GEOID":"3716400","Town":"Davidson","Tot_pop":15660,"year":2024,"emp_insured":6325,"emp_uninsured":269,"unemp_insured":270,"unemp_uninsured":2,"ins_U25":817,"no_ins_U25":160,"ins_25_50":575,"no_ins_25_50":177,"ins_50_75":482,"no_ins_50_75":0,"ins_75_100":769,"no_ins_75_100":12,"ins_100_above":10691,"no_ins_100_above":174,"all_ins":15059,"all_unins":534,"ins_U18":3586,"unins_U18":207,"ins_19_25":2017,"unins_19_25":13,"ins_26_34":672,"unins_26_34":34,"ins_35_64":6371,"unins_35_64":279,"ins_65_over":2413,"unins_65_over":1,"emp_based_ins":9477,"dir_purchase_ins":1278,"medicare_cov":1869,"medicaid_cov":748,"tricare_cov":75,"VA_cov":0,"other_cov_type":649},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":63969,"year":2024,"emp_insured":31116,"emp_uninsured":1775,"unemp_insured":713,"unemp_uninsured":421,"ins_U25":1417,"no_ins_U25":152,"ins_25_50":4682,"no_ins_25_50":414,"ins_50_75":5513,"no_ins_50_75":696,"ins_75_100":6390,"no_ins_75_100":349,"ins_100_above":42456,"no_ins_100_above":1508,"all_ins":60525,"all_unins":3130,"ins_U18":15555,"unins_U18":517,"ins_19_25":3197,"unins_19_25":247,"ins_26_34":6523,"unins_26_34":947,"ins_35_64":26882,"unins_35_64":1340,"ins_65_over":8368,"unins_65_over":79,"emp_based_ins":36979,"dir_purchase_ins":4404,"medicare_cov":6698,"medicaid_cov":2407,"tricare_cov":196,"VA_cov":78,"other_cov_type":3103}]; } // end if(false)
 
       document.addEventListener('masterTownChange', function(e){
@@ -443,46 +440,15 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 
 // Block 2 (module)
 (async function() {
-      const MD_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc";
-      const conn = MDConnection.create({ mdToken: MD_TOKEN });
-      const sql = `
-        SELECT
-          hi.GEOID,
-          hi.town AS "Town",
-          CAST(dem.total_population AS INTEGER) AS "Tot_pop",
-          hi.year,
-          hi.all_ins, hi.all_unins,
-          hi.ins_U18,  hi.unins_U18,
-          hi.ins_19_25, hi.unins_19_25,
-          hi.ins_26_34, hi.unins_26_34,
-          hi.ins_35_64, hi.unins_35_64,
-          hi.ins_65_over, hi.unins_65_over,
-          hi.emp_based_ins, hi.dir_purchase_ins,
-          hi.medicare_cov, hi.medicaid_cov,
-          hi.tricare_cov, hi.va_cov AS "VA_cov", hi.other_cov_type,
-          hd.emp_insured, hd.emp_uninsured,
-          hd.unemp_insured, hd.unemp_uninsured,
-          hd.ins_U25, hd.no_ins_U25,
-          hd.ins_25_50, hd.no_ins_25_50,
-          hd.ins_50_75, hd.no_ins_50_75,
-          hd.ins_75_100, hd.no_ins_75_100,
-          hd.ins_100_above, hd.no_ins_100_above
-        FROM nmidw.main.agg_town_health_insurance hi
-        JOIN nmidw_cloud.main.agg_town_health_data hd
-          ON hi.GEOID = hd.GEOID AND hi.year = hd.year
-        JOIN nmidw_cloud.agg_town_demographics dem
-          ON hi.GEOID = dem.GEOID AND hi.year = dem.year
-        ORDER BY hi.year, hi.town
-      `;
       try {
-        const rows = await window.mdQuery(await conn, sql);
+        const rows = await window.loadData('healthcare-insurance');
         window.window.HC_INS_DATA = rows.map(r => {
           const out = {};
           Object.keys(r).forEach(k => { out[k] = typeof r[k] === 'bigint' ? Number(r[k]) : r[k]; });
           return out;
         });
       } catch(e) {
-        console.error('MotherDuck health insurance load failed:', e);
+        console.error('Health insurance data load failed:', e);
       }
       if (window.hcInsRenderAll) window.hcInsRenderAll();
 })();
@@ -769,19 +735,7 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
 (async function() {
       let facilities;
       try {
-        const conn = await window.__mdConn;
-        const rows = await window.mdQuery(conn, `
-          SELECT
-            ANY_VALUE(facility_name) AS facility_name,
-            ANY_VALUE(street1)       AS street1,
-            ANY_VALUE(city)          AS city,
-            latitude,
-            longitude,
-            STRING_AGG(DISTINCT facility_type_label, ', ') AS types
-          FROM nmidw.agg_mhsu_facility_detail
-          WHERE latitude IS NOT NULL AND longitude IS NOT NULL
-          GROUP BY latitude, longitude
-        `);
+        const rows = await window.loadData('mental-health-facilities');
         facilities = rows.map(function(d){
           return {
             name: d.facility_name,
@@ -792,7 +746,7 @@ import { MDConnection } from "https://cdn.jsdelivr.net/npm/@motherduck/wasm-clie
           };
         });
       } catch(e) {
-        console.error('MotherDuck facility map load failed:', e);
+        console.error('Facility map data load failed:', e);
         window.mdShowError('mh-facility-map');
         return;
       }

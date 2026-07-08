@@ -1,0 +1,884 @@
+[
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Severely burdened (50%+)",
+    "count": 113
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Severely burdened (50%+)",
+    "count": 127
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "Less than $10k",
+    "burden": "Severely burdened (50%+)",
+    "count": 145
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 40
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 188
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 38
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 190
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Not burdened (<30%)",
+    "count": 20
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 46
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 17
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 37
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 293
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 171
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 392
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Not burdened (<30%)",
+    "count": 98
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Not burdened (<30%)",
+    "count": 20
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 435
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 9
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 422
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 158
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 328
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Not burdened (<30%)",
+    "count": 259
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Not burdened (<30%)",
+    "count": 85
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Not burdened (<30%)",
+    "count": 301
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 506
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 133
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 759
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 13
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 188
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Not burdened (<30%)",
+    "count": 433
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Not burdened (<30%)",
+    "count": 120
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Not burdened (<30%)",
+    "count": 1069
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 149
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 383
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Not burdened (<30%)",
+    "count": 1212
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Not burdened (<30%)",
+    "count": 310
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Not burdened (<30%)",
+    "count": 2338
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Cost burdened (30-50%)",
+    "count": 16
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Cost burdened (30-50%)",
+    "count": 17
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Cost burdened (30-50%)",
+    "count": 94
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Renter",
+    "income_bracket": "$100k+",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Cost burdened (30-50%)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Severely burdened (50%+)",
+    "count": 187
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "Less than $10k",
+    "burden": "Severely burdened (50%+)",
+    "count": 92
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Not burdened (<30%)",
+    "count": 27
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Not burdened (<30%)",
+    "count": 43
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Not burdened (<30%)",
+    "count": 0
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 61
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 25
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 16
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 94
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 22
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$10k-$19,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 213
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Not burdened (<30%)",
+    "count": 82
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Not burdened (<30%)",
+    "count": 12
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Not burdened (<30%)",
+    "count": 80
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 72
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 158
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 127
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 331
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 58
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$20k-$34,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 238
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Not burdened (<30%)",
+    "count": 371
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Not burdened (<30%)",
+    "count": 99
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Not burdened (<30%)",
+    "count": 410
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 135
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 44
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 133
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 203
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 111
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$35k-$49,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 239
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Not burdened (<30%)",
+    "count": 342
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Not burdened (<30%)",
+    "count": 73
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Not burdened (<30%)",
+    "count": 1176
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 117
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 62
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 457
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 162
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 20
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$50k-$74,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 139
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Not burdened (<30%)",
+    "count": 611
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Not burdened (<30%)",
+    "count": 108
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Not burdened (<30%)",
+    "count": 1508
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 125
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 107
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Cost burdened (30-50%)",
+    "count": 275
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 47
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 29
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$75k-$99,999",
+    "burden": "Severely burdened (50%+)",
+    "count": 28
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Not burdened (<30%)",
+    "count": 6275
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Not burdened (<30%)",
+    "count": 3299
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Not burdened (<30%)",
+    "count": 12187
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Cost burdened (30-50%)",
+    "count": 292
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Cost burdened (30-50%)",
+    "count": 160
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Cost burdened (30-50%)",
+    "count": 491
+  },
+  {
+    "town": "Cornelius",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Severely burdened (50%+)",
+    "count": 75
+  },
+  {
+    "town": "Davidson",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Severely burdened (50%+)",
+    "count": 14
+  },
+  {
+    "town": "Huntersville",
+    "tenure": "Owner",
+    "income_bracket": "$100k+",
+    "burden": "Severely burdened (50%+)",
+    "count": 0
+  }
+]

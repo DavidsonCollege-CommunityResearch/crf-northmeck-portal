@@ -1,0 +1,149 @@
+[
+  {
+    "town": "Cornelius",
+    "home_value": 564571,
+    "income_bracket": "Less than $10k",
+    "midpoint": 5000,
+    "ratio": 112.9
+  },
+  {
+    "town": "Cornelius",
+    "home_value": 564571,
+    "income_bracket": "$10k-$19,999",
+    "midpoint": 15000,
+    "ratio": 37.6
+  },
+  {
+    "town": "Cornelius",
+    "home_value": 564571,
+    "income_bracket": "$20k-$34,999",
+    "midpoint": 27500,
+    "ratio": 20.5
+  },
+  {
+    "town": "Cornelius",
+    "home_value": 564571,
+    "income_bracket": "$35k-$49,999",
+    "midpoint": 42500,
+    "ratio": 13.3
+  },
+  {
+    "town": "Cornelius",
+    "home_value": 564571,
+    "income_bracket": "$50k-$74,999",
+    "midpoint": 62500,
+    "ratio": 9
+  },
+  {
+    "town": "Cornelius",
+    "home_value": 564571,
+    "income_bracket": "$75k-$99,999",
+    "midpoint": 87500,
+    "ratio": 6.5
+  },
+  {
+    "town": "Cornelius",
+    "home_value": 564571,
+    "income_bracket": "$100k-$149,999",
+    "midpoint": 125000,
+    "ratio": 4.5
+  },
+  {
+    "town": "Davidson",
+    "home_value": 692969,
+    "income_bracket": "Less than $10k",
+    "midpoint": 5000,
+    "ratio": 138.6
+  },
+  {
+    "town": "Davidson",
+    "home_value": 692969,
+    "income_bracket": "$10k-$19,999",
+    "midpoint": 15000,
+    "ratio": 46.2
+  },
+  {
+    "town": "Davidson",
+    "home_value": 692969,
+    "income_bracket": "$20k-$34,999",
+    "midpoint": 27500,
+    "ratio": 25.2
+  },
+  {
+    "town": "Davidson",
+    "home_value": 692969,
+    "income_bracket": "$35k-$49,999",
+    "midpoint": 42500,
+    "ratio": 16.3
+  },
+  {
+    "town": "Davidson",
+    "home_value": 692969,
+    "income_bracket": "$50k-$74,999",
+    "midpoint": 62500,
+    "ratio": 11.1
+  },
+  {
+    "town": "Davidson",
+    "home_value": 692969,
+    "income_bracket": "$75k-$99,999",
+    "midpoint": 87500,
+    "ratio": 7.9
+  },
+  {
+    "town": "Davidson",
+    "home_value": 692969,
+    "income_bracket": "$100k-$149,999",
+    "midpoint": 125000,
+    "ratio": 5.5
+  },
+  {
+    "town": "Huntersville",
+    "home_value": 552195,
+    "income_bracket": "Less than $10k",
+    "midpoint": 5000,
+    "ratio": 110.4
+  },
+  {
+    "town": "Huntersville",
+    "home_value": 552195,
+    "income_bracket": "$10k-$19,999",
+    "midpoint": 15000,
+    "ratio": 36.8
+  },
+  {
+    "town": "Huntersville",
+    "home_value": 552195,
+    "income_bracket": "$20k-$34,999",
+    "midpoint": 27500,
+    "ratio": 20.1
+  },
+  {
+    "town": "Huntersville",
+    "home_value": 552195,
+    "income_bracket": "$35k-$49,999",
+    "midpoint": 42500,
+    "ratio": 13
+  },
+  {
+    "town": "Huntersville",
+    "home_value": 552195,
+    "income_bracket": "$50k-$74,999",
+    "midpoint": 62500,
+    "ratio": 8.8
+  },
+  {
+    "town": "Huntersville",
+    "home_value": 552195,
+    "income_bracket": "$75k-$99,999",
+    "midpoint": 87500,
+    "ratio": 6.3
+  },
+  {
+    "town": "Huntersville",
+    "home_value": 552195,
+    "income_bracket": "$100k-$149,999",
+    "midpoint": 125000,
+    "ratio": 4.4
+  }
+]
