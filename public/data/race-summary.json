@@ -1,0 +1,26 @@
+[
+  {
+    "town": "Cornelius",
+    "total_pop": 32783,
+    "White, not Hispanic": 27263,
+    "Black or African American": 1150,
+    "Hispanic or Latino": 1761,
+    "Asian": 1043
+  },
+  {
+    "town": "Davidson",
+    "total_pop": 15660,
+    "White, not Hispanic": 12737,
+    "Black or African American": 1402,
+    "Hispanic or Latino": 554,
+    "Asian": 467
+  },
+  {
+    "town": "Huntersville",
+    "total_pop": 63655,
+    "White, not Hispanic": 43893,
+    "Black or African American": 8673,
+    "Hispanic or Latino": 5285,
+    "Asian": 4116
+  }
+]

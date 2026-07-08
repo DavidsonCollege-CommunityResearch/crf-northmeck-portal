@@ -1,0 +1,170 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "gini": 0.4834,
+    "home_value": 292400,
+    "income": 88366,
+    "ptr": 3.31
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "gini": 0.4902,
+    "home_value": 322400,
+    "income": 90542,
+    "ptr": 3.56
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "gini": 0.5136,
+    "home_value": 352600,
+    "income": 90377,
+    "ptr": 3.9
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "gini": 0.5136,
+    "home_value": 371100,
+    "income": 95147,
+    "ptr": 3.9
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "gini": 0.5222,
+    "home_value": 452300,
+    "income": 107969,
+    "ptr": 4.19
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "gini": 0.5325,
+    "home_value": 512400,
+    "income": 114688,
+    "ptr": 4.47
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "gini": 0.5136,
+    "home_value": 559400,
+    "income": 113767,
+    "ptr": 4.92
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "gini": 0.4356,
+    "home_value": 423000,
+    "income": 128255,
+    "ptr": 3.3
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "gini": 0.4361,
+    "home_value": 448300,
+    "income": 124853,
+    "ptr": 3.59
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "gini": 0.4322,
+    "home_value": 439100,
+    "income": 131144,
+    "ptr": 3.35
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "gini": 0.454,
+    "home_value": 478000,
+    "income": 141845,
+    "ptr": 3.37
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "gini": 0.4521,
+    "home_value": 572300,
+    "income": 140938,
+    "ptr": 4.06
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "gini": 0.4669,
+    "home_value": 626000,
+    "income": 152969,
+    "ptr": 4.09
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "gini": 0.4797,
+    "home_value": 687700,
+    "income": 166556,
+    "ptr": 4.13
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "gini": 0.3947,
+    "home_value": 283300,
+    "income": 97320,
+    "ptr": 2.91
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "gini": 0.3965,
+    "home_value": 301500,
+    "income": 102016,
+    "ptr": 2.96
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "gini": 0.3925,
+    "home_value": 318000,
+    "income": 100789,
+    "ptr": 3.16
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "gini": 0.4027,
+    "home_value": 332600,
+    "income": 102335,
+    "ptr": 3.25
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "gini": 0.4092,
+    "home_value": 393200,
+    "income": 112893,
+    "ptr": 3.48
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "gini": 0.4106,
+    "home_value": 439300,
+    "income": 119951,
+    "ptr": 3.66
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "gini": 0.4062,
+    "home_value": 472900,
+    "income": 120516,
+    "ptr": 3.92
+  }
+]

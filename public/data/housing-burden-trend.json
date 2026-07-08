@@ -1,0 +1,191 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "burden_rate": 28.3,
+    "cost_burdened": 556,
+    "severely_burdened": 492,
+    "total_households": 3704,
+    "severe_rate": 13.3
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "burden_rate": 32.4,
+    "cost_burdened": 698,
+    "severely_burdened": 557,
+    "total_households": 3872,
+    "severe_rate": 14.4
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "burden_rate": 35.4,
+    "cost_burdened": 760,
+    "severely_burdened": 487,
+    "total_households": 3523,
+    "severe_rate": 13.8
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "burden_rate": 42,
+    "cost_burdened": 1034,
+    "severely_burdened": 604,
+    "total_households": 3900,
+    "severe_rate": 15.5
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "burden_rate": 45,
+    "cost_burdened": 1149,
+    "severely_burdened": 668,
+    "total_households": 4042,
+    "severe_rate": 16.5
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "burden_rate": 46,
+    "cost_burdened": 1201,
+    "severely_burdened": 697,
+    "total_households": 4130,
+    "severe_rate": 16.9
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "burden_rate": 45.3,
+    "cost_burdened": 1152,
+    "severely_burdened": 765,
+    "total_households": 4234,
+    "severe_rate": 18.1
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "burden_rate": 41,
+    "cost_burdened": 143,
+    "severely_burdened": 213,
+    "total_households": 869,
+    "severe_rate": 24.5
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "burden_rate": 49,
+    "cost_burdened": 203,
+    "severely_burdened": 240,
+    "total_households": 904,
+    "severe_rate": 26.5
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "burden_rate": 42.9,
+    "cost_burdened": 174,
+    "severely_burdened": 220,
+    "total_households": 918,
+    "severe_rate": 24
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "burden_rate": 47.3,
+    "cost_burdened": 273,
+    "severely_burdened": 257,
+    "total_households": 1121,
+    "severe_rate": 22.9
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "burden_rate": 40.6,
+    "cost_burdened": 292,
+    "severely_burdened": 233,
+    "total_households": 1294,
+    "severe_rate": 18
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "burden_rate": 45.1,
+    "cost_burdened": 245,
+    "severely_burdened": 259,
+    "total_households": 1117,
+    "severe_rate": 23.2
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "burden_rate": 45.9,
+    "cost_burdened": 176,
+    "severely_burdened": 336,
+    "total_households": 1116,
+    "severe_rate": 30.1
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "burden_rate": 39.8,
+    "cost_burdened": 1016,
+    "severely_burdened": 945,
+    "total_households": 4928,
+    "severe_rate": 19.2
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "burden_rate": 38.5,
+    "cost_burdened": 1145,
+    "severely_burdened": 811,
+    "total_households": 5075,
+    "severe_rate": 16
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "burden_rate": 33.9,
+    "cost_burdened": 1110,
+    "severely_burdened": 735,
+    "total_households": 5449,
+    "severe_rate": 13.5
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "burden_rate": 36.1,
+    "cost_burdened": 1121,
+    "severely_burdened": 1029,
+    "total_households": 5957,
+    "severe_rate": 17.3
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "burden_rate": 38.1,
+    "cost_burdened": 1179,
+    "severely_burdened": 1171,
+    "total_households": 6175,
+    "severe_rate": 19
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "burden_rate": 40.1,
+    "cost_burdened": 1375,
+    "severely_burdened": 1246,
+    "total_households": 6538,
+    "severe_rate": 19.1
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "burden_rate": 42,
+    "cost_burdened": 1735,
+    "severely_burdened": 1243,
+    "total_households": 7093,
+    "severe_rate": 17.5
+  }
+]

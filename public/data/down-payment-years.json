@@ -1,0 +1,20 @@
+[
+  {
+    "town": "Cornelius",
+    "median_home_value": 559400,
+    "median_income": 113767,
+    "years": 9.83
+  },
+  {
+    "town": "Davidson",
+    "median_home_value": 687700,
+    "median_income": 166556,
+    "years": 8.26
+  },
+  {
+    "town": "Huntersville",
+    "median_home_value": 472900,
+    "median_income": 120516,
+    "years": 7.85
+  }
+]

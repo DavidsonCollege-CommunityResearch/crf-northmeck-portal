@@ -1,0 +1,128 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "median_income": 88366,
+    "median_rent": 1222
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "median_income": 90542,
+    "median_rent": 1219
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "median_income": 90377,
+    "median_rent": 1236
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "median_income": 95147,
+    "median_rent": 1343
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "median_income": 107969,
+    "median_rent": 1483
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "median_income": 114688,
+    "median_rent": 1571
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "median_income": 113767,
+    "median_rent": 1722
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "median_income": 128255,
+    "median_rent": 1213
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "median_income": 124853,
+    "median_rent": 1264
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "median_income": 131144,
+    "median_rent": 1297
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "median_income": 141845,
+    "median_rent": 1352
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "median_income": 140938,
+    "median_rent": 1615
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "median_income": 152969,
+    "median_rent": 1636
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "median_income": 166556,
+    "median_rent": 1652
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "median_income": 97320,
+    "median_rent": 1288
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "median_income": 102016,
+    "median_rent": 1305
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "median_income": 100789,
+    "median_rent": 1363
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "median_income": 102335,
+    "median_rent": 1509
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "median_income": 112893,
+    "median_rent": 1624
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "median_income": 119951,
+    "median_rent": 1742
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "median_income": 120516,
+    "median_rent": 1834
+  }
+]

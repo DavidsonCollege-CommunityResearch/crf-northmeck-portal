@@ -1,0 +1,38 @@
+[
+  {
+    "town": "Cornelius",
+    "total": 32783,
+    "white": 27263,
+    "black": 1150,
+    "asian": 1043,
+    "hispanic": 1761,
+    "two_more": 0,
+    "native": 0,
+    "nhpi": 0,
+    "other": 0
+  },
+  {
+    "town": "Davidson",
+    "total": 15660,
+    "white": 12737,
+    "black": 1402,
+    "asian": 467,
+    "hispanic": 554,
+    "two_more": 0,
+    "native": 0,
+    "nhpi": 0,
+    "other": 0
+  },
+  {
+    "town": "Huntersville",
+    "total": 63655,
+    "white": 43893,
+    "black": 8673,
+    "asian": 4116,
+    "hispanic": 5285,
+    "two_more": 0,
+    "native": 0,
+    "nhpi": 0,
+    "other": 0
+  }
+]

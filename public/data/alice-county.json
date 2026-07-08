@@ -1,0 +1,82 @@
+[
+  {
+    "county": "Mecklenburg County",
+    "year": 2010,
+    "total_households": 356627,
+    "poverty_households": 46194,
+    "alice_households": 89755,
+    "above_alice_households": 220678
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2012,
+    "total_households": 365887,
+    "poverty_households": 51512,
+    "alice_households": 97818,
+    "above_alice_households": 216557
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2014,
+    "total_households": 389047,
+    "poverty_households": 52719,
+    "alice_households": 96778,
+    "above_alice_households": 239550
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2016,
+    "total_households": 399504,
+    "poverty_households": 42082,
+    "alice_households": 111255,
+    "above_alice_households": 246167
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2018,
+    "total_households": 418135,
+    "poverty_households": 42358,
+    "alice_households": 118221,
+    "above_alice_households": 257556
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2019,
+    "total_households": 426313,
+    "poverty_households": 41012,
+    "alice_households": 141259,
+    "above_alice_households": 244042
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2021,
+    "total_households": 458344,
+    "poverty_households": 42989,
+    "alice_households": 138932,
+    "above_alice_households": 276423
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2022,
+    "total_households": 472427,
+    "poverty_households": 45914,
+    "alice_households": 137558,
+    "above_alice_households": 288955
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2023,
+    "total_households": 474611,
+    "poverty_households": 45185,
+    "alice_households": 136658,
+    "above_alice_households": 292768
+  },
+  {
+    "county": "Mecklenburg County",
+    "year": 2024,
+    "total_households": 486412,
+    "poverty_households": 51099,
+    "alice_households": 129135,
+    "above_alice_households": 306178
+  }
+]

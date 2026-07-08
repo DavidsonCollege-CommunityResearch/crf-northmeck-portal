@@ -1,0 +1,107 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "severely_cost_burdened_households": 492
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "severely_cost_burdened_households": 557
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "severely_cost_burdened_households": 487
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "severely_cost_burdened_households": 604
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "severely_cost_burdened_households": 668
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "severely_cost_burdened_households": 697
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "severely_cost_burdened_households": 765
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "severely_cost_burdened_households": 213
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "severely_cost_burdened_households": 240
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "severely_cost_burdened_households": 220
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "severely_cost_burdened_households": 257
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "severely_cost_burdened_households": 233
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "severely_cost_burdened_households": 259
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "severely_cost_burdened_households": 336
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "severely_cost_burdened_households": 945
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "severely_cost_burdened_households": 811
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "severely_cost_burdened_households": 735
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "severely_cost_burdened_households": 1029
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "severely_cost_burdened_households": 1171
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "severely_cost_burdened_households": 1246
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "severely_cost_burdened_households": 1243
+  }
+]

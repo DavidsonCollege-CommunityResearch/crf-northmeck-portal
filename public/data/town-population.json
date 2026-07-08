@@ -1,0 +1,107 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "population": 28649
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "population": 29256
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "population": 29836
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "population": 30925
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "population": 31396
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "population": 32009
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "population": 32783
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "population": 12666
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "population": 12735
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "population": 12920
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "population": 14644
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "population": 15199
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "population": 14852
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "population": 15660
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "population": 54572
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "population": 55980
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "population": 57288
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "population": 60166
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "population": 61202
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "population": 62458
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "population": 63655
+  }
+]

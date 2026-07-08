@@ -1,0 +1,44 @@
+name: Refresh MotherDuck data snapshot
+
+on:
+  schedule:
+    # 06:00 UTC on the 1st of every month - matches the actual refresh
+    # cadence of the underlying ACS/HUD data, not how often this runs.
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run snapshot script
+        id: refresh
+        env:
+          MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
+        run: node scripts/refresh-data.mjs
+
+      # Commits any changed public/data/*.json files back to main. Pushing to
+      # main is what triggers deploy.yml to rebuild and redeploy with the
+      # fresh data - this workflow deliberately doesn't build or deploy itself.
+      - name: Commit updated data snapshot
+        if: always()
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: refresh MotherDuck data snapshot'
+          file_pattern: 'public/data/*.json'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'

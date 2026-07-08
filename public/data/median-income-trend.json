@@ -1,0 +1,107 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "income": 88366
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "income": 90542
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "income": 90377
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "income": 95147
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "income": 107969
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "income": 114688
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "income": 113767
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "income": 128255
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "income": 124853
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "income": 131144
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "income": 141845
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "income": 140938
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "income": 152969
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "income": 166556
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "income": 97320
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "income": 102016
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "income": 100789
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "income": 102335
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "income": 112893
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "income": 119951
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "income": 120516
+  }
+]

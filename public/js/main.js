@@ -1,28 +1,21 @@
-/* ── MOTHERDUCK RESILIENCE HELPERS ──
-   MotherDuck's hosted CDN/query channel is intermittently flaky (confirmed
-   independently — connection resets fetching the wasm worker, and transient
-   errors on live queries even after a successful connect). These helpers give
-   every chart a timeout + one retry, and a visible message instead of a
-   silently blank chart when it still fails. */
-window.mdQuery = async function(conn, sql, opts){
-  opts = opts || {};
-  var retries = opts.retries != null ? opts.retries : 1;
-  var timeoutMs = opts.timeoutMs || 15000;
-  var lastErr;
-  for (var attempt = 0; attempt <= retries; attempt++){
-    try {
-      var res = await Promise.race([
-        conn.evaluateQuery(sql),
-        new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('MotherDuck query timed out')); }, timeoutMs); })
-      ]);
-      return res.data.toRows();
-    } catch (err) {
-      lastErr = err;
-      console.error('mdQuery attempt ' + (attempt + 1) + ' failed:', err);
-      if (attempt < retries) await new Promise(function(r){ setTimeout(r, 700 * (attempt + 1)); });
-    }
-  }
-  throw lastErr;
+/* ── STATIC DATA LOADER ──
+   Charts used to query MotherDuck live from the browser (a hardcoded token
+   shipped to every visitor, plus MotherDuck's hosted CDN/query channel being
+   intermittently flaky). Data is now snapshotted server-side on a schedule
+   (scripts/refresh-data.mjs, run by .github/workflows/refresh-data.yml) into
+   public/data/*.json, which the client just fetches like any other static
+   asset — no token, no live connection, nothing MotherDuck-specific left
+   in the browser at all. */
+var MD_DATA_BASE = (function(){
+  var s = document.currentScript;
+  if (s && s.src) return s.src.replace(/js\/main\.js(?:\?.*)?$/, '');
+  return './';
+})();
+
+window.loadData = async function(name){
+  var res = await fetch(MD_DATA_BASE + 'data/' + name + '.json');
+  if (!res.ok) throw new Error('Failed to load data/' + name + '.json: HTTP ' + res.status);
+  return await res.json();
 };
 
 window.mdShowError = function(containerId){
@@ -534,21 +527,12 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
   };
 
   /* ── dataset registry ── */
-  var TOWNS = "('Cornelius','Davidson','Huntersville')";
   var DATASETS = {
     'economic-trends': {
       filename: 'nmidw_economic_trends_2018-2024',
       source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates',
       years: '2018–2024',
-      mdQuery: `SELECT town, year,
-        CAST(median_rent AS INTEGER) AS median_rent_monthly_usd,
-        CAST(median_income AS INTEGER) AS median_household_income_usd,
-        CAST(median_home_value AS INTEGER) AS median_home_value_usd,
-        ROUND(median_home_value * 1.0 / NULLIF(median_income,0), 2) AS home_price_to_income_ratio,
-        ROUND((median_rent * 12.0) / NULLIF(median_income,0) * 100, 1) AS rent_to_income_pct,
-        ROUND(income_inequality_gini, 4) AS gini_coefficient
-        FROM nmidw_cloud.agg_town_economic_trends
-        WHERE town IN ${TOWNS} ORDER BY town, year`,
+      jsonFile: 'dlib-economic-trends',
       codebook: [
         ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
         ['year','integer','ACS survey year'],
@@ -565,13 +549,7 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
       filename: 'nmidw_housing_burden_2018-2024',
       source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates',
       years: '2018–2024',
-      mdQuery: `SELECT town, year,
-        CAST(total_households AS INTEGER) AS total_households,
-        CAST(cost_burdened_households AS INTEGER) AS cost_burdened_households,
-        CAST(severely_cost_burdened_households AS INTEGER) AS severely_cost_burdened_households,
-        ROUND(CAST("housing_burden_rate_%" AS DOUBLE), 1) AS cost_burden_rate_pct
-        FROM nmidw_cloud.agg_town_housing_burden
-        WHERE town IN ${TOWNS} ORDER BY town, year`,
+      jsonFile: 'dlib-housing-burden',
       codebook: [
         ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
         ['year','integer','ACS survey year'],
@@ -586,7 +564,7 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
       filename: 'nmidw_cost_burden_by_bracket_2024',
       source: 'U.S. Census Bureau, ACS Comprehensive Housing Affordability Strategy (CHAS) via HUD',
       years: '2024',
-      jsonKey: 'BURDEN_BY_BRACKET',
+      jsonFile: 'dlib-burden-by-bracket',
       codebook: [
         ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
         ['tenure','text','Housing tenure: Renter or Owner'],
@@ -600,7 +578,7 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
       filename: 'nmidw_home_affordability_by_bracket_2024',
       source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, 2024',
       years: '2024',
-      jsonKey: 'PTR_BY_BRACKET',
+      jsonFile: 'dlib-ptr-by-bracket',
       codebook: [
         ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
         ['home_value','integer','Median home value in dollars for the town (ACS Table B25077, 2024)'],
@@ -614,12 +592,7 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
       filename: 'nmidw_demographics_2018-2024',
       source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates',
       years: '2018–2024',
-      mdQuery: `SELECT town, year,
-        CAST(total_population AS INTEGER) AS total_population,
-        CAST(total_households AS INTEGER) AS total_households,
-        CAST(median_household_income AS INTEGER) AS median_household_income_usd
-        FROM nmidw_cloud.agg_town_demographics
-        WHERE town IN ${TOWNS} ORDER BY town, year`,
+      jsonFile: 'dlib-demographics',
       codebook: [
         ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
         ['year','integer','ACS survey year'],
@@ -694,44 +667,6 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
   }
 
   /* ── inline JSON datasets (hardcoded in page) ── */
-  function getInlineData(key){
-    if (key==='BURDEN_BY_BRACKET') {
-      /* extract from the const raw = [...] already on the page */
-      try { return window.__dlibBurdenData || []; } catch(e){ return []; }
-    }
-    if (key==='PTR_BY_BRACKET') {
-      try { return window.__dlibPtrData || []; } catch(e){ return []; }
-    }
-    return [];
-  }
-
-  /* ── MotherDuck connection for data library ── */
-  function getMDConn(){
-    if (window.__mdConn) return window.__mdConn;
-    window.__mdConn = (async function(){
-      var MD_TOKEN='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhqcGFyazEzMzhAZ21haWwuY29tIiwibWRSZWdpb24iOiJhd3MtdXMtZWFzdC0xIiwic2Vzc2lvbiI6ImhqcGFyazEzMzguZ21haWwuY29tIiwicGF0IjoiWlJKR2JmU0VuU0dTQlhodjdROHJSR0VYS0NyR2ZMX3E5QmFFdkJxeHkyWSIsInVzZXJJZCI6ImNjZjM5YjFjLWZiYWEtNGZhOS1iNjkxLWZmOTJmNTIxMWFmMyIsImlzcyI6Im1kX3BhdCIsInJlYWRPbmx5IjpmYWxzZSwidG9rZW5UeXBlIjoicmVhZF93cml0ZSIsImlhdCI6MTc4MTYxNjYyM30.g2FjvYtBsCNBMAHUG9ggxmu10dQRM2Q6iPyxK_5LaRc';
-      var m = await import('https://cdn.jsdelivr.net/npm/@motherduck/wasm-client@1.5.4-r.1/+esm');
-      var lastErr;
-      for (var attempt = 0; attempt <= 2; attempt++){
-        try {
-          var conn = m.MDConnection.create({ mdToken: MD_TOKEN });
-          await Promise.race([
-            conn.evaluateQuery('SELECT 1'),
-            new Promise(function(_, rej){ setTimeout(function(){ rej(new Error('MotherDuck connect verification timed out')); }, 10000); })
-          ]);
-          return conn;
-        } catch (err) {
-          lastErr = err;
-          console.error('MotherDuck connect attempt ' + (attempt + 1) + ' failed:', err);
-          if (attempt < 2) await new Promise(function(r){ setTimeout(r, 900 * (attempt + 1)); });
-        }
-      }
-      window.__mdConn = null;
-      throw lastErr;
-    })();
-    return window.__mdConn;
-  }
-
   /* ── main download handler ── */
   var toastT;
   window.dlibDownload = async function(e, fmt){
@@ -757,12 +692,8 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
     try {
       var rows=[];
 
-      if (ds.mdQuery){
-        var conn=await getMDConn();
-        rows=await window.mdQuery(conn, ds.mdQuery);
-      } else if (ds.jsonKey){
-        rows=getInlineData(ds.jsonKey);
-        if (!rows.length) throw new Error('Inline data not available — try visiting the Housing section first.');
+      if (ds.jsonFile){
+        rows=await window.loadData(ds.jsonFile);
       }
 
       if (!rows.length) throw new Error('No data returned.');
@@ -784,16 +715,6 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
     }
   };
 })();
-
-/* expose inline chart data for data library downloads */
-document.addEventListener('DOMContentLoaded', function(){
-  /* burden-by-bracket raw is defined in the housing script — re-expose it */
-  setTimeout(function(){
-    if (typeof window.__dlibBurdenData === 'undefined' && document.querySelector('#burden-chart')){
-      /* fallback: already in window scope via housing module if visited */
-    }
-  }, 500);
-});
 
 /* ── FACTS BAR ── */
 var FACTS = [

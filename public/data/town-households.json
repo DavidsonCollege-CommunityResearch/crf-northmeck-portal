@@ -1,0 +1,107 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "total_households": 3704
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "total_households": 3872
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "total_households": 3523
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "total_households": 3900
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "total_households": 4042
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "total_households": 4130
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "total_households": 4234
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "total_households": 869
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "total_households": 904
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "total_households": 918
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "total_households": 1121
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "total_households": 1294
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "total_households": 1117
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "total_households": 1116
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "total_households": 4928
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "total_households": 5075
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "total_households": 5449
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "total_households": 5957
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "total_households": 6175
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "total_households": 6538
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "total_households": 7093
+  }
+]

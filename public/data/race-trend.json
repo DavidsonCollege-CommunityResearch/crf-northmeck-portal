@@ -1,0 +1,191 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "total": 28649,
+    "white": 24632,
+    "black": 2241,
+    "hispanic": 1827,
+    "asian": 693
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "total": 29256,
+    "white": 24827,
+    "black": 2504,
+    "hispanic": 2457,
+    "asian": 675
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "total": 29836,
+    "white": 25662,
+    "black": 2200,
+    "hispanic": 2109,
+    "asian": 534
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "total": 30925,
+    "white": 26271,
+    "black": 1982,
+    "hispanic": 2366,
+    "asian": 624
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "total": 31396,
+    "white": 26908,
+    "black": 1499,
+    "hispanic": 1899,
+    "asian": 825
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "total": 32009,
+    "white": 27110,
+    "black": 1470,
+    "hispanic": 1964,
+    "asian": 704
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "total": 32783,
+    "white": 27263,
+    "black": 1150,
+    "hispanic": 1761,
+    "asian": 1043
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "total": 12666,
+    "white": 11709,
+    "black": 563,
+    "hispanic": 688,
+    "asian": 147
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "total": 12735,
+    "white": 11581,
+    "black": 696,
+    "hispanic": 708,
+    "asian": 165
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "total": 12920,
+    "white": 11300,
+    "black": 1035,
+    "hispanic": 670,
+    "asian": 204
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "total": 14644,
+    "white": 12619,
+    "black": 1109,
+    "hispanic": 494,
+    "asian": 265
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "total": 15199,
+    "white": 12618,
+    "black": 1259,
+    "hispanic": 525,
+    "asian": 402
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "total": 14852,
+    "white": 11969,
+    "black": 1485,
+    "hispanic": 602,
+    "asian": 425
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "total": 15660,
+    "white": 12737,
+    "black": 1402,
+    "hispanic": 554,
+    "asian": 467
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "total": 54572,
+    "white": 43918,
+    "black": 6388,
+    "hispanic": 3881,
+    "asian": 1415
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "total": 55980,
+    "white": 44872,
+    "black": 6977,
+    "hispanic": 3778,
+    "asian": 1564
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "total": 57288,
+    "white": 44137,
+    "black": 7211,
+    "hispanic": 3945,
+    "asian": 2318
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "total": 60166,
+    "white": 45763,
+    "black": 7459,
+    "hispanic": 4303,
+    "asian": 2521
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "total": 61202,
+    "white": 45427,
+    "black": 8073,
+    "hispanic": 4401,
+    "asian": 2795
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "total": 62458,
+    "white": 44282,
+    "black": 8527,
+    "hispanic": 4623,
+    "asian": 3446
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "total": 63655,
+    "white": 43893,
+    "black": 8673,
+    "hispanic": 5285,
+    "asian": 4116
+  }
+]

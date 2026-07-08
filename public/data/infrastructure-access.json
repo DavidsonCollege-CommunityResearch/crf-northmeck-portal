@@ -1,0 +1,191 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "renter_no_car": 3.08,
+    "owner_no_car": 0.85,
+    "no_internet": 5.38,
+    "labor_uninsured": 8.85,
+    "senior_uninsured": 0.19
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "renter_no_car": 3.8,
+    "owner_no_car": 0.94,
+    "no_internet": 5.67,
+    "labor_uninsured": 8.97,
+    "senior_uninsured": 0.23
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "renter_no_car": 4.54,
+    "owner_no_car": 0.75,
+    "no_internet": 3.41,
+    "labor_uninsured": 6.93,
+    "senior_uninsured": 0.13
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "renter_no_car": 5.77,
+    "owner_no_car": 1.35,
+    "no_internet": 4.38,
+    "labor_uninsured": 8.95,
+    "senior_uninsured": 0.11
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "renter_no_car": 5.57,
+    "owner_no_car": 1.95,
+    "no_internet": 3.82,
+    "labor_uninsured": 6.66,
+    "senior_uninsured": 0.11
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "renter_no_car": 5.23,
+    "owner_no_car": 1.73,
+    "no_internet": 3,
+    "labor_uninsured": 6.27,
+    "senior_uninsured": 0.17
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "renter_no_car": 5.38,
+    "owner_no_car": 1.8,
+    "no_internet": 2.41,
+    "labor_uninsured": 5.47,
+    "senior_uninsured": 0.17
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "renter_no_car": 6.44,
+    "owner_no_car": 1.06,
+    "no_internet": 4.49,
+    "labor_uninsured": 5.45,
+    "senior_uninsured": 0
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "renter_no_car": 5.42,
+    "owner_no_car": 1.11,
+    "no_internet": 4.54,
+    "labor_uninsured": 5.72,
+    "senior_uninsured": 0.12
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "renter_no_car": 5.99,
+    "owner_no_car": 0.51,
+    "no_internet": 3.47,
+    "labor_uninsured": 7.46,
+    "senior_uninsured": 0.12
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "renter_no_car": 9.19,
+    "owner_no_car": 0.48,
+    "no_internet": 3.59,
+    "labor_uninsured": 6.7,
+    "senior_uninsured": 0.16
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "renter_no_car": 17.7,
+    "owner_no_car": 0.88,
+    "no_internet": 1.96,
+    "labor_uninsured": 5.94,
+    "senior_uninsured": 0.13
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "renter_no_car": 18.71,
+    "owner_no_car": 1.83,
+    "no_internet": 3.55,
+    "labor_uninsured": 4.25,
+    "senior_uninsured": 0.16
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "renter_no_car": 20.07,
+    "owner_no_car": 1.77,
+    "no_internet": 2.72,
+    "labor_uninsured": 3.95,
+    "senior_uninsured": 0.01
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "renter_no_car": 5.62,
+    "owner_no_car": 0.76,
+    "no_internet": 5.55,
+    "labor_uninsured": 7.06,
+    "senior_uninsured": 0.07
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "renter_no_car": 7.55,
+    "owner_no_car": 0.51,
+    "no_internet": 6.07,
+    "labor_uninsured": 6.8,
+    "senior_uninsured": 0.1
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "renter_no_car": 7.23,
+    "owner_no_car": 0.55,
+    "no_internet": 4.68,
+    "labor_uninsured": 6.89,
+    "senior_uninsured": 0
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "renter_no_car": 8.29,
+    "owner_no_car": 0.91,
+    "no_internet": 3.76,
+    "labor_uninsured": 7.73,
+    "senior_uninsured": 0.02
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "renter_no_car": 8.81,
+    "owner_no_car": 0.91,
+    "no_internet": 2.78,
+    "labor_uninsured": 7.42,
+    "senior_uninsured": 0.01
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "renter_no_car": 7.57,
+    "owner_no_car": 1.35,
+    "no_internet": 2.91,
+    "labor_uninsured": 6.79,
+    "senior_uninsured": 0.05
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "renter_no_car": 6.64,
+    "owner_no_car": 1.27,
+    "no_internet": 1.92,
+    "labor_uninsured": 6.45,
+    "senior_uninsured": 0.12
+  }
+]

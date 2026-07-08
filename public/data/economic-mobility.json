@@ -1,0 +1,149 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "edu": 49.93,
+    "poverty": 10.26,
+    "unemployment": 4.35
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "edu": 48.64,
+    "poverty": 10.7,
+    "unemployment": 4.28
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "edu": 49.38,
+    "poverty": 9.89,
+    "unemployment": 4.02
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "edu": 50.97,
+    "poverty": 9.31,
+    "unemployment": 4.84
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "edu": 52.91,
+    "poverty": 7.19,
+    "unemployment": 3.76
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "edu": 53.54,
+    "poverty": 6.14,
+    "unemployment": 4.08
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "edu": 55.77,
+    "poverty": 7.44,
+    "unemployment": 2.71
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "edu": 63.02,
+    "poverty": 4.45,
+    "unemployment": 3.5
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "edu": 63.32,
+    "poverty": 4.75,
+    "unemployment": 3.13
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "edu": 64.62,
+    "poverty": 8.66,
+    "unemployment": 3.61
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "edu": 64.14,
+    "poverty": 9.3,
+    "unemployment": 3.17
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "edu": 62.43,
+    "poverty": 8.41,
+    "unemployment": 2.68
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "edu": 61.76,
+    "poverty": 9.74,
+    "unemployment": 4.43
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "edu": 61.65,
+    "poverty": 9.72,
+    "unemployment": 4.65
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "edu": 52.36,
+    "poverty": 7.77,
+    "unemployment": 3.87
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "edu": 52.42,
+    "poverty": 6.35,
+    "unemployment": 3.69
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "edu": 50.38,
+    "poverty": 5.95,
+    "unemployment": 4.16
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "edu": 51.66,
+    "poverty": 6.16,
+    "unemployment": 4.05
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "edu": 52.06,
+    "poverty": 6.11,
+    "unemployment": 4.5
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "edu": 53.35,
+    "poverty": 4.94,
+    "unemployment": 3.95
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "edu": 53.07,
+    "poverty": 4.3,
+    "unemployment": 3.48
+  }
+]

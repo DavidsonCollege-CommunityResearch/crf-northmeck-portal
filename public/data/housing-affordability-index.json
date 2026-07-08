@@ -1,0 +1,128 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "rti": 16.59,
+    "hpti": 3.31
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "rti": 16.16,
+    "hpti": 3.56
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "rti": 16.41,
+    "hpti": 3.9
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "rti": 16.94,
+    "hpti": 3.9
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "rti": 16.48,
+    "hpti": 4.19
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "rti": 16.44,
+    "hpti": 4.47
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "rti": 18.16,
+    "hpti": 4.92
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "rti": 11.35,
+    "hpti": 3.3
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "rti": 12.15,
+    "hpti": 3.59
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "rti": 11.87,
+    "hpti": 3.35
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "rti": 11.44,
+    "hpti": 3.37
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "rti": 13.75,
+    "hpti": 4.06
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "rti": 12.83,
+    "hpti": 4.09
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "rti": 11.9,
+    "hpti": 4.13
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "rti": 15.88,
+    "hpti": 2.91
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "rti": 15.35,
+    "hpti": 2.96
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "rti": 16.23,
+    "hpti": 3.16
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "rti": 17.69,
+    "hpti": 3.25
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "rti": 17.26,
+    "hpti": 3.48
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "rti": 17.43,
+    "hpti": 3.66
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "rti": 18.26,
+    "hpti": 3.92
+  }
+]

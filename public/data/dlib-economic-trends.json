@@ -1,0 +1,212 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "median_rent_monthly_usd": 1222,
+    "median_household_income_usd": 88366,
+    "median_home_value_usd": 292400,
+    "home_price_to_income_ratio": 3.31,
+    "rent_to_income_pct": 16.6,
+    "gini_coefficient": 0.4834
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "median_rent_monthly_usd": 1219,
+    "median_household_income_usd": 90542,
+    "median_home_value_usd": 322400,
+    "home_price_to_income_ratio": 3.56,
+    "rent_to_income_pct": 16.2,
+    "gini_coefficient": 0.4902
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "median_rent_monthly_usd": 1236,
+    "median_household_income_usd": 90377,
+    "median_home_value_usd": 352600,
+    "home_price_to_income_ratio": 3.9,
+    "rent_to_income_pct": 16.4,
+    "gini_coefficient": 0.5136
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "median_rent_monthly_usd": 1343,
+    "median_household_income_usd": 95147,
+    "median_home_value_usd": 371100,
+    "home_price_to_income_ratio": 3.9,
+    "rent_to_income_pct": 16.9,
+    "gini_coefficient": 0.5136
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "median_rent_monthly_usd": 1483,
+    "median_household_income_usd": 107969,
+    "median_home_value_usd": 452300,
+    "home_price_to_income_ratio": 4.19,
+    "rent_to_income_pct": 16.5,
+    "gini_coefficient": 0.5222
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "median_rent_monthly_usd": 1571,
+    "median_household_income_usd": 114688,
+    "median_home_value_usd": 512400,
+    "home_price_to_income_ratio": 4.47,
+    "rent_to_income_pct": 16.4,
+    "gini_coefficient": 0.5325
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "median_rent_monthly_usd": 1722,
+    "median_household_income_usd": 113767,
+    "median_home_value_usd": 559400,
+    "home_price_to_income_ratio": 4.92,
+    "rent_to_income_pct": 18.2,
+    "gini_coefficient": 0.5136
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "median_rent_monthly_usd": 1213,
+    "median_household_income_usd": 128255,
+    "median_home_value_usd": 423000,
+    "home_price_to_income_ratio": 3.3,
+    "rent_to_income_pct": 11.3,
+    "gini_coefficient": 0.4356
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "median_rent_monthly_usd": 1264,
+    "median_household_income_usd": 124853,
+    "median_home_value_usd": 448300,
+    "home_price_to_income_ratio": 3.59,
+    "rent_to_income_pct": 12.1,
+    "gini_coefficient": 0.4361
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "median_rent_monthly_usd": 1297,
+    "median_household_income_usd": 131144,
+    "median_home_value_usd": 439100,
+    "home_price_to_income_ratio": 3.35,
+    "rent_to_income_pct": 11.9,
+    "gini_coefficient": 0.4322
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "median_rent_monthly_usd": 1352,
+    "median_household_income_usd": 141845,
+    "median_home_value_usd": 478000,
+    "home_price_to_income_ratio": 3.37,
+    "rent_to_income_pct": 11.4,
+    "gini_coefficient": 0.454
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "median_rent_monthly_usd": 1615,
+    "median_household_income_usd": 140938,
+    "median_home_value_usd": 572300,
+    "home_price_to_income_ratio": 4.06,
+    "rent_to_income_pct": 13.8,
+    "gini_coefficient": 0.4521
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "median_rent_monthly_usd": 1636,
+    "median_household_income_usd": 152969,
+    "median_home_value_usd": 626000,
+    "home_price_to_income_ratio": 4.09,
+    "rent_to_income_pct": 12.8,
+    "gini_coefficient": 0.4669
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "median_rent_monthly_usd": 1652,
+    "median_household_income_usd": 166556,
+    "median_home_value_usd": 687700,
+    "home_price_to_income_ratio": 4.13,
+    "rent_to_income_pct": 11.9,
+    "gini_coefficient": 0.4797
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "median_rent_monthly_usd": 1288,
+    "median_household_income_usd": 97320,
+    "median_home_value_usd": 283300,
+    "home_price_to_income_ratio": 2.91,
+    "rent_to_income_pct": 15.9,
+    "gini_coefficient": 0.3947
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "median_rent_monthly_usd": 1305,
+    "median_household_income_usd": 102016,
+    "median_home_value_usd": 301500,
+    "home_price_to_income_ratio": 2.96,
+    "rent_to_income_pct": 15.4,
+    "gini_coefficient": 0.3965
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "median_rent_monthly_usd": 1363,
+    "median_household_income_usd": 100789,
+    "median_home_value_usd": 318000,
+    "home_price_to_income_ratio": 3.16,
+    "rent_to_income_pct": 16.2,
+    "gini_coefficient": 0.3925
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "median_rent_monthly_usd": 1509,
+    "median_household_income_usd": 102335,
+    "median_home_value_usd": 332600,
+    "home_price_to_income_ratio": 3.25,
+    "rent_to_income_pct": 17.7,
+    "gini_coefficient": 0.4027
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "median_rent_monthly_usd": 1624,
+    "median_household_income_usd": 112893,
+    "median_home_value_usd": 393200,
+    "home_price_to_income_ratio": 3.48,
+    "rent_to_income_pct": 17.3,
+    "gini_coefficient": 0.4092
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "median_rent_monthly_usd": 1742,
+    "median_household_income_usd": 119951,
+    "median_home_value_usd": 439300,
+    "home_price_to_income_ratio": 3.66,
+    "rent_to_income_pct": 17.4,
+    "gini_coefficient": 0.4106
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "median_rent_monthly_usd": 1834,
+    "median_household_income_usd": 120516,
+    "median_home_value_usd": 472900,
+    "home_price_to_income_ratio": 3.92,
+    "rent_to_income_pct": 18.3,
+    "gini_coefficient": 0.4062
+  }
+]

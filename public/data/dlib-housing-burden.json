@@ -1,0 +1,170 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "total_households": 3704,
+    "cost_burdened_households": 556,
+    "severely_cost_burdened_households": 492,
+    "cost_burden_rate_pct": 28.3
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "total_households": 3872,
+    "cost_burdened_households": 698,
+    "severely_cost_burdened_households": 557,
+    "cost_burden_rate_pct": 32.4
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "total_households": 3523,
+    "cost_burdened_households": 760,
+    "severely_cost_burdened_households": 487,
+    "cost_burden_rate_pct": 35.4
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "total_households": 3900,
+    "cost_burdened_households": 1034,
+    "severely_cost_burdened_households": 604,
+    "cost_burden_rate_pct": 42
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "total_households": 4042,
+    "cost_burdened_households": 1149,
+    "severely_cost_burdened_households": 668,
+    "cost_burden_rate_pct": 45
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "total_households": 4130,
+    "cost_burdened_households": 1201,
+    "severely_cost_burdened_households": 697,
+    "cost_burden_rate_pct": 46
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "total_households": 4234,
+    "cost_burdened_households": 1152,
+    "severely_cost_burdened_households": 765,
+    "cost_burden_rate_pct": 45.3
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "total_households": 869,
+    "cost_burdened_households": 143,
+    "severely_cost_burdened_households": 213,
+    "cost_burden_rate_pct": 41
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "total_households": 904,
+    "cost_burdened_households": 203,
+    "severely_cost_burdened_households": 240,
+    "cost_burden_rate_pct": 49
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "total_households": 918,
+    "cost_burdened_households": 174,
+    "severely_cost_burdened_households": 220,
+    "cost_burden_rate_pct": 42.9
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "total_households": 1121,
+    "cost_burdened_households": 273,
+    "severely_cost_burdened_households": 257,
+    "cost_burden_rate_pct": 47.3
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "total_households": 1294,
+    "cost_burdened_households": 292,
+    "severely_cost_burdened_households": 233,
+    "cost_burden_rate_pct": 40.6
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "total_households": 1117,
+    "cost_burdened_households": 245,
+    "severely_cost_burdened_households": 259,
+    "cost_burden_rate_pct": 45.1
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "total_households": 1116,
+    "cost_burdened_households": 176,
+    "severely_cost_burdened_households": 336,
+    "cost_burden_rate_pct": 45.9
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "total_households": 4928,
+    "cost_burdened_households": 1016,
+    "severely_cost_burdened_households": 945,
+    "cost_burden_rate_pct": 39.8
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "total_households": 5075,
+    "cost_burdened_households": 1145,
+    "severely_cost_burdened_households": 811,
+    "cost_burden_rate_pct": 38.5
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "total_households": 5449,
+    "cost_burdened_households": 1110,
+    "severely_cost_burdened_households": 735,
+    "cost_burden_rate_pct": 33.9
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "total_households": 5957,
+    "cost_burdened_households": 1121,
+    "severely_cost_burdened_households": 1029,
+    "cost_burden_rate_pct": 36.1
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "total_households": 6175,
+    "cost_burdened_households": 1179,
+    "severely_cost_burdened_households": 1171,
+    "cost_burden_rate_pct": 38.1
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "total_households": 6538,
+    "cost_burdened_households": 1375,
+    "severely_cost_burdened_households": 1246,
+    "cost_burden_rate_pct": 40.1
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "total_households": 7093,
+    "cost_burdened_households": 1735,
+    "severely_cost_burdened_households": 1243,
+    "cost_burden_rate_pct": 42
+  }
+]
