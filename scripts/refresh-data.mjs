@@ -367,34 +367,26 @@ async function run() {
     await writeJSON('pottstown-demographics', []);
   }
 
-  // dlib-demographics - KNOWN BROKEN, discovered while building this script.
-  // main.js's DATASETS.demographics query selects total_households FROM
-  // nmidw.agg_town_demographics, but that table has no such column
-  // (it lives in agg_town_housing_burden instead, used correctly by the
-  // town-households/housing-burden-trend/severely-burdened-households
-  // datasets above). This download button has likely never worked, in
-  // either the old live-client-side path or here - flagged for the team
-  // to confirm whether to fix (join in total_households from
-  // agg_town_housing_burden) or drop that column from the download.
+  // dlib-demographics - joins agg_town_demographics (population, income) with
+  // agg_town_housing_burden (total_households) on GEOID + year, since
+  // total_households does not exist on agg_town_demographics.
   try {
     const sql = `
-      SELECT town, year,
-        CAST(total_population AS INTEGER) AS total_population,
-        CAST(total_households AS INTEGER) AS total_households,
-        CAST(median_household_income AS INTEGER) AS median_household_income_usd
-      FROM nmidw.agg_town_demographics
-      WHERE town IN ${TOWNS} ORDER BY town, year
+      SELECT t.town, t.year,
+        CAST(t.total_population AS INTEGER) AS total_population,
+        CAST(h.total_households AS INTEGER) AS total_households,
+        CAST(t.median_household_income AS INTEGER) AS median_household_income_usd
+      FROM nmidw.agg_town_demographics AS t
+        JOIN nmidw.agg_town_housing_burden AS h
+          ON t.GEOID = h.GEOID AND t.year = h.year
+      WHERE t.town IN ${TOWNS} ORDER BY t.town, t.year
     `;
     const rows = await all(conn, sql);
     await writeJSON('dlib-demographics', rows);
     console.log(`✓ dlib-demographics: ${rows.length} rows`);
   } catch (err) {
-    console.error(
-      `⚠ dlib-demographics: KNOWN issue, not a new failure - query selects total_households ` +
-        `from nmidw.agg_town_demographics, but that table has no such column (it lives ` +
-        `in agg_town_housing_burden instead). Flagged for the team; writing an empty dataset. ` +
-        `Underlying error: ${err.message}`
-    );
+    hadUnexpectedFailure = true;
+    console.error(`✗ dlib-demographics: ${err.message}`);
     await writeJSON('dlib-demographics', []);
   }
 
