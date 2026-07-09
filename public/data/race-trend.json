@@ -2,7 +2,7 @@
   {
     "town": "Cornelius",
     "year": 2018,
-    "total": 28649,
+    "total": 28584,
     "white": 24632,
     "black": 2241,
     "hispanic": 1827,
@@ -11,7 +11,7 @@
   {
     "town": "Cornelius",
     "year": 2019,
-    "total": 29256,
+    "total": 29185,
     "white": 24827,
     "black": 2504,
     "hispanic": 2457,
@@ -56,7 +56,7 @@
   {
     "town": "Cornelius",
     "year": 2024,
-    "total": 32783,
+    "total": 32754,
     "white": 27263,
     "black": 1150,
     "hispanic": 1761,
@@ -65,7 +65,7 @@
   {
     "town": "Davidson",
     "year": 2018,
-    "total": 12666,
+    "total": 12589,
     "white": 11709,
     "black": 563,
     "hispanic": 688,
@@ -74,7 +74,7 @@
   {
     "town": "Davidson",
     "year": 2019,
-    "total": 12735,
+    "total": 12666,
     "white": 11581,
     "black": 696,
     "hispanic": 708,
@@ -83,7 +83,7 @@
   {
     "town": "Davidson",
     "year": 2020,
-    "total": 12920,
+    "total": 12857,
     "white": 11300,
     "black": 1035,
     "hispanic": 670,
@@ -92,7 +92,7 @@
   {
     "town": "Davidson",
     "year": 2021,
-    "total": 14644,
+    "total": 14589,
     "white": 12619,
     "black": 1109,
     "hispanic": 494,
@@ -101,7 +101,7 @@
   {
     "town": "Davidson",
     "year": 2022,
-    "total": 15199,
+    "total": 15135,
     "white": 12618,
     "black": 1259,
     "hispanic": 525,
@@ -110,7 +110,7 @@
   {
     "town": "Davidson",
     "year": 2023,
-    "total": 14852,
+    "total": 14786,
     "white": 11969,
     "black": 1485,
     "hispanic": 602,
@@ -119,7 +119,7 @@
   {
     "town": "Davidson",
     "year": 2024,
-    "total": 15660,
+    "total": 15593,
     "white": 12737,
     "black": 1402,
     "hispanic": 554,
@@ -128,7 +128,7 @@
   {
     "town": "Huntersville",
     "year": 2018,
-    "total": 54572,
+    "total": 54291,
     "white": 43918,
     "black": 6388,
     "hispanic": 3881,
@@ -137,7 +137,7 @@
   {
     "town": "Huntersville",
     "year": 2019,
-    "total": 55980,
+    "total": 55708,
     "white": 44872,
     "black": 6977,
     "hispanic": 3778,
@@ -146,7 +146,7 @@
   {
     "town": "Huntersville",
     "year": 2020,
-    "total": 57288,
+    "total": 57023,
     "white": 44137,
     "black": 7211,
     "hispanic": 3945,
@@ -155,7 +155,7 @@
   {
     "town": "Huntersville",
     "year": 2021,
-    "total": 60166,
+    "total": 59943,
     "white": 45763,
     "black": 7459,
     "hispanic": 4303,
@@ -164,7 +164,7 @@
   {
     "town": "Huntersville",
     "year": 2022,
-    "total": 61202,
+    "total": 60935,
     "white": 45427,
     "black": 8073,
     "hispanic": 4401,
@@ -173,7 +173,7 @@
   {
     "town": "Huntersville",
     "year": 2023,
-    "total": 62458,
+    "total": 62149,
     "white": 44282,
     "black": 8527,
     "hispanic": 4623,

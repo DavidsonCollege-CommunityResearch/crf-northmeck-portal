@@ -2,7 +2,7 @@
   {
     "GEOID": "3714700",
     "Town": "Cornelius",
-    "Tot_pop": 28649,
+    "Tot_pop": 28584,
     "year": 2018,
     "all_ins": 26225,
     "all_unins": 2359,
@@ -41,7 +41,7 @@
   {
     "GEOID": "3716400",
     "Town": "Davidson",
-    "Tot_pop": 12666,
+    "Tot_pop": 12589,
     "year": 2018,
     "all_ins": 12158,
     "all_unins": 431,
@@ -80,7 +80,7 @@
   {
     "GEOID": "3733120",
     "Town": "Huntersville",
-    "Tot_pop": 54572,
+    "Tot_pop": 54291,
     "year": 2018,
     "all_ins": 51087,
     "all_unins": 3204,
@@ -119,7 +119,7 @@
   {
     "GEOID": "3714700",
     "Town": "Cornelius",
-    "Tot_pop": 29256,
+    "Tot_pop": 29185,
     "year": 2019,
     "all_ins": 26943,
     "all_unins": 2242,
@@ -158,7 +158,7 @@
   {
     "GEOID": "3716400",
     "Town": "Davidson",
-    "Tot_pop": 12735,
+    "Tot_pop": 12666,
     "year": 2019,
     "all_ins": 12231,
     "all_unins": 435,
@@ -197,7 +197,7 @@
   {
     "GEOID": "3733120",
     "Town": "Huntersville",
-    "Tot_pop": 55980,
+    "Tot_pop": 55708,
     "year": 2019,
     "all_ins": 52450,
     "all_unins": 3258,
@@ -275,7 +275,7 @@
   {
     "GEOID": "3716400",
     "Town": "Davidson",
-    "Tot_pop": 12920,
+    "Tot_pop": 12857,
     "year": 2020,
     "all_ins": 12250,
     "all_unins": 607,
@@ -314,7 +314,7 @@
   {
     "GEOID": "3733120",
     "Town": "Huntersville",
-    "Tot_pop": 57288,
+    "Tot_pop": 57023,
     "year": 2020,
     "all_ins": 54038,
     "all_unins": 2985,
@@ -392,7 +392,7 @@
   {
     "GEOID": "3716400",
     "Town": "Davidson",
-    "Tot_pop": 14644,
+    "Tot_pop": 14589,
     "year": 2021,
     "all_ins": 13950,
     "all_unins": 639,
@@ -431,7 +431,7 @@
   {
     "GEOID": "3733120",
     "Town": "Huntersville",
-    "Tot_pop": 60166,
+    "Tot_pop": 59943,
     "year": 2021,
     "all_ins": 56495,
     "all_unins": 3448,
@@ -509,7 +509,7 @@
   {
     "GEOID": "3716400",
     "Town": "Davidson",
-    "Tot_pop": 15199,
+    "Tot_pop": 15135,
     "year": 2022,
     "all_ins": 14554,
     "all_unins": 581,
@@ -548,7 +548,7 @@
   {
     "GEOID": "3733120",
     "Town": "Huntersville",
-    "Tot_pop": 61202,
+    "Tot_pop": 60935,
     "year": 2022,
     "all_ins": 57485,
     "all_unins": 3450,
@@ -626,7 +626,7 @@
   {
     "GEOID": "3716400",
     "Town": "Davidson",
-    "Tot_pop": 14852,
+    "Tot_pop": 14786,
     "year": 2023,
     "all_ins": 14294,
     "all_unins": 492,
@@ -665,7 +665,7 @@
   {
     "GEOID": "3733120",
     "Town": "Huntersville",
-    "Tot_pop": 62458,
+    "Tot_pop": 62149,
     "year": 2023,
     "all_ins": 58880,
     "all_unins": 3269,
@@ -704,7 +704,7 @@
   {
     "GEOID": "3714700",
     "Town": "Cornelius",
-    "Tot_pop": 32783,
+    "Tot_pop": 32754,
     "year": 2024,
     "all_ins": 31193,
     "all_unins": 1561,
@@ -743,7 +743,7 @@
   {
     "GEOID": "3716400",
     "Town": "Davidson",
-    "Tot_pop": 15660,
+    "Tot_pop": 15593,
     "year": 2024,
     "all_ins": 15059,
     "all_unins": 534,

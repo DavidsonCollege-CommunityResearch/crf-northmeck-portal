@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "year": 2020,
+    "total_population": 4158,
+    "race_white": 2870,
+    "race_black": 725,
+    "race_asian": 457,
+    "hispanic_latino": 195,
+    "hispanic_rate": 4.7
+  },
+  {
+    "year": 2021,
+    "total_population": 4589,
+    "race_white": 3277,
+    "race_black": 665,
+    "race_asian": 406,
+    "hispanic_latino": 324,
+    "hispanic_rate": 7.1
+  },
+  {
+    "year": 2022,
+    "total_population": 5420,
+    "race_white": 3395,
+    "race_black": 1230,
+    "race_asian": 507,
+    "hispanic_latino": 261,
+    "hispanic_rate": 4.8
+  },
+  {
+    "year": 2023,
+    "total_population": 5752,
+    "race_white": 3486,
+    "race_black": 1386,
+    "race_asian": 568,
+    "hispanic_latino": 292,
+    "hispanic_rate": 5.1
+  },
+  {
+    "year": 2024,
+    "total_population": 5886,
+    "race_white": 3509,
+    "race_black": 1468,
+    "race_asian": 413,
+    "hispanic_latino": 612,
+    "hispanic_rate": 10.4
+  }
+]

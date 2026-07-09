@@ -42,7 +42,7 @@ function findCol(colNames, keys) {
 const SIMPLE_QUERIES = {
   'housing-rent-income': `
     SELECT town, year, CAST(median_income AS INTEGER) AS median_income, CAST(median_rent AS INTEGER) AS median_rent
-    FROM nmidw_cloud.agg_town_economic_trends
+    FROM nmidw.agg_town_economic_trends
     WHERE town IN ${TOWNS}
     ORDER BY town, year
   `,
@@ -50,27 +50,27 @@ const SIMPLE_QUERIES = {
     SELECT town, year,
       CAST(median_income AS INTEGER) AS median_income,
       CAST(median_home_value AS INTEGER) AS median_home_value
-    FROM nmidw_cloud.agg_town_economic_trends
+    FROM nmidw.agg_town_economic_trends
     ORDER BY town, year
   `,
   'housing-affordability-index': `
     SELECT town, year,
            ROUND((median_rent * 12.0 / median_income) * 100, 2) AS rti,
            ROUND(median_home_value * 1.0 / median_income, 2) AS hpti
-    FROM nmidw_cloud.agg_town_economic_trends
+    FROM nmidw.agg_town_economic_trends
     WHERE town IN ${TOWNS}
       AND median_income > 0
     ORDER BY town, year
   `,
   'town-population': `
     SELECT town, year, CAST(total_population AS INTEGER) AS population
-    FROM nmidw_cloud.agg_town_demographics
+    FROM nmidw.agg_town_demographics
     WHERE town IN ${TOWNS}
     ORDER BY town, year
   `,
   'town-households': `
     SELECT town, year, CAST(total_households AS INTEGER) AS total_households
-    FROM nmidw_cloud.agg_town_housing_burden
+    FROM nmidw.agg_town_housing_burden
     WHERE town IN ${TOWNS}
     ORDER BY town, year
   `,
@@ -81,26 +81,26 @@ const SIMPLE_QUERIES = {
            CAST(severely_cost_burdened_households AS INTEGER) AS severely_burdened,
            CAST(total_households AS INTEGER) AS total_households,
            ROUND(severely_cost_burdened_households / total_households * 100, 1) AS severe_rate
-    FROM nmidw_cloud.agg_town_housing_burden
+    FROM nmidw.agg_town_housing_burden
     WHERE town IN ${TOWNS}
     ORDER BY town, year
   `,
   'severely-burdened-households': `
     SELECT town, year, severely_cost_burdened_households
-    FROM nmidw_cloud.agg_town_housing_burden
+    FROM nmidw.agg_town_housing_burden
     WHERE town IN ${TOWNS}
     ORDER BY town, year
   `,
   'down-payment-years': `
     SELECT town, median_home_value, median_income,
       ROUND((median_home_value * 0.20) / (median_income * 0.10), 2) AS years
-    FROM nmidw_cloud.agg_town_economic_trends
-    WHERE year = (SELECT MAX(year) FROM nmidw_cloud.agg_town_economic_trends)
+    FROM nmidw.agg_town_economic_trends
+    WHERE year = (SELECT MAX(year) FROM nmidw.agg_town_economic_trends)
     ORDER BY years DESC
   `,
   'median-income-trend': `
     SELECT town, year, CAST(median_household_income AS INTEGER) AS income
-    FROM nmidw_cloud.agg_town_demographics
+    FROM nmidw.agg_town_demographics
     WHERE town IN ${TOWNS}
     ORDER BY town, year
   `,
@@ -110,7 +110,7 @@ const SIMPLE_QUERIES = {
            CAST(median_home_value AS INTEGER) AS home_value,
            CAST(median_income AS INTEGER) AS income,
            ROUND(median_home_value / median_income, 2) AS ptr
-    FROM nmidw_cloud.agg_town_economic_trends
+    FROM nmidw.agg_town_economic_trends
     WHERE town IN ${TOWNS}
     ORDER BY town, year
   `,
@@ -157,9 +157,9 @@ const SIMPLE_QUERIES = {
       hd.ins_75_100, hd.no_ins_75_100,
       hd.ins_100_above, hd.no_ins_100_above
     FROM nmidw.main.agg_town_health_insurance hi
-    JOIN nmidw_cloud.main.agg_town_health_data hd
+    JOIN nmidw.main.agg_town_health_data hd
       ON hi.GEOID = hd.GEOID AND hi.year = hd.year
-    JOIN nmidw_cloud.agg_town_demographics dem
+    JOIN nmidw.agg_town_demographics dem
       ON hi.GEOID = dem.GEOID AND hi.year = dem.year
     ORDER BY hi.year, hi.town
   `,
@@ -183,7 +183,7 @@ const SIMPLE_QUERIES = {
       ROUND(median_home_value * 1.0 / NULLIF(median_income,0), 2) AS home_price_to_income_ratio,
       ROUND((median_rent * 12.0) / NULLIF(median_income,0) * 100, 1) AS rent_to_income_pct,
       ROUND(income_inequality_gini, 4) AS gini_coefficient
-    FROM nmidw_cloud.agg_town_economic_trends
+    FROM nmidw.agg_town_economic_trends
     WHERE town IN ${TOWNS} ORDER BY town, year
   `,
   'dlib-housing-burden': `
@@ -192,7 +192,7 @@ const SIMPLE_QUERIES = {
       CAST(cost_burdened_households AS INTEGER) AS cost_burdened_households,
       CAST(severely_cost_burdened_households AS INTEGER) AS severely_cost_burdened_households,
       ROUND(CAST("housing_burden_rate_%" AS DOUBLE), 1) AS cost_burden_rate_pct
-    FROM nmidw_cloud.agg_town_housing_burden
+    FROM nmidw.agg_town_housing_burden
     WHERE town IN ${TOWNS} ORDER BY town, year
   `,
 };
@@ -257,7 +257,7 @@ async function run() {
 
   // race-summary - housing.js Block 14 (DESCRIBE-driven column discovery)
   try {
-    const colRows = await all(conn, 'DESCRIBE nmidw_cloud.agg_town_demographics');
+    const colRows = await all(conn, 'DESCRIBE nmidw.agg_town_demographics');
     const colNames = colRows.map((r) => r.column_name);
     const races = [
       { label: 'White, not Hispanic', col: colNames.find((c) => c.includes('white') && !c.includes('alone')) || colNames.find((c) => c.includes('white')) },
@@ -270,7 +270,7 @@ async function run() {
       SELECT town,
         ${totalCol ? `CAST(${totalCol} AS INTEGER) AS total_pop` : '0 AS total_pop'}
         ${races.map((r) => `, CAST(${r.col} AS INTEGER) AS "${r.label}"`).join('')}
-      FROM nmidw_cloud.agg_town_demographics
+      FROM nmidw.agg_town_demographics
       WHERE town IN ${TOWNS} AND year = 2024
     `;
     const rows = await all(conn, sql);
@@ -284,7 +284,7 @@ async function run() {
 
   // race-composition - housing.js Block 15 (DESCRIBE + MAX(year) + final query)
   try {
-    const colRows = await all(conn, 'DESCRIBE nmidw_cloud.agg_town_demographics');
+    const colRows = await all(conn, 'DESCRIBE nmidw.agg_town_demographics');
     const colNames = colRows.map((r) => r.column_name);
     const totalCol = findCol(colNames, ['total_pop', 'total_population', 'population']);
     const whiteCol = findCol(colNames, ['white']);
@@ -297,9 +297,9 @@ async function run() {
     const otherCol = findCol(colNames, ['some_other', 'other_race']);
     const yearCol = findCol(colNames, ['year']);
     const townCol = findCol(colNames, ['town']);
-    const maxYearRows = await all(conn, `SELECT MAX(${yearCol}) as yr FROM nmidw_cloud.agg_town_demographics`);
+    const maxYearRows = await all(conn, `SELECT MAX(${yearCol}) as yr FROM nmidw.agg_town_demographics`);
     const maxYear = maxYearRows[0].yr;
-    const sql = `SELECT ${townCol} as town, ${totalCol} as total, ${whiteCol} as white, ${blackCol} as black, ${asianCol} as asian, ${hispanicCol} as hispanic, ${twoMoreCol || '0'} as two_more, ${nativeCol || '0'} as native, ${nhpiCol || '0'} as nhpi, ${otherCol || '0'} as other FROM nmidw_cloud.agg_town_demographics WHERE ${yearCol} = ${maxYear} AND ${townCol} IN ${TOWNS}`;
+    const sql = `SELECT ${townCol} as town, ${totalCol} as total, ${whiteCol} as white, ${blackCol} as black, ${asianCol} as asian, ${hispanicCol} as hispanic, ${twoMoreCol || '0'} as two_more, ${nativeCol || '0'} as native, ${nhpiCol || '0'} as nhpi, ${otherCol || '0'} as other FROM nmidw.agg_town_demographics WHERE ${yearCol} = ${maxYear} AND ${townCol} IN ${TOWNS}`;
     const rows = await all(conn, sql);
     await writeJSON('race-composition', rows);
     console.log(`✓ race-composition: ${rows.length} rows`);
@@ -311,7 +311,7 @@ async function run() {
 
   // race-trend - housing.js Block 16 (DESCRIBE-driven column discovery)
   try {
-    const colRows = await all(conn, 'DESCRIBE nmidw_cloud.agg_town_demographics');
+    const colRows = await all(conn, 'DESCRIBE nmidw.agg_town_demographics');
     const colNames = colRows.map((r) => r.column_name);
     const totalCol = findCol(colNames, ['total_pop', 'total_population', 'population']);
     const whiteCol = findCol(colNames, ['white']);
@@ -328,7 +328,7 @@ async function run() {
     ].join(', ');
     const sql = `
       SELECT town, year, ${selects}
-      FROM nmidw_cloud.agg_town_demographics
+      FROM nmidw.agg_town_demographics
       WHERE town IN ${TOWNS}
       ORDER BY town, year
     `;
@@ -341,23 +341,16 @@ async function run() {
     await writeJSON('race-trend', []);
   }
 
-  // pottstown-demographics - KNOWN BROKEN. neighborhoods.js queries a table
-  // that does not exist (nmidw.agg_neighborhood_demographics). This is a
-  // pre-existing data issue, not something introduced by this script, and
-  // nobody has confirmed the correct replacement table yet. We deliberately
-  // do NOT count this toward hadUnexpectedFailure - it's expected to fail
-  // every run until someone supplies the right table, and treating an
-  // already-known, unfixable-here failure as a build-breaking error would
-  // just make the workflow permanently red and desensitize everyone to real
-  // failures among the other datasets.
+  // pottstown-demographics - nmidw.agg_neighborhood_demographics exists and
+  // returns data; any failure here is unexpected and blocks the build.
   try {
     const sql = `
       SELECT
         year,
-        SUM(total_population)          AS total_population,
-        SUM(race_white_alone)          AS race_white,
-        SUM(race_black_alone)          AS race_black,
-        SUM(race_asian_alone)          AS race_asian,
+        SUM(total_population)             AS total_population,
+        SUM(race_white_alone)             AS race_white,
+        SUM(race_black_alone)             AS race_black,
+        SUM(race_asian_alone)             AS race_asian,
         SUM(ethnicity_hispanic_or_latino) AS hispanic_latino,
         ROUND(SUM(ethnicity_hispanic_or_latino) * 100.0 / NULLIF(SUM(total_population),0), 1) AS hispanic_rate
       FROM nmidw.agg_neighborhood_demographics
@@ -369,18 +362,14 @@ async function run() {
     await writeJSON('pottstown-demographics', rows);
     console.log(`✓ pottstown-demographics: ${rows.length} rows`);
   } catch (err) {
-    console.error(
-      `⚠ pottstown-demographics: KNOWN issue, not a new failure - query references table ` +
-        `"nmidw.agg_neighborhood_demographics" which does not exist. Flagged for the team to ` +
-        `supply the correct table; writing an empty dataset so the site's existing "Data ` +
-        `unavailable" UI keeps working. Underlying error: ${err.message}`
-    );
+    hadUnexpectedFailure = true;
+    console.error(`✗ pottstown-demographics: ${err.message}`);
     await writeJSON('pottstown-demographics', []);
   }
 
   // dlib-demographics - KNOWN BROKEN, discovered while building this script.
   // main.js's DATASETS.demographics query selects total_households FROM
-  // nmidw_cloud.agg_town_demographics, but that table has no such column
+  // nmidw.agg_town_demographics, but that table has no such column
   // (it lives in agg_town_housing_burden instead, used correctly by the
   // town-households/housing-burden-trend/severely-burdened-households
   // datasets above). This download button has likely never worked, in
@@ -393,7 +382,7 @@ async function run() {
         CAST(total_population AS INTEGER) AS total_population,
         CAST(total_households AS INTEGER) AS total_households,
         CAST(median_household_income AS INTEGER) AS median_household_income_usd
-      FROM nmidw_cloud.agg_town_demographics
+      FROM nmidw.agg_town_demographics
       WHERE town IN ${TOWNS} ORDER BY town, year
     `;
     const rows = await all(conn, sql);
@@ -402,7 +391,7 @@ async function run() {
   } catch (err) {
     console.error(
       `⚠ dlib-demographics: KNOWN issue, not a new failure - query selects total_households ` +
-        `from nmidw_cloud.agg_town_demographics, but that table has no such column (it lives ` +
+        `from nmidw.agg_town_demographics, but that table has no such column (it lives ` +
         `in agg_town_housing_burden instead). Flagged for the team; writing an empty dataset. ` +
         `Underlying error: ${err.message}`
     );
