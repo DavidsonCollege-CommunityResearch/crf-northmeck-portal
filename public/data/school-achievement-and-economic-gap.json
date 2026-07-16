@@ -1,0 +1,156 @@
+[
+  {
+    "school": "Bailey Middle",
+    "town": "Cornelius",
+    "econ_disadv": 53.3,
+    "not_disadv": 86,
+    "gap": 32.7
+  },
+  {
+    "school": "Cornelius Elementary",
+    "town": "Cornelius",
+    "econ_disadv": 53.4,
+    "not_disadv": 83,
+    "gap": 29.6
+  },
+  {
+    "school": "J.V. Washam Elementary",
+    "town": "Cornelius",
+    "econ_disadv": 66.9,
+    "not_disadv": 80.8,
+    "gap": 13.9
+  },
+  {
+    "school": "Lakeside Charter Academy",
+    "town": "Cornelius",
+    "econ_disadv": 42.4,
+    "not_disadv": 50.8,
+    "gap": 8.4
+  },
+  {
+    "school": "William Amos Hough High",
+    "town": "Cornelius",
+    "econ_disadv": 56.2,
+    "not_disadv": 82.5,
+    "gap": 26.3
+  },
+  {
+    "school": "Community School of Davidson",
+    "town": "Davidson",
+    "econ_disadv": 58.5,
+    "not_disadv": 78.4,
+    "gap": 19.9
+  },
+  {
+    "school": "Davidson K-8 School",
+    "town": "Davidson",
+    "econ_disadv": 54.4,
+    "not_disadv": 89.9,
+    "gap": 35.5
+  },
+  {
+    "school": "Aspire Trade High",
+    "town": "Huntersville",
+    "econ_disadv": 18.2,
+    "not_disadv": 20.2,
+    "gap": 2
+  },
+  {
+    "school": "Barnette Elementary",
+    "town": "Huntersville",
+    "econ_disadv": 55.5,
+    "not_disadv": 78.8,
+    "gap": 23.3
+  },
+  {
+    "school": "Blythe Elementary",
+    "town": "Huntersville",
+    "econ_disadv": 51.7,
+    "not_disadv": 64.6,
+    "gap": 12.9
+  },
+  {
+    "school": "Bonnie Cone Classical Academy",
+    "town": "Huntersville",
+    "econ_disadv": 56.4,
+    "not_disadv": 67,
+    "gap": 10.6
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "town": "Huntersville",
+    "econ_disadv": 39.2,
+    "not_disadv": 55.8,
+    "gap": 16.6
+  },
+  {
+    "school": "Francis Bradley Middle",
+    "town": "Huntersville",
+    "econ_disadv": 44.1,
+    "not_disadv": 73.7,
+    "gap": 29.6
+  },
+  {
+    "school": "Grand Oak Elementary",
+    "town": "Huntersville",
+    "econ_disadv": 66.1,
+    "not_disadv": 93.1,
+    "gap": 27
+  },
+  {
+    "school": "Hopewell High School",
+    "town": "Huntersville",
+    "econ_disadv": 36.8,
+    "not_disadv": 59.9,
+    "gap": 23.1
+  },
+  {
+    "school": "Huntersville Elementary",
+    "town": "Huntersville",
+    "econ_disadv": 44.7,
+    "not_disadv": 86.8,
+    "gap": 42.1
+  },
+  {
+    "school": "J. M. Alexander Middle",
+    "town": "Huntersville",
+    "econ_disadv": 28.1,
+    "not_disadv": 39,
+    "gap": 10.9
+  },
+  {
+    "school": "Lake Norman Charter",
+    "town": "Huntersville",
+    "econ_disadv": 71.5,
+    "not_disadv": 88.3,
+    "gap": 16.8
+  },
+  {
+    "school": "Long Creek Elementary",
+    "town": "Huntersville",
+    "econ_disadv": 34.8,
+    "not_disadv": 58,
+    "gap": 23.2
+  },
+  {
+    "school": "North Academy of World Languages",
+    "town": "Huntersville",
+    "econ_disadv": 68.8,
+    "not_disadv": 84.3,
+    "gap": 15.5
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "town": "Huntersville",
+    "econ_disadv": 40.7,
+    "not_disadv": 52.3,
+    "gap": 11.6
+  },
+  {
+    "school": "Torrence Creek Elementary",
+    "town": "Huntersville",
+    "econ_disadv": 55.3,
+    "not_disadv": 77.5,
+    "gap": 22.2
+  }
+]

@@ -1,0 +1,209 @@
+[
+  {
+    "school": "Bailey Middle",
+    "grade_span": "06-08",
+    "town": "Cornelius",
+    "is_title_1": null,
+    "glp": 78.3,
+    "glp_raw": "78.3",
+    "ccr": 60.2
+  },
+  {
+    "school": "Cornelius Elementary",
+    "grade_span": "0K-05",
+    "town": "Cornelius",
+    "is_title_1": null,
+    "glp": 74.7,
+    "glp_raw": "74.7",
+    "ccr": 59.1
+  },
+  {
+    "school": "J.V. Washam Elementary",
+    "grade_span": "0K-05",
+    "town": "Cornelius",
+    "is_title_1": null,
+    "glp": 77.7,
+    "glp_raw": "77.7",
+    "ccr": 61.4
+  },
+  {
+    "school": "Lakeside Charter Academy",
+    "grade_span": "0K-08",
+    "town": "Cornelius",
+    "is_title_1": null,
+    "glp": 47.3,
+    "glp_raw": "47.3",
+    "ccr": 26.8
+  },
+  {
+    "school": "William Amos Hough High",
+    "grade_span": "09-12",
+    "town": "Cornelius",
+    "is_title_1": null,
+    "glp": 76.8,
+    "glp_raw": "76.8",
+    "ccr": 56.9
+  },
+  {
+    "school": "Community School of Davidson",
+    "grade_span": "0K-12",
+    "town": "Davidson",
+    "is_title_1": true,
+    "glp": 75.5,
+    "glp_raw": "75.5",
+    "ccr": 54.4
+  },
+  {
+    "school": "Davidson K-8 School",
+    "grade_span": "0K-08",
+    "town": "Davidson",
+    "is_title_1": null,
+    "glp": 85.8,
+    "glp_raw": "85.8",
+    "ccr": 69.1
+  },
+  {
+    "school": "Aspire Trade High",
+    "grade_span": "09-11",
+    "town": "Huntersville",
+    "is_title_1": true,
+    "glp": 19.3,
+    "glp_raw": "19.3",
+    "ccr": 5.7
+  },
+  {
+    "school": "Barnette Elementary",
+    "grade_span": "PK-05",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": 70.4,
+    "glp_raw": "70.4",
+    "ccr": 47.2
+  },
+  {
+    "school": "Blythe Elementary",
+    "grade_span": "PK-05",
+    "town": "Huntersville",
+    "is_title_1": true,
+    "glp": 58.7,
+    "glp_raw": "58.7",
+    "ccr": 33.8
+  },
+  {
+    "school": "Bonnie Cone Classical Academy",
+    "grade_span": "0K-06",
+    "town": "Huntersville",
+    "is_title_1": true,
+    "glp": 60.8,
+    "glp_raw": "60.8",
+    "ccr": 33.8
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "grade_span": "0K-12",
+    "town": "Huntersville",
+    "is_title_1": true,
+    "glp": 48.4,
+    "glp_raw": "48.4",
+    "ccr": 27.2
+  },
+  {
+    "school": "Francis Bradley Middle",
+    "grade_span": "06-08",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": 59.9,
+    "glp_raw": "59.9",
+    "ccr": 37.7
+  },
+  {
+    "school": "Grand Oak Elementary",
+    "grade_span": "PK-05",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": 87.9,
+    "glp_raw": "87.9",
+    "ccr": 70.1
+  },
+  {
+    "school": "Hopewell High School",
+    "grade_span": "09-12",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": 50.2,
+    "glp_raw": "50.2",
+    "ccr": 30.4
+  },
+  {
+    "school": "Huntersville Elementary",
+    "grade_span": "0K-05",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": 76.7,
+    "glp_raw": "76.7",
+    "ccr": 61.5
+  },
+  {
+    "school": "J. M. Alexander Middle",
+    "grade_span": "06-08",
+    "town": "Huntersville",
+    "is_title_1": true,
+    "glp": 32.8,
+    "glp_raw": "32.8",
+    "ccr": 15.7
+  },
+  {
+    "school": "Lake Norman Charter",
+    "grade_span": "0K-12",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": 86.8,
+    "glp_raw": "86.8",
+    "ccr": 69.1
+  },
+  {
+    "school": "Long Creek Elementary",
+    "grade_span": "0K-05",
+    "town": "Huntersville",
+    "is_title_1": true,
+    "glp": 43.8,
+    "glp_raw": "43.8",
+    "ccr": 23.3
+  },
+  {
+    "school": "Merancas Middle College-CPCC",
+    "grade_span": "11-13",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": null,
+    "glp_raw": ">95",
+    "ccr": 40
+  },
+  {
+    "school": "North Academy of World Languages",
+    "grade_span": "0K-08",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": 77,
+    "glp_raw": "77",
+    "ccr": 53.9
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "grade_span": "09-12",
+    "town": "Huntersville",
+    "is_title_1": true,
+    "glp": 46.5,
+    "glp_raw": "46.5",
+    "ccr": 23.6
+  },
+  {
+    "school": "Torrence Creek Elementary",
+    "grade_span": "0K-05",
+    "town": "Huntersville",
+    "is_title_1": null,
+    "glp": 69.3,
+    "glp_raw": "69.3",
+    "ccr": 48.3
+  }
+]

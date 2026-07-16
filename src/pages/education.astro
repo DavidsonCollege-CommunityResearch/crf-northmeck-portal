@@ -146,6 +146,22 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         </div>
 
       </div>
+
+      <!--School Academic Growth Across North Mecklenburg (2024-25)-->
+        <div class="card viz-host" style:"margin-bottom:28px">
+          <div class="card-t">School Academic Growth Across North Mecklenburg (2024-25)</div>
+          <div class="card-s">Growth index score by school · 0 = met expected growth</div>
+          <div class="filterbar" style="margin-bottom:14px">
+              <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+              <button class="chip on" data-growth-town="All">All towns</button>
+              <button class="chip" data-growth-town="Cornelius">Cornelius</button>
+              <button class="chip" data-growth-town="Davidson">Davidson</button>
+              <button class="chip" data-growth-town="Huntersville">Huntersville</button>
+          </div>
+          <div id="chart-school-academic-growth"></div>
+
+        </div>
+
     </div>
   </div>
 
@@ -164,6 +180,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <div style="font-size:12px;margin-top:4px">Source: NCES CCD</div>
           </div>
         </div>
+
         <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
           <div class="card-t" style="color:var(--ink-2)">Racial composition trends over time</div>
           <div class="card-s">Change in % by race group</div>
@@ -203,7 +220,83 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
     <div class="wrap">
       <div class="sec-head"><span class="eyebrow">Academic Performance</span><h2 class="sec-h">How are students performing, and which schools are improving?</h2><p class="lead">NC end-of-grade proficiency rates, school performance grades, and graduation rates paint a picture of academic outcomes across North Meck schools — and how they compare to the district and state.</p></div>
 
-      <div class="grid-2" style="margin-bottom:28px">
+        <!--Grade Level Proficiency-->
+        <div class="card viz-host" style="margin-bottom:28px">
+          <div class="card-t">Grade Level proficiency rate by school (2024-2025)</div>
+          <div class="card-s">% students at or above grade level</div>
+          <div class="filterbar" style="margin-bottom:14px">
+              <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+              <button class="chip on" data-glp-town="All">All towns</button>
+              <button class="chip" data-glp-town="Cornelius">Cornelius</button>
+              <button class="chip" data-glp-town="Davidson">Davidson</button>
+              <button class="chip" data-glp-town="Huntersville">Huntersville</button>
+          </div>
+          <div id="chart-grade-level-proficiency"></div>
+        </div>
+    
+     <!--Four year graduation rates-->
+     <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">4-year graduation rate — North Meck High Schools</div>
+        <div class="card-s">Cohort graduation rate · Hough High &amp; North Mecklenburg High</div>
+        <div class="filterbar" style="margin-bottom:14px">
+           <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+           <button class="chip on" data-grad-town="All">All towns</button>
+           <button class="chip" data-grad-town="Cornelius">Cornelius</button>
+           <button class="chip" data-grad-town="Davidson">Davidson</button>
+           <button class="chip" data-grad-town="Huntersville">Huntersville</button>
+        </div>
+      <div id="chart-four-year-graduation-rate"></div>
+      </div>
+
+      <!--School Achievement and Economic Gap-->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Achievement Gap in North Meck Schools (2024-25)</div>
+        <div class="card-s">Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students</div>
+        <div class="filterbar" style="margin-bottom:14px">
+           <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+           <button class="chip on" data-econgap-town="All">All towns</button>
+           <button class="chip" data-econgap-town="Cornelius">Cornelius</button>
+           <button class="chip" data-econgap-town="Davidson">Davidson</button>
+           <button class="chip" data-econgap-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="chart-school-achievement-economic-gap"></div>
+      </div>
+
+
+      <!--High School College & Career Readiness-->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">High School College &amp; Career Readiness: North Meck (2024-25)</div>
+        <div class="card-s">Grade-Level Proficient vs. College/Career Ready · Grades 9–12</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+          <button class="chip on" data-ccr-town="All">All towns</button>
+          <button class="chip" data-ccr-town="Cornelius">Cornelius</button>
+          <button class="chip" data-ccr-town="Davidson">Davidson</button>
+          <button class="chip" data-ccr-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="chart-hs-ccr"></div>
+        <div class="callout info" style="margin-top:16px">
+          <div class="callout-t">Includes K–12 comprehensive schools (grade span 0K–12), whose Grade-Level Proficient and College/Career Ready rates reflect their entire student body, not high schoolers alone — treat these figures as directional rather than high-school-specific.</div>
+        </div>
+      </div>
+
+
+      <!--High School Economic Achievement Gap-->
+      <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Achievement Gap in North Meck High Schools by Economic status (2024-25)</div>
+        <div class="card-s">Grades 9–12 grade-level proficiency: economically disadvantaged vs. not</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
+          <button class="chip on" data-hsgap-town="All">All towns</button>
+          <button class="chip" data-hsgap-town="Cornelius">Cornelius</button>
+          <button class="chip" data-hsgap-town="Davidson">Davidson</button>
+          <button class="chip" data-hsgap-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="chart-hs-achievement-economic-gap"></div>
+      </div>
+
+
+        <!--Reading Proficiency Level-->
         <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
           <div class="card-t" style="color:var(--ink-2)">Reading proficiency rate by school (2018–2023)</div>
           <div class="card-s">% students at or above grade level</div>
@@ -213,6 +306,8 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <div style="font-size:12px;margin-top:4px">Source: NC DPI School Report Cards</div>
           </div>
         </div>
+
+        <!--Math Proficiency Rate-->
         <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
           <div class="card-t" style="color:var(--ink-2)">Math proficiency rate by school (2018–2023)</div>
           <div class="card-s">% students at or above grade level</div>
@@ -222,9 +317,8 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <div style="font-size:12px;margin-top:4px">Source: NC DPI School Report Cards</div>
           </div>
         </div>
-      </div>
+      
 
-      <div class="grid-2" style="margin-bottom:28px">
         <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
           <div class="card-t" style="color:var(--ink-2)">NC School Performance Grades (A–F) by school</div>
           <div class="card-s">Annual letter grades assigned by NC DPI</div>
@@ -234,16 +328,8 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <div style="font-size:12px;margin-top:4px">Source: NC DPI School Performance Grades</div>
           </div>
         </div>
-        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">4-year graduation rate — North Meck high schools vs. CMS avg</div>
-          <div class="card-s">Cohort graduation rate · Hough High &amp; North Mecklenburg High</div>
-          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
-            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-            <div style="font-size:12px;margin-top:4px">Source: NC DPI Graduation &amp; Dropout reports</div>
-          </div>
-        </div>
-      </div>
+
+       
 
       <div class="card viz-host" style="margin-bottom:28px;border:1px dashed var(--line-2);background:var(--paper-2)">
         <div class="card-t" style="color:var(--ink-2)">Chronic absenteeism rate by school</div>
@@ -253,6 +339,10 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
           <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
           <div style="font-size:12px;margin-top:4px">Source: EDFacts / NC DPI chronic absence data</div>
         </div>
+
+
+
+
       </div>
     </div>
   </div>

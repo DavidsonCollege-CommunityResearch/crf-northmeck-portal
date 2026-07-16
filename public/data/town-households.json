@@ -2,106 +2,106 @@
   {
     "town": "Cornelius",
     "year": 2018,
-    "total_households": 3704
+    "total_households": 12094
   },
   {
     "town": "Cornelius",
     "year": 2019,
-    "total_households": 3872
+    "total_households": 12307
   },
   {
     "town": "Cornelius",
     "year": 2020,
-    "total_households": 3523
+    "total_households": 12363
   },
   {
     "town": "Cornelius",
     "year": 2021,
-    "total_households": 3900
+    "total_households": 12913
   },
   {
     "town": "Cornelius",
     "year": 2022,
-    "total_households": 4042
+    "total_households": 13352
   },
   {
     "town": "Cornelius",
     "year": 2023,
-    "total_households": 4130
+    "total_households": 13618
   },
   {
     "town": "Cornelius",
     "year": 2024,
-    "total_households": 4234
+    "total_households": 13884
   },
   {
     "town": "Davidson",
     "year": 2018,
-    "total_households": 869
+    "total_households": 4273
   },
   {
     "town": "Davidson",
     "year": 2019,
-    "total_households": 904
+    "total_households": 4336
   },
   {
     "town": "Davidson",
     "year": 2020,
-    "total_households": 918
+    "total_households": 4473
   },
   {
     "town": "Davidson",
     "year": 2021,
-    "total_households": 1121
+    "total_households": 5292
   },
   {
     "town": "Davidson",
     "year": 2022,
-    "total_households": 1294
+    "total_households": 5510
   },
   {
     "town": "Davidson",
     "year": 2023,
-    "total_households": 1117
+    "total_households": 5327
   },
   {
     "town": "Davidson",
     "year": 2024,
-    "total_households": 1116
+    "total_households": 5589
   },
   {
     "town": "Huntersville",
     "year": 2018,
-    "total_households": 4928
+    "total_households": 19852
   },
   {
     "town": "Huntersville",
     "year": 2019,
-    "total_households": 5075
+    "total_households": 20074
   },
   {
     "town": "Huntersville",
     "year": 2020,
-    "total_households": 5449
+    "total_households": 20666
   },
   {
     "town": "Huntersville",
     "year": 2021,
-    "total_households": 5957
+    "total_households": 22351
   },
   {
     "town": "Huntersville",
     "year": 2022,
-    "total_households": 6175
+    "total_households": 22974
   },
   {
     "town": "Huntersville",
     "year": 2023,
-    "total_households": 6538
+    "total_households": 23704
   },
   {
     "town": "Huntersville",
     "year": 2024,
-    "total_households": 7093
+    "total_households": 25055
   }
 ]

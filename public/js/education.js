@@ -199,3 +199,417 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           render('All');
           document.addEventListener('masterTownChange', e => render(e.detail.town));
 })();
+
+
+
+// Block 6 (module) - Grade level Proficiency
+(async function() {
+          let proficiency;
+          try {
+            proficiency = await window.loadData('grade-level-proficiency');
+          } catch (e) {
+            console.error('grade-level-proficiency load failed:', e);
+            window.mdShowError('chart-grade-level-proficiency');
+            return;
+          }
+          const el = document.getElementById('chart-grade-level-proficiency');
+          function render(town) {
+            const filtered = town === 'All' ? proficiency : proficiency.filter(d => d.town === town);
+            const withRate = filtered.map(d => {
+              if (d.glp != null) return d;
+              const match = /^[<>]?\s*(\d+(\.\d+)?)/.exec(d.glp_raw || '');
+              return match ? { ...d, glp: parseFloat(match[1]) } : d;
+            });
+            const data = withRate.filter(d => d.glp != null).sort((a, b) => b.glp - a.glp);
+            const w = el.clientWidth || 750;
+            el.innerHTML = '';
+            el.append(Plot.plot({
+              title: "Grade-Level Proficiency Across North Mecklenburg (2024-25)",
+              width: w,
+              height: 100 + data.length * 22,
+              marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
+              x: {label: "Grade-Level Proficiency (%)", domain: [0, 100], grid: true},
+              y: {label: null, domain: data.map(d => d.school)},
+              marks: [
+                Plot.barX(data, {
+                  x: "glp",
+                  y: "school",
+                  fill: "#4e79a7",
+                  tip: true,
+                  title: d => `${d.school} (${d.grade_span})\nGrade-Level Proficient: ${d.glp}%\nCollege/Career Ready: ${d.ccr}%`
+                }),
+                Plot.ruleX([0])
+              ]
+            }));
+          }
+
+          let activeGlpTown = window.__masterTown || 'All';
+          render(activeGlpTown);
+
+          document.querySelectorAll('[data-glp-town]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('[data-glp-town]').forEach(b => b.classList.remove('on'));
+              btn.classList.add('on');
+              activeGlpTown = btn.dataset.glpTown;
+              render(activeGlpTown);
+            });
+          });
+
+          document.addEventListener('masterTownChange', ({ detail: { town } }) => {
+            activeGlpTown = town === 'All' ? 'All' : town;
+            document.querySelectorAll('[data-glp-town]').forEach(b =>
+              b.classList.toggle('on', b.dataset.glpTown === activeGlpTown));
+            render(activeGlpTown);
+          });
+})();
+
+
+// Block 7 (module) - School Academic Growth
+(async function() {
+          let growth;
+          try {
+            growth = await window.loadData('school-academic-growth');
+          } catch (e) {
+            console.error('school-academic-growth load failed:', e);
+            window.mdShowError('chart-school-academic-growth');
+            return;
+          }
+          const el = document.getElementById('chart-school-academic-growth');
+          function render(town) {
+            const filtered = town === 'All' ? growth : growth.filter(d => d.town === town);
+            const data = filtered.slice().sort((a, b) => b.index_score - a.index_score);
+            const w = el.clientWidth || 750;
+            el.innerHTML = '';
+            el.append(Plot.plot({
+              title: "School Academic Growth Across North Mecklenburg (2024-25)",
+              width: w,
+              height: 100 + data.length * 22,
+              marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
+              x: {label: "Growth Index Score (0 = met expected growth)", domain: [-8, 8], grid: true},
+              y: {label: null, domain: data.map(d => d.school)},
+              color: {
+                legend: true,
+                domain: ["Exceeded", "Met", "Not Met"],
+                range: ["#2ca02c", "#ff7f0e", "#d62728"]
+              },
+              marks: [
+                Plot.barX(data, {
+                  x: "index_score",
+                  y: "school",
+                  fill: "status",
+                  tip: true,
+                  title: d => `${d.school} (${d.grade_span})\nStatus: ${d.status}\nGrowth Index: ${d.index_score}`
+                }),
+                Plot.ruleX([0])
+              ]
+            }));
+          }
+
+          let activeGrowthTown = window.__masterTown || 'All';
+          render(activeGrowthTown);
+
+          document.querySelectorAll('[data-growth-town]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('[data-growth-town]').forEach(b => b.classList.remove('on'));
+              btn.classList.add('on');
+              activeGrowthTown = btn.dataset.growthTown;
+              render(activeGrowthTown);
+            });
+          });
+
+          document.addEventListener('masterTownChange', ({ detail: { town } }) => {
+            activeGrowthTown = town === 'All' ? 'All' : town;
+            document.querySelectorAll('[data-growth-town]').forEach(b =>
+              b.classList.toggle('on', b.dataset.growthTown === activeGrowthTown));
+            render(activeGrowthTown);
+          });
+})();
+
+
+// Block 8 (module)
+(async function() {
+          let graduation;
+          try {
+            graduation = await window.loadData('four-year-school-graduation');
+          } catch (e) {
+            console.error('four-year-school-graduation load failed:', e);
+            window.mdShowError('chart-four-year-graduation-rate');
+            return;
+          }
+          const el = document.getElementById('chart-four-year-graduation-rate');
+          function render(town) {
+            const filtered = town === 'All' ? graduation : graduation.filter(d => d.town === town);
+            const withRate = filtered.map(d => {
+              if (d.grad_4yr != null) return d;
+              const match = /^[<>]?\s*(\d+(\.\d+)?)/.exec(d.grad_4yr_raw || '');
+              return match ? { ...d, grad_4yr: parseFloat(match[1]) } : d;
+            });
+            const data = withRate.filter(d => d.grad_4yr != null).sort((a, b) => b.grad_4yr - a.grad_4yr);
+            const w = el.clientWidth || 700;
+            el.innerHTML = '';
+            el.append(Plot.plot({
+              title: "Four-Year Graduation Rate: North Meck High Schools (2024-25)",
+              width: w,
+              height: 100 + data.length * 22,
+              marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
+              x: {label: "Four-Year Cohort Graduation Rate (%)", domain: [0, 100], grid: true},
+              y: {label: null, domain: data.map(d => d.school)},
+              color: {
+                legend: true,
+                domain: ["90%+", "80–90%", "Below 80%"],
+                range: ["#2ca02c", "#ff7f0e", "#d62728"]
+              },
+              marks: [
+                Plot.barX(data, {
+                  x: "grad_4yr",
+                  y: "school",
+                  fill: d => d.grad_4yr >= 90 ? "90%+" : d.grad_4yr >= 80 ? "80–90%" : "Below 80%",
+                  tip: true,
+                  title: d => `${d.school}\n4-Year Grad Rate: ${d.grad_4yr_raw}`
+                }),
+                Plot.ruleX([0])
+              ]
+            }));
+          }
+
+          let activeGradTown = window.__masterTown || 'All';
+          render(activeGradTown);
+
+          document.querySelectorAll('[data-grad-town]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('[data-grad-town]').forEach(b => b.classList.remove('on'));
+              btn.classList.add('on');
+              activeGradTown = btn.dataset.gradTown;
+              render(activeGradTown);
+            });
+          });
+
+          document.addEventListener('masterTownChange', ({ detail: { town } }) => {
+            activeGradTown = town === 'All' ? 'All' : town;
+            document.querySelectorAll('[data-grad-town]').forEach(b =>
+              b.classList.toggle('on', b.dataset.gradTown === activeGradTown));
+            render(activeGradTown);
+          });
+})();
+
+
+// Block 9 (module) - School Achievement and Economic Gap
+(async function() {
+          let econGap;
+          try {
+            econGap = await window.loadData('school-achievement-and-economic-gap');
+          } catch (e) {
+            console.error('school-achievement-and-economic-gap load failed:', e);
+            window.mdShowError('chart-school-achievement-economic-gap');
+            return;
+          }
+          const el = document.getElementById('chart-school-achievement-economic-gap');
+          function render(town) {
+            const filtered = town === 'All' ? econGap : econGap.filter(d => d.town === town);
+            const data = filtered.slice().sort((a, b) => b.gap - a.gap);
+            const w = el.clientWidth || 750;
+            el.innerHTML = '';
+            el.append(Plot.plot({
+              title: "School Achievement Gap By Economic Status in North Meck Schools (2024-25)",
+              subtitle: "Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students",
+              width: w,
+              height: 100 + data.length * 22,
+              marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
+              x: {label: "Grade-Level Proficient (%)", domain: [0, 100], grid: true},
+              y: {label: null, domain: data.map(d => d.school)},
+              color: {
+                legend: true,
+                domain: ["Economically Disadvantaged", "Not Economically Disadvantaged"],
+                range: ["#d62728", "#4e79a7"]
+              },
+              marks: [
+                Plot.link(data, {
+                  x1: "econ_disadv",
+                  x2: "not_disadv",
+                  y: "school",
+                  stroke: "#cccccc",
+                  strokeWidth: 2
+                }),
+                Plot.dot(data, {
+                  x: "econ_disadv",
+                  y: "school",
+                  fill: "#d62728",
+                  r: 5,
+                  tip: true,
+                  title: d => `${d.school}\nEconomically Disadvantaged: ${d.econ_disadv}%\nNot Disadvantaged: ${d.not_disadv}%\nGap: ${d.gap} points`
+                }),
+                Plot.dot(data, {
+                  x: "not_disadv",
+                  y: "school",
+                  fill: "#4e79a7",
+                  r: 5
+                })
+              ]
+            }));
+          }
+
+          let activeEconGapTown = window.__masterTown || 'All';
+          render(activeEconGapTown);
+
+          document.querySelectorAll('[data-econgap-town]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('[data-econgap-town]').forEach(b => b.classList.remove('on'));
+              btn.classList.add('on');
+              activeEconGapTown = btn.dataset.econgapTown;
+              render(activeEconGapTown);
+            });
+          });
+
+          document.addEventListener('masterTownChange', ({ detail: { town } }) => {
+            activeEconGapTown = town === 'All' ? 'All' : town;
+            document.querySelectorAll('[data-econgap-town]').forEach(b =>
+              b.classList.toggle('on', b.dataset.econgapTown === activeEconGapTown));
+            render(activeEconGapTown);
+          });
+})();
+
+
+// Block 10 (module) - High School College and Career Readiness (Uses the grade-level-proficiency dataset)
+(async function() {
+          let proficiencyHS;
+          try {
+            proficiencyHS = await window.loadData('grade-level-proficiency');
+          } catch (e) {
+            console.error('grade-level-proficiency (HS CCR) load failed:', e);
+            window.mdShowError('chart-hs-ccr');
+            return;
+          }
+          const HS_SPANS = ['09-12', '09-11', '11-13', '0K-12'];
+          const el = document.getElementById('chart-hs-ccr');
+          function render(town) {
+            const byTown = town === 'All' ? proficiencyHS : proficiencyHS.filter(d => d.town === town);
+            const withRate = byTown.map(d => {
+              if (d.glp != null) return d;
+              const match = /^[<>]?\s*(\d+(\.\d+)?)/.exec(d.glp_raw || '');
+              return match ? { ...d, glp: parseFloat(match[1]) } : d;
+            });
+            const data = withRate
+              .filter(d => HS_SPANS.includes(d.grade_span))
+              .filter(d => d.ccr != null)
+              .sort((a, b) => b.ccr - a.ccr);
+            const long = data.flatMap(d => [
+              {school: d.school, metric: "Grade-Level Proficient", value: d.glp},
+              {school: d.school, metric: "College/Career Ready", value: d.ccr}
+            ]).filter(d => d.value != null);
+            const w = el.clientWidth || 750;
+            el.innerHTML = '';
+            el.append(Plot.plot({
+              title: "High School College & Career Readiness: North Meck (2024-25)",
+              subtitle: "Grades 9–12 only",
+              width: w,
+              height: 60 + data.length * 46,
+              marginLeft: 220, marginRight: 20, marginTop: 40, marginBottom: 40,
+              x: {label: "Percent of students (%)", domain: [0, 100], grid: true},
+              y: {axis: null, domain: ["Grade-Level Proficient", "College/Career Ready"]},
+              fy: {label: null, domain: data.map(d => d.school)},
+              color: {
+                legend: true,
+                domain: ["Grade-Level Proficient", "College/Career Ready"],
+                range: ["#a0cbe8", "#4e79a7"]
+              },
+              marks: [
+                Plot.barX(long, {
+                  x: "value",
+                  y: "metric",
+                  fy: "school",
+                  fill: "metric",
+                  tip: true,
+                  title: d => `${d.school}\n${d.metric}: ${d.value}%`
+                }),
+                Plot.ruleX([0])
+              ]
+            }));
+          }
+
+          let activeCcrTown = window.__masterTown || 'All';
+          render(activeCcrTown);
+
+          document.querySelectorAll('[data-ccr-town]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('[data-ccr-town]').forEach(b => b.classList.remove('on'));
+              btn.classList.add('on');
+              activeCcrTown = btn.dataset.ccrTown;
+              render(activeCcrTown);
+            });
+          });
+
+          document.addEventListener('masterTownChange', ({ detail: { town } }) => {
+            activeCcrTown = town === 'All' ? 'All' : town;
+            document.querySelectorAll('[data-ccr-town]').forEach(b =>
+              b.classList.toggle('on', b.dataset.ccrTown === activeCcrTown));
+            render(activeCcrTown);
+          });
+})();
+
+
+// Block 11 (module) - Highschool Achievement gap by Economic status
+(async function() {
+          let hsEconGap;
+          try {
+            hsEconGap = await window.loadData('highschool-achievement-economic-gap');
+          } catch (e) {
+            console.error('highschool-achievement-economic-gap load failed:', e);
+            window.mdShowError('chart-hs-achievement-economic-gap');
+            return;
+          }
+          const el = document.getElementById('chart-hs-achievement-economic-gap');
+          function render(town) {
+            const filtered = town === 'All' ? hsEconGap : hsEconGap.filter(d => d.town === town);
+            const data = filtered
+              .filter(d => d.econ_disadv != null && d.not_disadv != null && d.gap != null)
+              .sort((a, b) => b.gap - a.gap);
+            const w = el.clientWidth || 750;
+            el.innerHTML = '';
+            el.append(Plot.plot({
+              title: "Economic Achievement Gap in North Meck High Schools (2024-25)",
+              subtitle: "Grades 9–12 grade-level proficiency: economically disadvantaged vs. not",
+              width: w,
+              height: 100 + data.length * 22,
+              marginLeft: 200, marginRight: 20, marginTop: 30, marginBottom: 40,
+              x: {label: "Grade-Level Proficient (%)", domain: [0, 100], grid: true},
+              y: {label: null, domain: data.map(d => d.school)},
+              color: {
+                legend: true,
+                domain: ["Economically Disadvantaged", "Not Economically Disadvantaged"],
+                range: ["#d62728", "#4e79a7"]
+              },
+              marks: [
+                Plot.link(data, {
+                  x1: "econ_disadv", x2: "not_disadv", y: "school",
+                  stroke: "#cccccc", strokeWidth: 2
+                }),
+                Plot.dot(data, {
+                  x: "econ_disadv", y: "school", fill: "#d62728", r: 5, tip: true,
+                  title: d => `${d.school}\nEconomically Disadvantaged: ${d.econ_disadv}%\nNot Disadvantaged: ${d.not_disadv}%\nGap: ${d.gap} points`
+                }),
+                Plot.dot(data, {
+                  x: "not_disadv", y: "school", fill: "#4e79a7", r: 5
+                })
+              ]
+            }));
+          }
+
+          let activeHsGapTown = window.__masterTown || 'All';
+          render(activeHsGapTown);
+
+          document.querySelectorAll('[data-hsgap-town]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              document.querySelectorAll('[data-hsgap-town]').forEach(b => b.classList.remove('on'));
+              btn.classList.add('on');
+              activeHsGapTown = btn.dataset.hsgapTown;
+              render(activeHsGapTown);
+            });
+          });
+
+          document.addEventListener('masterTownChange', ({ detail: { town } }) => {
+            activeHsGapTown = town === 'All' ? 'All' : town;
+            document.querySelectorAll('[data-hsgap-town]').forEach(b =>
+              b.classList.toggle('on', b.dataset.hsgapTown === activeHsGapTown));
+            render(activeHsGapTown);
+          });
+})();
