@@ -80,6 +80,9 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       <a class="nav-link" data-page="about" href={`${base}about.html`} style="font-weight:500" data-es="Acerca de">About</a>
     </div>
     <div class="nav-right">
+      <button class="nav-burger" id="navBurger" aria-label="Open navigation menu" aria-expanded="false" onclick="toggleMobileNav()">
+        <i class="ti ti-menu-2" id="navBurgerIcon"></i>
+      </button>
       <div class="nav-search" id="navSearchWrap">
         <button class="nav-search-icon" onclick="navSearchExpand()" aria-label="Search" id="navSearchIconBtn"><i class="ti ti-search"></i></button>
         <input type="search" id="navSearch" placeholder="Search the portal&#8230;" data-es-placeholder="Buscar en el portal&#8230;" aria-label="Search the portal" oninput="navSearchInput(this)" onkeydown="navSearchKey(event)" onfocus="navSearchInput(this)" onblur="setTimeout(navSearchCollapse,180)">
