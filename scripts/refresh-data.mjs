@@ -168,6 +168,8 @@ const SIMPLE_QUERIES = {
       ANY_VALUE(facility_name) AS facility_name,
       ANY_VALUE(street1)       AS street1,
       ANY_VALUE(city)          AS city,
+      ANY_VALUE(phone)         AS phone,
+      ANY_VALUE(website)       AS website,
       latitude,
       longitude,
       STRING_AGG(DISTINCT facility_type_label, ', ') AS types
@@ -195,6 +197,60 @@ const SIMPLE_QUERIES = {
     FROM nmidw.agg_town_housing_burden
     WHERE town IN ${TOWNS} ORDER BY town, year
   `,
+  'grade-level-proficiency': `
+    SELECT school, grade_span, 
+      town_name AS town, 
+      is_title_1,
+      glp, glp_raw,
+      ccr, 
+    FROM nmidw.agg_school_proficiency
+    WHERE town_name IN ${TOWNS}
+    ORDER BY town_name, school  
+  `,
+
+  'school-academic-growth': `
+    SELECT school, grade_span,
+      town_name AS town,
+       status, index_score
+    FROM nmidw.agg_school_growth
+    WHERE town_name IN ${TOWNS}
+    ORDER BY town_name, school
+  `,
+
+  'four-year-school-graduation': `
+    SELECT school, 
+      town_name AS town,
+      grad_4yr,
+      grad_4yr_raw
+    FROM nmidw.agg_school_graduation
+    WHERE town_name IN ${TOWNS}
+    ORDER BY town_name, school
+  `,
+
+  'school-achievement-and-economic-gap': `
+    SELECT 
+      school,
+      town_name AS town,
+      econ_disadv,
+      not_disadv,
+      gap
+    FROM nmidw.agg_school_economic_gap
+    WHERE town_name IN ${TOWNS}
+    ORDER BY town_name, school
+  `,
+
+  'highschool-achievement-economic-gap': `
+    SELECT school, 
+      town_name AS town,
+      econ_disadv,
+      not_disadv,
+      gap
+    FROM nmidw.agg_school_hs_economic_gap
+    WHERE town_name IN ${TOWNS}
+    ORDER BY town_name, school
+  `,
+
+
 };
 
 async function run() {

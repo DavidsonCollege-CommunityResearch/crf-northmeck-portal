@@ -1,0 +1,51 @@
+[
+  {
+    "school": "William Amos Hough High",
+    "town": "Cornelius",
+    "econ_disadv": 56.2,
+    "not_disadv": 82.5,
+    "gap": 26.3
+  },
+  {
+    "school": "Community School of Davidson",
+    "town": "Davidson",
+    "econ_disadv": 59.7,
+    "not_disadv": 82.3,
+    "gap": 22.6
+  },
+  {
+    "school": "Aspire Trade High",
+    "town": "Huntersville",
+    "econ_disadv": 18.2,
+    "not_disadv": 20.2,
+    "gap": 2
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "town": "Huntersville",
+    "econ_disadv": 28.4,
+    "not_disadv": 37.4,
+    "gap": 9
+  },
+  {
+    "school": "Hopewell High School",
+    "town": "Huntersville",
+    "econ_disadv": 36.8,
+    "not_disadv": 59.9,
+    "gap": 23.1
+  },
+  {
+    "school": "Lake Norman Charter",
+    "town": "Huntersville",
+    "econ_disadv": 72.6,
+    "not_disadv": 89.5,
+    "gap": 16.9
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "town": "Huntersville",
+    "econ_disadv": 40.7,
+    "not_disadv": 52.3,
+    "gap": 11.6
+  }
+]

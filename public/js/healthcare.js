@@ -1269,7 +1269,7 @@ function renderAgeUninsByTown(rows) {
     })();
 })();
 
-// Block 4 (module)
+// Block 4 (module) -- Mental Health and Substance Use Facility Map 
 (async function() {
       let facilities;
       try {
@@ -1280,7 +1280,9 @@ function renderAgeUninsByTown(rows) {
             address: (d.street1||'') + (d.city ? ', '+d.city : ''),
             lat: Number(d.latitude),
             lng: Number(d.longitude),
-            type: d.types || ''
+            type: d.types || '',
+            phone: d.phone || '',
+            website: d.website || ''
           };
         });
       } catch(e) {

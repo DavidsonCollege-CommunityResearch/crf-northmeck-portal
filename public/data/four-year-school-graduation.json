@@ -1,0 +1,44 @@
+[
+  {
+    "school": "William Amos Hough High",
+    "town": "Cornelius",
+    "grad_4yr": null,
+    "grad_4yr_raw": ">95"
+  },
+  {
+    "school": "Community School of Davidson",
+    "town": "Davidson",
+    "grad_4yr": null,
+    "grad_4yr_raw": ">95"
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "town": "Huntersville",
+    "grad_4yr": 68.2,
+    "grad_4yr_raw": "68.2"
+  },
+  {
+    "school": "Hopewell High School",
+    "town": "Huntersville",
+    "grad_4yr": 88.9,
+    "grad_4yr_raw": "88.9"
+  },
+  {
+    "school": "Lake Norman Charter",
+    "town": "Huntersville",
+    "grad_4yr": null,
+    "grad_4yr_raw": ">95"
+  },
+  {
+    "school": "Merancas Middle College-CPCC",
+    "town": "Huntersville",
+    "grad_4yr": null,
+    "grad_4yr_raw": ">95"
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "town": "Huntersville",
+    "grad_4yr": 87.5,
+    "grad_4yr_raw": "87.5"
+  }
+]
