@@ -9,11 +9,12 @@ const bySlug = Object.fromEntries(allPosts.map(p => [p.id, p]));
 // Curated homepage/teaser order (matches the site's original hand-authored order,
 // not chronological).
 const ORDER = [
-  'why-it-now-takes-31-an-hour',
-  'black-renters-cost-burdened',
-  'eviction-filings-explained',
-  'racial-makeup-schools',
-  'neighborhoods-left-out-of-data',
+  'why-1647-a-month'
+  //'why-it-now-takes-31-an-hour',
+  //'black-renters-cost-burdened',
+  //'eviction-filings-explained',
+  //'racial-makeup-schools',
+  //'neighborhoods-left-out-of-data',
 ];
 const posts = ORDER.map(id => bySlug[id]).filter(Boolean);
 ---

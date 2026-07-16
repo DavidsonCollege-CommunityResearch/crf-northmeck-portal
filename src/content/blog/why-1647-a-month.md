@@ -8,7 +8,7 @@ readTime: "4 min read"
 thumbnailIcon: "ti-cash"
 author: "Paul Park"
 authorRole: "2026 Community Research Fellow"
-draft: true
+draft: false
 ---
 
 <figure class="post-media">
