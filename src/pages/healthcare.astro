@@ -290,36 +290,37 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
     <div class="wrap">
       <div class="sec-head"><span class="eyebrow">Mental Health</span><h2 class="sec-h">Is mental healthcare reachable for North Meck residents who need it?</h2><p class="lead">Mental health conditions are common and treatable, but access to care is constrained by provider shortages, insurance limits, stigma, and cost. The gap between need and treatment is widest in communities with fewer resources.</p></div>
 
-      <!-- Section 1: Depression prevalence -->
+      <!-- Section 1: Depression & mental distress prevalence -->
       <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How prevalent is depression in North Meck communities?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">CDC PLACES provides model estimates of depression prevalence using behavioral surveillance data — allowing comparison across towns and years.</p>
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How prevalent are depression and mental distress in North Meck communities?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">CDC PLACES provides model estimates of depression and frequent mental distress (14+ poor mental health days in the past 30) using behavioral surveillance data — allowing comparison across towns and years.</p>
         <div class="g2">
-          <div class="card viz-host" id="mh-dumbbell-host">
-            <div class="card-t">Depression Rate: 2019 vs 2023</div>
-            <div class="card-s">Age-adjusted prevalence among adults · CDC PLACES</div>
-            <div id="mh-dumbbell-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
+          <div class="card viz-host" id="mh-distressbar-host">
+            <div class="card-t">Frequent Mental Distress by Year</div>
+            <div class="card-s">2019, 2021, 2023 · Age-adjusted · CDC PLACES</div>
+            <div class="filterbar" style="margin:10px 0 4px">
+              <span class="chip on" data-mh-chart="distress" data-mh-town="all" onclick="mhLocalChip(this)">All</span>
+              <span class="chip" data-mh-chart="distress" data-mh-town="Cornelius" onclick="mhLocalChip(this)">Cornelius</span>
+              <span class="chip" data-mh-chart="distress" data-mh-town="Davidson" onclick="mhLocalChip(this)">Davidson</span>
+              <span class="chip" data-mh-chart="distress" data-mh-town="Huntersville" onclick="mhLocalChip(this)">Huntersville</span>
+            </div>
+            <div id="mh-distressbar-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
           </div>
           <div class="card viz-host" id="mh-depbar-host">
             <div class="card-t">Depression Prevalence by Year</div>
             <div class="card-s">2019, 2021, 2023 · Age-adjusted · CDC PLACES</div>
+            <div class="filterbar" style="margin:10px 0 4px">
+              <span class="chip on" data-mh-chart="depression" data-mh-town="all" onclick="mhLocalChip(this)">All</span>
+              <span class="chip" data-mh-chart="depression" data-mh-town="Cornelius" onclick="mhLocalChip(this)">Cornelius</span>
+              <span class="chip" data-mh-chart="depression" data-mh-town="Davidson" onclick="mhLocalChip(this)">Davidson</span>
+              <span class="chip" data-mh-chart="depression" data-mh-town="Huntersville" onclick="mhLocalChip(this)">Huntersville</span>
+            </div>
             <div id="mh-depbar-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
           </div>
         </div>
       </div>
 
-      <!-- Section 2: Frequent mental distress -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How often do residents report poor mental health days?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Frequent mental distress — 14 or more mentally unhealthy days in the past 30 — is a CDC PLACES indicator of chronic psychological burden in a community.</p>
-        <div class="card viz-host" id="mh-distress-host">
-          <div class="card-t">Frequent Mental Distress (2023)</div>
-          <div class="card-s">% adults reporting 14+ poor mental health days · CDC PLACES</div>
-          <div id="mh-distress-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
-        </div>
-      </div>
-
-      <!-- Section 3: Facility map -->
+      <!-- Section 2: Facility map -->
       <div style="margin-bottom:36px">
         <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Where are mental health and substance use facilities located?</h3>
         <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">DHHS-licensed mental health and substance use facilities in Mecklenburg County. Search your address to find facilities within a given radius.</p>
@@ -340,7 +341,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         </div>
       </div>
 
-      <!-- Section 4: Provider shortage coming soon -->
+      <!-- Section 3: Provider shortage coming soon -->
       <!--
       <div style="margin-bottom:36px">
         <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does mental health burden vary by income and race?</h3>

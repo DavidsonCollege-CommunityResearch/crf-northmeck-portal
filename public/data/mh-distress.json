@@ -1,0 +1,65 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "val": 12.1,
+    "lo": 11.5,
+    "hi": 12.7
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "val": 13.3,
+    "lo": 11.8,
+    "hi": 15.1
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "val": 14.7,
+    "lo": 12.9,
+    "hi": 16.5
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "val": 12,
+    "lo": 11.1,
+    "hi": 12.9
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "val": 13.3,
+    "lo": 11.7,
+    "hi": 15.2
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "val": 14.4,
+    "lo": 12.7,
+    "hi": 16.4
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "val": 11.8,
+    "lo": 11.4,
+    "hi": 12.2
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "val": 13.1,
+    "lo": 11.6,
+    "hi": 14.9
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "val": 14.6,
+    "lo": 12.9,
+    "hi": 16.4
+  }
+]
