@@ -1,1 +1,149 @@
-[]
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "total_population": 28584,
+    "total_households": 12094,
+    "median_household_income_usd": 88366
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "total_population": 29185,
+    "total_households": 12307,
+    "median_household_income_usd": 90542
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "total_population": 29836,
+    "total_households": 12363,
+    "median_household_income_usd": 90377
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "total_population": 30925,
+    "total_households": 12913,
+    "median_household_income_usd": 95147
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "total_population": 31396,
+    "total_households": 13352,
+    "median_household_income_usd": 107969
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "total_population": 32009,
+    "total_households": 13618,
+    "median_household_income_usd": 114688
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "total_population": 32754,
+    "total_households": 13884,
+    "median_household_income_usd": 113767
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "total_population": 12589,
+    "total_households": 4273,
+    "median_household_income_usd": 128255
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "total_population": 12666,
+    "total_households": 4336,
+    "median_household_income_usd": 124853
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "total_population": 12857,
+    "total_households": 4473,
+    "median_household_income_usd": 131144
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "total_population": 14589,
+    "total_households": 5292,
+    "median_household_income_usd": 141845
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "total_population": 15135,
+    "total_households": 5510,
+    "median_household_income_usd": 140938
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "total_population": 14786,
+    "total_households": 5327,
+    "median_household_income_usd": 152969
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "total_population": 15593,
+    "total_households": 5589,
+    "median_household_income_usd": 166556
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "total_population": 54291,
+    "total_households": 19852,
+    "median_household_income_usd": 97320
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "total_population": 55708,
+    "total_households": 20074,
+    "median_household_income_usd": 102016
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "total_population": 57023,
+    "total_households": 20666,
+    "median_household_income_usd": 100789
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "total_population": 59943,
+    "total_households": 22351,
+    "median_household_income_usd": 102335
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "total_population": 60935,
+    "total_households": 22974,
+    "median_household_income_usd": 112893
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "total_population": 62149,
+    "total_households": 23704,
+    "median_household_income_usd": 119951
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "total_population": 63655,
+    "total_households": 25055,
+    "median_household_income_usd": 120516
+  }
+]

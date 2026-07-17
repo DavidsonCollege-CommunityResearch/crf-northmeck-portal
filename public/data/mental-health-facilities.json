@@ -1210,8 +1210,8 @@
     "types": "HRSA Health Center"
   },
   {
-    "facility_name": "Atrium Health Addiction Services Charlotte",
-    "street1": "447 Billingsley Road",
+    "facility_name": "Senior TLC - Charlotte",
+    "street1": "6133 The Plz",
     "city": "Charlotte",
     "phone": "704-344-3290",
     "website": "https://atriumhealth.org/locations/detail/atrium-health-addiction-services-charlotte",
@@ -1220,8 +1220,8 @@
     "types": "Substance Use"
   },
   {
-    "facility_name": "Carolina Outreach Charlotte",
-    "street1": "301 McCullough Drive",
+    "facility_name": "Genesis Project 1 Inc",
+    "street1": "5104 Reagan Drive",
     "city": "Charlotte",
     "phone": "704-332-8787",
     "website": "https://www.carolinaoutreach.com",
@@ -1230,8 +1230,8 @@
     "types": "Mental Health"
   },
   {
-    "facility_name": "Dreams and Visions DBA New Vision Home II",
-    "street1": "3430 Dalecrest Drive",
+    "facility_name": "New Beginnings of the Southern Piedmont LLC",
+    "street1": "1508 Cleveland Avenue",
     "city": "Charlotte",
     "phone": "704-281-7261",
     "website": "https://",
@@ -1240,8 +1240,8 @@
     "types": "Mental Health"
   },
   {
-    "facility_name": "South Charlotte VA Healthcare Center Outpatient Clinic",
-    "street1": "3506 West Tyvola Road",
+    "facility_name": "Pathways to Life",
+    "street1": "3703 Latrobe Drive",
     "city": "Charlotte",
     "phone": "704-329-1300",
     "website": "https://www.va.gov/salisbury-health-care/locations/south-charlotte-va-clinic/",
@@ -1260,8 +1260,8 @@
     "types": "HRSA Health Center"
   },
   {
-    "facility_name": "Iredell Pediatrics",
-    "street1": "728 Hartness Rd",
+    "facility_name": "Integrated Care of Greater Hickory",
+    "street1": "523 Brookdale Drive",
     "city": "Statesville",
     "phone": "704-380-6420",
     "website": "https://www.kintegra.org",
@@ -1290,8 +1290,328 @@
     "types": "HRSA Health Center"
   },
   {
-    "facility_name": "Kintegra at East Gaston High",
-    "street1": "1744 Lane Rd",
+    "facility_name": "Catawba Valley Family",
+    "street1": "3114 W Main St",
+    "city": "Claremont",
+    "phone": "828-459-7324",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.71455278,
+    "longitude": -81.15221677,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Charlotte Community Health Clinic Novant Mobile Health Unit",
+    "street1": "5301 Wilkinson Blvd",
+    "city": "Charlotte",
+    "phone": "704-316-6561",
+    "website": "https://charlottecommunityhealthclinic.org/",
+    "latitude": 35.23170906,
+    "longitude": -80.92680845,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Dave Cathcart Pediatric Clinic",
+    "street1": "769 N Wendover Rd",
+    "city": "Charlotte",
+    "phone": "704-316-6561",
+    "website": "https://charlottecommunityhealth.org/en/",
+    "latitude": 35.19034018,
+    "longitude": -80.79902592,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra Adult and Pediatric Medicine - X Ray Dr",
+    "street1": "2721 X Ray Dr",
+    "city": "Gastonia",
+    "phone": "704-874-2255",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.27685424,
+    "longitude": -81.14080992,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra Mobile Dentistry",
+    "street1": "518 Brookdale Dr",
+    "city": "Statesville",
+    "phone": "833-764-4537",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.798174,
+    "longitude": -80.87637479,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Bandys High",
+    "street1": "5040 E Bandys Xrd",
+    "city": "Catawba",
+    "phone": "828-241-1471",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.64273799,
+    "longitude": -81.08487503,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at McAdenville Elementary",
+    "street1": "275 Wesleyan Dr",
+    "city": "Mc Adenville",
+    "phone": "704-836-9117",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.25339497,
+    "longitude": -81.07727141,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Warlick Academy",
+    "street1": "1316 Spencer Mountain Rd",
+    "city": "Gastonia",
+    "phone": "704-836-9608",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.28220525,
+    "longitude": -81.13349319,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "McLeod Centers for Wellbeing",
+    "street1": "300 Copperfield Blvd. Stes 105",
+    "city": "Concord",
+    "phone": "(704) 782-3131",
+    "website": null,
+    "latitude": 35.3949,
+    "longitude": -80.5606,
+    "types": "Opioid Treatment Program"
+  },
+  {
+    "facility_name": "Charlotte Rescue Mission Rebound",
+    "street1": "915 West 1st Street",
+    "city": "Charlotte",
+    "phone": "704-334-4635",
+    "website": "https://www.charlotterescuemission.org",
+    "latitude": 35.229507,
+    "longitude": -80.8563745,
+    "types": "Substance Use"
+  },
+  {
+    "facility_name": "Family First Community Servs LLC",
+    "street1": "3705 Latrobe Drive",
+    "city": "Charlotte",
+    "phone": "704-364-3989",
+    "website": "https://www.familyfirstcommunity.com",
+    "latitude": 35.195993,
+    "longitude": -80.7965011,
+    "types": "Mental Health"
+  },
+  {
+    "facility_name": "Daymark Recovery Services",
+    "street1": "2129 Statesville Boulevard",
+    "city": "Salisbury",
+    "phone": "704-633-3616",
+    "website": "https://www.daymarkrecovery.org",
+    "latitude": 35.693257,
+    "longitude": -80.5185791,
+    "types": "Mental Health, Substance Use"
+  },
+  {
+    "facility_name": "BrightView, LLC",
+    "street1": "1930 Jake Alexander Blvd",
+    "city": "Salisbury",
+    "phone": "(833) 510-4357",
+    "website": null,
+    "latitude": 35.691835,
+    "longitude": -80.511527,
+    "types": "Opioid Treatment Program"
+  },
+  {
+    "facility_name": "Charlotte Community Health Clinic",
+    "street1": "8401 Medical Plaza Dr, Suite 300",
+    "city": "Charlotte",
+    "phone": "704-316-6561",
+    "website": "https://charlottecommunityhealthclinic.org/",
+    "latitude": 35.31910255,
+    "longitude": -80.7767231,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra Health Admin - New Hope",
+    "street1": "504 S New Hope Rd",
+    "city": "Gastonia",
+    "phone": "704-874-1900",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.25823829,
+    "longitude": -81.14893056,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at CaroMont Women Health - Belmont",
+    "street1": "2000 Caromont Pkwy, Suite 400",
+    "city": "Belmont",
+    "phone": "704-865-7416",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.2587759,
+    "longitude": -81.03389464,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Costner Elementary",
+    "street1": "353 Old NC 277 Loop Rd",
+    "city": "Dallas",
+    "phone": "704-922-3522",
+    "website": null,
+    "latitude": 35.32757804,
+    "longitude": -81.22721334,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Holbrook Middle School",
+    "street1": "418 S Church St",
+    "city": "Lowell",
+    "phone": "704-836-9607",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.265495,
+    "longitude": -81.10582386,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Love Memorial Elementary",
+    "street1": "1463 Love Memorial School Rd",
+    "city": "Lincolnton",
+    "phone": "704-735-5649",
+    "website": null,
+    "latitude": 35.44931743,
+    "longitude": -81.2761629,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Pinewood Elementary - Clt",
+    "street1": "805 Seneca Pl",
+    "city": "Charlotte",
+    "phone": "980-343-5825",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.16601359,
+    "longitude": -80.86431432,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Pumpkin Center Primary",
+    "street1": "3970 King Wilkinson Rd",
+    "city": "Lincolnton",
+    "phone": "704-736-1394",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.51754943,
+    "longitude": -81.13618998,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Amity Medical Group Inc",
+    "street1": "9835 Monroe Road",
+    "city": "Charlotte",
+    "phone": "704-270-6877",
+    "website": "https://www.amitymed.org",
+    "latitude": 35.1380292,
+    "longitude": -80.737956,
+    "types": "Substance Use"
+  },
+  {
+    "facility_name": "Southeastern Recovery Center",
+    "street1": "1018 Lee Ann Drive NE",
+    "city": "Concord",
+    "phone": "704-848-5724",
+    "website": "https://www.serecoverycenter.com",
+    "latitude": 35.4435826,
+    "longitude": -80.5980084,
+    "types": "Substance Use"
+  },
+  {
+    "facility_name": "AMG4 Dallas",
+    "street1": "824 Lower Dallas Hwy",
+    "city": "Dallas",
+    "phone": "704-208-4134",
+    "website": "https://www.amitymed.org",
+    "latitude": 35.31626649,
+    "longitude": -81.16209627,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "CRCHC Mobile Dental Unit",
+    "street1": "202D McGill Ave NW",
+    "city": "Concord",
+    "phone": "704-792-2203",
+    "website": "https://www.crchc.org",
+    "latitude": 35.41728959,
+    "longitude": -80.59720712,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "China Grove Family Medicine",
+    "street1": "307 East Thom Street",
+    "city": "China Grove",
+    "phone": "704-855-5200",
+    "website": "https://www.crchc.org",
+    "latitude": 35.56011425,
+    "longitude": -80.58508706,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra Behavioral Health - Riverwood",
+    "street1": "3050 Riverwood Pkwy, Suite B",
+    "city": "Gastonia",
+    "phone": "704-874-9005",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.21557,
+    "longitude": -81.17007274,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra Health Admin - Shannon Bradley",
+    "street1": "1520 Shannon Bradley Rd",
+    "city": "Gastonia",
+    "phone": "704-874-1900",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.27703667,
+    "longitude": -81.23542124,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Belmont Middle School (BMS)",
+    "street1": "1020 S Point Rd",
+    "city": "Belmont",
+    "phone": "704-836-9611",
+    "website": null,
+    "latitude": 35.21944445,
+    "longitude": -81.03589054,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Bunker Hill",
+    "street1": "4675 Oxford School Rd",
+    "city": "Claremont",
+    "phone": "828-241-3355",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.75371354,
+    "longitude": -81.11933565,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Iron Station Elementary",
+    "street1": "4207 E Highway 27",
+    "city": "Iron Station",
+    "phone": "704-736-4292",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.45934064,
+    "longitude": -81.1674093,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Lingerfeldt Elementary",
+    "street1": "1601 Madison St",
+    "city": "Gastonia",
+    "phone": "704-866-6094",
+    "website": "https://www.kintegra.org",
+    "latitude": 35.24066625,
+    "longitude": -81.19194657,
+    "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Kintegra at Rankin Elementary",
+    "street1": "301 W Central Ave",
     "city": "Mount Holly",
     "phone": "704-836-9613",
     "website": "https://www.kintegra.org",
@@ -1328,6 +1648,16 @@
     "latitude": 35.23650288,
     "longitude": -81.11500958,
     "types": "HRSA Health Center"
+  },
+  {
+    "facility_name": "Treatment Centers LLC",
+    "street1": "1504 Jake Alexander Blvd, W",
+    "city": "Salisbury",
+    "phone": "(704) 645-8539",
+    "website": null,
+    "latitude": 35.6788375,
+    "longitude": -80.5040956,
+    "types": "Opioid Treatment Program"
   },
   {
     "facility_name": "Absolute Advocacy LLC",
@@ -1900,8 +2230,8 @@
     "types": "Opioid Treatment Program"
   },
   {
-    "facility_name": "New Vision Home",
-    "street1": "5004 Glenview Court",
+    "facility_name": "Kintegra at Turning Point Academy",
+    "street1": "8701 Moores Chapel Rd",
     "city": "Charlotte",
     "phone": "704-281-7261",
     "website": "https://",
@@ -1990,8 +2320,8 @@
     "types": "HRSA Health Center"
   },
   {
-    "facility_name": "Kintegra at CaroMont Womens Health - Ashley",
-    "street1": "1225 E Garrison Blvd",
+    "facility_name": "Senior TLC - Gastonia",
+    "street1": "1875 Remount Rd",
     "city": "Gastonia",
     "phone": "704-865-7416",
     "website": "https://www.kintegra.org",
@@ -2260,8 +2590,8 @@
     "types": "HRSA Health Center"
   },
   {
-    "facility_name": "Kintegra Adult and Pediatric Medicine - X Ray Dr",
-    "street1": "2721 X Ray Dr",
+    "facility_name": "Kintegra Pediatric Dentistry - Gastonia",
+    "street1": "890 Summit Crossing Pl",
     "city": "Gastonia",
     "phone": "704-874-2255",
     "website": "https://www.kintegra.org",
@@ -2300,8 +2630,8 @@
     "types": "HRSA Health Center"
   },
   {
-    "facility_name": "Kintegra at Warlick Academy",
-    "street1": "1316 Spencer Mountain Rd",
+    "facility_name": "Kintegra at CaroMont Womens Health - Ashley",
+    "street1": "1225 E Garrison Blvd",
     "city": "Gastonia",
     "phone": "704-836-9608",
     "website": "https://www.kintegra.org",

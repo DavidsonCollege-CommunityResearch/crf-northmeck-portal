@@ -172,7 +172,26 @@ function toggleDD(e, el){
   if (!isOpen) dd.classList.add('open');
 }
 window.toggleDD = toggleDD;
-document.addEventListener('click', function(){ document.querySelectorAll('.nav-dd').forEach(function(d){ d.classList.remove('open'); }); });
+
+function toggleMobileNav() {
+  var links = document.querySelector('.nav-links');
+  var btn = document.getElementById('navBurger');
+  var icon = document.getElementById('navBurgerIcon');
+  var isOpen = links.classList.toggle('mobile-open');
+  btn.setAttribute('aria-expanded', String(isOpen));
+  icon.className = isOpen ? 'ti ti-x' : 'ti ti-menu-2';
+  if (!isOpen) document.querySelectorAll('.nav-dd').forEach(function(d){ d.classList.remove('open'); });
+}
+window.toggleMobileNav = toggleMobileNav;
+
+document.addEventListener('click', function(e){
+  document.querySelectorAll('.nav-dd').forEach(function(d){ d.classList.remove('open'); });
+  var nav = document.querySelector('.nav');
+  var links = document.querySelector('.nav-links');
+  if (links && links.classList.contains('mobile-open') && nav && !nav.contains(e.target)) {
+    toggleMobileNav();
+  }
+});
 
 function setTab(el){
   var pane = el.dataset.tab;
@@ -331,7 +350,14 @@ function glossTerm(id){
 }
 window.glossTerm = glossTerm;
 
-document.addEventListener('keydown', function(e){ if (e.key === 'Escape'){ closeGlossary(); if(window.closeVizModal) window.closeVizModal(); } });
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape'){
+    closeGlossary();
+    if(window.closeVizModal) window.closeVizModal();
+    var links = document.querySelector('.nav-links');
+    if (links && links.classList.contains('mobile-open')) toggleMobileNav();
+  }
+});
 
 /* ── FAB ── */
 function toggleFab(e){ e.stopPropagation(); document.getElementById('supportFab').classList.toggle('open'); }
