@@ -6,13 +6,14 @@ eyebrow: "Housing · Analysis"
 date: 2026-07-16
 readTime: "4 min read"
 thumbnailIcon: "ti-cash"
+thumbnail: "images/why-1647-thumbnail.png"
 author: "Paul Park"
 authorRole: "2026 Community Research Fellow"
 draft: false
 ---
 
 <figure class="post-media">
-  <div class="ph" style="width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid var(--line)"><i class="ti ti-building-community"></i><span>A North Meck apartment block or a For Rent sign</span></div>
+  <img src="images/why-1647-thumbnail.png" alt="A North Meck apartment block" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:16px; border:1px solid var(--line);">
   <figcaption class="post-figcap">A one-bedroom in the Charlotte-Concord-Gastonia region now rents for roughly $1,647 a month at fair market rate.</figcaption>
 </figure>
 
@@ -76,10 +77,6 @@ draft: false
 
 <div class="callout info" style="margin:28px 0"><div class="callout-t"><strong>Huntersville:</strong> 42.0% of renter households cost-burdened in 2024, up from 39.8% in 2018.</div><div class="callout-s">Source: North Meck Insights data warehouse (ACS 2018–2024)</div></div>
 
-<figure class="post-media" style="margin:30px 0">
-  <div class="ph" style="width:100%;aspect-ratio:3/2;border-radius:14px;border:1px solid var(--line)"><i class="ti ti-users"></i><span>Residents at a community meeting</span></div>
-  <figcaption class="post-figcap">Fellows hear the same theme in interviews across North Meck: stable housing is getting harder to hold onto.</figcaption>
-</figure>
 
 <h2>What a livable income actually looks like here</h2>
 
