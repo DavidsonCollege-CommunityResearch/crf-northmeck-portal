@@ -13,7 +13,11 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       <h2 class="sec-h" style="font-size:32px">The neighborhoods that built North Meck</h2>
       <p class="lead">Davidson, Cornelius, and Huntersville each hold neighborhoods with deep roots, several founded by Black families in the generations after Emancipation. Their histories are rich, and at risk of being lost. This is where we gather their stories, the data, and the record, so that North Meck remembers and its residents stay informed.</p>
     </div>
-    <div style="width:100%;border-radius:var(--rl);border:1px solid var(--line);margin-top:26px;overflow:hidden">
+    <div class="nbhd-disclaimer" style="margin-top:26px">
+      <i class="ti ti-info-circle"></i>
+      <div><strong>Data note:</strong> Neighborhood boundaries don't align perfectly with U.S. Census geography. The data shown here is from the <strong>ACS block group</strong> that best approximates each neighborhood — the smallest geographic unit the Census publishes. This means the numbers may include some residents just outside the neighborhood boundary. All data comes from the American Community Survey 5-year estimates.</div>
+    </div>
+    <div style="width:100%;border-radius:var(--rl);border:1px solid var(--line);overflow:hidden">
       <iframe src={`${base}maps/neighborhoods-map.html`} title="Interactive map of North Meck towns and United Neighborhoods boundaries" loading="lazy" style="display:block;width:100%;height:560px;border:0"></iframe>
     </div>
     <p class="meta" style="margin-top:10px;font-size:13px;color:var(--ink-3)" data-es="Datos de censo (ACS 5-year 2024, Decenal 2020) vía tidycensus. Los límites de vecindarios se muestran a nivel de grupo de bloque (línea discontinua) y de manzana (línea continua).">Census data (ACS 5-year 2024, 2020 Decennial) via tidycensus. Neighborhood boundaries shown at block-group level (dashed) and block level (solid).</p>
