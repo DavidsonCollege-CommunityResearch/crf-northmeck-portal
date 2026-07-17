@@ -150,7 +150,6 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
         this.initVis();
     }
 
-
     initVis() {
         let vis = this;
 
@@ -471,7 +470,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
       containerWidth: _config.containerWidth || 600,
       containerHeight: _config.containerHeight || 300,
       margin: _config.margin || {top: 40, right: 30, bottom: 60, left: 100},
-      dispatcher: _config.dispatcher
+      dispatcher: _config.dispatcher,
+      compact: _config.compact || false
     }
     this.data = _data;
     this.initVis();
@@ -529,39 +529,40 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
        .style("z-index", "9999");
 
 
-    // Chart Title
-    vis.svg.append("text")
-       .attr("class", "chart-title")
-       .attr("x", vis.config.margin.left + vis.width / 2)
-       .attr("y", 20)
-       .attr("text-anchor", "middle")
-       .style("font-size", "0.8rem")
-       .style("font-weight", "600")
-       .style("fill", "#1B4F72")
-       .text("Uninsurance Rates by Age, North Mecklenburg 2024");
+    if(!vis.config.compact){
+      // Chart Title
+      vis.svg.append("text")
+         .attr("class", "chart-title")
+         .attr("x", vis.config.margin.left + vis.width / 2)
+         .attr("y", 20)
+         .attr("text-anchor", "middle")
+         .style("font-size", "0.8rem")
+         .style("font-weight", "600")
+         .style("fill", "#1B4F72")
+         .text("Uninsurance Rates by Age, North Mecklenburg 2024");
 
+      // Axis labels
+      vis.svg.append("text")
+         .attr("class", "axis-label")
+         .attr("x", vis.config.margin.left + vis.width / 2)
+         .attr("y", vis.config.containerHeight - 20)
+         .attr("text-anchor", "middle")
+         .style("font-size", "0.85rem")
+         .style("fill", "#1B4F72")
+         .text("Share of uninsured population (%)");
 
-    // Axis labels
-    vis.svg.append("text")
-       .attr("class", "axis-label")
-       .attr("x", vis.config.margin.left + vis.width / 2)
-       .attr("y", vis.config.containerHeight - 20)
-       .attr("text-anchor", "middle")
-       .style("font-size", "0.85rem")
-       .style("fill", "#1B4F72")
-       .text("Share of uninsured population (%)");
+      vis.svg.append("text")
+         .attr("class", "axis-label")
+         .attr("x", -(vis.config.margin.top + vis.height / 2))
+         .attr("y", 20)
+         .attr("transform", "rotate(-90)")
+         .attr("text-anchor", "middle")
+         .style("font-size", "0.85rem")
+         .style("fill", "#1B4F72")
+         .text("Town");
+    }
 
-    vis.svg.append("text")
-       .attr("class", "axis-label")
-       .attr("x", -(vis.config.margin.top + vis.height / 2))
-       .attr("y", 20)
-       .attr("transform", "rotate(-90)")
-       .attr("text-anchor", "middle")
-       .style("font-size", "0.85rem")
-       .style("fill", "#1B4F72")
-       .text("Town");
-
-    vis.updateVis(); 
+    vis.updateVis();
   }
 
   updateVis() {
@@ -649,22 +650,24 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
        vis.yAxisG.call(d3.axisLeft(vis.yScale));
 
        // Legend
+       const legendGap = vis.config.compact ? 62 : 90;
+       const swatch = vis.config.compact ? 9 : 12;
        const legend = vis.svg.selectAll(".legend")
             .data(["Under 18", "19-25", "26-34", "35-64", "65+"])
             .join("g")
             .attr("class", "legend")
-            .attr("transform", (d, i) => `translate(${vis.config.margin.left + i * 90}, ${vis.config.containerHeight - 10})`);
+            .attr("transform", (d, i) => `translate(${vis.config.margin.left + i * legendGap}, ${vis.config.containerHeight - (vis.config.compact ? 16 : 10)})`);
 
         legend.append("rect")
-            .attr("width", 12)
-            .attr("height", 12)
+            .attr("width", swatch)
+            .attr("height", swatch)
             .attr("fill", d => vis.colorScale(d));
 
         legend.append("text")
-            .attr("x", 16)
-            .attr("y", 10)
+            .attr("x", swatch + 4)
+            .attr("y", swatch - 1)
             .style("fill", "#1B4F72")
-            .style("font-size", "0.8rem")
+            .style("font-size", vis.config.compact ? "0.65rem" : "0.8rem")
             .text(d => d);
   }
 
@@ -672,10 +675,25 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Add adapter
 function renderAgeUninsByTown(rows) {
-   var el = clear('hc-ins-age'); 
+   var el = clear('hc-ins-age');
    if(!el||!rows.length) return;
    new TownUninsByAgeChart({parentElement: "#hc-ins-age", containerWidth: el.offsetWidth||600}, rows);
  }
+
+// Compact adapter for the Overview tab's "~1 in 10 uninsured" stat card — always all three towns
+function renderOverviewAgeUnins() {
+  var el = clear('hc-overview-age-uninsured');
+  if(!el || !window.HC_INS_DATA || !window.HC_INS_DATA.length) return;
+  var data2024 = window.HC_INS_DATA.filter(function(d){ return d.year === 2024; });
+  if(!data2024.length) return;
+  new TownUninsByAgeChart({
+    parentElement: "#hc-overview-age-uninsured",
+    containerWidth: el.offsetWidth || 420,
+    containerHeight: 258,
+    margin: {top: 12, right: 16, bottom: 46, left: 78},
+    compact: true
+  }, data2024);
+}
 
 
 
@@ -870,7 +888,7 @@ function renderAgeUninsByTown(rows) {
 
       // ── Per-chart town state ─────────────────────────────────────────
       window.window.HC_INS_DATA = null;
-      var HC_INS_TOWNS = { income: null, age: null, trend: null, emp: null };
+      var HC_INS_TOWNS = { income: null, age: null, trend: null, emp: null, agetrend: null };
 
       function getSingleRows(town){
         var yr = window.HC_INS_DATA.filter(function(d){ return d.year === 2024; });
@@ -881,6 +899,454 @@ function renderAgeUninsByTown(rows) {
         var byYear={};
         window.HC_INS_DATA.forEach(function(d){ if(!byYear[d.year]) byYear[d.year]=[]; byYear[d.year].push(d); });
         return Object.keys(byYear).sort().map(function(y){ return aggregate(byYear[y])[0]; });
+      }
+
+      // ── 8. AGE TREND — 2x2 grid, uninsured rate per age group by year, all towns ──
+      class TownAgeUninsTrendChart {
+        constructor(_config, _data) {
+          this.config = {
+            parentElement: _config.parentElement,
+            panelWidth: _config.panelWidth || 480,
+            panelHeight: _config.panelHeight || 400,
+            margin: _config.margin || {top: 36, right: 20, bottom: 40, left: 50}
+          };
+          this.data = _data;
+          this.initVis();
+        }
+
+        initVis() {
+          let vis = this;
+
+          vis.groups = ["Under 18", "19-64", "65+", "Total Population"];
+
+          vis.width = vis.config.panelWidth - vis.config.margin.left - vis.config.margin.right;
+          vis.height = vis.config.panelHeight - vis.config.margin.top - vis.config.margin.bottom;
+
+          vis.colorScale = d3.scaleOrdinal()
+            .domain(["Cornelius", "Davidson", "Huntersville"])
+            .range(["#2a78d6", "#1baf7a", "#eda100"]);
+
+          // Shared legend — one for the whole grid, not per panel
+          vis.legend = d3.select(vis.config.parentElement)
+            .append("div")
+            .style("display", "flex")
+            .style("gap", "16px")
+            .style("justify-content", "center")
+            .style("margin-bottom", "10px")
+            .style("font-size", "0.8rem");
+
+          vis.colorScale.domain().forEach(town => {
+            const item = vis.legend.append("span")
+              .style("display", "flex")
+              .style("align-items", "center")
+              .style("gap", "6px");
+            item.append("span")
+              .style("width", "10px")
+              .style("height", "10px")
+              .style("display", "inline-block")
+              .style("border-radius", "2px")
+              .style("background", vis.colorScale(town));
+            item.append("span").text(town);
+          });
+
+          // Tooltip — shared across all four panels
+          vis.tooltip = d3.select(vis.config.parentElement)
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("position", "fixed")
+            .style("pointer-events", "none")
+            .style("background", "#1a1a2e")
+            .style("color", "#fff")
+            .style("font", "500 12px 'Hanken Grotesk', sans-serif")
+            .style("padding", "7px 11px")
+            .style("border-radius", "7px")
+            .style("z-index", "9999");
+
+          // 2x2 grid to hold the four panels
+          vis.gridContainer = d3.select(vis.config.parentElement)
+            .append("div")
+            .style("display", "grid")
+            .style("grid-template-columns", "repeat(2, max-content)")
+            .style("gap", "16px");
+
+          // One empty svg and title per age group
+          vis.panels = {};
+          vis.groups.forEach(group => {
+            const svg = vis.gridContainer.append("svg")
+              .attr("width", vis.config.panelWidth)
+              .attr("height", vis.config.panelHeight);
+
+            svg.append("text")
+              .attr("x", vis.config.panelWidth / 2)
+              .attr("y", 20)
+              .attr("text-anchor", "middle")
+              .style("font-size", "0.85rem")
+              .style("font-weight", "600")
+              .style("fill", "#1B4F72")
+              .text(group);
+
+            // X-axis label
+            svg.append("text")
+              .attr("class", "axis-label")
+              .attr("x", vis.config.margin.left + vis.width / 2)
+              .attr("y", vis.config.panelHeight - 8)
+              .attr("text-anchor", "middle")
+              .style("font-size", "0.75rem")
+              .style("fill", "#1B4F72")
+              .text("Year");
+
+            // Y-axis label
+            svg.append("text")
+              .attr("class", "axis-label")
+              .attr("x", -(vis.config.margin.top + vis.height / 2))
+              .attr("y", 15)
+              .attr("transform", "rotate(-90)")
+              .attr("text-anchor", "middle")
+              .style("font-size", "0.75rem")
+              .style("fill", "#1B4F72")
+              .text("Uninsured rate (%)");
+
+            // Chart group — offset by margin
+            const chart = svg.append("g")
+              .attr("transform", `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
+
+            const xScale = d3.scalePoint()
+              .range([0, vis.width])
+              .padding(0.5);
+
+            const yScale = d3.scaleLinear()
+              .range([vis.height, 0]);
+
+            const xAxisG = chart.append("g")
+              .attr("class", "axis x-axis")
+              .attr("transform", `translate(0, ${vis.height})`);
+
+            const yAxisG = chart.append("g")
+              .attr("class", "axis y-axis");
+
+            vis.panels[group] = { svg, chart, xScale, yScale, xAxisG, yAxisG };
+          });
+
+          vis.updateVis();
+        }
+
+        updateVis() {
+          let vis = this;
+
+          vis.towns = [...new Set(vis.data.map(d => d.Town))];
+
+          // For each town, sort by year, then compute yearly uninsurance rates per age group
+          vis.townRates = vis.towns.map(town => {
+            const townRecords = vis.data.filter(d => d.Town === town);
+            const sortedRecords = [...townRecords].sort((a, b) => a.year - b.year);
+
+            const yearlyRates = sortedRecords.map(d => {
+              const u18Rate = (d.unins_U18 / (d.ins_U18 + d.unins_U18)) * 100;
+              const adultIns_19_64 = d.ins_19_25 + d.ins_26_34 + d.ins_35_64;
+              const adultUnins_19_64 = d.unins_19_25 + d.unins_26_34 + d.unins_35_64;
+              const unins_19_64Rate = (adultUnins_19_64 / (adultIns_19_64 + adultUnins_19_64)) * 100;
+              const over65UninsRate = (d.unins_65_over / (d.ins_65_over + d.unins_65_over)) * 100;
+              const totalUninsRate = (d.all_unins / (d.all_ins + d.all_unins)) * 100;
+
+              return {
+                year: d.year,
+                "Under 18": u18Rate,
+                "19-64": unins_19_64Rate,
+                "65+": over65UninsRate,
+                "Total Population": totalUninsRate
+              };
+            });
+
+            return { town, yearlyRates };
+          });
+
+          // All years, shared across every panel's x-axis
+          vis.allYears = vis.townRates.length > 0
+            ? vis.townRates[0].yearlyRates.map(d => d.year)
+            : [];
+
+          // For each panel (age group), build one line per town and set that panel's scales
+          vis.groups.forEach(group => {
+            const panel = vis.panels[group];
+
+            panel.chartData = vis.townRates.map(t => ({
+              town: t.town,
+              values: t.yearlyRates.map(d => ({ year: d.year, value: d[group] }))
+            }));
+
+            panel.xScale.domain(vis.allYears);
+
+            const allValues = panel.chartData.flatMap(t => t.values.map(v => v.value));
+            panel.yScale.domain([0, d3.max(allValues) * 1.2]);
+          });
+
+          vis.renderVis();
+        }
+
+        renderVis() {
+          let vis = this;
+
+          vis.groups.forEach(group => {
+            const panel = vis.panels[group];
+
+            const lineGenerator = d3.line()
+              .x(d => panel.xScale(d.year))
+              .y(d => panel.yScale(d.value));
+
+            // One line per town
+            panel.chart.selectAll(".trend-line")
+              .data(panel.chartData)
+              .join("path")
+              .attr("class", "trend-line")
+              .attr("fill", "none")
+              .attr("stroke", d => vis.colorScale(d.town))
+              .attr("stroke-width", 2.5)
+              .attr("d", d => lineGenerator(d.values));
+
+            // Dots for each town's points
+            panel.chartData.forEach(townData => {
+              panel.chart.selectAll(`.dot-${townData.town.replace(/\s/g, "")}`)
+                .data(townData.values)
+                .join("circle")
+                .attr("class", `dot-${townData.town.replace(/\s/g, "")}`)
+                .attr("cx", d => panel.xScale(d.year))
+                .attr("cy", d => panel.yScale(d.value))
+                .attr("r", 3.5)
+                .attr("fill", vis.colorScale(townData.town))
+                .on("mouseover", function(_event, d) {
+                  vis.tooltip
+                    .style("opacity", 1)
+                    .html(`<strong>${townData.town}</strong> · ${group} (${d.year}): ${d.value.toFixed(1)}%`);
+                })
+                .on("mousemove", function(event) {
+                  vis.tooltip
+                    .style("left", (event.clientX + 14) + "px")
+                    .style("top", (event.clientY - 36) + "px");
+                })
+                .on("mouseout", function() {
+                  vis.tooltip.style("opacity", 0);
+                });
+            });
+
+            panel.xAxisG.call(d3.axisBottom(panel.xScale));
+            panel.yAxisG.call(d3.axisLeft(panel.yScale).ticks(5).tickFormat(d => d + "%"));
+          });
+        }
+      } // End of TownAgeUninsTrendChart
+
+      // ── 8b. AGE TREND — single town, one panel with 4 age-group lines ──
+      class AgeUninsTrendChart {
+        constructor(_config, _data) {
+          this.config = {
+            parentElement: _config.parentElement,
+            containerWidth: _config.containerWidth || 650,
+            containerHeight: _config.containerHeight || 420,
+            margin: _config.margin || {top: 40, right: 100, bottom: 50, left: 60},
+            dispatcher: _config.dispatcher
+          };
+          this.data = _data;
+          this.initVis();
+        }
+
+        initVis() {
+          let vis = this;
+
+          vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
+          vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+
+          vis.svg = d3.select(vis.config.parentElement)
+            .append("svg")
+            .attr("width", vis.config.containerWidth)
+            .attr("height", vis.config.containerHeight);
+
+          vis.chart = vis.svg.append("g")
+            .attr("transform", `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
+
+          // Color scale - one color per age group
+          vis.colorScale = d3.scaleOrdinal()
+            .domain(["Under 18", "19-64", "65+", "Total population"])
+            .range(["#2E86AB", "#1B4F72", "#E8A838", "#7B7D7D"]);
+
+          // X scale - years (categorical, since they're not evenly spaced)
+          vis.xScale = d3.scalePoint()
+            .range([0, vis.width])
+            .padding(0.5);
+
+          // Y scale - uninsured percentage
+          vis.yScale = d3.scaleLinear()
+            .range([vis.height, 0]);
+
+          vis.xAxisG = vis.chart.append("g")
+            .attr("class", "axis x-axis")
+            .attr("transform", `translate(0, ${vis.height})`);
+
+          vis.yAxisG = vis.chart.append("g")
+            .attr("class", "axis y-axis");
+
+          // Tooltip — fixed + clientX/Y, matching the other tooltips on this page
+          vis.tooltip = d3.select(vis.config.parentElement)
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("position", "fixed")
+            .style("pointer-events", "none")
+            .style("background", "#1a1a2e")
+            .style("color", "#fff")
+            .style("font", "500 12px 'Hanken Grotesk', sans-serif")
+            .style("padding", "7px 11px")
+            .style("border-radius", "7px")
+            .style("z-index", "9999");
+
+          // Axis labels
+          vis.svg.append("text")
+            .attr("class", "axis-label")
+            .attr("x", vis.config.margin.left + vis.width / 2)
+            .attr("y", vis.config.containerHeight - 10)
+            .attr("text-anchor", "middle")
+            .style("font-size", "0.85rem")
+            .style("fill", "#1B4F72")
+            .text("Year");
+
+          vis.svg.append("text")
+            .attr("class", "axis-label")
+            .attr("x", -(vis.config.margin.top + vis.height / 2))
+            .attr("y", 15)
+            .attr("transform", "rotate(-90)")
+            .attr("text-anchor", "middle")
+            .style("font-size", "0.85rem")
+            .style("fill", "#1B4F72")
+            .text("Uninsured rate (%)");
+
+          vis.updateVis();
+        }
+
+        updateVis() {
+          let vis = this;
+
+          const sortedData = [...vis.data].sort((a, b) => a.year - b.year);
+
+          const yearlyUninsRates = sortedData.map(d => {
+            const u18Rate = (d.unins_U18 / (d.ins_U18 + d.unins_U18)) * 100;
+            const adultIns_19_64 = d.ins_19_25 + d.ins_26_34 + d.ins_35_64;
+            const adultUnins_19_64 = d.unins_19_25 + d.unins_26_34 + d.unins_35_64;
+            const unins_19_64Rate = (adultUnins_19_64 / (adultIns_19_64 + adultUnins_19_64)) * 100;
+            const over65UninsRate = (d.unins_65_over / (d.ins_65_over + d.unins_65_over)) * 100;
+            const totalUninsRate = (d.all_unins / (d.all_ins + d.all_unins)) * 100;
+
+            return {
+              year: d.year,
+              "Under 18": u18Rate,
+              "19-64": unins_19_64Rate,
+              "65+": over65UninsRate,
+              "Total population": totalUninsRate
+            };
+          });
+
+          const groups = ["Under 18", "19-64", "65+", "Total population"];
+
+          vis.chartData = groups.map(group => ({
+            group: group,
+            values: yearlyUninsRates.map(d => ({ year: d.year, value: d[group] }))
+          }));
+
+          vis.xScale.domain(yearlyUninsRates.map(d => d.year));
+
+          const allRates = yearlyUninsRates.flatMap(d => groups.map(g => d[g]));
+          vis.yScale.domain([0, d3.max(allRates) * 1.2]);
+
+          vis.renderVis();
+        }
+
+        renderVis() {
+          let vis = this;
+
+          const lineGenerator = d3.line()
+            .x(d => vis.xScale(d.year))
+            .y(d => vis.yScale(d.value));
+
+          // One line per group
+          vis.chart.selectAll(".trend-line")
+            .data(vis.chartData)
+            .join("path")
+            .attr("class", "trend-line")
+            .attr("fill", "none")
+            .attr("stroke", d => vis.colorScale(d.group))
+            .attr("stroke-width", 2.5)
+            .attr("d", d => lineGenerator(d.values));
+
+          // Dots for each group, for every year
+          vis.chartData.forEach(function(groupData) {
+            vis.chart.selectAll(`.dot-${groupData.group.replace(/\s|\+/g, "")}`)
+              .data(groupData.values)
+              .join("circle")
+              .attr("class", `dot-${groupData.group.replace(/\s|\+/g, "")}`)
+              .attr("cx", d => vis.xScale(d.year))
+              .attr("cy", d => vis.yScale(d.value))
+              .attr("r", 4)
+              .attr("fill", vis.colorScale(groupData.group))
+              .on("mouseover", function(event, d) {
+                vis.tooltip
+                  .style("opacity", 1)
+                  .html(`<strong>${groupData.group}</strong> (${d.year}): ${d.value.toFixed(1)}%`);
+              })
+              .on("mousemove", function(event) {
+                vis.tooltip
+                  .style("left", (event.clientX + 14) + "px")
+                  .style("top", (event.clientY - 36) + "px");
+              })
+              .on("mouseout", function() {
+                vis.tooltip.style("opacity", 0);
+              });
+          });
+
+          // Line-end labels - one per group, positioned at the last data point
+          vis.chart.selectAll(".line-label")
+            .data(vis.chartData)
+            .join("text")
+            .attr("class", "line-label")
+            .attr("x", d => vis.xScale(d.values[d.values.length - 1].year) + 8)
+            .attr("y", d => vis.yScale(d.values[d.values.length - 1].value))
+            .attr("dy", "0.35em")
+            .style("font-size", "0.75rem")
+            .style("fill", d => vis.colorScale(d.group))
+            .text(d => d.group);
+
+          // In case there are overlapping line-end labels
+          const labelPositions = vis.chartData.map(d => ({
+            group: d.group,
+            y: vis.yScale(d.values[d.values.length - 1].value)
+          })).sort((a, b) => a.y - b.y);
+
+          const minGap = 14;
+          for (let i = 1; i < labelPositions.length; i++) {
+            if (labelPositions[i].y - labelPositions[i - 1].y < minGap) {
+              labelPositions[i].y = labelPositions[i - 1].y + minGap;
+            }
+          }
+
+          vis.chart.selectAll(".line-label")
+            .attr("y", function(d) {
+              const adjusted = labelPositions.find(l => l.group === d.group);
+              return adjusted.y;
+            });
+
+          vis.xAxisG.call(d3.axisBottom(vis.xScale));
+          vis.yAxisG.call(d3.axisLeft(vis.yScale).tickFormat(d => d + "%"));
+        }
+      } // End of AgeUninsTrendChart
+
+      // Adapter — 2x2 grid for "All towns", single-panel 4-line chart for one town
+      function renderAgeTrend(town){
+        var el = clear('hc-ins-age-trend'); if(!el) return;
+        if(!window.HC_INS_DATA || !window.HC_INS_DATA.length) return;
+        if(!town){
+          new TownAgeUninsTrendChart({ parentElement: '#hc-ins-age-trend', panelWidth: 300, panelHeight: 250 }, window.HC_INS_DATA);
+        } else {
+          var rows = window.HC_INS_DATA.filter(function(d){ return d.Town === town; });
+          if(!rows.length) return;
+          new AgeUninsTrendChart({ parentElement: '#hc-ins-age-trend' }, rows);
+        }
       }
 
       function hcInsRenderAll(){
@@ -908,6 +1374,8 @@ function renderAgeUninsByTown(rows) {
 
         renderTrend(getTrendRows(HC_INS_TOWNS.trend));
         renderEmp(getSingleRows(HC_INS_TOWNS.emp));
+        renderAgeTrend(HC_INS_TOWNS.agetrend);
+        renderOverviewAgeUnins();
       }
       window.hcInsRenderAll = hcInsRenderAll;
 
@@ -956,6 +1424,7 @@ function renderAgeUninsByTown(rows) {
         }
         else if(chart === 'trend')  renderTrend(getTrendRows(town));
         else if(chart === 'emp')    renderEmp(getSingleRows(town));
+        else if(chart === 'agetrend') renderAgeTrend(town);
       };
 
       // Data loaded via the static-JSON module script below; render called from there.
@@ -965,7 +1434,7 @@ function renderAgeUninsByTown(rows) {
       document.addEventListener('masterTownChange', function(e){
        var town = (e.detail.town && e.detail.town !== 'All') ? e.detail.town : null; // Listener treats All and null the same.
         // sync all per-chart chips and state
-        ['income','age','trend','emp'].forEach(function(chart){
+        ['income','age','trend','emp','agetrend'].forEach(function(chart){
           HC_INS_TOWNS[chart] = town;
           document.querySelectorAll('[data-hcins-chart="'+chart+'"]').forEach(function(c){
             c.classList.toggle('on', town ? c.dataset.hcinsTown === town : c.dataset.hcinsTown === 'all');
@@ -1271,42 +1740,61 @@ function renderAgeUninsByTown(rows) {
 
 // Block 4 (module)
 (async function() {
-      let facilities;
-      try {
-        const rows = await window.loadData('mental-health-facilities');
-        facilities = rows.map(function(d){
-          return {
-            name: d.facility_name,
-            address: (d.street1||'') + (d.city ? ', '+d.city : ''),
-            lat: Number(d.latitude),
-            lng: Number(d.longitude),
-            type: d.types || ''
-          };
-        });
-      } catch(e) {
-        console.error('Facility map data load failed:', e);
-        window.mdShowError('mh-facility-map');
-        return;
-      }
-
-      const map = L.map('mh-facility-map').setView([35.48, -80.85], 11);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-      }).addTo(map);
-
       const northMeckCenter = L.latLng(35.48, -80.85);
+      let facilities = null;
+      let loadFailed = false;
+      let map = null;
       let activeCenter = northMeckCenter;
       let userMarker = null;
       let radiusCircle = null;
+      let allMarkers = [];
 
-      const allMarkers = facilities.map(function(f){
-        const m = L.marker([f.lat, f.lng])
-          .addTo(map)
-          .bindPopup('<strong>'+f.name+'</strong><br>'+f.address+(f.type?'<br><em>'+f.type+'</em>':''));
-        return { marker: m, lat: f.lat, lng: f.lng, distance: northMeckCenter.distanceTo(L.latLng(f.lat, f.lng)) / 1609.34 };
-      });
+      function popupHtml(f) {
+        var hasPhone = f.phone && f.phone.trim().length > 0;
+        var hasWebsite = f.website && f.website.trim().length > 8;
+        return '<div style="min-width:190px;font-family:\'Hanken Grotesk\',sans-serif">'
+          + '<div style="font-weight:600;color:#1B4F72;font-size:13px;margin-bottom:4px">'+f.name+'</div>'
+          + '<div style="color:#555;font-size:11px;margin-bottom:3px">'+f.address+'</div>'
+          + (f.type ? '<div style="color:#888;font-size:11px;margin-bottom:6px">'+f.type+'</div>' : '')
+          + (hasPhone ? '<div style="font-size:11px;color:#555;margin-bottom:6px">'+f.phone+'</div>' : '')
+          + (hasWebsite ? '<a href="'+f.website+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#2E86AB;color:#fff;font-size:11px;padding:5px 10px;border-radius:4px;text-decoration:none;margin-top:4px">Visit website →</a>' : '')
+          + '</div>';
+      }
+
+      // Applies the currently-selected radius chip (defaults to "all" before any click)
+      function applyActiveRadiusFilter() {
+        var activeBtn = document.querySelector('[data-mh-radius].on');
+        var val = activeBtn ? (activeBtn.dataset.mhRadius === 'all' ? 'all' : Number(activeBtn.dataset.mhRadius)) : 'all';
+        updateRadiusCircle(activeCenter, val);
+        filterMarkers(val);
+      }
+
+      function addMarkers() {
+        if (!map || !facilities || allMarkers.length) return;
+        allMarkers = facilities.map(function(f){
+          const m = L.marker([f.lat, f.lng]).addTo(map).bindPopup(popupHtml(f));
+          return { marker: m, lat: f.lat, lng: f.lng, distance: activeCenter.distanceTo(L.latLng(f.lat, f.lng)) / 1609.34 };
+        });
+        applyActiveRadiusFilter();
+      }
+
+      // The map container sits in a hidden .tabpane (display:none) until the
+      // "Mental Health" tab is opened. Leaflet measures container size at
+      // L.map() init time, so creating it while hidden yields a 0×0 map and
+      // broken/offset tiles. Initialize lazily, once the pane is visible.
+      function initMap() {
+        if (map || loadFailed) return;
+        const el = document.getElementById('mh-facility-map');
+        if (!el) return;
+        map = L.map('mh-facility-map').setView([35.48, -80.85], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        addMarkers();
+      }
 
       function updateRadiusCircle(center, radiusMi) {
+        if (!map) return;
         if (radiusCircle) { map.removeLayer(radiusCircle); radiusCircle = null; }
         if (radiusMi === 'all') return;
         radiusCircle = L.circle(center, {
@@ -1326,8 +1814,23 @@ function renderAgeUninsByTown(rows) {
         });
       }
 
+      document.addEventListener('tabChange', function(e){
+        if (e.detail.pane !== 'hc-mental') return;
+        setTimeout(function(){
+          initMap();
+          if (map) map.invalidateSize();
+        }, 60);
+      });
+
+      // Defensive: if this pane is somehow already active on load, init right away
+      var mentalPane = document.querySelector('.tabpane[data-pane="hc-mental"]');
+      if (mentalPane && mentalPane.classList.contains('active')) {
+        setTimeout(initMap, 60);
+      }
+
       document.querySelectorAll('[data-mh-radius]').forEach(function(btn){
         btn.addEventListener('click', function(){
+          if (!map) return;
           document.querySelectorAll('[data-mh-radius]').forEach(function(b){ b.classList.remove('on'); });
           this.classList.add('on');
           const r = this.dataset.mhRadius;
@@ -1338,6 +1841,7 @@ function renderAgeUninsByTown(rows) {
       });
 
       document.getElementById('mh-address-btn').addEventListener('click', function(){
+        if (!map) return;
         const addr = document.getElementById('mh-address-input').value.trim();
         if (!addr) return;
         fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(addr))
@@ -1356,12 +1860,29 @@ function renderAgeUninsByTown(rows) {
               item.distance = loc.distanceTo(L.latLng(item.lat, item.lng)) / 1609.34;
             });
             map.setView(loc, 13);
-            const activeBtn = document.querySelector('[data-mh-radius].on');
-            const val = activeBtn ? (activeBtn.dataset.mhRadius === 'all' ? 'all' : Number(activeBtn.dataset.mhRadius)) : 'all';
-            updateRadiusCircle(activeCenter, val);
-            filterMarkers(val);
+            applyActiveRadiusFilter();
           });
       });
+
+      try {
+        const rows = await window.loadData('mental-health-facilities');
+        facilities = rows.map(function(d){
+          return {
+            name: d.facility_name,
+            address: (d.street1||'') + (d.city ? ', '+d.city : ''),
+            lat: Number(d.latitude),
+            lng: Number(d.longitude),
+            type: d.types || '',
+            phone: d.phone || '',
+            website: d.website || ''
+          };
+        });
+        addMarkers();
+      } catch(e) {
+        console.error('Facility map data load failed:', e);
+        loadFailed = true;
+        window.mdShowError('mh-facility-map');
+      }
 })();
 
 // Block 5 (plain)

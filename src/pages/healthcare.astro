@@ -12,7 +12,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       <div class="split" style="align-items:flex-start">
         <div>
           <span class="eyebrow" style="font-size:15px">Healthcare access &amp; outcomes</span>
-          <h1 class="dash-h1">Who can get care in North Meck, and what does it cost them?</h1>
+          <h1 class="dash-h1">Who can get care in North Meck, how far is it, and what does it cost them?</h1>
           <p class="lead dash-lead" style="margin-bottom:0">Insurance coverage, provider access, mental health, and chronic disease are all shaped by income and geography. This section follows the data to show where gaps are widest and who bears the highest burden.</p>
         </div>
       </div>
@@ -45,22 +45,19 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         <!-- Stat 1: Uninsured rate -->
         <div class="stat-row">
           <div class="srow-fig">
-            <div class="stat-n warn">~1 in 10</div>
-            <p class="stat-l">working-age adults in North Meck lack health insurance, leaving them exposed to catastrophic medical costs</p>
-            <span class="stat-src">ACS · data coming</span>
+            <div class="stat-n warn">~1 in 2</div>
+            <p class="stat-l">uninsured residents in every North Meck town are working-age adults 35–64 — the single largest age group without coverage</p>
+            <span class="stat-src">ACS 2024 · Table B27001</span>
           </div>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Uninsured rate by town &amp; age group</div>
-            <div class="card-s">Adults 18–64 without any health insurance coverage · ACS</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: ACS Table B27001 · Health insurance coverage by age</div>
-            </div>
+          <div class="card viz-host">
+            <div class="card-t">Uninsured rate by town &amp; age group</div>
+            <div class="card-s">Share of uninsured population by age group · ACS 2024</div>
+            <div id="hc-overview-age-uninsured"></div>
           </div>
         </div>
 
         <!-- Stat 2: Mental health -->
+        <!--
         <div class="stat-row">
           <div class="srow-fig">
             <div class="stat-n warn">1 in 5</div>
@@ -77,8 +74,10 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             </div>
           </div>
         </div>
+        -->
 
         <!-- Stat 3: Provider shortage -->
+        <!--
         <div class="stat-row">
           <div class="srow-fig">
             <div class="stat-n warn">HPSA</div>
@@ -95,6 +94,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             </div>
           </div>
         </div>
+        -->
 
         <!-- Stat 4: Chronic disease -->
         <div class="stat-row">
@@ -182,6 +182,23 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <div id="hc-ins-age"></div>
             <div class="callout warn" style="margin-top:16px"><div class="callout-t">Adults aged 26–34 carry the highest uninsured rate of any age group — they've aged off parental plans and often work gig or service jobs without employer coverage. Children under 19 and seniors 65+ show near-universal coverage through CHIP and Medicare respectively.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27001</div></div>
           </div>
+        </div>
+      </div>
+
+      <!-- Age-group uninsurance trend across towns, 2017-2024 -->
+      <div style="margin-bottom:36px">
+        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How has the uninsured rate by age shifted since 2017?</h3>
+        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Tracking each age group's uninsured rate year over year shows whether coverage gaps are closing or widening, and for whom.</p>
+        <div class="card viz-host" style="padding:20px 16px 12px">
+          <div class="card-t">Uninsurance by age over time</div>
+          <div class="card-s">ACS 2017–2024 · uninsured rate by age group</div>
+          <div class="filterbar" style="margin:10px 0 4px">
+            <span class="chip on" data-hcins-chart="agetrend" data-hcins-town="all" onclick="hcInsLocalChip(this)">All towns</span>
+            <span class="chip" data-hcins-chart="agetrend" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
+            <span class="chip" data-hcins-chart="agetrend" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
+            <span class="chip" data-hcins-chart="agetrend" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
+          </div>
+          <div id="hc-ins-age-trend"></div>
         </div>
       </div>
 
@@ -324,6 +341,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       </div>
 
       <!-- Section 4: Provider shortage coming soon -->
+      <!--
       <div style="margin-bottom:36px">
         <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does mental health burden vary by income and race?</h3>
         <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Mental health outcomes are not evenly distributed. Lower-income residents and communities of color report higher rates of distress, yet face the greatest barriers to treatment access.</p>
@@ -333,6 +351,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
           <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC BRFSS · Mecklenburg County module</div></div>
         </div>
       </div>
+      -->
     </div>
 
     <!-- ── Mental Health CDC charts (D3, inline data) ── -->

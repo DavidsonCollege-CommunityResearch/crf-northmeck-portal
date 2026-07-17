@@ -1,0 +1,156 @@
+[
+  {
+    "school": "Bailey Middle",
+    "grade_span": "06-08",
+    "town": "Cornelius",
+    "status": "Exceeded",
+    "index_score": 6.93
+  },
+  {
+    "school": "Cornelius Elementary",
+    "grade_span": "0K-05",
+    "town": "Cornelius",
+    "status": "Exceeded",
+    "index_score": 3.55
+  },
+  {
+    "school": "J.V. Washam Elementary",
+    "grade_span": "0K-05",
+    "town": "Cornelius",
+    "status": "Met",
+    "index_score": 1.79
+  },
+  {
+    "school": "Lakeside Charter Academy",
+    "grade_span": "0K-08",
+    "town": "Cornelius",
+    "status": "Exceeded",
+    "index_score": 3.52
+  },
+  {
+    "school": "William Amos Hough High",
+    "grade_span": "09-12",
+    "town": "Cornelius",
+    "status": "Exceeded",
+    "index_score": 2.05
+  },
+  {
+    "school": "Community School of Davidson",
+    "grade_span": "0K-12",
+    "town": "Davidson",
+    "status": "Met",
+    "index_score": -1.24
+  },
+  {
+    "school": "Davidson K-8 School",
+    "grade_span": "0K-08",
+    "town": "Davidson",
+    "status": "Exceeded",
+    "index_score": 7.57
+  },
+  {
+    "school": "Aspire Trade High",
+    "grade_span": "09-11",
+    "town": "Huntersville",
+    "status": "Not Met",
+    "index_score": -6.16
+  },
+  {
+    "school": "Barnette Elementary",
+    "grade_span": "PK-05",
+    "town": "Huntersville",
+    "status": "Exceeded",
+    "index_score": 2.14
+  },
+  {
+    "school": "Blythe Elementary",
+    "grade_span": "PK-05",
+    "town": "Huntersville",
+    "status": "Met",
+    "index_score": -0.51
+  },
+  {
+    "school": "Bonnie Cone Classical Academy",
+    "grade_span": "0K-06",
+    "town": "Huntersville",
+    "status": "Exceeded",
+    "index_score": 2.14
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "grade_span": "0K-12",
+    "town": "Huntersville",
+    "status": "Not Met",
+    "index_score": -5.18
+  },
+  {
+    "school": "Francis Bradley Middle",
+    "grade_span": "06-08",
+    "town": "Huntersville",
+    "status": "Not Met",
+    "index_score": -3.42
+  },
+  {
+    "school": "Grand Oak Elementary",
+    "grade_span": "PK-05",
+    "town": "Huntersville",
+    "status": "Exceeded",
+    "index_score": 2.06
+  },
+  {
+    "school": "Hopewell High School",
+    "grade_span": "09-12",
+    "town": "Huntersville",
+    "status": "Met",
+    "index_score": 0.63
+  },
+  {
+    "school": "Huntersville Elementary",
+    "grade_span": "0K-05",
+    "town": "Huntersville",
+    "status": "Exceeded",
+    "index_score": 4.74
+  },
+  {
+    "school": "J. M. Alexander Middle",
+    "grade_span": "06-08",
+    "town": "Huntersville",
+    "status": "Not Met",
+    "index_score": -5.97
+  },
+  {
+    "school": "Lake Norman Charter",
+    "grade_span": "0K-12",
+    "town": "Huntersville",
+    "status": "Exceeded",
+    "index_score": 3.41
+  },
+  {
+    "school": "Long Creek Elementary",
+    "grade_span": "0K-05",
+    "town": "Huntersville",
+    "status": "Exceeded",
+    "index_score": 4.09
+  },
+  {
+    "school": "North Academy of World Languages",
+    "grade_span": "0K-08",
+    "town": "Huntersville",
+    "status": "Exceeded",
+    "index_score": 5.35
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "grade_span": "09-12",
+    "town": "Huntersville",
+    "status": "Exceeded",
+    "index_score": 3.75
+  },
+  {
+    "school": "Torrence Creek Elementary",
+    "grade_span": "0K-05",
+    "town": "Huntersville",
+    "status": "Met",
+    "index_score": 0.71
+  }
+]
