@@ -281,7 +281,6 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const w = el.clientWidth || 750;
             el.innerHTML = '';
             el.append(Plot.plot({
-              title: "School Academic Growth Across North Mecklenburg (2024-25)",
               width: w,
               height: 100 + data.length * 22,
               marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
@@ -410,7 +409,6 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const w = el.clientWidth || 750;
             el.innerHTML = '';
             el.append(Plot.plot({
-              title: "School Achievement Gap By Economic Status in North Meck Schools (2024-25)",
               subtitle: "Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students",
               width: w,
               height: 100 + data.length * 22,
@@ -612,4 +610,96 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
               b.classList.toggle('on', b.dataset.hsgapTown === activeHsGapTown));
             render(activeHsGapTown);
           });
+})();
+
+
+// Block 12 (module) - Population Growth vs K-12 Enrollment
+(async function() {
+          let enrollment;
+          try {
+            enrollment = await window.loadData('pop-growth-k12-enrollment');
+          } catch (e) {
+            console.error('pop-growth-k12-enrollment load failed:', e);
+            window.mdShowError('chart-pop-vs-k12');
+            return;
+          }
+          const el = document.getElementById('chart-pop-vs-k12');
+          const ALL_TOWNS = ["Cornelius", "Davidson", "Huntersville"];
+          function render(town) {
+            const towns = (!town || town === 'All') ? ALL_TOWNS : [town];
+            const enrollIndex = towns.flatMap(t => {
+              const rows = enrollment.filter(d => d.town === t).sort((a, b) => a.year - b.year);
+              if (!rows.length) return [];
+              const base = rows[0];
+              return rows.flatMap(d => [
+                {town: t, year: d.year, series: "Total population (3+)",
+                 index: (d.total_pop_3_plus / base.total_pop_3_plus) * 100, raw: d.total_pop_3_plus},
+                {town: t, year: d.year, series: "K-12 enrollment",
+                 index: (d.n_enrolled_k12_total / base.n_enrolled_k12_total) * 100, raw: d.n_enrolled_k12_total}
+              ]);
+            });
+            const w = el.clientWidth || 760;
+            el.innerHTML = '';
+            el.append(Plot.plot({
+              subtitle: "Indexed to 2018 = 100. K-12 student counts rose only 3–6% while town populations grew 14–26%.",
+              caption: "Source: U.S. Census Bureau, ACS 5-Year Estimates, Tables B01003 and B14007. Population shown is age 3+, the universe for the ACS school enrollment question.",
+              width: w,
+              height: 300,
+              marginRight: 20,
+              x: {label: "Year", tickFormat: "d", ticks: [2018, 2020, 2022, 2024]},
+              fx: {label: null},
+              y: {label: "Index (2018 = 100)", domain: [95, 130], grid: true},
+              color: {legend: true, domain: ["Total population (3+)", "K-12 enrollment"], range: ["#b5495b", "#3b6ea5"], label: null},
+              facet: {data: enrollIndex, x: "town"},
+              marks: [
+                Plot.ruleY([100], {stroke: "#ccc", strokeDasharray: "3,3"}),
+                Plot.line(enrollIndex, {x: "year", y: "index", stroke: "series", strokeWidth: 2.5}),
+                Plot.dot(enrollIndex, {x: "year", y: "index", fill: "series", r: 3}),
+                Plot.tip(enrollIndex, Plot.pointer({
+                  x: "year", y: "index", stroke: "series",
+                  title: d => `${d.town}, ${d.year}\n${d.series}\n${d.raw.toLocaleString()} (${d.index.toFixed(1)} vs 2018)`
+                }))
+              ]
+            }));
+          }
+          render(window.__masterTown || 'All');
+          document.addEventListener('masterTownChange', e => render(e.detail.town));
+})();
+
+
+// Block 13 (module) - Total Enrollment Trend by Town
+(async function() {
+          let enrollment;
+          try {
+            enrollment = await window.loadData('pop-growth-k12-enrollment');
+          } catch (e) {
+            console.error('pop-growth-k12-enrollment (total enrollment trend) load failed:', e);
+            window.mdShowError('chart-total-enrollment-trend');
+            return;
+          }
+          const TOWN_COLORS = {Cornelius: "#4e79a7", Davidson: "#f28e2b", Huntersville: "#59a14f"};
+          const el = document.getElementById('chart-total-enrollment-trend');
+          const allValues = enrollment.map(d => d.n_enrolled_total);
+          const yMin = Math.floor(Math.min(...allValues) / 1000) * 1000;
+          const yMax = Math.ceil(Math.max(...allValues) / 1000) * 1000;
+          function render(town) {
+            const data = (town === 'All' ? enrollment : enrollment.filter(d => d.town === town))
+              .slice().sort((a, b) => a.year - b.year);
+            const w = el.clientWidth || 700;
+            el.innerHTML = '';
+            el.append(Plot.plot({
+              width: w, height: 340,
+              marginLeft: 65, marginRight: 20, marginTop: 20, marginBottom: 40,
+              x: {label: "Year", tickFormat: d => String(d), insetLeft: 12, insetRight: 12},
+              y: {label: "Total Enrollment", grid: true, interval: 1000, domain: [yMin, yMax]},
+              color: {domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: town === 'All'},
+              marks: [
+                Plot.line(data, {x: "year", y: "n_enrolled_total", stroke: "town", strokeWidth: town === 'All' ? 2 : 3}),
+                Plot.dot(data, {x: "year", y: "n_enrolled_total", stroke: "town", fill: "white", strokeWidth: 1.5, r: 4,
+                  tip: true, title: d => `${d.town}\n${d.year}: ${d.n_enrolled_total.toLocaleString()} enrolled`})
+              ]
+            }));
+          }
+          render(window.__masterTown || 'All');
+          document.addEventListener('masterTownChange', e => render(e.detail.town));
 })();

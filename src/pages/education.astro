@@ -49,14 +49,10 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <p class="stat-l">enrollment growth at North Meck schools since 2018, outpacing the state average and straining classroom capacity</p>
             <span class="stat-src">NCES CCD · data coming</span>
           </div>
-          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Total enrollment by school (2018–2023)</div>
-            <div class="card-s">Charlotte-Mecklenburg Schools · North Meck zone</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD School Universe Survey · leaid 3702970</div>
-            </div>
+          <div class="card viz-host" style="margin-bottom:28px">
+            <div class="card-t">Total School Enrollment by Town (2018–2024)</div>
+            <div class="card-s">All enrollment levels · preschool through graduate/professional</div>
+            <div id="chart-total-enrollment-trend"></div>
           </div>
         </div>
 
@@ -134,6 +130,18 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         </div>
 
       </div>
+
+      <!-- Population Growth vs K-12 Enrollment -->
+     <div class="card viz-host" style="margin-bottom:28px">
+        <div class="card-t">Population growth vs. K-12 Enrollment</div>
+        <div class="card-s">Indexed to 2018 = 100 · Population (age 3+) vs. K–12 enrollment · by town</div>
+        <div id="chart-pop-vs-k12"></div>
+        <div class="callout">
+          <div class="callout-t">K-12 student counts rose only 3–6% while town populations grew 14–26% since 2018.</div>
+          <div class="callout-s">Source: U.S. Census Bureau, ACS 5-Year Estimates, Tables B01003 and B14007. Population shown is age 3+, the universe for the ACS school enrollment question.</div>
+        </div>
+     </div>
+
 
       <!-- Enrollment by School Level -->
       <div class="card viz-host" style="margin-bottom:28px">
@@ -250,7 +258,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 
       <!--School Achievement and Economic Gap-->
       <div class="card viz-host" style="margin-bottom:28px">
-        <div class="card-t">Achievement Gap in North Meck Schools (2024-25)</div>
+        <div class="card-t">School Achievement Gap By Economic Status in North Meck Schools (2024-25)</div>
         <div class="card-s">Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students</div>
         <div class="filterbar" style="margin-bottom:14px">
            <span style="font-size:13px;color:var(--ink-2);font-family:'Hanken Grotesk',sans-serif;margin-right:8px">Town:</span>
@@ -297,6 +305,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 
 
         <!--Reading Proficiency Level-->
+        <!--
         <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
           <div class="card-t" style="color:var(--ink-2)">Reading proficiency rate by school (2018–2023)</div>
           <div class="card-s">% students at or above grade level</div>
@@ -306,8 +315,10 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <div style="font-size:12px;margin-top:4px">Source: NC DPI School Report Cards</div>
           </div>
         </div>
+        -->
 
         <!--Math Proficiency Rate-->
+        <!--
         <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
           <div class="card-t" style="color:var(--ink-2)">Math proficiency rate by school (2018–2023)</div>
           <div class="card-s">% students at or above grade level</div>
@@ -317,8 +328,11 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <div style="font-size:12px;margin-top:4px">Source: NC DPI School Report Cards</div>
           </div>
         </div>
-      
+        -->
 
+
+        <!--NC School Performance Grades-->
+        <!--
         <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
           <div class="card-t" style="color:var(--ink-2)">NC School Performance Grades (A–F) by school</div>
           <div class="card-s">Annual letter grades assigned by NC DPI</div>
@@ -328,9 +342,12 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
             <div style="font-size:12px;margin-top:4px">Source: NC DPI School Performance Grades</div>
           </div>
         </div>
+        -->
 
-       
 
+
+      <!--Chronic Absenteeism Rate-->
+      <!--
       <div class="card viz-host" style="margin-bottom:28px;border:1px dashed var(--line-2);background:var(--paper-2)">
         <div class="card-t" style="color:var(--ink-2)">Chronic absenteeism rate by school</div>
         <div class="card-s">% students missing 10%+ of school days</div>
@@ -344,6 +361,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 
 
       </div>
+      -->
     </div>
   </div>
 

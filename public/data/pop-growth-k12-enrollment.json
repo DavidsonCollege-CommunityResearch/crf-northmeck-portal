@@ -1,0 +1,128 @@
+[
+  {
+    "town": "Cornelius",
+    "year": 2018,
+    "total_pop_3_plus": 28007,
+    "n_enrolled_k12_total": 5233
+  },
+  {
+    "town": "Cornelius",
+    "year": 2019,
+    "total_pop_3_plus": 28741,
+    "n_enrolled_k12_total": 5439
+  },
+  {
+    "town": "Cornelius",
+    "year": 2020,
+    "total_pop_3_plus": 29404,
+    "n_enrolled_k12_total": 5644
+  },
+  {
+    "town": "Cornelius",
+    "year": 2021,
+    "total_pop_3_plus": 30486,
+    "n_enrolled_k12_total": 5944
+  },
+  {
+    "town": "Cornelius",
+    "year": 2022,
+    "total_pop_3_plus": 30817,
+    "n_enrolled_k12_total": 5581
+  },
+  {
+    "town": "Cornelius",
+    "year": 2023,
+    "total_pop_3_plus": 31452,
+    "n_enrolled_k12_total": 5643
+  },
+  {
+    "town": "Cornelius",
+    "year": 2024,
+    "total_pop_3_plus": 31995,
+    "n_enrolled_k12_total": 5532
+  },
+  {
+    "town": "Davidson",
+    "year": 2018,
+    "total_pop_3_plus": 12268,
+    "n_enrolled_k12_total": 2488
+  },
+  {
+    "town": "Davidson",
+    "year": 2019,
+    "total_pop_3_plus": 12400,
+    "n_enrolled_k12_total": 2532
+  },
+  {
+    "town": "Davidson",
+    "year": 2020,
+    "total_pop_3_plus": 12593,
+    "n_enrolled_k12_total": 2302
+  },
+  {
+    "town": "Davidson",
+    "year": 2021,
+    "total_pop_3_plus": 14412,
+    "n_enrolled_k12_total": 2627
+  },
+  {
+    "town": "Davidson",
+    "year": 2022,
+    "total_pop_3_plus": 15028,
+    "n_enrolled_k12_total": 2613
+  },
+  {
+    "town": "Davidson",
+    "year": 2023,
+    "total_pop_3_plus": 14743,
+    "n_enrolled_k12_total": 2639
+  },
+  {
+    "town": "Davidson",
+    "year": 2024,
+    "total_pop_3_plus": 15508,
+    "n_enrolled_k12_total": 2623
+  },
+  {
+    "town": "Huntersville",
+    "year": 2018,
+    "total_pop_3_plus": 51974,
+    "n_enrolled_k12_total": 10558
+  },
+  {
+    "town": "Huntersville",
+    "year": 2019,
+    "total_pop_3_plus": 53413,
+    "n_enrolled_k12_total": 11030
+  },
+  {
+    "town": "Huntersville",
+    "year": 2020,
+    "total_pop_3_plus": 55027,
+    "n_enrolled_k12_total": 11425
+  },
+  {
+    "town": "Huntersville",
+    "year": 2021,
+    "total_pop_3_plus": 57801,
+    "n_enrolled_k12_total": 11979
+  },
+  {
+    "town": "Huntersville",
+    "year": 2022,
+    "total_pop_3_plus": 59069,
+    "n_enrolled_k12_total": 11670
+  },
+  {
+    "town": "Huntersville",
+    "year": 2023,
+    "total_pop_3_plus": 60184,
+    "n_enrolled_k12_total": 11607
+  },
+  {
+    "town": "Huntersville",
+    "year": 2024,
+    "total_pop_3_plus": 61401,
+    "n_enrolled_k12_total": 10869
+  }
+]

@@ -238,7 +238,6 @@ const SIMPLE_QUERIES = {
     WHERE town_name IN ${TOWNS}
     ORDER BY town_name, school
   `,
-
   'highschool-achievement-economic-gap': `
     SELECT school, 
       town_name AS town,
@@ -248,6 +247,14 @@ const SIMPLE_QUERIES = {
     FROM nmidw.agg_school_hs_economic_gap
     WHERE town_name IN ${TOWNS}
     ORDER BY town_name, school
+  `,
+  'pop-growth-k12-enrollment': `
+    SELECT town, year,
+      total_pop_3_plus, 
+      n_enrolled_k12_total
+    FROM nmidw.agg_town_school_enrollment
+    WHERE town IN ${TOWNS}
+    ORDER BY town, year
   `,
 
 
