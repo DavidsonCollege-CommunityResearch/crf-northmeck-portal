@@ -1466,27 +1466,15 @@ function renderOverviewAgeUnins() {
       var MH_BLUE   = '#2E86AB';
       var MH_BLUE2  = '#1B4F72';
       var MH_AMBER  = '#E8A838';
-      var MH_LIGHT  = '#90C7E3';
       var MH_FONT   = "500 12px 'Hanken Grotesk', sans-serif";
       var MH_TEXT   = '#444';
+      // Single-town (by-year) bar color, keyed by year — red/teal/orange
+      var MH_YEAR_COLORS = ['#C0392B', '#1A7A7A', '#E67E22'];
 
-      // Inlined CDC PLACES data
-      var MH_DEPRESSION = [
-        {town:'Cornelius',  year:2019, val:22.4, lo:21.8, hi:23.0},
-        {town:'Cornelius',  year:2021, val:21.6, lo:18.7, hi:24.8},
-        {town:'Cornelius',  year:2023, val:24.6, lo:21.1, hi:28.0},
-        {town:'Davidson',   year:2019, val:22.3, lo:21.5, hi:23.2},
-        {town:'Davidson',   year:2021, val:21.6, lo:18.8, hi:24.8},
-        {town:'Davidson',   year:2023, val:24.6, lo:21.3, hi:28.1},
-        {town:'Huntersville',year:2019,val:21.8, lo:21.5, hi:22.3},
-        {town:'Huntersville',year:2021,val:21.0, lo:18.1, hi:24.3},
-        {town:'Huntersville',year:2023,val:23.8, lo:20.5, hi:27.2}
-      ];
-      var MH_DISTRESS = [
-        {town:'Cornelius',   year:2023, val:14.7, lo:12.9, hi:16.5},
-        {town:'Davidson',    year:2023, val:14.4, lo:12.7, hi:16.4},
-        {town:'Huntersville',year:2023, val:14.6, lo:12.9, hi:16.4}
-      ];
+      // Loaded from public/data/mh-depression.json and mh-distress.json (CDC PLACES,
+      // age-adjusted prevalence) via window.loadData() below — empty until then.
+      var MH_DEPRESSION = [];
+      var MH_DISTRESS = [];
 
       var TOWNS = ['Cornelius','Davidson','Huntersville'];
       var YEARS = [2019, 2021, 2023];
@@ -1499,80 +1487,16 @@ function renderOverviewAgeUnins() {
       function ttMove(e){MH_TT.style.left=(e.clientX+14)+'px';MH_TT.style.top=(e.clientY-36)+'px';}
       function ttHide(){MH_TT.style.opacity='0';}
 
-      // ── Dumbbell chart (2019 vs 2023, all towns) ──────────────────────
-      function renderDumbbell() {
-        var el = document.getElementById('mh-dumbbell-chart');
-        if (!el) return;
-        el.innerHTML = '';
-        var W = el.offsetWidth || 420;
-        var M = {top:30, right:30, bottom:50, left:100};
-        var iw = W - M.left - M.right;
-        var ih = 220;
-        var H = ih + M.top + M.bottom;
-
-        var dumData = TOWNS.map(function(t){
-          var r19 = MH_DEPRESSION.find(function(d){return d.town===t && d.year===2019;});
-          var r23 = MH_DEPRESSION.find(function(d){return d.town===t && d.year===2023;});
-          return {town:t, v19:r19?r19.val:null, v23:r23?r23.val:null};
-        });
-
-        var xDom = [0, d3.max(dumData, function(d){return Math.max(d.v19,d.v23);}) * 1.1];
-        var x = d3.scaleLinear().domain(xDom).range([0, iw]);
-        var y = d3.scaleBand().domain(TOWNS).range([0, ih]).padding(0.5);
-
-        var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
-        var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
-
-        // connecting lines
-        g.selectAll('.db-line').data(dumData).join('line')
-          .attr('x1',function(d){return x(d.v19);}).attr('x2',function(d){return x(d.v23);})
-          .attr('y1',function(d){return y(d.town)+y.bandwidth()/2;})
-          .attr('y2',function(d){return y(d.town)+y.bandwidth()/2;})
-          .attr('stroke',MH_LIGHT).attr('stroke-width',3);
-
-        // 2019 dots
-        g.selectAll('.db-19').data(dumData).join('circle')
-          .attr('cx',function(d){return x(d.v19);})
-          .attr('cy',function(d){return y(d.town)+y.bandwidth()/2;})
-          .attr('r',7).attr('fill',MH_LIGHT)
-          .on('mouseover',function(event,d){ttShow('<b>'+d.town+'</b> (2019): '+d.v19+'%',event);})
-          .on('mousemove',ttMove).on('mouseout',ttHide);
-
-        // 2023 dots
-        g.selectAll('.db-23').data(dumData).join('circle')
-          .attr('cx',function(d){return x(d.v23);})
-          .attr('cy',function(d){return y(d.town)+y.bandwidth()/2;})
-          .attr('r',7).attr('fill',MH_BLUE2)
-          .on('mouseover',function(event,d){ttShow('<b>'+d.town+'</b> (2023): '+d.v23+'%',event);})
-          .on('mousemove',ttMove).on('mouseout',ttHide);
-
-        // axes
-        g.append('g').attr('transform','translate(0,'+ih+')')
-          .call(d3.axisBottom(x).tickFormat(function(d){return d+'%';}).ticks(5))
-          .call(function(ax){ax.select('.domain').remove();});
-        g.append('g').call(d3.axisLeft(y))
-          .call(function(ax){ax.select('.domain').remove(); ax.selectAll('.tick line').remove();});
-
-        // x label
-        svg.append('text').attr('x',M.left+iw/2).attr('y',H-8)
-          .attr('text-anchor','middle').attr('font-size',11).attr('fill',MH_TEXT)
-          .text('Depression Prevalence (%)');
-
-        // legend
-        var lgY = H - 14;
-        [[MH_LIGHT,'2019'],[MH_BLUE2,'2023']].forEach(function(pair,i){
-          svg.append('circle').attr('cx',M.left+i*80).attr('cy',lgY-3).attr('r',5).attr('fill',pair[0]);
-          svg.append('text').attr('x',M.left+i*80+12).attr('y',lgY).attr('font-size',11).attr('fill',MH_TEXT).text(pair[1]);
-        });
-      }
+      // Per-chart town selection — independently settable via each chart's own
+      // chips, but reset in sync when the page-wide master town filter changes.
+      var MH_TOWNS = { distress: null, depression: null };
 
       // ── Depression bars by year (filterable by town) ───────────────────
-      var mhDepTown = window.__masterTown || 'All';
       function renderDepBar(town) {
         var el = document.getElementById('mh-depbar-chart');
-        if (!el) return;
+        if (!el || !MH_DEPRESSION.length) return;
         el.innerHTML = '';
-        town = town || mhDepTown;
+        town = town || MH_TOWNS.depression;
         var W = el.offsetWidth || 420;
         var M = {top:30, right:20, bottom:50, left:52};
         var iw = W - M.left - M.right;
@@ -1581,9 +1505,9 @@ function renderOverviewAgeUnins() {
 
         var rows;
         if (!town || town === 'All') {
-          rows = MH_DEPRESSION.filter(function(d){return d.year!==2021;}).map(function(d){return d;});
+          rows = MH_DEPRESSION;
           // group by year, then town within year
-          var yearGroups = [2019,2023];
+          var yearGroups = YEARS;
           var x0 = d3.scaleBand().domain(yearGroups.map(String)).range([0,iw]).padding(0.25);
           var x1 = d3.scaleBand().domain(TOWNS).range([0,x0.bandwidth()]).padding(0.06);
           var yMax = d3.max(rows,function(d){return d.hi;});
@@ -1629,7 +1553,7 @@ function renderOverviewAgeUnins() {
         } else {
           // Single town: bars by year
           rows = MH_DEPRESSION.filter(function(d){return d.town===town;}).sort(function(a,b){return a.year-b.year;});
-          var colorByYear = d3.scaleOrdinal().domain(YEARS).range([MH_BLUE, MH_BLUE2, MH_AMBER]);
+          var colorByYear = d3.scaleOrdinal().domain(YEARS).range(MH_YEAR_COLORS);
           var x = d3.scaleBand().domain(rows.map(function(d){return String(d.year);})).range([0,iw]).padding(0.35);
           var yMax2 = d3.max(rows,function(d){return d.hi;});
           var y2 = d3.scaleLinear().domain([0,yMax2*1.18]).range([ih,0]);
@@ -1663,60 +1587,134 @@ function renderOverviewAgeUnins() {
         }
       }
 
-      // ── Frequent Mental Distress bars (2023, by town) ─────────────────
-      function renderDistress() {
-        var el = document.getElementById('mh-distress-chart');
-        if (!el) return;
+      // ── Frequent mental distress bars by year (filterable by town) ─────
+      function renderDistressBar(town) {
+        var el = document.getElementById('mh-distressbar-chart');
+        if (!el || !MH_DISTRESS.length) return;
         el.innerHTML = '';
-        var W = el.offsetWidth || 560;
-        var M = {top:24, right:24, bottom:50, left:52};
+        town = town || MH_TOWNS.distress;
+        var W = el.offsetWidth || 420;
+        var M = {top:30, right:20, bottom:50, left:52};
         var iw = W - M.left - M.right;
-        var ih = 180;
+        var ih = 200;
         var H = ih + M.top + M.bottom;
 
-        var x = d3.scaleBand().domain(MH_DISTRESS.map(function(d){return d.town;})).range([0,iw]).padding(0.4);
-        var yMax = d3.max(MH_DISTRESS,function(d){return d.hi;});
-        var y = d3.scaleLinear().domain([0,yMax*1.2]).range([ih,0]);
-        var colorByTown = d3.scaleOrdinal().domain(TOWNS).range([MH_BLUE, MH_BLUE2, MH_AMBER]);
+        var rows;
+        if (!town || town === 'All') {
+          rows = MH_DISTRESS;
+          // group by year, then town within year
+          var yearGroups = YEARS;
+          var x0 = d3.scaleBand().domain(yearGroups.map(String)).range([0,iw]).padding(0.25);
+          var x1 = d3.scaleBand().domain(TOWNS).range([0,x0.bandwidth()]).padding(0.06);
+          var yMax = d3.max(rows,function(d){return d.hi;});
+          var y = d3.scaleLinear().domain([0,yMax*1.18]).range([ih,0]);
+          var townColor = d3.scaleOrdinal().domain(TOWNS).range([MH_BLUE, MH_BLUE2, MH_AMBER]);
 
-        var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
-        var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
+          var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+          var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
 
-        g.append('g').call(d3.axisLeft(y).tickSize(-iw).tickFormat(''))
-          .call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8');});
+          // grid
+          g.append('g').call(d3.axisLeft(y).tickSize(-iw).tickFormat(''))
+            .call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8');});
 
-        MH_DISTRESS.forEach(function(d){
-          var bx = x(d.town); var bw = x.bandwidth();
-          g.append('rect').attr('x',bx).attr('y',y(d.val)).attr('width',bw).attr('height',ih-y(d.val))
-            .attr('fill',colorByTown(d.town)).attr('rx',2)
-            .on('mouseover',function(event){ttShow('<b>'+d.town+'</b> 2023: '+d.val+'% (CI: '+d.lo+'–'+d.hi+'%)',event);})
-            .on('mousemove',ttMove).on('mouseout',ttHide);
-          g.append('text').attr('x',bx+bw/2).attr('y',y(d.val)+ih/2.5).attr('text-anchor','middle')
-            .attr('font-size',13).attr('font-weight','500').attr('fill','#fff').text(d.val+'%');
-          // error bars
-          g.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y(d.lo)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
-          g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y(d.hi)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
-          g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y(d.lo)).attr('y2',y(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
-        });
+          yearGroups.forEach(function(yr){
+            var grp = g.append('g').attr('transform','translate('+x0(String(yr))+',0)');
+            var yrRows = rows.filter(function(d){return d.year===yr;});
+            yrRows.forEach(function(d){
+              var bx = x1(d.town);
+              var bw = x1.bandwidth();
+              grp.append('rect')
+                .attr('x',bx).attr('y',y(d.val)).attr('width',bw).attr('height',ih-y(d.val))
+                .attr('fill',townColor(d.town)).attr('rx',2)
+                .on('mouseover',function(event){ttShow('<b>'+d.town+'</b> '+yr+': '+d.val+'%',event);})
+                .on('mousemove',ttMove).on('mouseout',ttHide);
+              // error bar
+              grp.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y(d.lo)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+              grp.append('line').attr('x1',bx+bw/2-4).attr('x2',bx+bw/2+4).attr('y1',y(d.hi)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+              grp.append('line').attr('x1',bx+bw/2-4).attr('x2',bx+bw/2+4).attr('y1',y(d.lo)).attr('y2',y(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
+            });
+          });
 
-        g.append('g').attr('transform','translate(0,'+ih+')')
-          .call(d3.axisBottom(x)).call(function(ax){ax.select('.domain').remove();});
-        g.append('g').call(d3.axisLeft(y).tickFormat(function(d){return d+'%';}).ticks(5))
-          .call(function(ax){ax.select('.domain').remove();});
+          g.append('g').attr('transform','translate(0,'+ih+')')
+            .call(d3.axisBottom(x0).tickFormat(function(d){return d;}))
+            .call(function(ax){ax.select('.domain').remove();});
+          g.append('g').call(d3.axisLeft(y).tickFormat(function(d){return d+'%';}).ticks(5))
+            .call(function(ax){ax.select('.domain').remove();});
 
-        svg.append('text').attr('x',M.left+iw/2).attr('y',H-8)
-          .attr('text-anchor','middle').attr('font-size',11).attr('fill',MH_TEXT).text('Town · 2023');
+          // legend
+          TOWNS.forEach(function(t,i){
+            svg.append('rect').attr('x',M.left+i*100).attr('y',H-13).attr('width',10).attr('height',10).attr('fill',townColor(t)).attr('rx',2);
+            svg.append('text').attr('x',M.left+i*100+13).attr('y',H-4).attr('font-size',11).attr('fill',MH_TEXT).text(t);
+          });
+        } else {
+          // Single town: bars by year
+          rows = MH_DISTRESS.filter(function(d){return d.town===town;}).sort(function(a,b){return a.year-b.year;});
+          var colorByYear = d3.scaleOrdinal().domain(YEARS).range(MH_YEAR_COLORS);
+          var x = d3.scaleBand().domain(rows.map(function(d){return String(d.year);})).range([0,iw]).padding(0.35);
+          var yMax2 = d3.max(rows,function(d){return d.hi;});
+          var y2 = d3.scaleLinear().domain([0,yMax2*1.18]).range([ih,0]);
+
+          var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+          var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
+
+          g.append('g').call(d3.axisLeft(y2).tickSize(-iw).tickFormat(''))
+            .call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8');});
+
+          rows.forEach(function(d){
+            var bx = x(String(d.year));
+            var bw = x.bandwidth();
+            g.append('rect').attr('x',bx).attr('y',y2(d.val)).attr('width',bw).attr('height',ih-y2(d.val))
+              .attr('fill',colorByYear(d.year)).attr('rx',2)
+              .on('mouseover',function(event){ttShow('<b>'+d.year+'</b>: '+d.val+'% (CI: '+d.lo+'–'+d.hi+'%)',event);})
+              .on('mousemove',ttMove).on('mouseout',ttHide);
+            // bar label
+            g.append('text').attr('x',bx+bw/2).attr('y',y2(d.val)+ih/2.5).attr('text-anchor','middle')
+              .attr('font-size',13).attr('font-weight','500').attr('fill','#fff').text(d.val+'%');
+            // error bar
+            g.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y2(d.lo)).attr('y2',y2(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+            g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y2(d.hi)).attr('y2',y2(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+            g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y2(d.lo)).attr('y2',y2(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
+          });
+
+          g.append('g').attr('transform','translate(0,'+ih+')')
+            .call(d3.axisBottom(x)).call(function(ax){ax.select('.domain').remove();});
+          g.append('g').call(d3.axisLeft(y2).tickFormat(function(d){return d+'%';}).ticks(5))
+            .call(function(ax){ax.select('.domain').remove();});
+        }
       }
 
       // Render all
       function mhRenderAll() {
-        renderDumbbell();
-        renderDepBar(mhDepTown);
-        renderDistress();
+        renderDistressBar(MH_TOWNS.distress);
+        renderDepBar(MH_TOWNS.depression);
       }
 
+      // ── Per-chart chip handler ───────────────────────────────────────
+      window.mhLocalChip = function(el){
+        var chart = el.dataset.mhChart; // 'distress' | 'depression'
+        var town = el.dataset.mhTown === 'all' ? null : el.dataset.mhTown;
+        document.querySelectorAll('[data-mh-chart="'+chart+'"]').forEach(function(c){
+          c.classList.toggle('on', c === el);
+        });
+        MH_TOWNS[chart] = town;
+        if (chart === 'distress') renderDistressBar(town);
+        else if (chart === 'depression') renderDepBar(town);
+      };
+
+      // Load real data, then render (charts show "Loading…" until this resolves)
+      (async function(){
+        try {
+          var loaded = await Promise.all([window.loadData('mh-depression'), window.loadData('mh-distress')]);
+          MH_DEPRESSION = loaded[0];
+          MH_DISTRESS = loaded[1];
+        } catch(e) {
+          console.error('Mental health data load failed:', e);
+        }
+        mhRenderAll();
+      })();
+
       // ResizeObserver for hidden-tab rendering
-      ['mh-dumbbell-chart','mh-depbar-chart','mh-distress-chart'].forEach(function(id){
+      ['mh-distressbar-chart','mh-depbar-chart'].forEach(function(id){
         var el = document.getElementById(id);
         if (!el) return;
         var ro = new ResizeObserver(function(entries){
@@ -1727,9 +1725,16 @@ function renderOverviewAgeUnins() {
         if (el.offsetWidth > 0) mhRenderAll();
       });
 
-      // masterTownChange listener — re-renders all charts (also fires on tab switch via setTab)
+      // masterTownChange listener — syncs both charts' local chips to the page-wide
+      // town filter, then re-renders (also fires on tab switch via setTab)
       document.addEventListener('masterTownChange', function(e){
-        mhDepTown = e.detail.town || 'All';
+        var town = (e.detail.town && e.detail.town !== 'All') ? e.detail.town : null;
+        ['distress','depression'].forEach(function(chart){
+          MH_TOWNS[chart] = town;
+          document.querySelectorAll('[data-mh-chart="'+chart+'"]').forEach(function(c){
+            c.classList.toggle('on', town ? c.dataset.mhTown === town : c.dataset.mhTown === 'all');
+          });
+        });
         mhRenderAll();
       });
 
@@ -1738,7 +1743,7 @@ function renderOverviewAgeUnins() {
     })();
 })();
 
-// Block 4 (module) -- Mental Health and Substance Use Facility Map 
+// Block 4 (module)
 (async function() {
       const northMeckCenter = L.latLng(35.48, -80.85);
       let facilities = null;
