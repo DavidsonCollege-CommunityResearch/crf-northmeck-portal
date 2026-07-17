@@ -30,13 +30,14 @@ draft: false
     <div class="card-t">The wage you'd need vs. what local jobs pay</div>
     <div class="card-s">Hourly wage to afford a 1-bed at fair market rent, vs. Charlotte-Concord-Gastonia occupational wages, 2025</div>
     <div class="bars">
-      <div class="bc"><div class="bar hi" style="height:96%" data-val="$40.42/hr" data-label="Registered Nurse" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$40.42</b>RN</div></div>
-      <div class="bc"><div class="bar" style="height:84%" data-val="$35.08/hr" data-label="Housing wage needed" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$35.08</b>1-bed need</div></div>
-      <div class="bc"><div class="bar" style="height:63%" data-val="$26.54/hr" data-label="Truck Driver" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$26.54</b>Truck driver</div></div>
-      <div class="bc"><div class="bar" style="height:49%" data-val="$20.70/hr" data-label="Customer Service Rep" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$20.70</b>Customer svc</div></div>
-      <div class="bc"><div class="bar" style="height:42%" data-val="$17.49/hr" data-label="Laborer / Stock Mover" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.49</b>Laborer</div></div>
-      <div class="bc"><div class="bar" style="height:39%" data-val="$16.49/hr" data-label="Retail Salesperson" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$16.49</b>Retail</div></div>
-      <div class="bc"><div class="bar lo" style="height:33%" data-val="$13.77/hr" data-label="Cashier" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.77</b>Cashier</div></div>
+      <div class="bc"><div class="bar hi" style="height:96%" data-val="$40.42/hr" data-label="Registered Nurse" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$40.42</b>Registered Nurse</div></div>
+      <div class="bc"><div class="bar" style="height:63.03%" data-val="$26.54/hr" data-label="Truck Driver" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$26.54</b>Truck driver</div></div>
+      <div class="bc"><div class="bar" style="height:49.16%" data-val="$20.70/hr" data-label="Customer Service Representatives" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$20.70</b>Customer service</div></div>
+      <div class="bc"><div class="bar" style="height:41.54%" data-val="$17.49/hr" data-label="Laborer / Stock Mover" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.49</b>Laborer/ Stock Mover</div></div>
+      <div class="bc"><div class="bar" style="height:41.47%" data-val="$17.49/hr" data-label="Stockers and Order Fillers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.46</b>Stockers and Order Fillers</div></div>
+      <div class="bc"><div class="bar" style="height:39.16%" data-val="$16.49/hr" data-label="Retail Salesperson" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$16.49</b>Retail Salespersons</div></div>
+      <div class="bc"><div class="bar lo" style="height:32.70%" data-val="$13.88/hr" data-label="Fast Food/Counter Workers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.77</b>Counter Workers</div></div>
+      <div class="bc"><div class="bar lo" style="height:32.70%" data-val="$13.77/hr" data-label="Cashier" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.77</b>Cashier</div></div>
     </div>
   </div>
   <figcaption class="post-figcap">Source: North Meck Insights data warehouse, Charlotte Regional Housing Wage reference data, 2025.</figcaption>
