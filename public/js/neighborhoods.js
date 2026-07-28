@@ -1,117 +1,502 @@
 // Neighborhoods / nbhd-data page scripts
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
-// Block 1 (module)
-(async function() {
-      const STYLE = { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" };
-      const ACCENT = "#3f4e75";
+(async function () {
+  // ── Design tokens ─────────────────────────────────────────────────────────
+  const STYLE   = { fontFamily: 'Hanken Grotesk, sans-serif', fontSize: '13px' };
+  const ACCENT  = '#3f4e75';
+  const RED     = '#e05c4b';
+  const BLUE2   = '#6b7fa3';
+  const GOLD    = '#f0a500';
+  const MUTED   = '#b0b8c8';
 
-      let rows = [];
-      try {
-        const r = await window.loadData('pottstown-demographics');
-        rows = r.map(d => ({
-          year: Number(d.year),
-          total_population: Number(d.total_population),
-          race_white: Number(d.race_white),
-          race_black: Number(d.race_black),
-          race_asian: Number(d.race_asian),
-          hispanic_latino: Number(d.hispanic_latino),
-          hispanic_rate: Number(d.hispanic_rate)
-        }));
-      } catch(e) {
-        console.error('Pottstown demographics load failed:', e);
-        rows = [];
-      }
+  const RACE_COLORS = {
+    'White alone':         BLUE2,
+    'Black or Afr. Am.':  ACCENT,
+    'Hispanic or Latino':  RED,
+    'Asian alone':         GOLD,
+    'Other / multiracial': MUTED,
+  };
 
-      if (!rows.length) {
-        ['pott-pop-chart','pott-race-chart','pott-hl-chart'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.innerHTML = '<p style="color:#e05c4b;padding:12px;font-family:\'Hanken Grotesk\',sans-serif">Data unavailable</p>';
-        });
-      }
+  // ── Neighborhood metadata ─────────────────────────────────────────────────
+  const NBHD_META = {
+    pottstown:       { name: 'Pottstown',        subtitle: 'Block-group level ACS data for the Pottstown area in Huntersville.' },
+    westdavidson:    { name: 'West Davidson',    subtitle: 'Block-group level ACS data for the West Davidson area in Davidson.' },
+    smithville:      { name: 'Smithville',       subtitle: 'Block-group level ACS data for the Smithville area in Cornelius.' },
+    huntingtongreen: { name: 'Huntington Green', subtitle: 'Block-group level ACS data for the Huntington Green area in Huntersville.' },
+    eastcatawba:     { name: 'East Catawba',     subtitle: 'Data coming soon for the East Catawba area in Cornelius.' },
+  };
 
-      if (rows.length) {
-        // ── Chart 1: Total Population trend ──────────────────────────────────
-        const popEl = document.getElementById('pott-pop-chart');
-        function renderPop() {
-          const w = popEl.offsetWidth || 480;
-          const maxPop = Math.max(...rows.map(d => d.total_population));
-          popEl.replaceChildren(Plot.plot({
-            width: w, height: 260, marginLeft: 60, marginRight: 20, marginBottom: 48, style: STYLE,
-            x: { label: "Year →", labelOffset: 42, ticks: rows.map(d=>d.year), tickFormat: d => String(d) },
-            y: { label: "↑ Population", labelOffset: 48, grid: true, domain: [0, Math.ceil((maxPop * 1.15) / 50) * 50] },
-            marks: [
-              Plot.line(rows, { x: "year", y: "total_population", stroke: ACCENT, strokeWidth: 2.5 }),
-              Plot.dot(rows,  { x: "year", y: "total_population", fill: ACCENT, r: 4,
-                tip: true, title: d => `${d.year}\n${Math.round(d.total_population).toLocaleString()} residents` }),
-              Plot.ruleY([0])
-            ]
-          }));
+  // ── State ─────────────────────────────────────────────────────────────────
+  let currentKey = 'pottstown';
+  const CHARTS   = {}; // id → { el, buildFn, dataset }
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+  function forNbhd(ds, key) {
+    const name = (NBHD_META[key] || {}).name || key;
+    return ds.filter(d => d.neighborhood_name === name);
+  }
+
+  function noData(el) {
+    el.innerHTML = '<p style="color:#e05c4b;padding:12px;font-size:13px;font-family:\'Hanken Grotesk\',sans-serif">Data unavailable</p>';
+  }
+
+  function yMax(rows, col, padding) {
+    const mx = Math.max(...rows.map(d => d[col] || 0));
+    return Math.ceil((mx * padding) / 5) * 5 || 10;
+  }
+
+  // ── Chart registry ────────────────────────────────────────────────────────
+  // reg() associates a chart ID with a dataset and build function.
+  // ResizeObserver renders it at the correct width whenever it becomes visible.
+  // Neighborhood switches call draw(id) directly to re-render all registered charts.
+  function reg(id, dataset, buildFn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    CHARTS[id] = { el, buildFn, dataset };
+    const ro = new ResizeObserver(entries => {
+      const w = entries[0].contentRect.width;
+      if (w > 0) draw(id, w);
+    });
+    ro.observe(el);
+    if (el.offsetWidth > 0) draw(id, el.offsetWidth);
+  }
+
+  function draw(id, w) {
+    const { el, buildFn, dataset } = CHARTS[id];
+    const rows = forNbhd(dataset, currentKey);
+    if (!rows.length) { noData(el); return; }
+    const svg = buildFn(rows, w || el.offsetWidth || 480);
+    if (svg) el.replaceChildren(svg);
+  }
+
+  function redrawAll() {
+    for (const id in CHARTS) draw(id);
+  }
+
+  // ── Load all datasets concurrently ────────────────────────────────────────
+  let DEMO = [], ECON = [], HOUS = [], EDUC = [], TRAN = [], CHLD = [];
+  try {
+    [DEMO, ECON, HOUS, EDUC, TRAN, CHLD] = await Promise.all([
+      window.loadData('nbhd-demographics'),
+      window.loadData('nbhd-economic'),
+      window.loadData('nbhd-housing'),
+      window.loadData('nbhd-education'),
+      window.loadData('nbhd-transportation'),
+      window.loadData('nbhd-childcare'),
+    ]);
+    // Coerce all numeric strings to numbers in-place
+    for (const ds of [DEMO, ECON, HOUS, EDUC, TRAN, CHLD]) {
+      ds.forEach(row => {
+        for (const k in row) {
+          if (k !== 'neighborhood_name' && row[k] !== null && !isNaN(row[k])) {
+            row[k] = Number(row[k]);
+          }
         }
-        const roP = new ResizeObserver(e => { const w = e[0].contentRect.width; if(w>0) renderPop(); });
-        roP.observe(popEl);
-        if (popEl.offsetWidth > 0) renderPop();
+      });
+    }
+  } catch (e) {
+    console.error('Neighborhood data load failed:', e);
+  }
 
-        // ── Chart 2: Racial composition horizontal bar (most recent year) ────
-        const raceEl = document.getElementById('pott-race-chart');
-        function renderRace() {
-          const w = raceEl.offsetWidth || 480;
-          const latest = rows[rows.length - 1];
-          const total = latest.total_population || 1;
-          const other = Math.max(0, total - latest.race_white - latest.race_black - latest.race_asian);
-          const raceData = [
-            { group: "White alone",          count: latest.race_white,    pct: +(latest.race_white / total * 100).toFixed(1) },
-            { group: "Black or Afr. Am.",    count: latest.race_black,    pct: +(latest.race_black / total * 100).toFixed(1) },
-            { group: "Hispanic or Latino",   count: latest.hispanic_latino, pct: +(latest.hispanic_latino / total * 100).toFixed(1) },
-            { group: "Asian alone",          count: latest.race_asian,    pct: +(latest.race_asian / total * 100).toFixed(1) },
-            { group: "Other / multiracial",  count: other,                pct: +(other / total * 100).toFixed(1) }
-          ];
-          const RACE_COLORS = {
-            "White alone": "#6b7fa3", "Black or Afr. Am.": ACCENT,
-            "Hispanic or Latino": "#e05c4b", "Asian alone": "#f0a500", "Other / multiracial": "#b0b8c8"
-          };
-          raceEl.replaceChildren(Plot.plot({
-            width: w, height: 240, marginLeft: 150, marginRight: 60, marginBottom: 36, style: STYLE,
-            x: { label: "Share of population (%) →", labelOffset: 30, domain: [0, 100], tickFormat: d => d + "%" },
-            y: { label: null, domain: raceData.map(d => d.group) },
-            marks: [
-              Plot.barX(raceData, { x: "pct", y: "group", fill: d => RACE_COLORS[d.group], rx: 3 }),
-              Plot.text(raceData, { x: "pct", y: "group", text: d => d.pct + "%", dx: 6, textAnchor: "start",
-                fill: "var(--ink-2)", fontSize: 12 }),
-              Plot.ruleX([0])
-            ]
-          }));
-        }
-        const roR = new ResizeObserver(e => { const w = e[0].contentRect.width; if(w>0) renderRace(); });
-        roR.observe(raceEl);
-        if (raceEl.offsetWidth > 0) renderRace();
+  // ════════════════════════════════════════════════════════════════════════════
+  // TAB: DEMOGRAPHICS
+  // ════════════════════════════════════════════════════════════════════════════
 
-        // ── Chart 3: Hispanic / Latino rate trend ────────────────────────────
-        const hlEl = document.getElementById('pott-hl-chart');
-        function renderHL() {
-          const w = hlEl.offsetWidth || 480;
-          const maxRate = Math.max(...rows.map(d => d.hispanic_rate || 0));
-          hlEl.replaceChildren(Plot.plot({
-            width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
-            x: { label: "Year →", labelOffset: 42, ticks: rows.map(d=>d.year), tickFormat: d => String(d) },
-            y: { label: "↑ % Hispanic or Latino", labelOffset: 40, grid: true,
-                 domain: [0, Math.min(100, Math.ceil((maxRate * 1.3) / 5) * 5 || 10)],
-                 tickFormat: d => d + "%" },
-            marks: [
-              Plot.barY(rows, { x: "year", y: "hispanic_rate", fill: "#e05c4b", rx: 3 }),
-              Plot.text(rows, { x: "year", y: "hispanic_rate", text: d => (d.hispanic_rate||0) + "%",
-                dy: -6, textAnchor: "middle", fill: "var(--ink-2)", fontSize: 12 }),
-              Plot.ruleY([0])
-            ]
-          }));
-        }
-        const roHL = new ResizeObserver(e => { const w = e[0].contentRect.width; if(w>0) renderHL(); });
-        roHL.observe(hlEl);
-        if (hlEl.offsetWidth > 0) renderHL();
+  reg('nd-pop-chart', DEMO, (rows, w) => {
+    const mx = Math.max(...rows.map(d => d.total_population));
+    return Plot.plot({
+      width: w, height: 260, marginLeft: 60, marginRight: 20, marginBottom: 48, style: STYLE,
+      x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+      y: { label: '↑ Population', labelOffset: 48, grid: true,
+           domain: [0, Math.ceil((mx * 1.15) / 50) * 50] },
+      marks: [
+        Plot.line(rows, { x: 'year', y: 'total_population', stroke: ACCENT, strokeWidth: 2.5 }),
+        Plot.dot(rows,  { x: 'year', y: 'total_population', fill: ACCENT, r: 4,
+          tip: true, title: d => `${d.year}\n${Math.round(d.total_population).toLocaleString()} residents` }),
+        Plot.ruleY([0]),
+      ],
+    });
+  });
 
-        // Expose render functions so goto() can trigger them when page becomes visible
-        window.__pottDemoRender = function() {
-          renderPop(); renderRace(); renderHL();
-        };
-      }
+  reg('nd-race-chart', DEMO, (rows, w) => {
+    const latest = rows[rows.length - 1];
+    if (!latest) return null;
+    const total = latest.total_population || 1;
+    const other = Math.max(0, total - latest.race_white - latest.race_black - latest.race_asian);
+    const raceData = [
+      { group: 'White alone',         pct: +(latest.race_white / total * 100).toFixed(1) },
+      { group: 'Black or Afr. Am.',   pct: +(latest.race_black / total * 100).toFixed(1) },
+      { group: 'Hispanic or Latino',  pct: +(latest.hispanic_latino / total * 100).toFixed(1) },
+      { group: 'Asian alone',         pct: +(latest.race_asian / total * 100).toFixed(1) },
+      { group: 'Other / multiracial', pct: +(other / total * 100).toFixed(1) },
+    ];
+    return Plot.plot({
+      width: w, height: 240, marginLeft: 155, marginRight: 60, marginBottom: 36, style: STYLE,
+      x: { label: 'Share of population (%) →', labelOffset: 30, domain: [0, 100],
+           tickFormat: d => d + '%' },
+      y: { label: null, domain: raceData.map(d => d.group) },
+      marks: [
+        Plot.barX(raceData, { x: 'pct', y: 'group', fill: d => RACE_COLORS[d.group], rx: 3 }),
+        Plot.text(raceData, { x: 'pct', y: 'group', text: d => d.pct + '%', dx: 6,
+          textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
+        Plot.ruleX([0]),
+      ],
+    });
+  });
+
+  reg('nd-hl-chart', DEMO, (rows, w) => Plot.plot({
+    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ % Hispanic or Latino', labelOffset: 40, grid: true,
+         domain: [0, Math.min(100, yMax(rows, 'hispanic_rate', 1.3))],
+         tickFormat: d => d + '%' },
+    marks: [
+      Plot.barY(rows, { x: 'year', y: 'hispanic_rate', fill: RED, rx: 3 }),
+      Plot.text(rows, { x: 'year', y: 'hispanic_rate',
+        text: d => (d.hispanic_rate || 0) + '%', dy: -6, textAnchor: 'middle',
+        fill: 'var(--ink-2)', fontSize: 12 }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-fb-chart', DEMO, (rows, w) => Plot.plot({
+    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ % Foreign-Born', labelOffset: 40, grid: true,
+         domain: [0, Math.min(100, yMax(rows, 'foreign_born_rate', 1.3))],
+         tickFormat: d => d + '%' },
+    marks: [
+      Plot.barY(rows, { x: 'year', y: 'foreign_born_rate', fill: BLUE2, rx: 3 }),
+      Plot.text(rows, { x: 'year', y: 'foreign_born_rate',
+        text: d => (d.foreign_born_rate || 0) + '%', dy: -6, textAnchor: 'middle',
+        fill: 'var(--ink-2)', fontSize: 12 }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // TAB: ECONOMIC PROFILE
+  // ════════════════════════════════════════════════════════════════════════════
+
+  reg('nd-income-dist-chart', ECON, (rows, w) => {
+    const latest = rows[rows.length - 1];
+    if (!latest) return null;
+    const total = latest.total_households || 1;
+    const brackets = [
+      { label: 'Under $25k', pct: +(latest.income_under_25k / total * 100).toFixed(1) },
+      { label: '$25k–$50k',  pct: +(latest.income_25k_50k  / total * 100).toFixed(1) },
+      { label: '$50k–$100k', pct: +(latest.income_50k_100k / total * 100).toFixed(1) },
+      { label: '$100k+',     pct: +(latest.income_100k_plus / total * 100).toFixed(1) },
+    ];
+    return Plot.plot({
+      width: w, height: 210, marginLeft: 90, marginRight: 60, marginBottom: 36, style: STYLE,
+      x: { label: 'Share of households (%) →', labelOffset: 30, domain: [0, 100],
+           tickFormat: d => d + '%' },
+      y: { label: null, domain: brackets.map(d => d.label) },
+      marks: [
+        Plot.barX(brackets, { x: 'pct', y: 'label', fill: ACCENT, rx: 3 }),
+        Plot.text(brackets, { x: 'pct', y: 'label', text: d => d.pct + '%', dx: 6,
+          textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
+        Plot.ruleX([0]),
+      ],
+    });
+  });
+
+  reg('nd-income-trend-chart', ECON, (rows, w) => Plot.plot({
+    width: w, height: 240, marginLeft: 68, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ Median Household Income', labelOffset: 56, grid: true,
+         tickFormat: d => '$' + (d / 1000).toFixed(0) + 'k' },
+    marks: [
+      Plot.line(rows, { x: 'year', y: 'median_household_income', stroke: ACCENT, strokeWidth: 2.5 }),
+      Plot.dot(rows,  { x: 'year', y: 'median_household_income', fill: ACCENT, r: 4,
+        tip: true, title: d => `${d.year}\n$${Math.round(d.median_household_income).toLocaleString()}` }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-poverty-chart', ECON, (rows, w) => Plot.plot({
+    width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ Poverty Rate', labelOffset: 40, grid: true,
+         domain: [0, Math.min(100, yMax(rows, 'poverty_rate', 1.3))],
+         tickFormat: d => d + '%' },
+    marks: [
+      Plot.line(rows, { x: 'year', y: 'poverty_rate', stroke: RED, strokeWidth: 2.5 }),
+      Plot.dot(rows,  { x: 'year', y: 'poverty_rate', fill: RED, r: 4,
+        tip: true, title: d => `${d.year}\n${d.poverty_rate}% below poverty line` }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-gini-chart', ECON, (rows, w) => Plot.plot({
+    width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ Gini Index', labelOffset: 40, grid: true, domain: [0, 1] },
+    marks: [
+      Plot.line(rows, { x: 'year', y: 'gini', stroke: BLUE2, strokeWidth: 2.5 }),
+      Plot.dot(rows,  { x: 'year', y: 'gini', fill: BLUE2, r: 4,
+        tip: true, title: d => `${d.year}\nGini: ${d.gini}` }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // TAB: HOUSING
+  // ════════════════════════════════════════════════════════════════════════════
+
+  reg('nd-tenure-chart', HOUS, (rows, w) => {
+    const latest = rows[rows.length - 1];
+    if (!latest) return null;
+    const tenureData = [
+      { label: 'Owner-occupied',  pct: latest.owner_rate  },
+      { label: 'Renter-occupied', pct: latest.renter_rate },
+    ];
+    return Plot.plot({
+      width: w, height: 170, marginLeft: 125, marginRight: 60, marginBottom: 36, style: STYLE,
+      x: { label: 'Share of occupied units (%) →', labelOffset: 30, domain: [0, 100],
+           tickFormat: d => d + '%' },
+      y: { label: null, domain: tenureData.map(d => d.label) },
+      marks: [
+        Plot.barX(tenureData, { x: 'pct', y: 'label',
+          fill: d => d.label.startsWith('Owner') ? ACCENT : RED, rx: 3 }),
+        Plot.text(tenureData, { x: 'pct', y: 'label', text: d => d.pct + '%', dx: 6,
+          textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
+        Plot.ruleX([0]),
+      ],
+    });
+  });
+
+  reg('nd-rent-value-chart', HOUS, (rows, w) => {
+    const latest = rows[rows.length - 1];
+    if (!latest) return null;
+    const bars = [
+      { label: 'Median Gross Rent', value: latest.median_gross_rent, note: '/mo' },
+      { label: 'Median Home Value', value: latest.median_home_value, note: '' },
+    ];
+    return Plot.plot({
+      width: w, height: 190, marginLeft: 135, marginRight: 90, marginBottom: 36, style: STYLE,
+      x: { label: 'Dollars →', labelOffset: 30, tickFormat: d => '$' + (d / 1000).toFixed(0) + 'k' },
+      y: { label: null, domain: bars.map(d => d.label) },
+      marks: [
+        Plot.barX(bars, { x: 'value', y: 'label', fill: ACCENT, rx: 3 }),
+        Plot.text(bars, { x: 'value', y: 'label',
+          text: d => '$' + (d.value || 0).toLocaleString() + d.note,
+          dx: 6, textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
+        Plot.ruleX([0]),
+      ],
+    });
+  });
+
+  reg('nd-burden-chart', HOUS, (rows, w) => Plot.plot({
+    width: w, height: 220, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ Cost Burden Rate', labelOffset: 40, grid: true,
+         domain: [0, Math.min(100, yMax(rows, 'burden_rate', 1.3))],
+         tickFormat: d => d + '%' },
+    marks: [
+      Plot.line(rows, { x: 'year', y: 'burden_rate', stroke: RED, strokeWidth: 2.5 }),
+      Plot.dot(rows,  { x: 'year', y: 'burden_rate', fill: RED, r: 4,
+        tip: true, title: d => `${d.year}\n${d.burden_rate}% cost-burdened` }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // TAB: EDUCATION
+  // ════════════════════════════════════════════════════════════════════════════
+
+  reg('nd-attainment-chart', EDUC, (rows, w) => {
+    const latest = rows[rows.length - 1];
+    if (!latest) return null;
+    const attData = [
+      { label: 'Less than HS',    pct: latest.pct_less_than_hs },
+      { label: 'HS / Equivalent', pct: latest.pct_hs_or_equiv },
+      { label: "Bachelor's",      pct: latest.pct_bachelors },
+      { label: "Bachelor's+",     pct: latest.pct_bachelors_or_higher },
+    ];
+    return Plot.plot({
+      width: w, height: 210, marginLeft: 120, marginRight: 60, marginBottom: 36, style: STYLE,
+      x: { label: 'Share of adults 25+ (%) →', labelOffset: 30, domain: [0, 100],
+           tickFormat: d => d + '%' },
+      y: { label: null, domain: attData.map(d => d.label) },
+      marks: [
+        Plot.barX(attData, { x: 'pct', y: 'label', fill: ACCENT, rx: 3 }),
+        Plot.text(attData, { x: 'pct', y: 'label', text: d => (d.pct || 0) + '%', dx: 6,
+          textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
+        Plot.ruleX([0]),
+      ],
+    });
+  });
+
+  reg('nd-bachelors-chart', EDUC, (rows, w) => Plot.plot({
+    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: "↑ % Bachelor's or Higher", labelOffset: 40, grid: true,
+         domain: [0, Math.min(100, yMax(rows, 'pct_bachelors_or_higher', 1.3))],
+         tickFormat: d => d + '%' },
+    marks: [
+      Plot.line(rows, { x: 'year', y: 'pct_bachelors_or_higher', stroke: ACCENT, strokeWidth: 2.5 }),
+      Plot.dot(rows,  { x: 'year', y: 'pct_bachelors_or_higher', fill: ACCENT, r: 4,
+        tip: true, title: d => `${d.year}\n${d.pct_bachelors_or_higher}% bachelor's+` }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-k12-chart', EDUC, (rows, w) => {
+    const mx = Math.max(...rows.map(d => d.n_enrolled_k12 || 0));
+    return Plot.plot({
+      width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+      x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+      y: { label: '↑ K–12 Enrollment', labelOffset: 48, grid: true,
+           domain: [0, Math.ceil((mx * 1.2) / 10) * 10 || 10] },
+      marks: [
+        Plot.barY(rows, { x: 'year', y: 'n_enrolled_k12', fill: ACCENT, rx: 3 }),
+        Plot.ruleY([0]),
+      ],
+    });
+  });
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // TAB: TRANSPORTATION
+  // ════════════════════════════════════════════════════════════════════════════
+
+  reg('nd-commute-mode-chart', TRAN, (rows, w) => {
+    const latest = rows[rows.length - 1];
+    if (!latest) return null;
+    const other = Math.max(0, +(100 - latest.pct_drove_alone - latest.pct_public_transit - latest.pct_worked_from_home).toFixed(1));
+    const modeData = [
+      { label: 'Drove alone',      pct: latest.pct_drove_alone },
+      { label: 'Worked from home', pct: latest.pct_worked_from_home },
+      { label: 'Other',            pct: other },
+      { label: 'Public transit',   pct: latest.pct_public_transit },
+    ];
+    return Plot.plot({
+      width: w, height: 200, marginLeft: 135, marginRight: 60, marginBottom: 36, style: STYLE,
+      x: { label: 'Share of workers (%) →', labelOffset: 30, domain: [0, 100],
+           tickFormat: d => d + '%' },
+      y: { label: null, domain: modeData.map(d => d.label) },
+      marks: [
+        Plot.barX(modeData, { x: 'pct', y: 'label', fill: ACCENT, rx: 3 }),
+        Plot.text(modeData, { x: 'pct', y: 'label', text: d => d.pct + '%', dx: 6,
+          textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
+        Plot.ruleX([0]),
+      ],
+    });
+  });
+
+  reg('nd-commute-time-chart', TRAN, (rows, w) => Plot.plot({
+    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ Avg. Commute (min)', labelOffset: 48, grid: true,
+         domain: [0, Math.ceil(Math.max(...rows.map(d => d.avg_commute_minutes || 0)) * 1.2 / 5) * 5 || 60] },
+    marks: [
+      Plot.line(rows, { x: 'year', y: 'avg_commute_minutes', stroke: ACCENT, strokeWidth: 2.5 }),
+      Plot.dot(rows,  { x: 'year', y: 'avg_commute_minutes', fill: ACCENT, r: 4,
+        tip: true, title: d => `${d.year}\n${d.avg_commute_minutes} min avg. commute` }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-no-vehicle-chart', TRAN, (rows, w) => {
+    const mx = Math.max(...rows.map(d => d.households_no_vehicle || 0));
+    return Plot.plot({
+      width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+      x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+      y: { label: '↑ Households', labelOffset: 48, grid: true,
+           domain: [0, Math.ceil((mx * 1.2) / 5) * 5 || 10] },
+      marks: [
+        Plot.barY(rows, { x: 'year', y: 'households_no_vehicle', fill: RED, rx: 3 }),
+        Plot.ruleY([0]),
+      ],
+    });
+  });
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // TAB: CHILDCARE
+  // ════════════════════════════════════════════════════════════════════════════
+
+  reg('nd-under6-chart', CHLD, (rows, w) => Plot.plot({
+    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ % Under-6 Needing Care', labelOffset: 40, grid: true,
+         domain: [0, Math.min(100, yMax(rows, 'pct_under6_needs_childcare', 1.3))],
+         tickFormat: d => d + '%' },
+    marks: [
+      Plot.barY(rows, { x: 'year', y: 'pct_under6_needs_childcare', fill: ACCENT, rx: 3 }),
+      Plot.text(rows, { x: 'year', y: 'pct_under6_needs_childcare',
+        text: d => (d.pct_under6_needs_childcare || 0) + '%', dy: -6, textAnchor: 'middle',
+        fill: 'var(--ink-2)', fontSize: 12 }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-afterschool-chart', CHLD, (rows, w) => Plot.plot({
+    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '↑ % Ages 6–17 Needing Care', labelOffset: 40, grid: true,
+         domain: [0, Math.min(100, yMax(rows, 'pct_6_17_needs_afterschool', 1.3))],
+         tickFormat: d => d + '%' },
+    marks: [
+      Plot.barY(rows, { x: 'year', y: 'pct_6_17_needs_afterschool', fill: BLUE2, rx: 3 }),
+      Plot.text(rows, { x: 'year', y: 'pct_6_17_needs_afterschool',
+        text: d => (d.pct_6_17_needs_afterschool || 0) + '%', dy: -6, textAnchor: 'middle',
+        fill: 'var(--ink-2)', fontSize: 12 }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-grandparent-chart', CHLD, (rows, w) => {
+    const mx = Math.max(...rows.map(d => d.grandparent_caregivers || 0));
+    return Plot.plot({
+      width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+      x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+      y: { label: '↑ Households', labelOffset: 48, grid: true,
+           domain: [0, Math.ceil((mx * 1.2) / 5) * 5 || 10] },
+      marks: [
+        Plot.barY(rows, { x: 'year', y: 'grandparent_caregivers', fill: BLUE2, rx: 3 }),
+        Plot.ruleY([0]),
+      ],
+    });
+  });
+
+  // ── Neighborhood switching ────────────────────────────────────────────────
+  function setNbhdDataByKey(key) {
+    currentKey = key;
+    const meta = NBHD_META[key] || { name: key, subtitle: '' };
+
+    const title    = document.getElementById('nbhd-data-title');
+    const subtitle = document.getElementById('nbhd-data-subtitle');
+    const crumb    = document.getElementById('nbhd-data-crumb');
+    if (title)    title.textContent    = meta.name;
+    if (subtitle) subtitle.textContent = meta.subtitle;
+    if (crumb)    crumb.textContent    = meta.name;
+
+    const dataPanel = document.getElementById('nbhd-panel-data');
+    const ecPanel   = document.getElementById('nbhd-panel-eastcatawba');
+    if (key === 'eastcatawba') {
+      if (dataPanel) dataPanel.classList.remove('active');
+      if (ecPanel)   ecPanel.classList.add('active');
+    } else {
+      if (dataPanel) dataPanel.classList.add('active');
+      if (ecPanel)   ecPanel.classList.remove('active');
+      redrawAll();
+    }
+
+    document.querySelectorAll('.nbhd-sel-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.nbhd === key);
+    });
+  }
+
+  function setNbhdData(btn) {
+    setNbhdDataByKey(btn.dataset.nbhd);
+  }
+
+  window.setNbhdData      = setNbhdData;
+  window.setNbhdDataByKey = setNbhdDataByKey;
+
+  // ── Initialize from URL param ─────────────────────────────────────────────
+  const initKey = new URLSearchParams(window.location.search).get('nbhd') || 'pottstown';
+  if (initKey !== 'pottstown') setNbhdDataByKey(initKey);
 })();
