@@ -1,5 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const bySlug = Object.fromEntries(allPosts.map(p => [p.id, p]));
+
+// Keep in sync with the ORDER array in src/pages/blog.astro — the homepage
+// teaser should only ever show stories that are actually live on /blog.html.
+const HOME_STORY_ORDER = [
+  'why-1647-a-month',
+];
+const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
 ---
 <BaseLayout title="North Meck Insights">
 
@@ -139,11 +150,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <button class="spot-arrow blog-prev" id="blogPrev" aria-label="Previous posts" onclick="blogStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
         <button class="spot-arrow blog-next" id="blogNext" aria-label="More posts" onclick="blogStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
         <div class="blog-track" id="blogTrack">
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-cash"></i><span>Housing post thumbnail</span></div><span class="bcard-tag" data-es="Vivienda">Housing</span><h3 class="bcard-t" data-es="Por qué ahora se necesitan $31 por hora para pagar un apartamento de una habitación">Why it now takes $31 an hour to afford a one-bedroom</h3><div class="bcard-meta" data-es="Junio 2026 · 3 min de lectura">June 2026 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-scale"></i><span>Equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad">Equity</span><h3 class="bcard-t" data-es="Los inquilinos negros tienen el doble de probabilidad de estar sobrecargados por el costo">Black renters are twice as likely to be cost-burdened</h3><div class="bcard-meta" data-es="Julio 2026 · 4 min de lectura">July 2026 · 4 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-trending-up"></i><span>Evictions post thumbnail</span></div><span class="bcard-tag" data-es="Desalojos">Evictions</span><h3 class="bcard-t" data-es="52,000 demandas: lo que los datos de desalojo realmente nos dicen">52,000 filings: what the eviction data really tells us</h3><div class="bcard-meta" data-es="Agosto 2026 · 5 min de lectura">August 2026 · 5 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-school"></i><span>Education post thumbnail</span></div><span class="bcard-tag" data-es="Educación">Education</span><h3 class="bcard-t" data-es="La composición racial de las escuelas de North Meck, explicada">The racial makeup of North Meck schools, explained</h3><div class="bcard-meta" data-es="Mayo 2025 · 3 min de lectura">May 2025 · 3 min read</div></article>
-          <article class="bcard" onclick="window.location='blog.html'"><div class="bcard-thumb ph"><i class="ti ti-chart-bar"></i><span>Data equity post thumbnail</span></div><span class="bcard-tag" data-es="Equidad de datos">Data equity</span><h3 class="bcard-t" data-es="Por qué algunos vecindarios quedan fuera de los datos">Why some neighborhoods get left out of the data</h3><div class="bcard-meta" data-es="Marzo 2025 · 3 min de lectura">March 2025 · 3 min read</div></article>
+          {homeStories.map(post => (
+            post.data.draft
+              ? <article class="bcard" onclick="window.location='blog.html'">{post.data.thumbnail ? <div class="bcard-thumb"><img src={post.data.thumbnail} alt="" style="width:100%;height:100%;object-fit:cover;display:block" /></div> : <div class="bcard-thumb ph"><i class={`ti ${post.data.thumbnailIcon}`}></i><span>{post.data.tag} post thumbnail</span></div>}<span class="bcard-tag" style="font-size:13px">{post.data.tag}</span><h3 class="bcard-t">{post.data.title}</h3><div class="bcard-meta">{post.data.date.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })} · {post.data.readTime}</div></article>
+              : <article class="bcard" onclick={`window.location='blog-${post.id}.html'`}>{post.data.thumbnail ? <div class="bcard-thumb"><img src={post.data.thumbnail} alt="" style="width:100%;height:100%;object-fit:cover;display:block" /></div> : <div class="bcard-thumb ph"><i class={`ti ${post.data.thumbnailIcon}`}></i><span>{post.data.tag} post thumbnail</span></div>}<span class="bcard-tag" style="font-size:13px">{post.data.tag}</span><h3 class="bcard-t">{post.data.title}</h3><div class="bcard-meta">{post.data.date.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })} · {post.data.readTime}</div></article>
+          ))}
         </div>
       </div>
     </div>
