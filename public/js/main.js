@@ -1340,3 +1340,54 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener("keydown", function(e) {
   if (e.key === "Escape") closeMap();
 });
+
+/* ── HELP MODAL (Report an issue / Give feedback) ── */
+function openHelpForm(type) {
+  var modal = document.getElementById('helpModal');
+  if (!modal) return;
+  switchHelpTab(type || 'issue');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeHelpForm() {
+  var modal = document.getElementById('helpModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+function switchHelpTab(type) {
+  var isIssue = type === 'issue';
+  document.getElementById('helpTabIssue').classList.toggle('active', isIssue);
+  document.getElementById('helpTabFeedback').classList.toggle('active', !isIssue);
+  document.getElementById('helpFormIssue').style.display = isIssue ? 'block' : 'none';
+  document.getElementById('helpFormFeedback').style.display = isIssue ? 'none' : 'block';
+}
+// The form itself POSTs to Apps Script via the hidden iframe (see HelpModal.astro) —
+// this handler does NOT preventDefault, it just manages button/success UI in parallel
+// while the native form submission happens in the background.
+function handleHelpSubmit(type) {
+  var form = document.getElementById(type === 'issue' ? 'helpFormIssue' : 'helpFormFeedback');
+  var urlPathField = document.getElementById(type === 'issue' ? 'issueUrlPath' : 'feedbackUrlPath');
+  var btn = document.getElementById(type === 'issue' ? 'issueSubmitBtn' : 'feedbackSubmitBtn');
+
+  urlPathField.value = window.location.pathname;
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  setTimeout(function() {
+    form.classList.add('sent');
+  }, 1200);
+}
+window.openHelpForm = openHelpForm;
+window.closeHelpForm = closeHelpForm;
+window.switchHelpTab = switchHelpTab;
+window.handleHelpSubmit = handleHelpSubmit;
+document.addEventListener('DOMContentLoaded', function() {
+  var d = document.getElementById('issueDate');
+  if (d) d.valueAsDate = new Date();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeHelpForm();
+});
