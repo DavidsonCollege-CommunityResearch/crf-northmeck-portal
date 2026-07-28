@@ -285,6 +285,143 @@ const SIMPLE_QUERIES = {
     ORDER BY town, year
   `,
 
+  // ── United Neighborhoods: one file per topic, all five neighborhoods ────────
+  // Each file has a neighborhood_name column so the JS can filter on tab/nbhd
+  // switch. East Catawba has data in the DB but the UI marks it "coming soon".
+  // Each table has one row per block-group (GEOID) per year; some neighborhoods
+  // span 2-3 block groups. Aggregate to one row per neighborhood+year:
+  //   counts  → SUM; rates/percentages/medians → recalculate from summed counts.
+  // This matches the pattern already used by pottstown-demographics below.
+  'nbhd-demographics': `
+    SELECT
+      neighborhood_name,
+      year,
+      CAST(SUM(total_population) AS INTEGER)                  AS total_population,
+      CAST(SUM(race_white_alone) AS INTEGER)                  AS race_white,
+      CAST(SUM(race_black_alone) AS INTEGER)                  AS race_black,
+      CAST(SUM(race_asian_alone) AS INTEGER)                  AS race_asian,
+      CAST(SUM(ethnicity_hispanic_or_latino) AS INTEGER)      AS hispanic_latino,
+      ROUND(SUM(ethnicity_hispanic_or_latino) * 100.0
+            / NULLIF(SUM(total_population), 0), 1)            AS hispanic_rate,
+      CAST(SUM(foreign_born_population) AS INTEGER)           AS foreign_born,
+      ROUND(SUM(foreign_born_population) * 100.0
+            / NULLIF(SUM(total_population), 0), 1)            AS foreign_born_rate
+    FROM nmidw.main.agg_neighborhood_demographics
+    GROUP BY neighborhood_name, year
+    ORDER BY neighborhood_name, year
+  `,
+  'nbhd-economic': `
+    SELECT
+      neighborhood_name,
+      year,
+      CAST(SUM(total_households) AS INTEGER)                  AS total_households,
+      CAST(SUM(income_under_25k) AS INTEGER)                  AS income_under_25k,
+      CAST(SUM(income_25k_50k) AS INTEGER)                    AS income_25k_50k,
+      CAST(SUM(income_50k_100k) AS INTEGER)                   AS income_50k_100k,
+      CAST(SUM(income_100k_plus) AS INTEGER)                  AS income_100k_plus,
+      CAST(ROUND(SUM(median_household_income * total_households)
+            / NULLIF(SUM(total_households), 0)) AS INTEGER)   AS median_household_income,
+      ROUND(SUM(income_inequality_gini * total_households)
+            / NULLIF(SUM(total_households), 0), 4)            AS gini,
+      CAST(SUM(below_poverty_level) AS INTEGER)               AS below_poverty,
+      ROUND(SUM(below_poverty_level) * 100.0
+            / NULLIF(SUM(total_households), 0), 1)            AS poverty_rate
+    FROM nmidw.main.agg_neighborhood_economic_profile
+    GROUP BY neighborhood_name, year
+    ORDER BY neighborhood_name, year
+  `,
+  'nbhd-housing': `
+    SELECT
+      neighborhood_name,
+      year,
+      CAST(SUM(total_housing_units) AS INTEGER)               AS total_housing_units,
+      CAST(SUM(total_owner_occupied) AS INTEGER)              AS owner_occupied,
+      CAST(SUM(total_renter_occupied) AS INTEGER)             AS renter_occupied,
+      ROUND(SUM(total_owner_occupied) * 100.0
+            / NULLIF(SUM(total_housing_units), 0), 1)         AS owner_rate,
+      ROUND(SUM(total_renter_occupied) * 100.0
+            / NULLIF(SUM(total_housing_units), 0), 1)         AS renter_rate,
+      CAST(ROUND(SUM(median_gross_rent * total_renter_occupied)
+            / NULLIF(SUM(total_renter_occupied), 0)) AS INTEGER) AS median_gross_rent,
+      CAST(ROUND(SUM(median_home_value * total_owner_occupied)
+            / NULLIF(SUM(total_owner_occupied), 0)) AS INTEGER)  AS median_home_value,
+      CAST(SUM(cost_burdened_households) AS INTEGER)          AS cost_burdened,
+      CAST(SUM(severely_cost_burdened_households) AS INTEGER) AS severely_burdened,
+      ROUND(SUM(cost_burdened_households) * 100.0
+            / NULLIF(SUM(total_renter_occupied), 0), 1)       AS burden_rate,
+      CAST(SUM(owner_no_vehicle) AS INTEGER)                  AS owner_no_vehicle,
+      CAST(SUM(renter_no_vehicle) AS INTEGER)                 AS renter_no_vehicle
+    FROM nmidw.main.agg_neighborhood_housing
+    GROUP BY neighborhood_name, year
+    ORDER BY neighborhood_name, year
+  `,
+  'nbhd-education': `
+    SELECT
+      neighborhood_name,
+      year,
+      CAST(SUM(total_pop_25_plus) AS INTEGER)                 AS pop_25_plus,
+      CAST(SUM(n_less_than_hs) AS INTEGER)                    AS n_less_than_hs,
+      CAST(SUM(n_hs_or_equiv) AS INTEGER)                     AS n_hs_or_equiv,
+      CAST(SUM(n_some_college) AS INTEGER)                    AS n_some_college,
+      CAST(SUM(n_associates) AS INTEGER)                      AS n_associates,
+      CAST(SUM(n_bachelors) AS INTEGER)                       AS n_bachelors,
+      CAST(SUM(n_graduate_or_prof) AS INTEGER)                AS n_graduate_or_prof,
+      ROUND(SUM(n_less_than_hs) * 100.0
+            / NULLIF(SUM(total_pop_25_plus), 0), 1)           AS pct_less_than_hs,
+      ROUND(SUM(n_hs_or_equiv) * 100.0
+            / NULLIF(SUM(total_pop_25_plus), 0), 1)           AS pct_hs_or_equiv,
+      ROUND(SUM(n_bachelors) * 100.0
+            / NULLIF(SUM(total_pop_25_plus), 0), 1)           AS pct_bachelors,
+      ROUND((SUM(n_bachelors) + SUM(n_graduate_or_prof)) * 100.0
+            / NULLIF(SUM(total_pop_25_plus), 0), 1)           AS pct_bachelors_or_higher,
+      CAST(SUM(n_enrolled_total) AS INTEGER)                  AS n_enrolled_total,
+      CAST(SUM(n_enrolled_k12) AS INTEGER)                    AS n_enrolled_k12
+    FROM nmidw.main.agg_neighborhood_education
+    GROUP BY neighborhood_name, year
+    ORDER BY neighborhood_name, year
+  `,
+  'nbhd-transportation': `
+    SELECT
+      neighborhood_name,
+      year,
+      CAST(SUM(total_workers) AS INTEGER)                     AS total_workers,
+      CAST(SUM(commute_drove_alone) AS INTEGER)               AS drove_alone,
+      CAST(SUM(commute_public_transit) AS INTEGER)            AS public_transit,
+      CAST(SUM(commute_walked) AS INTEGER)                    AS walked,
+      CAST(SUM(commute_bicycle) AS INTEGER)                   AS bicycle,
+      CAST(SUM(commute_worked_from_home) AS INTEGER)          AS worked_from_home,
+      ROUND(SUM(commute_drove_alone) * 100.0
+            / NULLIF(SUM(total_workers), 0), 1)               AS pct_drove_alone,
+      ROUND(SUM(commute_public_transit) * 100.0
+            / NULLIF(SUM(total_workers), 0), 1)               AS pct_public_transit,
+      ROUND(SUM(commute_worked_from_home) * 100.0
+            / NULLIF(SUM(total_workers), 0), 1)               AS pct_worked_from_home,
+      ROUND(SUM(aggregate_commute_minutes)
+            / NULLIF(SUM(total_workers), 0), 1)               AS avg_commute_minutes,
+      CAST(SUM(households_no_vehicle) AS INTEGER)             AS households_no_vehicle
+    FROM nmidw.main.agg_neighborhood_transportation
+    GROUP BY neighborhood_name, year
+    ORDER BY neighborhood_name, year
+  `,
+  'nbhd-childcare': `
+    SELECT
+      neighborhood_name,
+      year,
+      CAST(SUM(total_children_under_18) AS INTEGER)                AS total_under_18,
+      CAST(SUM(children_under6) AS INTEGER)                        AS children_under6,
+      CAST(SUM(children_6_17) AS INTEGER)                          AS children_6_17,
+      CAST(SUM(under6_likely_needs_childcare) AS INTEGER)          AS under6_needs_childcare,
+      ROUND(SUM(under6_likely_needs_childcare) * 100.0
+            / NULLIF(SUM(children_under6), 0), 1)                  AS pct_under6_needs_childcare,
+      CAST(SUM(age6_17_likely_needs_afterschool) AS INTEGER)       AS age6_17_needs_afterschool,
+      ROUND(SUM(age6_17_likely_needs_afterschool) * 100.0
+            / NULLIF(SUM(children_6_17), 0), 1)                    AS pct_6_17_needs_afterschool,
+      CAST(SUM(grandparent_caregiver_households) AS INTEGER)       AS grandparent_caregivers
+    FROM nmidw.main.agg_neighborhood_childcare
+    GROUP BY neighborhood_name, year
+    ORDER BY neighborhood_name, year
+  `,
+
 };
 
 async function run() {
@@ -431,26 +568,22 @@ async function run() {
     await writeJSON('race-trend', []);
   }
 
-  // pottstown-demographics - KNOWN BROKEN. neighborhoods.js queries a table
-  // that does not exist (nmidw.agg_neighborhood_demographics). This is a
-  // pre-existing data issue, not something introduced by this script, and
-  // nobody has confirmed the correct replacement table yet. We deliberately
-  // do NOT count this toward hadUnexpectedFailure - it's expected to fail
-  // every run until someone supplies the right table, and treating an
-  // already-known, unfixable-here failure as a build-breaking error would
-  // just make the workflow permanently red and desensitize everyone to real
-  // failures among the other datasets.
+  // pottstown-demographics - kept for backward compat with neighborhoods.js
+  // which still loads this file directly. The broader nbhd-demographics.json
+  // (in SIMPLE_QUERIES above) supersedes it for new chart code; once the JS
+  // is updated to use that file instead, this block can be removed.
   try {
     const sql = `
       SELECT
         year,
-        SUM(total_population)          AS total_population,
-        SUM(race_white_alone)          AS race_white,
-        SUM(race_black_alone)          AS race_black,
-        SUM(race_asian_alone)          AS race_asian,
-        SUM(ethnicity_hispanic_or_latino) AS hispanic_latino,
-        ROUND(SUM(ethnicity_hispanic_or_latino) * 100.0 / NULLIF(SUM(total_population),0), 1) AS hispanic_rate
-      FROM nmidw.agg_neighborhood_demographics
+        SUM(CAST(total_population AS INTEGER))             AS total_population,
+        SUM(CAST(race_white_alone AS INTEGER))             AS race_white,
+        SUM(CAST(race_black_alone AS INTEGER))             AS race_black,
+        SUM(CAST(race_asian_alone AS INTEGER))             AS race_asian,
+        SUM(CAST(ethnicity_hispanic_or_latino AS INTEGER)) AS hispanic_latino,
+        ROUND(SUM(ethnicity_hispanic_or_latino) * 100.0
+              / NULLIF(SUM(total_population), 0), 1)       AS hispanic_rate
+      FROM nmidw.main.agg_neighborhood_demographics
       WHERE neighborhood_name = 'Pottstown'
       GROUP BY year
       ORDER BY year
@@ -459,12 +592,8 @@ async function run() {
     await writeJSON('pottstown-demographics', rows);
     console.log(`✓ pottstown-demographics: ${rows.length} rows`);
   } catch (err) {
-    console.error(
-      `⚠ pottstown-demographics: KNOWN issue, not a new failure - query references table ` +
-        `"nmidw.agg_neighborhood_demographics" which does not exist. Flagged for the team to ` +
-        `supply the correct table; writing an empty dataset so the site's existing "Data ` +
-        `unavailable" UI keeps working. Underlying error: ${err.message}`
-    );
+    hadUnexpectedFailure = true;
+    console.error(`✗ pottstown-demographics: ${err.message}`);
     await writeJSON('pottstown-demographics', []);
   }
 
