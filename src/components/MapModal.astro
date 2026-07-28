@@ -1,5 +1,9 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 ---
+<BaseLayout title="United Neighborhoods · North Meck Insights">
+
 <!-- ════ MAP MODAL ════ -->
 <div class="nmap-modal" id="nmapModal" aria-hidden="true">
   <div class="nmap-backdrop" onclick="closeMap()"></div>
