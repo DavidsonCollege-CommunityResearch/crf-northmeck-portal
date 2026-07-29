@@ -959,6 +959,11 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
     window.__vizNext=root.nextSibling;
     var body=document.getElementById('vizBody'); body.innerHTML='';
     root.classList.add('viz-clone');
+    // Hide this card's own Share/Expand buttons while it's living inside the
+    // modal — the modal already has its own Share button in its header, and
+    // an "Expand" button makes no sense once you're already in the expanded view.
+    var ownTools=root.querySelector('.viz-tools');
+    if(ownTools) ownTools.style.display='none';
     body.appendChild(root); // move (not clone) — keeps all event listeners
     document.getElementById('vizModal').classList.add('open'); document.body.style.overflow='hidden';
     // Re-render charts at modal width after layout settles
@@ -978,6 +983,9 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
     // move element back to its original position
     if(window.__vizHost && window.__vizParent){
       window.__vizHost.classList.remove('viz-clone');
+      // Restore this card's own Share/Expand buttons now that it's back on the page
+      var ownTools=window.__vizHost.querySelector('.viz-tools');
+      if(ownTools) ownTools.style.display='';
       if(window.__vizNext && window.__vizNext.parentNode===window.__vizParent){
         window.__vizParent.insertBefore(window.__vizHost, window.__vizNext);
       } else {
