@@ -92,19 +92,63 @@ var NAV_INDEX = [
   { title:'Huntersville', sub:'Town data and neighborhood profile', page:'neighborhoods', icon:'ti-map-pin' },
 ];
 
+// Chart-level index: one entry per actual chart card, generated from each
+// page's real DOM (title + containing tab + a stable anchor id already on
+// that card). This is what lets a search for something like "rent" jump
+// straight to the specific chart instead of just the top of a topic page.
+//
+// NOTE: currently covers Housing and Healthcare only, since those are the
+// only two pages where every chart card already has a stable id to anchor
+// to. Education and the per-neighborhood dashboards use different markup
+// patterns and don't have those anchors yet — that's a separate follow-up
+// pass, not something this index can cover until those ids are added.
+var CHART_INDEX = [
+  { title:'Rent vs. Income Growth, Indexed to 2018', sub:'When the rent line rises above the income line, affordability is eroding · North Mecklenburg', page:'housing', anchor:'income-rent-chart-host', pane:'overview', icon:'ti-building-community' },
+  { title:'Median Rent by Town (2018–2024)', sub:'Cornelius, Davidson, Huntersville', page:'housing', anchor:'rent-chart-host', pane:'affordability', icon:'ti-building-community' },
+  { title:'Home Value vs. Income Growth, Indexed to 2018', sub:'Home values have risen far faster than incomes, making ownership increasingly out of reach', page:'housing', anchor:'home-value-chart-host', pane:'affordability', icon:'ti-building-community' },
+  { title:'Rent-to-Income Ratio by Town (2018–2024)', sub:'Median rent ÷ median household income · 30% HUD threshold shown', page:'housing', anchor:'rti-chart-host', pane:'affordability', icon:'ti-building-community' },
+  { title:'Home Price-to-Income Ratio by Town (2018–2024)', sub:'Median home value ÷ median household income · 4× threshold shown', page:'housing', anchor:'hpti-chart-host', pane:'affordability', icon:'ti-building-community' },
+  { title:'Population Growth by Town (2018–2024)', sub:'Cornelius, Davidson, Huntersville', page:'housing', anchor:'population-chart-host', pane:'supply', icon:'ti-building-community' },
+  { title:'Total Households by Town (2018–2024)', sub:'', page:'housing', anchor:'tenure-chart-host', pane:'supply', icon:'ti-building-community' },
+  { title:'Housing Types by Town (2024)', sub:'Share of housing units by structure type', page:'housing', anchor:'housing-types-host', pane:'supply', icon:'ti-building-community' },
+  { title:'Cost Burden by Income Bracket', sub:'Households by housing cost burden level · North Mecklenburg', page:'housing', anchor:'burden-chart-host', pane:'displacement', icon:'ti-building-community' },
+  { title:'Renter Cost Burden Rate Over Time', sub:'Share of renter households spending 30%+ of income on housing · 2018–2024 · North Mecklenburg', page:'housing', anchor:'burden-trend-host', pane:'displacement', icon:'ti-building-community' },
+  { title:'Severely Cost-Burdened Households by Town (2018–2024)', sub:'Households spending 50%+ of income on housing', page:'housing', anchor:'severely-burdened-host', pane:'displacement', icon:'ti-building-community' },
+  { title:'Homeownership Rate by Race & Ethnicity', sub:'Owner-occupied households as share of all households by group · North Mecklenburg', page:'housing', anchor:'race-chart-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Population Share by Race (2024)', sub:'Share of total population by race/ethnicity', page:'housing', anchor:'race-comp-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Racial Composition by Town (2018–2024)', sub:'Share of total population by race/ethnicity', page:'housing', anchor:'race-trend-chart-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Years to Save for a 20% Down Payment, by Town', sub:'Assumes 10% annual savings rate on median household income', page:'housing', anchor:'down-payment-chart-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Years of Income to Buy a Home, by Income Bracket', sub:'Median home value ÷ income bracket midpoint, showing how many years of gross income to buy', page:'housing', anchor:'ptr-chart-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Median Household Income by Town (2018–2024)', sub:'Cornelius, Davidson, Huntersville', page:'housing', anchor:'median-income-chart-host', pane:'income', icon:'ti-building-community' },
+  { title:'Home Price-to-Income Ratio Over Time', sub:'Median home value ÷ median household income, years of income to buy', page:'housing', anchor:'ptr-trend-host', pane:'income', icon:'ti-building-community' },
+  { title:'Income Inequality Over Time (Gini Coefficient)', sub:'0 = perfect equality · 1 = maximum inequality', page:'housing', anchor:'gini-chart-host', pane:'income', icon:'ti-building-community' },
+  { title:'Household financial stability by town (latest year)', sub:'Below FPL · ALICE · Above ALICE threshold', page:'housing', anchor:'alice-bar-host', pane:'income', icon:'ti-building-community' },
+  { title:'North Meck vs Mecklenburg County (latest year)', sub:'Share below ALICE threshold · towns vs county benchmark', page:'housing', anchor:'alice-county-host', pane:'income', icon:'ti-building-community' },
+  { title:'Access Gaps by Town (2018–2024)', sub:'One metric at a time', page:'housing', anchor:'infra-chart-host', pane:'income', icon:'ti-building-community' },
+  { title:'Education & Economic Mobility by Town (2018–2024)', sub:'One metric at a time', page:'housing', anchor:'mobility-chart-host', pane:'income', icon:'ti-building-community' },
+  { title:'Frequent Mental Distress by Year', sub:'2019, 2021, 2023 · Age-adjusted · CDC PLACES', page:'healthcare', anchor:'mh-distressbar-host', pane:'hc-mental', icon:'ti-heartbeat' },
+  { title:'Depression Prevalence by Year', sub:'2019, 2021, 2023 · Age-adjusted · CDC PLACES', page:'healthcare', anchor:'mh-depbar-host', pane:'hc-mental', icon:'ti-heartbeat' },
+  { title:'Mental Health & Substance Use Facility Locations', sub:'57 licensed facilities · Mecklenburg County · NC DHHS', page:'healthcare', anchor:'mh-map-card', pane:'hc-mental', icon:'ti-heartbeat' },
+  { title:'Age-adjusted Diabetes Prevalence', sub:'2019 · 2021 · 2023 · CDC PLACES', page:'healthcare', anchor:'cd-diabetes-host', pane:'hc-chronic', icon:'ti-heartbeat' },
+  { title:'Obesity Prevalence', sub:'2019 · 2021 · 2023 · CDC PLACES', page:'healthcare', anchor:'cd-obesity-host', pane:'hc-chronic', icon:'ti-heartbeat' },
+  { title:'High Blood Pressure Prevalence', sub:'2019 · 2021 · 2023 · CDC PLACES', page:'healthcare', anchor:'cd-hbp-host', pane:'hc-chronic', icon:'ti-heartbeat' }
+];
+
+var SEARCH_INDEX = NAV_INDEX.concat(CHART_INDEX);
+
 function navSearchInput(input){
   var q = (input.value || '').trim().toLowerCase();
   var dd = document.getElementById('navSearchDd');
   if (!dd) return;
   if (!q){ dd.classList.remove('open'); dd.innerHTML=''; return; }
-  var results = NAV_INDEX.filter(function(r){
+  var results = SEARCH_INDEX.filter(function(r){
     return r.title.toLowerCase().includes(q) || r.sub.toLowerCase().includes(q);
-  }).slice(0,6);
+  }).slice(0,8);
   if (!results.length){
     dd.innerHTML='<div class="nav-search-dd-empty">No results for "'+q+'"</div>';
   } else {
     dd.innerHTML = results.map(function(r,i){
-      return '<div class="nav-search-dd-item" data-idx="'+i+'" onclick="navSearchGo(\''+r.page+'\')">'
+      return '<div class="nav-search-dd-item" data-idx="'+i+'" onclick="navSearchGoTo('+i+')">'
         +'<i class="ti '+r.icon+' nav-search-dd-icon"></i>'
         +'<div class="nav-search-dd-text">'
         +'<div class="nav-search-dd-title">'+r.title+'</div>'
@@ -124,18 +168,54 @@ function navSearchKey(e){
   if (!items.length) return;
   if (e.key === 'ArrowDown'){ e.preventDefault(); dd._active = Math.min((dd._active||0)+1, items.length-1); items.forEach(function(el,i){ el.style.background = i===dd._active ? 'var(--bg-alt)' : ''; }); }
   else if (e.key === 'ArrowUp'){ e.preventDefault(); dd._active = Math.max((dd._active||0)-1, 0); items.forEach(function(el,i){ el.style.background = i===dd._active ? 'var(--bg-alt)' : ''; }); }
-  else if (e.key === 'Enter' && dd._active >= 0 && dd._results){ navSearchGo(dd._results[dd._active].page); }
+  else if (e.key === 'Enter' && dd._active >= 0 && dd._results){ navSearchGoTo(dd._active); }
   else if (e.key === 'Escape'){ navSearchClose(); }
 }
 
+var PAGE_MAP = {home:'index.html',housing:'housing.html',education:'education.html',healthcare:'healthcare.html',blog:'blog.html',about:'about.html',topics:'topics.html','data-library':'data-library.html',dictionary:'data-library.html',sources:'sources.html',neighborhoods:'neighborhoods.html','nbhd-data':'nbhd-data.html'};
+
+// Called when a search result is clicked or selected with Enter.
+function navSearchGoTo(idx){
+  var dd = document.getElementById('navSearchDd');
+  var r = dd && dd._results && dd._results[idx];
+  if (!r) return;
+  var url = PAGE_MAP[r.page] || (r.page + '.html');
+  if (r.anchor) url += '#' + r.anchor;
+  window.location = url;
+  var inp = document.getElementById('navSearch');
+  if (inp) inp.value = '';
+  navSearchClose();
+}
+window.navSearchGoTo = navSearchGoTo;
+
+// Kept for anything still calling the old page-only version directly.
 function navSearchGo(page){
-  var pageMap = {home:'index.html',housing:'housing.html',education:'education.html',healthcare:'healthcare.html',blog:'blog.html',about:'about.html',topics:'topics.html','data-library':'data-library.html',dictionary:'data-library.html',sources:'sources.html',neighborhoods:'neighborhoods.html','nbhd-data':'nbhd-data.html'};
-  window.location = pageMap[page] || (page + '.html');
+  window.location = PAGE_MAP[page] || (page + '.html');
   var inp = document.getElementById('navSearch');
   if (inp) inp.value = '';
   navSearchClose();
 }
 window.navSearchGo = navSearchGo;
+
+// On page load, if the URL has a hash pointing at a specific chart (as search
+// results now produce), switch to the right tab if needed, scroll the chart
+// into view, and give it a brief highlight so it's obvious what was found.
+document.addEventListener('DOMContentLoaded', function(){
+  var id = (window.location.hash || '').replace('#','');
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+  var pane = el.closest ? el.closest('.tabpane') : null;
+  if (pane && pane.dataset && pane.dataset.pane){
+    var tabBtn = document.querySelector('.tab[data-tab="'+pane.dataset.pane+'"]');
+    if (tabBtn && window.setTab) window.setTab(tabBtn);
+  }
+  setTimeout(function(){
+    el.scrollIntoView({ behavior:'smooth', block:'center' });
+    el.classList.add('search-highlight');
+    setTimeout(function(){ el.classList.remove('search-highlight'); }, 2200);
+  }, 220);
+});
 
 function navSearchClose(){
   var dd = document.getElementById('navSearchDd');
