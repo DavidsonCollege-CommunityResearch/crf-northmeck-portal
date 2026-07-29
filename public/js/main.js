@@ -1364,10 +1364,38 @@ function switchHelpTab(type) {
   document.getElementById('helpFormIssue').style.display = isIssue ? 'block' : 'none';
   document.getElementById('helpFormFeedback').style.display = isIssue ? 'none' : 'block';
 }
-// The form itself POSTs to Apps Script via the hidden iframe (see HelpModal.astro) —
-// this handler does NOT preventDefault, it just manages button/success UI in parallel
-// while the native form submission happens in the background.
+// Shows/hides the "Please specify" box under an Issue Type / Feedback Type
+// dropdown, only when "Other" is selected.
+function toggleOtherField(selectId, wrapId, inputId) {
+  var select = document.getElementById(selectId);
+  var wrap = document.getElementById(wrapId);
+  var input = document.getElementById(inputId);
+  var isOther = select.value === 'Other';
+  wrap.style.display = isOther ? 'block' : 'none';
+  if (!isOther) input.value = '';
+}
+// 1-5 mood scale for the feedback form. Stores the chosen value in a hidden
+// field (since it's a set of buttons, not a native radio group) and marks
+// the selected face visually.
+function setMood(n) {
+  document.getElementById('feedbackMoodValue').value = n;
+  document.querySelectorAll('.mood-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-mood') === String(n));
+  });
+}
+// The form itself POSTs to Apps Script via the hidden iframe (see HelpModal.astro).
+// this handler manages button/success UI and mood-scale validation. Returning
+// false cancels the native form submission (used when the mood scale is
+// required but empty); returning true lets the POST proceed as normal.
 function handleHelpSubmit(type) {
+  if (type === 'feedback') {
+    var mood = document.getElementById('feedbackMoodValue').value;
+    if (!mood) {
+      alert('Please select how you feel about the site before submitting.');
+      return false;
+    }
+  }
+
   var form = document.getElementById(type === 'issue' ? 'helpFormIssue' : 'helpFormFeedback');
   var urlPathField = document.getElementById(type === 'issue' ? 'issueUrlPath' : 'feedbackUrlPath');
   var btn = document.getElementById(type === 'issue' ? 'issueSubmitBtn' : 'feedbackSubmitBtn');
@@ -1379,15 +1407,15 @@ function handleHelpSubmit(type) {
   setTimeout(function() {
     form.classList.add('sent');
   }, 1200);
+
+  return true;
 }
 window.openHelpForm = openHelpForm;
 window.closeHelpForm = closeHelpForm;
 window.switchHelpTab = switchHelpTab;
+window.toggleOtherField = toggleOtherField;
+window.setMood = setMood;
 window.handleHelpSubmit = handleHelpSubmit;
-document.addEventListener('DOMContentLoaded', function() {
-  var d = document.getElementById('issueDate');
-  if (d) d.valueAsDate = new Date();
-});
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeHelpForm();
 });
