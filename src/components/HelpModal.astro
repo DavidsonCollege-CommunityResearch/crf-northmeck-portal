@@ -21,15 +21,15 @@
     <!-- TODO: replace the action URL below with your deployed Apps Script Web App URL -->
     <form id="helpFormIssue" class="help-form"
           method="POST"
-          action="https://script.google.com/macros/s/AKfycbwX6D9fVxvzALzu3IJRBQaeKc53XU8cg6Asl32_MN3biIYUQU9ah_sDN91AKuyCXqQePQ/exec"
+          action="PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE"
           target="helpHiddenIframe"
-          onsubmit="handleHelpSubmit('issue')">
+          onsubmit="return handleHelpSubmit('issue')">
       <input type="hidden" name="formType" value="issue" />
       <input type="hidden" name="urlPath" id="issueUrlPath" />
 
       <div class="help-head">
         <h3>Report an issue</h3>
-        <p>Broken chart, dead link, wrong number, something that just looks off — tell us where and what.</p>
+        <p>Broken chart, dead link, wrong number, something that just looks off. Tell us where and what.</p>
       </div>
 
       <div class="help-field">
@@ -53,7 +53,7 @@
 
       <div class="help-field">
         <label for="issueType">What kind of issue is it? <span class="req">*</span></label>
-        <select id="issueType" name="issueType" required>
+        <select id="issueType" name="issueType" required onchange="toggleOtherField('issueType', 'issueOtherWrap', 'issueOther')">
           <option value="" disabled selected>Select a type</option>
           <option>Broken chart or map</option>
           <option>Broken link or button</option>
@@ -65,14 +65,14 @@
         </select>
       </div>
 
-      <div class="help-field">
-        <label for="issueDate">When did you notice it?</label>
-        <input type="date" id="issueDate" name="dateNoticed" />
+      <div class="help-field" id="issueOtherWrap" style="display:none">
+        <label for="issueOther">Please specify</label>
+        <input type="text" id="issueOther" name="issueOther" placeholder="What kind of issue is it?" />
       </div>
 
       <div class="help-field">
         <label for="issueDesc">Describe what happened <span class="req">*</span></label>
-        <textarea id="issueDesc" name="description" rows="4" required placeholder="What did you see? What did you expect instead?"></textarea>
+        <textarea id="issueDesc" name="description" rows="4" required placeholder="Where were you on the site? What did you click or look at? What happened instead of what you expected? For example: I was on the Housing page, clicked the map, and the chart just went blank."></textarea>
       </div>
 
       <div class="help-field">
@@ -82,7 +82,7 @@
 
       <button type="submit" class="help-submit" id="issueSubmitBtn">Send report</button>
       <div class="help-success" id="helpSuccessIssue">
-        <i class="ti ti-circle-check"></i> Thanks — we've got it and will take a look.
+        <i class="ti ti-circle-check"></i> Thanks, we've got it and will take a look.
       </div>
     </form>
 
@@ -90,20 +90,32 @@
     <!-- TODO: replace the action URL below with your deployed Apps Script Web App URL (same URL as the issue form) -->
     <form id="helpFormFeedback" class="help-form" style="display:none"
           method="POST"
-          action="https://script.google.com/macros/s/AKfycbwX6D9fVxvzALzu3IJRBQaeKc53XU8cg6Asl32_MN3biIYUQU9ah_sDN91AKuyCXqQePQ/exec"
+          action="PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE"
           target="helpHiddenIframe"
-          onsubmit="handleHelpSubmit('feedback')">
+          onsubmit="return handleHelpSubmit('feedback')">
       <input type="hidden" name="formType" value="feedback" />
       <input type="hidden" name="urlPath" id="feedbackUrlPath" />
+      <input type="hidden" name="mood" id="feedbackMoodValue" />
 
       <div class="help-head">
         <h3>Give feedback</h3>
-        <p>Reactions, suggestions, things you wish the site did — we read all of it.</p>
+        <p>Reactions, suggestions, things you wish the site did. We read all of it.</p>
+      </div>
+
+      <div class="help-field">
+        <label>How do you feel about the site? <span class="req">*</span></label>
+        <div class="mood-scale" role="radiogroup" aria-label="How do you feel about the site">
+          <button type="button" class="mood-btn" data-mood="1" style="--mood-color: var(--warn)" onclick="setMood(1)" aria-label="Very unhappy">😞</button>
+          <button type="button" class="mood-btn" data-mood="2" style="--mood-color: oklch(0.56 0.10 50)" onclick="setMood(2)" aria-label="Unhappy">🙁</button>
+          <button type="button" class="mood-btn" data-mood="3" style="--mood-color: var(--caut)" onclick="setMood(3)" aria-label="Neutral">😐</button>
+          <button type="button" class="mood-btn" data-mood="4" style="--mood-color: oklch(0.56 0.09 120)" onclick="setMood(4)" aria-label="Happy">🙂</button>
+          <button type="button" class="mood-btn" data-mood="5" style="--mood-color: var(--ok)" onclick="setMood(5)" aria-label="Very happy">😄</button>
+        </div>
       </div>
 
       <div class="help-field">
         <label for="feedbackType">What kind of feedback? <span class="req">*</span></label>
-        <select id="feedbackType" name="feedbackType" required>
+        <select id="feedbackType" name="feedbackType" required onchange="toggleOtherField('feedbackType', 'feedbackOtherWrap', 'feedbackOther')">
           <option value="" disabled selected>Select a type</option>
           <option>Suggestion for a new feature</option>
           <option>Something I liked</option>
@@ -112,9 +124,14 @@
         </select>
       </div>
 
+      <div class="help-field" id="feedbackOtherWrap" style="display:none">
+        <label for="feedbackOther">Please specify</label>
+        <input type="text" id="feedbackOther" name="feedbackOther" placeholder="What kind of feedback is it?" />
+      </div>
+
       <div class="help-field">
-        <label for="feedbackMsg">Your feedback <span class="req">*</span></label>
-        <textarea id="feedbackMsg" name="message" rows="5" required placeholder="Tell us what's on your mind"></textarea>
+        <label for="feedbackMsg">Tell us more <span class="opt">(optional)</span></label>
+        <textarea id="feedbackMsg" name="message" rows="4" placeholder="Anything you'd like to add?"></textarea>
       </div>
 
       <div class="help-field">
@@ -124,7 +141,7 @@
 
       <button type="submit" class="help-submit" id="feedbackSubmitBtn">Send feedback</button>
       <div class="help-success" id="helpSuccessFeedback">
-        <i class="ti ti-circle-check"></i> Thanks — we appreciate it.
+        <i class="ti ti-circle-check"></i> Thanks, we appreciate it.
       </div>
     </form>
 
