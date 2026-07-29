@@ -1,4 +1,5 @@
 ---
+const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 ---
 <!-- ════ VIZ EXPAND MODAL ════ -->
 <div class="modal-bg" id="vizModal" onclick="if(event.target===this)closeVizModal()">
@@ -6,5 +7,10 @@
     <button class="modal-close" onclick="closeVizModal()" aria-label="Close">×</button>
     <div class="viz-modal-head"><i class="ti ti-chart-histogram"></i>Expanded view<button class="modal-share-btn" type="button" onclick="if(window.openSharePop&&window.__vizHost)window.openSharePop(this,window.__vizHost,'viz')"><i class="ti ti-share-2"></i> Share</button></div>
     <div id="vizBody"></div>
+    <div class="viz-modal-foot">
+      <a class="viz-download-link" href={`${base}data-library.html`}>
+        <i class="ti ti-download"></i> Download the data used in this chart
+      </a>
+    </div>
   </div>
 </div>
