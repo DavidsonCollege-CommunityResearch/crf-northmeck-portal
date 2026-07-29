@@ -651,7 +651,7 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 .viz-expand .ti{font-size:14px}
 .viz-share .ti{font-size:15px}
 .minichart.viz-host>.viz-tools{top:9px;right:9px}
-.modal.viz-modal{width:880px}
+.modal.viz-modal{width:880px;padding:30px 34px 28px}
 .viz-modal-head{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:8px}
 .viz-modal-head .ti{font-size:15px}
 .modal-share-btn{margin-left:auto;margin-right:40px;display:inline-flex;align-items:center;gap:7px;padding:8px 15px;border-radius:999px;border:1px solid var(--line-2);background:var(--card);color:var(--ink);cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:600;line-height:1;transition:border-color .15s,background .15s}
@@ -865,3 +865,9 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 .mood-btn:hover{border-color:var(--mood-color);filter:grayscale(0.4) opacity(0.8)}
 .mood-btn.active{border-color:var(--mood-color);background:color-mix(in oklch, var(--mood-color) 12%, var(--paper));filter:grayscale(0) opacity(1);box-shadow:0 0 0 2px color-mix(in oklch, var(--mood-color) 30%, transparent)}
 @media(max-width:480px){.mood-btn{font-size:22px;padding:10px 0}}
+
+/* VIZ MODAL: download-data footer link (shown under every expanded chart) */
+.viz-modal-foot{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.viz-download-link{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--accent-deep);text-decoration:none;transition:.15s}
+.viz-download-link:hover{color:var(--accent);text-decoration:underline}
+.viz-download-link .ti{font-size:16px}
