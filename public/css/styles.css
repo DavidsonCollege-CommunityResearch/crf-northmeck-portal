@@ -872,3 +872,11 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 .viz-download-link{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--accent-deep);text-decoration:none;transition:.15s}
 .viz-download-link:hover{color:var(--accent);text-decoration:underline}
 .viz-download-link .ti{font-size:16px}
+
+/* SEARCH: highlight flash for a chart jumped to from search results */
+.search-highlight{animation:searchFlash 2.2s ease}
+@keyframes searchFlash{
+  0%{box-shadow:0 0 0 3px var(--accent);}
+  70%{box-shadow:0 0 0 3px var(--accent);}
+  100%{box-shadow:0 0 0 0 transparent;}
+}
