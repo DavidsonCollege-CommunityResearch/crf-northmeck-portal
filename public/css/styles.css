@@ -858,3 +858,10 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 .help-success{display:none;align-items:center;gap:8px;font-size:14.5px;color:var(--ok);background:var(--ok-s);border-radius:10px;padding:14px 16px}
 .help-form.sent .help-success{display:flex}
 @media(max-width:640px){.help-dialog{padding:24px 20px 20px}.help-tabs{flex-wrap:wrap}}
+
+/* HELP MODAL: mood scale (feedback form) */
+.mood-scale{display:flex;gap:8px;margin-top:2px}
+.mood-btn{flex:1;font-size:28px;line-height:1;padding:12px 0;background:var(--paper);border:1.5px solid var(--line-2);border-radius:10px;cursor:pointer;transition:.15s;filter:grayscale(1) opacity(0.55)}
+.mood-btn:hover{border-color:var(--mood-color);filter:grayscale(0.4) opacity(0.8)}
+.mood-btn.active{border-color:var(--mood-color);background:color-mix(in oklch, var(--mood-color) 12%, var(--paper));filter:grayscale(0) opacity(1);box-shadow:0 0 0 2px color-mix(in oklch, var(--mood-color) 30%, transparent)}
+@media(max-width:480px){.mood-btn{font-size:22px;padding:10px 0}}
