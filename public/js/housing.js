@@ -64,12 +64,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
         function renderOvCharts() {
 
         /* ── Chart 1: Rent over time ───────────────────────── */
-        const c1 = Plot.plot({
+        const c1 = window.stdPlot({
           width: w("ovf-rent"), height: 280,
-          marginLeft: 72, marginRight: 16, marginTop: 16, marginBottom: 52,
           style: FONT,
-          x: { label: "Year →", labelOffset: 42, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-          y: { label: "↑ $/mo", labelOffset: 52, grid: true, tickFormat: d => "$" + d.toLocaleString() },
+          x: { label: "Year", labelOffset: 42, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+          y: { label: "$/mo", labelOffset: 52, grid: true, tickFormat: window.fmtDollar },
           color: { domain: TOWNS, range: Object.values(TOWN_C), legend: true },
           marks: [
             Plot.line(rentData, { x: "year", y: "rent", stroke: "town", strokeWidth: 2 }),
@@ -80,13 +79,12 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
         document.getElementById("ovf-rent").replaceChildren(c1);
 
         /* ── Chart 2: PTR by bracket (grouped bars) ────────── */
-        const c2 = Plot.plot({
+        const c2 = window.stdPlot({
           width: w("ovf-ptr"), height: 300,
-          marginLeft: 55, marginRight: 16, marginTop: 16, marginBottom: 80,
           style: FONT,
-          fx: { domain: BRACKETS, axis: "bottom", label: "Income bracket →", tickRotate: -30, padding: 0.12 },
+          fx: { domain: BRACKETS, axis: "bottom", label: "Income bracket", tickRotate: -30, padding: 0.12 },
           x: { axis: null },
-          y: { label: "↑ Years", labelOffset: 44, grid: true },
+          y: { label: "Years", labelOffset: 44, grid: true },
           color: { domain: TOWNS, range: Object.values(TOWN_C), legend: true },
           marks: [
             Plot.barY(ptrData, { x: "town", y: "ratio", fx: "bracket", fill: "town",
@@ -98,11 +96,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
         /* ── Chart 3: Home values (horizontal bar + US ref) ── */
         const homeDisplay = [...homeData].reverse();
-        const c3 = Plot.plot({
+        const c3 = window.stdPlot({
           width: w("ovf-home"), height: 240,
-          marginLeft: 115, marginRight: 65, marginTop: 16, marginBottom: 52,
           style: FONT,
-          x: { label: "Median home value →", labelOffset: 42, grid: true,
+          x: { label: "Median home value", labelOffset: 42, grid: true,
                tickFormat: d => "$" + (d/1000).toFixed(0) + "k" },
           y: { label: null },
           color: { domain: [...TOWNS, "U.S. Median"], range: [...Object.values(TOWN_C), "#ccc"] },
@@ -124,11 +121,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
         document.getElementById("ovf-home").replaceChildren(c3);
 
         /* ── Chart 4: Down payment savings ─────────────────── */
-        const c4 = Plot.plot({
+        const c4 = window.stdPlot({
           width: w("ovf-dp"), height: 210,
-          marginLeft: 115, marginRight: 65, marginTop: 16, marginBottom: 52,
           style: FONT,
-          x: { label: "Years to save 20% down payment →", labelOffset: 42, grid: true, domain: [0, 12] },
+          x: { label: "Years to save 20% down payment", labelOffset: 42, grid: true, domain: [0, 12] },
           y: { label: null },
           color: { domain: TOWNS, range: Object.values(TOWN_C) },
           marks: [
@@ -175,11 +171,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           const data = town === "All" ? housing : housing.filter(d => d.town === town);
           if (!data.length) return;
           const w = document.getElementById("rent-chart").offsetWidth || 680;
-          const chart = Plot.plot({
+          const chart = window.stdPlot({
             width: w, height: 360, marginLeft: 70, marginBottom: 55,
             style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-            x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-            y: { label: "↑ Median rent ($/mo)", labelOffset: 52, grid: true, tickFormat: d => "$" + d.toLocaleString(), domain: [0, Math.ceil(Math.max(...data.map(d => d.median_rent)) / 200) * 200 + 200] },
+            x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+            y: { label: "Median rent ($/mo)", labelOffset: 52, grid: true, tickFormat: window.fmtDollar, domain: [0, Math.ceil(Math.max(...data.map(d => d.median_rent)) / 200) * 200 + 200] },
             color: { domain: ["Cornelius","Davidson","Huntersville"], range: Object.values(window.TOWN_COLORS), legend: town === "All" },
             marks: [
               Plot.line(data, { x: "year", y: "median_rent", stroke: "town", strokeWidth: 2.5 }),
@@ -204,12 +200,12 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           ] : []);
           const w = document.getElementById("income-rent-chart").offsetWidth || 680;
           const isAll = town === "All";
-          const chart = Plot.plot({
+          const chart = window.stdPlot({
             width: w, height: isAll ? 840 : 300,
             marginLeft: isAll ? 145 : 75, marginRight: 20, marginBottom: 55,
             style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-            x: { label: "Year →", labelOffset: 55, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-            y: { label: "↑ Index (2018 = 100)", labelOffset: 65, grid: true },
+            x: { label: "Year", labelOffset: 55, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+            y: { label: "Index (2018 = 100)", labelOffset: 65, grid: true },
             ...(isAll ? { fy: { axis: "left", label: null, tickSize: 0, tickPadding: 35 } } : {}),
             color: { domain: ["Median Income","Median Rent"], range: ["#3f4e75","#e05c4b"], legend: true },
             ...(isAll ? { facet: { data: indexed, y: "town", label: null } } : {}),
@@ -275,12 +271,12 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             ] : []);
             const w = document.getElementById("home-value-chart").offsetWidth || 680;
             const isAll = town === "All";
-            const chart = Plot.plot({
+            const chart = window.stdPlot({
               width: w, height: isAll ? 840 : 300,
               marginLeft: isAll ? 185 : 80, marginRight: 20, marginBottom: 55,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 55, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: { label: "↑ Index (2018 = 100)", labelOffset: 68, grid: true, domain: [95, 212] },
+              x: { label: "Year", labelOffset: 55, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: { label: "Index (2018 = 100)", labelOffset: 68, grid: true, domain: [95, 212] },
               ...(isAll ? { fy: { axis: "left", label: null, tickSize: 0, tickPadding: 60 } } : {}),
               color: { domain: ["Home Value","Median Income"], range: ["#e05c4b","#3f4e75"], legend: true },
               ...(isAll ? { facet: { data: indexed, y: "town", label: null } } : {}),
@@ -343,10 +339,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           if (!el) return;
           function renderWage(width) {
             el.innerHTML = "";
-            el.appendChild(Plot.plot({
+            el.appendChild(window.stdPlot({
               width,
-              marginLeft: 220,
-              marginRight: 110,
               marginBottom: 30,
               x: { label: "Hourly Wage ($)", grid: true, tickFormat: d => "$"+d },
               y: { domain, label: null },
@@ -398,13 +392,13 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           const regionOrder = ["Charlotte","Raleigh","Atlanta"];
           function renderFmr(width) {
             el.innerHTML = "";
-            el.appendChild(Plot.plot({
+            el.appendChild(window.stdPlot({
             width,
             marginLeft: 50,
             marginBottom: 60,
             fx: { domain: bedroomOrder, label: null, tickSize: 0, padding: 0.12 },
             x: { domain: regionOrder, label: null, tickSize: 0, tickFormat: d => d },
-            y: { label: "Monthly Rent ($)", grid: true, tickFormat: d => "$"+d.toLocaleString(), domain: [0, 3200] },
+            y: { label: "Monthly Rent ($)", grid: true, tickFormat: window.fmtDollar, domain: [0, 3200] },
             color: { domain: regionOrder, range: ["#2a6041","#e07b39","#3f6ba3"], legend: true },
             marks: [
               Plot.barY(data, {
@@ -467,7 +461,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           });
           function renderAmi(width) {
             el.innerHTML = "";
-            el.appendChild(Plot.plot({
+            el.appendChild(window.stdPlot({
               width,
               height: 400,
               marginLeft: 60,
@@ -476,7 +470,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
               fx: { domain: bedroomOrder, label: null, tickSize: 0, padding: 0.15 },
               x: { domain: xDomain, label: null, tickSize: 0,
                    tickFormat: d => d.endsWith("|max") ? d.replace("|max","").replace(" AMI","") : "" },
-              y: { label: "Monthly Rent ($)", grid: true, tickFormat: d => "$"+d.toLocaleString(), domain: [0, 3400] },
+              y: { label: "Monthly Rent ($)", grid: true, tickFormat: window.fmtDollar, domain: [0, 3400] },
               color: { domain: ["Max Affordable Rent","Fair Market Rent"], range: ["#2a8c6a","#e07b39"], legend: true },
               marks: [
                 Plot.barY(paired, { x: "xk", y: "value", fx: "bedrooms", fill: "type",
@@ -523,11 +517,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const hptiDomain = [Math.max(0, Math.floor((hptiLo - hptiStep) / hptiStep) * hptiStep), Math.ceil((hptiHi + hptiStep * 0.5) / hptiStep) * hptiStep];
 
             const w1 = document.getElementById("rti-chart").offsetWidth || 540;
-            document.getElementById("rti-chart").replaceChildren(Plot.plot({
-              width: w1, height: 280, marginLeft: 80, marginRight: 20, marginBottom: 55,
+            document.getElementById("rti-chart").replaceChildren(window.stdPlot({
+              width: w1, height: 280, marginBottom: 55,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: { label: "↑ Rent-to-income ratio", labelOffset: 68, grid: true, tickFormat: d => rtiIsDecimal ? (d * 100).toFixed(0) + "%" : d.toFixed(1) + "%", domain: rtiDomain },
+              x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: { label: "Rent-to-income ratio", labelOffset: 68, grid: true, tickFormat: d => rtiIsDecimal ? (d * 100).toFixed(0) + "%" : d.toFixed(1) + "%", domain: rtiDomain },
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: showLegend },
               marks: [
                 Plot.ruleY([rtiIsDecimal ? 0.30 : 30], { stroke: "#aaa", strokeDasharray: "4,3" }),
@@ -538,11 +532,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             }));
 
             const w2 = document.getElementById("hpti-chart").offsetWidth || 540;
-            document.getElementById("hpti-chart").replaceChildren(Plot.plot({
-              width: w2, height: 280, marginLeft: 80, marginRight: 20, marginBottom: 55,
+            document.getElementById("hpti-chart").replaceChildren(window.stdPlot({
+              width: w2, height: 280, marginBottom: 55,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: { label: "↑ Home price-to-income ratio", labelOffset: 68, grid: true, domain: hptiDomain },
+              x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: { label: "Home price-to-income ratio", labelOffset: 68, grid: true, domain: hptiDomain },
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: showLegend },
               marks: [
                 Plot.ruleY([4], { stroke: "#aaa", strokeDasharray: "4,3" }),
@@ -583,11 +577,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
               const data = town === "All" ? rows : rows.filter(d => d.town === town);
               if (!data.length) return;
               const w = document.getElementById("population-chart").offsetWidth || 680;
-              const chart = Plot.plot({
-                width: w, height: 340, marginLeft: 90, marginRight: 90, marginBottom: 55,
+              const chart = window.stdPlot({
+                width: w, height: 340, marginBottom: 55,
                 style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-                x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-                y: (() => { const vals = data.map(d => d.population).filter(v=>v!=null); const hi = Math.max(...vals); const s = 5000; return { label: "↑ Total population", labelOffset: 78, grid: true, tickFormat: d => (d/1000).toFixed(0) + "k", domain: [0, Math.ceil((hi + s) / s) * s] }; })(),
+                x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+                y: (() => { const vals = data.map(d => d.population).filter(v=>v!=null); const hi = Math.max(...vals); const s = 5000; return { label: "Total population", labelOffset: 78, grid: true, tickFormat: d => (d/1000).toFixed(0) + "k", domain: [0, Math.ceil((hi + s) / s) * s] }; })(),
                 color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: town === "All" },
                 marks: [
                   Plot.line(data, { x: "year", y: "population", stroke: "town", strokeWidth: 2.5 }),
@@ -635,11 +629,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             if (!data.length) return;
             const w = el.offsetWidth || 680;
             const isAll = activeTown === "All";
-            const chart = Plot.plot({
-              width: w, height: 300, marginLeft: 85, marginRight: 20, marginBottom: 50,
+            const chart = window.stdPlot({
+              width: w, height: 300, marginBottom: 50,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 45, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: (() => { const vals = data.map(d => d.total_households).filter(v=>v!=null); const hi = Math.max(...vals); const s = 500; return { label: "↑ Households", labelOffset: 73, grid: true, tickFormat: d => d >= 1000 ? (d/1000).toFixed(0)+"k" : d, domain: [0, Math.ceil((hi + s) / s) * s] }; })(),
+              x: { label: "Year", labelOffset: 45, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: (() => { const vals = data.map(d => d.total_households).filter(v=>v!=null); const hi = Math.max(...vals); const s = 500; return { label: "Households", labelOffset: 73, grid: true, tickFormat: d => d >= 1000 ? (d/1000).toFixed(0)+"k" : d, domain: [0, Math.ceil((hi + s) / s) * s] }; })(),
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: isAll },
               marks: [
                 Plot.line(data, { x: "year", y: "total_households", stroke: "town", strokeWidth: 2.5 }),
@@ -699,10 +693,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const host = document.getElementById("housing-types-chart");
             const w = host.offsetWidth || 680;
             host.innerHTML = "";
-            const chart = Plot.plot({
+            const chart = window.stdPlot({
               width: w, height: 220, marginLeft: 90, marginBottom: 50,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: {label: "Share of units →", labelOffset: 45, tickFormat: d => d + "%", domain: [0, 100]},
+              x: {label: "Share of units", labelOffset: 45, tickFormat: d => d + "%", domain: [0, 100]},
               y: {label: null},
               color: {
                 legend: true,
@@ -742,11 +736,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
         function renderBurden() {
           const subset = raw.filter(d => d.town === activeTown && d.tenure === activeTenure);
           const w = document.getElementById("burden-chart").offsetWidth || 680;
-          const chart = Plot.plot({
+          const chart = window.stdPlot({
             width: w, height: 360, marginLeft: 90, marginBottom: 82,
             style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-            x: { domain: BRACKETS, label: "Income bracket →", labelOffset: 65, tickRotate: -30 },
-            y: { label: "↑ Households", labelOffset: 78, grid: true, tickFormat: d => d.toLocaleString() },
+            x: { domain: BRACKETS, label: "Income bracket", labelOffset: 65, tickRotate: -30 },
+            y: { label: "Households", labelOffset: 78, grid: true, tickFormat: d => d.toLocaleString() },
             color: { domain: BURDENS, range: BCOLORS, legend: true },
             marks: [
               Plot.barY(subset, { x: "income_bracket", y: "count", fill: "burden",
@@ -811,16 +805,16 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             if (!data.length) return;
             const w = document.getElementById("burden-trend-chart").offsetWidth || 680;
             const yKey = activeBMetric === "rate" ? "burden_rate" : activeBMetric === "count" ? "cost_burdened" : "severe_rate";
-            const yLabel = activeBMetric === "rate" ? "Cost-burdened renters (%) →" : activeBMetric === "count" ? "Cost-burdened households →" : "Severely burdened renters (%) →";
+            const yLabel = activeBMetric === "rate" ? "Cost-burdened renters (%)" : activeBMetric === "count" ? "Cost-burdened households" : "Severely burdened renters (%)";
             const yFmt = activeBMetric === "count" ? d => d.toLocaleString() : d => d + "%";
             const yVals = data.map(d => d[yKey]).filter(v => v != null);
             const yLo = Math.min(...yVals), yHi = Math.max(...yVals);
             const step = activeBMetric === "count" ? 500 : 5;
             const yDomain = [Math.max(0, Math.floor((yLo - step) / step) * step), Math.ceil((yHi + step * 0.5) / step) * step];
-            const chart = Plot.plot({
-              width: w, height: 320, marginLeft: 90, marginRight: 90, marginBottom: 55,
+            const chart = window.stdPlot({
+              width: w, height: 320, marginBottom: 55,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
               y: { label: yLabel, labelOffset: 78, grid: true, tickFormat: yFmt, domain: yDomain },
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: activeBTown === "All" },
               marks: [
@@ -867,12 +861,12 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const yVals = data.map(d => d.severely_cost_burdened_households).filter(v => v != null);
             const yHi = Math.max(...yVals);
             const s = 200;
-            const chart = Plot.plot({
+            const chart = window.stdPlot({
               width: w, height: 320,
-              marginLeft: 90, marginRight: 90, marginBottom: 55,
+              marginBottom: 55,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: { label: "↑ Severely burdened households", labelOffset: 78, grid: true,
+              x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: { label: "Severely burdened households", labelOffset: 78, grid: true,
                    tickFormat: d => d.toLocaleString(), domain: [0, Math.ceil((yHi + s) / s) * s] },
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: isAll },
               marks: [
@@ -930,10 +924,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           const w = document.getElementById("race-chart").offsetWidth || 680;
           let chart;
           if (activeView === "ownership") {
-            chart = Plot.plot({
+            chart = window.stdPlot({
               width: w, height: 320, marginLeft: 200, marginBottom: 50,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Ownership rate (%) →", labelOffset: 45, domain: [0, 105], grid: true },
+              x: { label: "Ownership rate (%)", labelOffset: 45, domain: [0, 105], grid: true },
               y: { label: null, domain: [...CORE_RACES].reverse() },
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: true },
               marks: [
@@ -950,10 +944,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
               { town: d.town, race: d.race, tenure: "Renter", count: d.renter },
             ]);
             const isAll = activeRaceTown === "All";
-            chart = Plot.plot({
+            chart = window.stdPlot({
               width: w, height: isAll ? 900 : 320, marginLeft: 180, marginRight: isAll ? 110 : 20, marginBottom: 50,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Households →", labelOffset: 45, grid: true },
+              x: { label: "Households", labelOffset: 45, grid: true },
               y: { label: null, domain: [...CORE_RACES].reverse() },
               color: { domain: ["Owner","Renter"], range: ["#3f4e75","#e05c4b"], legend: true },
               ...(isAll ? { facet: { data: stacked, y: "town", label: null }, fy: { axis: "right", label: null, tickSize: 0, tickPadding: 10 } } : {}),
@@ -1092,10 +1086,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
               const data = town === "All" ? allData : allData.filter(d => d.town === town);
               const ww = document.getElementById("race-comp-chart").offsetWidth || 680;
               const nTowns = [...new Set(data.map(d => d.town))].length;
-              const chart = Plot.plot({
+              const chart = window.stdPlot({
                 width: ww, height: Math.max(120, nTowns * 60 + 80), marginLeft: 90, marginBottom: 50,
                 style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-                x: {label: "Share of population →", labelOffset: 45, tickFormat: d => d + "%", domain: [0, 100]},
+                x: {label: "Share of population", labelOffset: 45, tickFormat: d => d + "%", domain: [0, 100]},
                 y: {label: null},
                 color: { legend: true, domain: RACE_ORDER, range: RACE_ORDER.map(r => RACE_COLORS[r]) },
                 marks: [
@@ -1175,11 +1169,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const activeRaces = new Set([...document.querySelectorAll('[data-racetrend-race].on')].map(b => b.dataset.racetrendRace));
             const subset = long.filter(d => d.town === activeTown && activeRaces.has(d.race));
             const w = document.getElementById("race-trend-chart").offsetWidth || 680;
-            const chart = Plot.plot({
-              width: w, height: 320, marginLeft: 90, marginRight: 90, marginBottom: 50,
+            const chart = window.stdPlot({
+              width: w, height: 320, marginBottom: 50,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 45, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: { label: "↑ Share of population (%)", labelOffset: 78, grid: true, tickFormat: d => d.toFixed(0) + "%" },
+              x: { label: "Year", labelOffset: 45, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: { label: "Share of population (%)", labelOffset: 78, grid: true, tickFormat: d => d.toFixed(0) + "%" },
               color: { domain: Object.keys(RACE_COLORS), range: Object.values(RACE_COLORS), legend: true },
               marks: [
                 Plot.ruleY([100], { stroke: "#aaa", strokeDasharray: "4,3" }),
@@ -1230,11 +1224,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           const data = town === "All" ? dpRows : dpRows.filter(d => d.town === town);
           if (!data.length) return;
           const w = el.offsetWidth || 680;
-          const chart = Plot.plot({
+          const chart = window.stdPlot({
             width: w, height: town === "All" ? 200 : 100,
-            marginLeft: 120, marginRight: 60, marginTop: 20, marginBottom: 55,
             style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-            x: { label: "Years to Save 20% Down Payment →", labelOffset: 50, grid: true, domain: [0, 12] },
+            x: { label: "Years to Save 20% Down Payment", labelOffset: 50, grid: true, domain: [0, 12] },
             y: { label: null },
             marks: [
               Plot.barX(data, {
@@ -1283,12 +1276,12 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           let chart;
           if (isAll) {
             // Grouped bar chart — all 3 towns side by side per bracket
-            chart = Plot.plot({
+            chart = window.stdPlot({
               width: w, height: 400, marginLeft: 80, marginBottom: 90,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              fx: { domain: BRACKET_ORDER, axis: "bottom", label: "Income bracket →", tickRotate: -30, padding: 0.15 },
+              fx: { domain: BRACKET_ORDER, axis: "bottom", label: "Income bracket", tickRotate: -30, padding: 0.15 },
               x: { axis: null },
-              y: { label: "↑ Years of gross income", labelOffset: 68, grid: true },
+              y: { label: "Years of gross income", labelOffset: 68, grid: true },
               color: { domain: Object.keys(TOWN_COLORS_PTR), range: Object.values(TOWN_COLORS_PTR), legend: true },
               marks: [
                 Plot.barY(subset, {
@@ -1301,10 +1294,9 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           } else {
             // Horizontal bar chart — single town, colored by ratio value
             const bracketDomain = [...BRACKET_ORDER].reverse();
-            chart = Plot.plot({
-              width: w, height: 280, marginLeft: 120, marginRight: 60, marginTop: 10, marginBottom: 55,
-              style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Price-to-Income Ratio (Years) →", labelOffset: 50, grid: true },
+            chart = window.stdPlot({
+              width: w, height: 280, style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
+              x: { label: "Price-to-Income Ratio (Years)", labelOffset: 50, grid: true },
               y: { label: null, domain: bracketDomain },
               color: { type: "sequential", scheme: "YlOrRd", domain: [0, Math.ceil(Math.max(...subset.map(d => d.ratio)))], legend: true, label: "Price-to-Income Ratio" },
               marks: [
@@ -1361,11 +1353,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
               const data = town === "All" ? rows : rows.filter(d => d.town === town);
               if (!data.length) return;
               const w = document.getElementById("median-income-chart").offsetWidth || 680;
-              const chart = Plot.plot({
-                width: w, height: 340, marginLeft: 90, marginRight: 90, marginBottom: 55,
+              const chart = window.stdPlot({
+                width: w, height: 340, marginBottom: 55,
                 style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-                x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-                y: (() => { const vals = data.map(d => d.income).filter(v=>v!=null); const lo = Math.min(...vals), hi = Math.max(...vals); const s = 10000; return { label: "↑ Median household income", labelOffset: 78, grid: true, tickFormat: d => "$" + (d/1000).toFixed(0) + "k", domain: [Math.floor((lo - s) / s) * s, Math.ceil((hi + s * 0.5) / s) * s] }; })(),
+                x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+                y: (() => { const vals = data.map(d => d.income).filter(v=>v!=null); const lo = Math.min(...vals), hi = Math.max(...vals); const s = 10000; return { label: "Median household income", labelOffset: 78, grid: true, tickFormat: d => "$" + (d/1000).toFixed(0) + "k", domain: [Math.floor((lo - s) / s) * s, Math.ceil((hi + s * 0.5) / s) * s] }; })(),
                 color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: town === "All" },
                 marks: [
                   Plot.line(data, { x: "year", y: "income", stroke: "town", strokeWidth: 2.5 }),
@@ -1410,11 +1402,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const showLegend = activeTrendTown === "All";
 
             const w1 = document.getElementById("gini-chart").offsetWidth || 680;
-            const giniChart = Plot.plot({
-              width: w1, height: 300, marginLeft: 90, marginRight: 90, marginBottom: 55,
+            const giniChart = window.stdPlot({
+              width: w1, height: 300, marginBottom: 55,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: { label: "↑ Gini coefficient", labelOffset: 78, grid: true, domain: [0.35, 0.56] },
+              x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: { label: "Gini coefficient", labelOffset: 78, grid: true, domain: [0.35, 0.56] },
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: showLegend },
               marks: [
                 Plot.line(data, { x: "year", y: "gini", stroke: "town", strokeWidth: 2.5 }),
@@ -1427,11 +1419,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             document.getElementById("gini-chart").replaceChildren(giniChart);
 
             const w2 = document.getElementById("ptr-trend-chart").offsetWidth || 680;
-            const ptrChart = Plot.plot({
-              width: w2, height: 300, marginLeft: 90, marginRight: 90, marginBottom: 55,
+            const ptrChart = window.stdPlot({
+              width: w2, height: 300, marginBottom: 55,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: (() => { const vals = data.map(d => d.ptr).filter(v=>v!=null); const lo = Math.min(...vals), hi = Math.max(...vals); const s = 0.5; return { label: "↑ Price-to-income ratio", labelOffset: 78, grid: true, domain: [Math.max(0, Math.floor((lo-s)/s)*s), Math.ceil((hi+s*0.5)/s)*s] }; })(),
+              x: { label: "Year", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: (() => { const vals = data.map(d => d.ptr).filter(v=>v!=null); const lo = Math.min(...vals), hi = Math.max(...vals); const s = 0.5; return { label: "Price-to-income ratio", labelOffset: 78, grid: true, domain: [Math.max(0, Math.floor((lo-s)/s)*s), Math.ceil((hi+s*0.5)/s)*s] }; })(),
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: showLegend },
               marks: [
                 Plot.line(data, { x: "year", y: "ptr", stroke: "town", strokeWidth: 2.5 }),
@@ -1503,10 +1495,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             ]);
             const w1 = document.getElementById("alice-bar-chart").offsetWidth || 480;
             const h = filterTown === "All" ? 200 : 120;
-            document.getElementById("alice-bar-chart").replaceChildren(Plot.plot({
-              width: w1, height: h, marginLeft: 110, marginRight: 20, marginBottom: 40,
+            document.getElementById("alice-bar-chart").replaceChildren(window.stdPlot({
+              width: w1, height: h, marginBottom: 40,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Share of households →", labelOffset: 35, tickFormat: d => d.toFixed(0)+"%", domain: [0,100] },
+              x: { label: "Share of households", labelOffset: 35, tickFormat: d => d.toFixed(0)+"%", domain: [0,100] },
               y: { label: null },
               color: { domain: SEGMENTS, range: SEGMENTS.map(s => SEG_COLORS[s]), legend: filterTown === "All" },
               marks: [
@@ -1526,10 +1518,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
               }))
               .sort((a, b) => b.pct - a.pct);
             const w3 = document.getElementById("alice-trend-chart").offsetWidth || 680;
-            document.getElementById("alice-trend-chart").replaceChildren(Plot.plot({
-              width: w3, height: 160, marginLeft: 110, marginRight: 80, marginBottom: 40,
+            document.getElementById("alice-trend-chart").replaceChildren(window.stdPlot({
+              width: w3, height: 160, marginBottom: 40,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "% below ALICE threshold →", labelOffset: 35, tickFormat: d => d.toFixed(0)+"%", domain: [0, Math.ceil(Math.max(...lollipop.map(d=>d.pct))/5)*5 + 5] },
+              x: { label: "% below ALICE threshold", labelOffset: 35, tickFormat: d => d.toFixed(0)+"%", domain: [0, Math.ceil(Math.max(...lollipop.map(d=>d.pct))/5)*5 + 5] },
               y: { label: null },
               marks: [
                 Plot.ruleX([0]),
@@ -1568,10 +1560,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           ].sort((a,b) => b.pct - a.pct);
 
           const w2 = document.getElementById("alice-county-chart").offsetWidth || 480;
-          document.getElementById("alice-county-chart").replaceChildren(Plot.plot({
-            width: w2, height: 180, marginLeft: 140, marginRight: 60, marginBottom: 40,
+          document.getElementById("alice-county-chart").replaceChildren(window.stdPlot({
+            width: w2, height: 180, marginBottom: 40,
             style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-            x: { label: "% below ALICE threshold →", labelOffset: 35, tickFormat: d => d.toFixed(0)+"%" },
+            x: { label: "% below ALICE threshold", labelOffset: 35, tickFormat: d => d.toFixed(0)+"%" },
             y: { label: null },
             marks: [
               Plot.barX(bars, { x: "pct", y: "label", fill: "color", rx: 3,
@@ -1605,11 +1597,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           let activeMetric = "renter_no_car";
           function renderInfra() {
             const w = document.getElementById("infra-chart").offsetWidth || 680;
-            document.getElementById("infra-chart").replaceChildren(Plot.plot({
-              width: w, height: 300, marginLeft: 65, marginRight: 20, marginBottom: 50,
+            document.getElementById("infra-chart").replaceChildren(window.stdPlot({
+              width: w, height: 300, marginBottom: 50,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 45, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: (() => { const vals = infraRows.map(d => d[activeMetric]).filter(v=>v!=null); const lo = Math.min(...vals), hi = Math.max(...vals); const s = 2; return { label: "↑ " + METRIC_LABELS[activeMetric], labelOffset: 55, grid: true, tickFormat: d => d.toFixed(1) + "%", domain: [Math.max(0, Math.floor((lo-s)/s)*s), Math.ceil((hi+s*0.5)/s)*s] }; })(),
+              x: { label: "Year", labelOffset: 45, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: (() => { const vals = infraRows.map(d => d[activeMetric]).filter(v=>v!=null); const lo = Math.min(...vals), hi = Math.max(...vals); const s = 2; return { label: "" + METRIC_LABELS[activeMetric], labelOffset: 55, grid: true, tickFormat: d => d.toFixed(1) + "%", domain: [Math.max(0, Math.floor((lo-s)/s)*s), Math.ceil((hi+s*0.5)/s)*s] }; })(),
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: true },
               marks: [
                 Plot.line(infraRows, { x: "year", y: activeMetric, stroke: "town", strokeWidth: 2.5 }),
@@ -1651,11 +1643,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           let activeMetric = "edu";
           function renderMobility() {
             const w = document.getElementById("mobility-chart").offsetWidth || 680;
-            document.getElementById("mobility-chart").replaceChildren(Plot.plot({
-              width: w, height: 300, marginLeft: 65, marginRight: 20, marginBottom: 50,
+            document.getElementById("mobility-chart").replaceChildren(window.stdPlot({
+              width: w, height: 300, marginBottom: 50,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
-              x: { label: "Year →", labelOffset: 45, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: (() => { const vals = mobRows.map(d => d[activeMetric]).filter(v=>v!=null); const lo = Math.min(...vals), hi = Math.max(...vals); const s = 2; return { label: "↑ " + MOB_LABELS[activeMetric], labelOffset: 55, grid: true, tickFormat: d => d.toFixed(1) + "%", domain: [Math.max(0, Math.floor((lo-s)/s)*s), Math.ceil((hi+s*0.5)/s)*s] }; })(),
+              x: { label: "Year", labelOffset: 45, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
+              y: (() => { const vals = mobRows.map(d => d[activeMetric]).filter(v=>v!=null); const lo = Math.min(...vals), hi = Math.max(...vals); const s = 2; return { label: "" + MOB_LABELS[activeMetric], labelOffset: 55, grid: true, tickFormat: d => d.toFixed(1) + "%", domain: [Math.max(0, Math.floor((lo-s)/s)*s), Math.ceil((hi+s*0.5)/s)*s] }; })(),
               color: { domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: true },
               marks: [
                 Plot.line(mobRows, { x: "year", y: activeMetric, stroke: "town", strokeWidth: 2.5 }),
