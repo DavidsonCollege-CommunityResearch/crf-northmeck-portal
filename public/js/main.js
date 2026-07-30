@@ -16,6 +16,26 @@ var MD_DATA_BASE = (function(){
 // used by every chart script (housing.js, education.js, etc.) instead of each
 // one declaring its own colors. Change a town's color here and it updates
 // everywhere at once.
+// Shared chart defaults — one wrapper every Plot-based chart script uses
+// instead of calling Plot.plot() directly, so margins, font, and axis-arrow
+// conventions stay consistent site-wide without editing each chart by hand.
+window.CHART_MARGINS = { marginLeft: 64, marginRight: 24, marginTop: 24, marginBottom: 48 };
+window.fmtDollar = function(d) { return "$" + Math.round(d).toLocaleString(); };
+window.fmtPercent = function(d) { return d + "%"; };
+window.stdPlot = function(opts) {
+  const merged = Object.assign({}, window.CHART_MARGINS, opts);
+  if (!merged.style) {
+    merged.style = { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "12px" };
+  }
+  if (merged.y && typeof merged.y === "object" && typeof merged.y.label === "string" && merged.y.label && !merged.y.label.startsWith("↑")) {
+    merged.y = Object.assign({}, merged.y, { label: "↑ " + merged.y.label });
+  }
+  if (merged.x && typeof merged.x === "object" && typeof merged.x.label === "string" && merged.x.label && !merged.x.label.endsWith("→")) {
+    merged.x = Object.assign({}, merged.x, { label: merged.x.label + " →" });
+  }
+  return Plot.plot(merged);
+};
+
 window.TOWN_COLORS = { Cornelius: "#440154", Davidson: "#21908c", Huntersville: "#b5de2b" };
 
 window.loadData = async function(name){
