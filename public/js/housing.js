@@ -277,7 +277,7 @@ window.Plot = Plot;
               marginLeft: isAll ? 185 : 80, marginRight: 20, marginBottom: 55,
               style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
               x: { label: "Year", labelOffset: 55, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
-              y: { label: "Index (2018 = 100)", labelOffset: 68, grid: true, domain: [95, 212] },
+              y: { label: "Index (2018 = 100)", labelOffset: 68, grid: true, domain: (() => { const vals = indexed.map(d => d.value); const lo = Math.floor(Math.min(...vals) / 5) * 5 - 5; const hi = Math.ceil(Math.max(...vals) / 5) * 5 + 5; return [lo, hi]; })() },
               ...(isAll ? { fy: { axis: "left", label: null, tickSize: 0, tickPadding: 60 } } : {}),
               color: { domain: ["Home Value","Median Income"], range: ["#e05c4b","#3f4e75"], legend: true },
               ...(isAll ? { facet: { data: indexed, y: "town", label: null } } : {}),
