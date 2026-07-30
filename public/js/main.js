@@ -33,7 +33,7 @@ window.stdPlot = function(opts) {
   if (merged.x && typeof merged.x === "object" && typeof merged.x.label === "string" && merged.x.label && !merged.x.label.endsWith("→")) {
     merged.x = Object.assign({}, merged.x, { label: merged.x.label + " →" });
   }
-  return Plot.plot(merged);
+  return window.Plot.plot(merged);
 };
 
 window.TOWN_COLORS = { Cornelius: "#440154", Davidson: "#21908c", Huntersville: "#b5de2b" };
