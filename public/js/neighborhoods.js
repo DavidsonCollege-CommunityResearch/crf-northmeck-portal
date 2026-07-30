@@ -105,8 +105,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
   reg('nd-pop-chart', DEMO, (rows, w) => {
     const mx = Math.max(...rows.map(d => d.total_population));
-    return Plot.plot({
-      width: w, height: 260, marginLeft: 60, marginRight: 20, marginBottom: 48, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 260, marginBottom: 48, style: STYLE,
       x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
       y: { label: '↑ Population', labelOffset: 48, grid: true,
            domain: [0, Math.ceil((mx * 1.15) / 50) * 50] },
@@ -131,8 +131,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
       { group: 'Asian alone',         pct: +(latest.race_asian / total * 100).toFixed(1) },
       { group: 'Other / multiracial', pct: +(other / total * 100).toFixed(1) },
     ];
-    return Plot.plot({
-      width: w, height: 240, marginLeft: 155, marginRight: 60, marginBottom: 36, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 240, marginBottom: 36, style: STYLE,
       x: { label: 'Share of population (%) →', labelOffset: 30, domain: [0, 100],
            tickFormat: d => d + '%' },
       y: { label: null, domain: raceData.map(d => d.group) },
@@ -145,8 +145,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     });
   });
 
-  reg('nd-hl-chart', DEMO, (rows, w) => Plot.plot({
-    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-hl-chart', DEMO, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ % Hispanic or Latino', labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'hispanic_rate', 1.3))],
@@ -160,8 +160,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     ],
   }));
 
-  reg('nd-fb-chart', DEMO, (rows, w) => Plot.plot({
-    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-fb-chart', DEMO, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ % Foreign-Born', labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'foreign_born_rate', 1.3))],
@@ -189,8 +189,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
       { label: '$50k–$100k', pct: +(latest.income_50k_100k / total * 100).toFixed(1) },
       { label: '$100k+',     pct: +(latest.income_100k_plus / total * 100).toFixed(1) },
     ];
-    return Plot.plot({
-      width: w, height: 210, marginLeft: 90, marginRight: 60, marginBottom: 36, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 210, marginBottom: 36, style: STYLE,
       x: { label: 'Share of households (%) →', labelOffset: 30, domain: [0, 100],
            tickFormat: d => d + '%' },
       y: { label: null, domain: brackets.map(d => d.label) },
@@ -203,8 +203,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     });
   });
 
-  reg('nd-income-trend-chart', ECON, (rows, w) => Plot.plot({
-    width: w, height: 240, marginLeft: 68, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-income-trend-chart', ECON, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ Median Household Income', labelOffset: 56, grid: true,
          tickFormat: d => '$' + (d / 1000).toFixed(0) + 'k' },
@@ -216,8 +216,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     ],
   }));
 
-  reg('nd-poverty-chart', ECON, (rows, w) => Plot.plot({
-    width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-poverty-chart', ECON, (rows, w) => window.stdPlot({
+    width: w, height: 200, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ Poverty Rate', labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'poverty_rate', 1.3))],
@@ -230,8 +230,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     ],
   }));
 
-  reg('nd-gini-chart', ECON, (rows, w) => Plot.plot({
-    width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-gini-chart', ECON, (rows, w) => window.stdPlot({
+    width: w, height: 200, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ Gini Index', labelOffset: 40, grid: true, domain: [0, 1] },
     marks: [
@@ -253,8 +253,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
       { label: 'Owner-occupied',  pct: latest.owner_rate  },
       { label: 'Renter-occupied', pct: latest.renter_rate },
     ];
-    return Plot.plot({
-      width: w, height: 170, marginLeft: 125, marginRight: 60, marginBottom: 36, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 170, marginBottom: 36, style: STYLE,
       x: { label: 'Share of occupied units (%) →', labelOffset: 30, domain: [0, 100],
            tickFormat: d => d + '%' },
       y: { label: null, domain: tenureData.map(d => d.label) },
@@ -275,8 +275,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
       { label: 'Median Gross Rent', value: latest.median_gross_rent, note: '/mo' },
       { label: 'Median Home Value', value: latest.median_home_value, note: '' },
     ];
-    return Plot.plot({
-      width: w, height: 190, marginLeft: 135, marginRight: 90, marginBottom: 36, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 190, marginBottom: 36, style: STYLE,
       x: { label: 'Dollars →', labelOffset: 30, tickFormat: d => '$' + (d / 1000).toFixed(0) + 'k' },
       y: { label: null, domain: bars.map(d => d.label) },
       marks: [
@@ -289,8 +289,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     });
   });
 
-  reg('nd-burden-chart', HOUS, (rows, w) => Plot.plot({
-    width: w, height: 220, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-burden-chart', HOUS, (rows, w) => window.stdPlot({
+    width: w, height: 220, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ Cost Burden Rate', labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'burden_rate', 1.3))],
@@ -316,8 +316,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
       { label: "Bachelor's",      pct: latest.pct_bachelors },
       { label: "Bachelor's+",     pct: latest.pct_bachelors_or_higher },
     ];
-    return Plot.plot({
-      width: w, height: 210, marginLeft: 120, marginRight: 60, marginBottom: 36, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 210, marginBottom: 36, style: STYLE,
       x: { label: 'Share of adults 25+ (%) →', labelOffset: 30, domain: [0, 100],
            tickFormat: d => d + '%' },
       y: { label: null, domain: attData.map(d => d.label) },
@@ -330,10 +330,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     });
   });
 
-  reg('nd-bachelors-chart', EDUC, (rows, w) => Plot.plot({
-    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-bachelors-chart', EDUC, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-    y: { label: "↑ % Bachelor's or Higher", labelOffset: 40, grid: true,
+    y: { label: "% Bachelor's or Higher", labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'pct_bachelors_or_higher', 1.3))],
          tickFormat: d => d + '%' },
     marks: [
@@ -346,8 +346,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
   reg('nd-k12-chart', EDUC, (rows, w) => {
     const mx = Math.max(...rows.map(d => d.n_enrolled_k12 || 0));
-    return Plot.plot({
-      width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 200, marginBottom: 48, style: STYLE,
       x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
       y: { label: '↑ K–12 Enrollment', labelOffset: 48, grid: true,
            domain: [0, Math.ceil((mx * 1.2) / 10) * 10 || 10] },
@@ -372,8 +372,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
       { label: 'Other',            pct: other },
       { label: 'Public transit',   pct: latest.pct_public_transit },
     ];
-    return Plot.plot({
-      width: w, height: 200, marginLeft: 135, marginRight: 60, marginBottom: 36, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 200, marginBottom: 36, style: STYLE,
       x: { label: 'Share of workers (%) →', labelOffset: 30, domain: [0, 100],
            tickFormat: d => d + '%' },
       y: { label: null, domain: modeData.map(d => d.label) },
@@ -386,8 +386,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     });
   });
 
-  reg('nd-commute-time-chart', TRAN, (rows, w) => Plot.plot({
-    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-commute-time-chart', TRAN, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ Avg. Commute (min)', labelOffset: 48, grid: true,
          domain: [0, Math.ceil(Math.max(...rows.map(d => d.avg_commute_minutes || 0)) * 1.2 / 5) * 5 || 60] },
@@ -401,8 +401,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
   reg('nd-no-vehicle-chart', TRAN, (rows, w) => {
     const mx = Math.max(...rows.map(d => d.households_no_vehicle || 0));
-    return Plot.plot({
-      width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 200, marginBottom: 48, style: STYLE,
       x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
       y: { label: '↑ Households', labelOffset: 48, grid: true,
            domain: [0, Math.ceil((mx * 1.2) / 5) * 5 || 10] },
@@ -417,8 +417,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
   // TAB: CHILDCARE
   // ════════════════════════════════════════════════════════════════════════════
 
-  reg('nd-under6-chart', CHLD, (rows, w) => Plot.plot({
-    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-under6-chart', CHLD, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ % Under-6 Needing Care', labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'pct_under6_needs_childcare', 1.3))],
@@ -432,8 +432,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
     ],
   }));
 
-  reg('nd-afterschool-chart', CHLD, (rows, w) => Plot.plot({
-    width: w, height: 240, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+  reg('nd-afterschool-chart', CHLD, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
     x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: '↑ % Ages 6–17 Needing Care', labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'pct_6_17_needs_afterschool', 1.3))],
@@ -449,8 +449,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
   reg('nd-grandparent-chart', CHLD, (rows, w) => {
     const mx = Math.max(...rows.map(d => d.grandparent_caregivers || 0));
-    return Plot.plot({
-      width: w, height: 200, marginLeft: 52, marginRight: 20, marginBottom: 48, style: STYLE,
+    return window.stdPlot({
+      width: w, height: 200, marginBottom: 48, style: STYLE,
       x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
       y: { label: '↑ Households', labelOffset: 48, grid: true,
            domain: [0, Math.ceil((mx * 1.2) / 5) * 5 || 10] },
