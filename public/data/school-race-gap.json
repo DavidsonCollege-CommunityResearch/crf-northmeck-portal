@@ -1,0 +1,604 @@
+[
+  {
+    "school": "Aspire Trade High",
+    "comparison_group": "Black",
+    "white_pct": 26.1,
+    "comparison_pct": 14.8,
+    "gap": 11.3
+  },
+  {
+    "school": "Aspire Trade High",
+    "comparison_group": "Hispanic",
+    "white_pct": 26.1,
+    "comparison_pct": 21.9,
+    "gap": 4.2
+  },
+  {
+    "school": "Aspire Trade High",
+    "comparison_group": "Two or More Races",
+    "white_pct": 26.1,
+    "comparison_pct": 11.5,
+    "gap": 14.6
+  },
+  {
+    "school": "Bailey Middle",
+    "comparison_group": "Asian",
+    "white_pct": 85.9,
+    "comparison_pct": 89.3,
+    "gap": -3.4
+  },
+  {
+    "school": "Bailey Middle",
+    "comparison_group": "Black",
+    "white_pct": 85.9,
+    "comparison_pct": 60.7,
+    "gap": 25.2
+  },
+  {
+    "school": "Bailey Middle",
+    "comparison_group": "Hispanic",
+    "white_pct": 85.9,
+    "comparison_pct": 54.0,
+    "gap": 31.9
+  },
+  {
+    "school": "Bailey Middle",
+    "comparison_group": "Two or More Races",
+    "white_pct": 85.9,
+    "comparison_pct": 78.3,
+    "gap": 7.6
+  },
+  {
+    "school": "Barnette Elementary",
+    "comparison_group": "Asian",
+    "white_pct": 81.0,
+    "comparison_pct": 92.0,
+    "gap": -11.0
+  },
+  {
+    "school": "Barnette Elementary",
+    "comparison_group": "Black",
+    "white_pct": 81.0,
+    "comparison_pct": 57.3,
+    "gap": 23.7
+  },
+  {
+    "school": "Barnette Elementary",
+    "comparison_group": "Hispanic",
+    "white_pct": 81.0,
+    "comparison_pct": 58.9,
+    "gap": 22.1
+  },
+  {
+    "school": "Barnette Elementary",
+    "comparison_group": "Two or More Races",
+    "white_pct": 81.0,
+    "comparison_pct": 55.9,
+    "gap": 25.1
+  },
+  {
+    "school": "Blythe Elementary",
+    "comparison_group": "Asian",
+    "white_pct": 73.2,
+    "comparison_pct": 77.5,
+    "gap": -4.3
+  },
+  {
+    "school": "Blythe Elementary",
+    "comparison_group": "Black",
+    "white_pct": 73.2,
+    "comparison_pct": 56.6,
+    "gap": 16.6
+  },
+  {
+    "school": "Blythe Elementary",
+    "comparison_group": "Hispanic",
+    "white_pct": 73.2,
+    "comparison_pct": 51.8,
+    "gap": 21.4
+  },
+  {
+    "school": "Blythe Elementary",
+    "comparison_group": "Two or More Races",
+    "white_pct": 73.2,
+    "comparison_pct": 69.4,
+    "gap": 3.8
+  },
+  {
+    "school": "Bonnie Cone Classical Academy",
+    "comparison_group": "Asian",
+    "white_pct": 76.9,
+    "comparison_pct": 87.2,
+    "gap": -10.3
+  },
+  {
+    "school": "Bonnie Cone Classical Academy",
+    "comparison_group": "Black",
+    "white_pct": 76.9,
+    "comparison_pct": 52.3,
+    "gap": 24.6
+  },
+  {
+    "school": "Bonnie Cone Classical Academy",
+    "comparison_group": "Hispanic",
+    "white_pct": 76.9,
+    "comparison_pct": 69.2,
+    "gap": 7.7
+  },
+  {
+    "school": "Bonnie Cone Classical Academy",
+    "comparison_group": "Two or More Races",
+    "white_pct": 76.9,
+    "comparison_pct": 71.2,
+    "gap": 5.7
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "comparison_group": "American Indian",
+    "white_pct": 58.5,
+    "comparison_pct": 66.7,
+    "gap": -8.2
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "comparison_group": "Asian",
+    "white_pct": 58.5,
+    "comparison_pct": 80.6,
+    "gap": -22.1
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "comparison_group": "Black",
+    "white_pct": 58.5,
+    "comparison_pct": 38.7,
+    "gap": 19.8
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "comparison_group": "Hispanic",
+    "white_pct": 58.5,
+    "comparison_pct": 38.8,
+    "gap": 19.7
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "comparison_group": "Two or More Races",
+    "white_pct": 58.5,
+    "comparison_pct": 49.0,
+    "gap": 9.5
+  },
+  {
+    "school": "Community School of Davidson",
+    "comparison_group": "Asian",
+    "white_pct": 78.0,
+    "comparison_pct": 79.4,
+    "gap": -1.4
+  },
+  {
+    "school": "Community School of Davidson",
+    "comparison_group": "Black",
+    "white_pct": 78.0,
+    "comparison_pct": 54.7,
+    "gap": 23.3
+  },
+  {
+    "school": "Community School of Davidson",
+    "comparison_group": "Hispanic",
+    "white_pct": 78.0,
+    "comparison_pct": 64.5,
+    "gap": 13.5
+  },
+  {
+    "school": "Community School of Davidson",
+    "comparison_group": "Two or More Races",
+    "white_pct": 78.0,
+    "comparison_pct": 73.2,
+    "gap": 4.8
+  },
+  {
+    "school": "Cornelius Elementary",
+    "comparison_group": "Asian",
+    "white_pct": 85.2,
+    "comparison_pct": null,
+    "gap": null
+  },
+  {
+    "school": "Cornelius Elementary",
+    "comparison_group": "Black",
+    "white_pct": 85.2,
+    "comparison_pct": 65.6,
+    "gap": 19.6
+  },
+  {
+    "school": "Cornelius Elementary",
+    "comparison_group": "Hispanic",
+    "white_pct": 85.2,
+    "comparison_pct": 37.8,
+    "gap": 47.4
+  },
+  {
+    "school": "Cornelius Elementary",
+    "comparison_group": "Two or More Races",
+    "white_pct": 85.2,
+    "comparison_pct": 85.0,
+    "gap": 0.2
+  },
+  {
+    "school": "Davidson K-8 School",
+    "comparison_group": "Asian",
+    "white_pct": 90.2,
+    "comparison_pct": 90.6,
+    "gap": -0.4
+  },
+  {
+    "school": "Davidson K-8 School",
+    "comparison_group": "Black",
+    "white_pct": 90.2,
+    "comparison_pct": 72.4,
+    "gap": 17.8
+  },
+  {
+    "school": "Davidson K-8 School",
+    "comparison_group": "Hispanic",
+    "white_pct": 90.2,
+    "comparison_pct": 65.9,
+    "gap": 24.3
+  },
+  {
+    "school": "Davidson K-8 School",
+    "comparison_group": "Two or More Races",
+    "white_pct": 90.2,
+    "comparison_pct": 78.0,
+    "gap": 12.2
+  },
+  {
+    "school": "Francis Bradley Middle",
+    "comparison_group": "Asian",
+    "white_pct": 77.5,
+    "comparison_pct": 69.7,
+    "gap": 7.8
+  },
+  {
+    "school": "Francis Bradley Middle",
+    "comparison_group": "Black",
+    "white_pct": 77.5,
+    "comparison_pct": 51.1,
+    "gap": 26.4
+  },
+  {
+    "school": "Francis Bradley Middle",
+    "comparison_group": "Hispanic",
+    "white_pct": 77.5,
+    "comparison_pct": 41.0,
+    "gap": 36.5
+  },
+  {
+    "school": "Francis Bradley Middle",
+    "comparison_group": "Two or More Races",
+    "white_pct": 77.5,
+    "comparison_pct": 62.9,
+    "gap": 14.6
+  },
+  {
+    "school": "Grand Oak Elementary",
+    "comparison_group": "Asian",
+    "white_pct": 92.1,
+    "comparison_pct": 91.7,
+    "gap": 0.4
+  },
+  {
+    "school": "Grand Oak Elementary",
+    "comparison_group": "Black",
+    "white_pct": 92.1,
+    "comparison_pct": 72.1,
+    "gap": 20.0
+  },
+  {
+    "school": "Grand Oak Elementary",
+    "comparison_group": "Hispanic",
+    "white_pct": 92.1,
+    "comparison_pct": 71.4,
+    "gap": 20.7
+  },
+  {
+    "school": "Grand Oak Elementary",
+    "comparison_group": "Two or More Races",
+    "white_pct": 92.1,
+    "comparison_pct": null,
+    "gap": null
+  },
+  {
+    "school": "Hopewell High School",
+    "comparison_group": "Asian",
+    "white_pct": 77.7,
+    "comparison_pct": 79.5,
+    "gap": -1.8
+  },
+  {
+    "school": "Hopewell High School",
+    "comparison_group": "Black",
+    "white_pct": 77.7,
+    "comparison_pct": 40.1,
+    "gap": 37.6
+  },
+  {
+    "school": "Hopewell High School",
+    "comparison_group": "Hispanic",
+    "white_pct": 77.7,
+    "comparison_pct": 40.8,
+    "gap": 36.9
+  },
+  {
+    "school": "Hopewell High School",
+    "comparison_group": "Two or More Races",
+    "white_pct": 77.7,
+    "comparison_pct": 53.2,
+    "gap": 24.5
+  },
+  {
+    "school": "Huntersville Elementary",
+    "comparison_group": "Asian",
+    "white_pct": 83.8,
+    "comparison_pct": 93.5,
+    "gap": -9.7
+  },
+  {
+    "school": "Huntersville Elementary",
+    "comparison_group": "Black",
+    "white_pct": 83.8,
+    "comparison_pct": 61.3,
+    "gap": 22.5
+  },
+  {
+    "school": "Huntersville Elementary",
+    "comparison_group": "Hispanic",
+    "white_pct": 83.8,
+    "comparison_pct": 52.5,
+    "gap": 31.3
+  },
+  {
+    "school": "Huntersville Elementary",
+    "comparison_group": "Two or More Races",
+    "white_pct": 83.8,
+    "comparison_pct": 94.4,
+    "gap": -10.6
+  },
+  {
+    "school": "J. M. Alexander Middle",
+    "comparison_group": "Asian",
+    "white_pct": 57.8,
+    "comparison_pct": 61.9,
+    "gap": -4.1
+  },
+  {
+    "school": "J. M. Alexander Middle",
+    "comparison_group": "Black",
+    "white_pct": 57.8,
+    "comparison_pct": 32.4,
+    "gap": 25.4
+  },
+  {
+    "school": "J. M. Alexander Middle",
+    "comparison_group": "Hispanic",
+    "white_pct": 57.8,
+    "comparison_pct": 27.3,
+    "gap": 30.5
+  },
+  {
+    "school": "J. M. Alexander Middle",
+    "comparison_group": "Two or More Races",
+    "white_pct": 57.8,
+    "comparison_pct": 33.9,
+    "gap": 23.9
+  },
+  {
+    "school": "J.V. Washam Elementary",
+    "comparison_group": "Asian",
+    "white_pct": 82.0,
+    "comparison_pct": 71.4,
+    "gap": 10.6
+  },
+  {
+    "school": "J.V. Washam Elementary",
+    "comparison_group": "Black",
+    "white_pct": 82.0,
+    "comparison_pct": 58.1,
+    "gap": 23.9
+  },
+  {
+    "school": "J.V. Washam Elementary",
+    "comparison_group": "Hispanic",
+    "white_pct": 82.0,
+    "comparison_pct": 69.1,
+    "gap": 12.9
+  },
+  {
+    "school": "J.V. Washam Elementary",
+    "comparison_group": "Two or More Races",
+    "white_pct": 82.0,
+    "comparison_pct": 79.5,
+    "gap": 2.5
+  },
+  {
+    "school": "Lake Norman Charter",
+    "comparison_group": "Asian",
+    "white_pct": 87.9,
+    "comparison_pct": null,
+    "gap": null
+  },
+  {
+    "school": "Lake Norman Charter",
+    "comparison_group": "Black",
+    "white_pct": 87.9,
+    "comparison_pct": 70.0,
+    "gap": 17.9
+  },
+  {
+    "school": "Lake Norman Charter",
+    "comparison_group": "Hispanic",
+    "white_pct": 87.9,
+    "comparison_pct": 82.2,
+    "gap": 5.7
+  },
+  {
+    "school": "Lake Norman Charter",
+    "comparison_group": "Two or More Races",
+    "white_pct": 87.9,
+    "comparison_pct": 84.5,
+    "gap": 3.4
+  },
+  {
+    "school": "Lakeside Charter Academy",
+    "comparison_group": "Black",
+    "white_pct": 61.2,
+    "comparison_pct": 41.8,
+    "gap": 19.4
+  },
+  {
+    "school": "Lakeside Charter Academy",
+    "comparison_group": "Hispanic",
+    "white_pct": 61.2,
+    "comparison_pct": 39.1,
+    "gap": 22.1
+  },
+  {
+    "school": "Lakeside Charter Academy",
+    "comparison_group": "Two or More Races",
+    "white_pct": 61.2,
+    "comparison_pct": 45.5,
+    "gap": 15.7
+  },
+  {
+    "school": "Long Creek Elementary",
+    "comparison_group": "Asian",
+    "white_pct": 50.0,
+    "comparison_pct": 70.6,
+    "gap": -20.6
+  },
+  {
+    "school": "Long Creek Elementary",
+    "comparison_group": "Black",
+    "white_pct": 50.0,
+    "comparison_pct": 42.8,
+    "gap": 7.2
+  },
+  {
+    "school": "Long Creek Elementary",
+    "comparison_group": "Hispanic",
+    "white_pct": 50.0,
+    "comparison_pct": 41.0,
+    "gap": 9.0
+  },
+  {
+    "school": "Long Creek Elementary",
+    "comparison_group": "Two or More Races",
+    "white_pct": 50.0,
+    "comparison_pct": 48.3,
+    "gap": 1.7
+  },
+  {
+    "school": "North Academy of World Languages",
+    "comparison_group": "Black",
+    "white_pct": 90.4,
+    "comparison_pct": 72.7,
+    "gap": 17.7
+  },
+  {
+    "school": "North Academy of World Languages",
+    "comparison_group": "Hispanic",
+    "white_pct": 90.4,
+    "comparison_pct": 70.5,
+    "gap": 19.9
+  },
+  {
+    "school": "North Academy of World Languages",
+    "comparison_group": "Two or More Races",
+    "white_pct": 90.4,
+    "comparison_pct": 89.1,
+    "gap": 1.3
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "comparison_group": "Asian",
+    "white_pct": 72.0,
+    "comparison_pct": 81.3,
+    "gap": -9.3
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "comparison_group": "Black",
+    "white_pct": 72.0,
+    "comparison_pct": 44.2,
+    "gap": 27.8
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "comparison_group": "Hispanic",
+    "white_pct": 72.0,
+    "comparison_pct": 42.6,
+    "gap": 29.4
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "comparison_group": "Two or More Races",
+    "white_pct": 72.0,
+    "comparison_pct": 33.3,
+    "gap": 38.7
+  },
+  {
+    "school": "Torrence Creek Elementary",
+    "comparison_group": "Asian",
+    "white_pct": 78.5,
+    "comparison_pct": 75.9,
+    "gap": 2.6
+  },
+  {
+    "school": "Torrence Creek Elementary",
+    "comparison_group": "Black",
+    "white_pct": 78.5,
+    "comparison_pct": 64.2,
+    "gap": 14.3
+  },
+  {
+    "school": "Torrence Creek Elementary",
+    "comparison_group": "Hispanic",
+    "white_pct": 78.5,
+    "comparison_pct": 53.2,
+    "gap": 25.3
+  },
+  {
+    "school": "Torrence Creek Elementary",
+    "comparison_group": "Two or More Races",
+    "white_pct": 78.5,
+    "comparison_pct": 69.8,
+    "gap": 8.7
+  },
+  {
+    "school": "William Amos Hough High",
+    "comparison_group": "Asian",
+    "white_pct": 85.2,
+    "comparison_pct": 89.8,
+    "gap": -4.6
+  },
+  {
+    "school": "William Amos Hough High",
+    "comparison_group": "Black",
+    "white_pct": 85.2,
+    "comparison_pct": 58.1,
+    "gap": 27.1
+  },
+  {
+    "school": "William Amos Hough High",
+    "comparison_group": "Hispanic",
+    "white_pct": 85.2,
+    "comparison_pct": 55.9,
+    "gap": 29.3
+  },
+  {
+    "school": "William Amos Hough High",
+    "comparison_group": "Two or More Races",
+    "white_pct": 85.2,
+    "comparison_pct": 72.7,
+    "gap": 12.5
+  }
+]

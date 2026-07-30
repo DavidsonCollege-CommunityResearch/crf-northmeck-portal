@@ -1,0 +1,134 @@
+[
+  {
+    "school": "Aspire Trade High",
+    "swd_pct": 13.3,
+    "nswd_pct": 21.1,
+    "gap": 7.8
+  },
+  {
+    "school": "Bailey Middle",
+    "swd_pct": 27.5,
+    "nswd_pct": 83.2,
+    "gap": 55.7
+  },
+  {
+    "school": "Barnette Elementary",
+    "swd_pct": 16.0,
+    "nswd_pct": 77.4,
+    "gap": 61.4
+  },
+  {
+    "school": "Blythe Elementary",
+    "swd_pct": 21.0,
+    "nswd_pct": 66.3,
+    "gap": 45.3
+  },
+  {
+    "school": "Bonnie Cone Classical Academy",
+    "swd_pct": 25.0,
+    "nswd_pct": 65.5,
+    "gap": 40.5
+  },
+  {
+    "school": "Bonnie Cone Leadership Academy",
+    "swd_pct": 8.2,
+    "nswd_pct": 54.0,
+    "gap": 45.8
+  },
+  {
+    "school": "Community School of Davidson",
+    "swd_pct": 31.3,
+    "nswd_pct": 83.6,
+    "gap": 52.3
+  },
+  {
+    "school": "Cornelius Elementary",
+    "swd_pct": 29.9,
+    "nswd_pct": 80.9,
+    "gap": 51.0
+  },
+  {
+    "school": "Davidson K-8 School",
+    "swd_pct": 42.2,
+    "nswd_pct": 89.3,
+    "gap": 47.1
+  },
+  {
+    "school": "Francis Bradley Middle",
+    "swd_pct": 23.8,
+    "nswd_pct": 65.3,
+    "gap": 41.5
+  },
+  {
+    "school": "Grand Oak Elementary",
+    "swd_pct": 48.7,
+    "nswd_pct": 93.9,
+    "gap": 45.2
+  },
+  {
+    "school": "Hopewell High School",
+    "swd_pct": 14.5,
+    "nswd_pct": 53.9,
+    "gap": 39.4
+  },
+  {
+    "school": "Huntersville Elementary",
+    "swd_pct": 40.0,
+    "nswd_pct": 82.7,
+    "gap": 42.7
+  },
+  {
+    "school": "J. M. Alexander Middle",
+    "swd_pct": 5.3,
+    "nswd_pct": 36.6,
+    "gap": 31.3
+  },
+  {
+    "school": "J.V. Washam Elementary",
+    "swd_pct": 29.5,
+    "nswd_pct": 83.0,
+    "gap": 53.5
+  },
+  {
+    "school": "Lake Norman Charter",
+    "swd_pct": 42.6,
+    "nswd_pct": 89.8,
+    "gap": 47.2
+  },
+  {
+    "school": "Lakeside Charter Academy",
+    "swd_pct": 18.9,
+    "nswd_pct": 52.9,
+    "gap": 34.0
+  },
+  {
+    "school": "Long Creek Elementary",
+    "swd_pct": 15.9,
+    "nswd_pct": 50.2,
+    "gap": 34.3
+  },
+  {
+    "school": "North Academy of World Languages",
+    "swd_pct": 32.4,
+    "nswd_pct": 81.1,
+    "gap": 48.7
+  },
+  {
+    "school": "North Mecklenburg High School",
+    "swd_pct": 13.0,
+    "nswd_pct": 49.8,
+    "gap": 36.8
+  },
+  {
+    "school": "Torrence Creek Elementary",
+    "swd_pct": 30.6,
+    "nswd_pct": 73.0,
+    "gap": 42.4
+  },
+  {
+    "school": "William Amos Hough High",
+    "swd_pct": 26.3,
+    "nswd_pct": 80.6,
+    "gap": 54.3
+  }
+]
