@@ -692,3 +692,125 @@ window.Plot = Plot;
           render(window.__masterTown || 'All');
           document.addEventListener('masterTownChange', e => render(e.detail.town));
 })();
+
+
+// Block 14 (module) - Proficiency Gap by Race, average across schools
+(async function() {
+  let rows;
+  try {
+    rows = await window.loadData('school-race-gap');
+  } catch (e) {
+    console.error('school-race-gap load failed:', e);
+    window.mdShowError('chart-race-gap-avg');
+    return;
+  }
+  const RACE_COLORS = { 'American Indian': '#440154', 'Asian': '#3b528b', 'Black': '#21908c', 'Hispanic': '#5dc963', 'Two or More Races': '#fde725' };
+  const el = document.getElementById('chart-race-gap-avg');
+  const byGroup = {};
+  rows.forEach(d => {
+    if (d.gap == null) return;
+    (byGroup[d.comparison_group] = byGroup[d.comparison_group] || []).push(d.gap);
+  });
+  const avgData = Object.keys(byGroup).filter(g => byGroup[g].length >= 3).map(g => ({
+    comparison_group: g,
+    avg_gap: byGroup[g].reduce((a, b) => a + b, 0) / byGroup[g].length,
+    n: byGroup[g].length
+  })).sort((a, b) => b.avg_gap - a.avg_gap);
+  const w = el.clientWidth || 700;
+  el.innerHTML = '';
+  el.append(window.stdPlot({
+    width: w, height: 260,
+    marginLeft: 150,
+    x: { label: "Avg. proficiency point gap", grid: true },
+    y: { label: null, domain: avgData.map(d => d.comparison_group) },
+    marks: [
+      Plot.barX(avgData, { y: 'comparison_group', x: 'avg_gap', fill: d => RACE_COLORS[d.comparison_group], rx: 3 }),
+      Plot.text(avgData, { y: 'comparison_group', x: 'avg_gap', text: d => d.avg_gap.toFixed(1) + ' pts (' + d.n + ' schools)', dx: 24, fontSize: 12 })
+    ]
+  }));
+})();
+
+// Block 15 (module) - Schools with the largest race-based proficiency gap
+(async function() {
+  let rows;
+  try {
+    rows = await window.loadData('school-race-gap');
+  } catch (e) {
+    console.error('school-race-gap load failed:', e);
+    window.mdShowError('chart-race-gap-top');
+    return;
+  }
+  const RACE_COLORS = { 'American Indian': '#440154', 'Asian': '#3b528b', 'Black': '#21908c', 'Hispanic': '#5dc963', 'Two or More Races': '#fde725' };
+  const el = document.getElementById('chart-race-gap-top');
+  const bySchool = {};
+  rows.forEach(d => {
+    if (d.gap == null) return;
+    if (!bySchool[d.school] || d.gap > bySchool[d.school].gap) bySchool[d.school] = d;
+  });
+  const top = Object.values(bySchool).sort((a, b) => b.gap - a.gap).slice(0, 12);
+  const w = el.clientWidth || 700;
+  el.innerHTML = '';
+  el.append(window.stdPlot({
+    width: w, height: 420,
+    marginLeft: 190,
+    x: { label: "Largest reported gap (points)", grid: true },
+    y: { label: null, domain: top.map(d => d.school) },
+    color: { domain: Object.keys(RACE_COLORS), range: Object.values(RACE_COLORS), legend: true },
+    marks: [
+      Plot.barX(top, { y: 'school', x: 'gap', fill: 'comparison_group', rx: 3,
+        tip: true, title: d => `${d.school}\n${d.comparison_group}: ${d.gap} point gap` })
+    ]
+  }));
+})();
+
+// Block 16 (module) - Economic disadvantage: proficiency gap by school
+(async function() {
+  let rows;
+  try {
+    rows = await window.loadData('school-economic-gap');
+  } catch (e) {
+    console.error('school-economic-gap load failed:', e);
+    window.mdShowError('chart-economic-gap');
+    return;
+  }
+  const el = document.getElementById('chart-economic-gap');
+  const data = rows.filter(d => d.gap != null).slice().sort((a, b) => b.gap - a.gap);
+  const w = el.clientWidth || 700;
+  el.innerHTML = '';
+  el.append(window.stdPlot({
+    width: w, height: 480,
+    marginLeft: 190,
+    x: { label: "Proficiency gap (points)", grid: true },
+    y: { label: null, domain: data.map(d => d.school) },
+    marks: [
+      Plot.barX(data, { y: 'school', x: 'gap', fill: '#21908c', rx: 3,
+        tip: true, title: d => `${d.school}\nEcon. disadvantaged: ${d.econ_disadv}%\nNot disadvantaged: ${d.not_disadv}%\nGap: ${d.gap} pts` })
+    ]
+  }));
+})();
+
+// Block 17 (module) - Students with disabilities: proficiency gap by school
+(async function() {
+  let rows;
+  try {
+    rows = await window.loadData('school-disability-gap');
+  } catch (e) {
+    console.error('school-disability-gap load failed:', e);
+    window.mdShowError('chart-disability-gap');
+    return;
+  }
+  const el = document.getElementById('chart-disability-gap');
+  const data = rows.filter(d => d.gap != null).slice().sort((a, b) => b.gap - a.gap);
+  const w = el.clientWidth || 700;
+  el.innerHTML = '';
+  el.append(window.stdPlot({
+    width: w, height: 480,
+    marginLeft: 190,
+    x: { label: "Proficiency gap (points)", grid: true },
+    y: { label: null, domain: data.map(d => d.school) },
+    marks: [
+      Plot.barX(data, { y: 'school', x: 'gap', fill: '#3b528b', rx: 3,
+        tip: true, title: d => `${d.school}\nWith disabilities: ${d.swd_pct}%\nWithout: ${d.nswd_pct}%\nGap: ${d.gap} pts` })
+    ]
+  }));
+})();
