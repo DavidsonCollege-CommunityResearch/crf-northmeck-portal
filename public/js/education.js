@@ -3,7 +3,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 1 (module)
 (async function() {
-          const TOWN_COLORS = {Cornelius:'#4e79a7',Davidson:'#f28e2b',Huntersville:'#59a14f'};
+          const TOWN_COLORS = window.TOWN_COLORS;
           const rawData = [
             {town:'Cornelius',year:2018,k12:5233},{town:'Cornelius',year:2019,k12:5439},{town:'Cornelius',year:2021,k12:5944},{town:'Cornelius',year:2022,k12:5581},{town:'Cornelius',year:2023,k12:5643},
             {town:'Davidson',year:2018,k12:2488},{town:'Davidson',year:2019,k12:2532},{town:'Davidson',year:2021,k12:2627},{town:'Davidson',year:2022,k12:2613},{town:'Davidson',year:2023,k12:2639},
@@ -80,7 +80,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 3 (module)
 (async function() {
-          const TOWN_COLORS = {Cornelius:'#4e79a7',Davidson:'#f28e2b',Huntersville:'#59a14f'};
+          const TOWN_COLORS = window.TOWN_COLORS;
           const rawData = [
             {town:'Cornelius',year:2018,bach_plus:54.49},{town:'Cornelius',year:2019,bach_plus:53.53},{town:'Cornelius',year:2021,bach_plus:55.69},{town:'Cornelius',year:2022,bach_plus:58.62},{town:'Cornelius',year:2023,bach_plus:59.63},
             {town:'Davidson',year:2018,bach_plus:33.87},{town:'Davidson',year:2019,bach_plus:73.36},{town:'Davidson',year:2021,bach_plus:74.96},{town:'Davidson',year:2022,bach_plus:33.25},{town:'Davidson',year:2023,bach_plus:75.56},
@@ -160,7 +160,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 5 (module)
 (async function() {
-          const TOWN_COLORS = {Cornelius:'#4e79a7',Davidson:'#f28e2b',Huntersville:'#59a14f'};
+          const TOWN_COLORS = window.TOWN_COLORS;
           const LEVEL_ORDER = ['Less than HS','HS Diploma','Some College',"Bachelor's",'Graduate/Prof'];
           const earningsRaw = [
             {town:'Cornelius',level:'Less than HS',earnings:25255},
@@ -677,7 +677,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             window.mdShowError('chart-total-enrollment-trend');
             return;
           }
-          const TOWN_COLORS = {Cornelius: "#4e79a7", Davidson: "#f28e2b", Huntersville: "#59a14f"};
+          const TOWN_COLORS = window.TOWN_COLORS;
           const el = document.getElementById('chart-total-enrollment-trend');
           const allValues = enrollment.map(d => d.n_enrolled_total);
           const yMin = Math.floor(Math.min(...allValues) / 1000) * 1000;
