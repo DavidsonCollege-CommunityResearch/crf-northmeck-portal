@@ -14,9 +14,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const data = town === 'All' ? rawData : rawData.filter(d => d.town === town);
             const w = el.clientWidth || 700;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               width: w, height: 320,
-              marginLeft: 65, marginRight: 20, marginTop: 20, marginBottom: 40,
               x: {label: 'Year', tickFormat: d => String(d)},
               y: {label: 'K–12 Enrollment', grid: true},
               color: {domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: town === 'All'},
@@ -60,9 +59,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const data = buildRows(town);
             const w = el.clientWidth || 700;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               width: w, height: 340,
-              marginLeft: 65, marginRight: 20, marginTop: 20, marginBottom: 40,
               x: {label: 'Year', tickFormat: d => String(d)},
               y: {label: 'Enrollment', grid: true},
               color: {domain: Object.keys(LEVEL_COLORS), range: Object.values(LEVEL_COLORS), legend: true},
@@ -91,9 +89,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const data = town === 'All' ? rawData : rawData.filter(d => d.town === town);
             const w = el.clientWidth || 700;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               width: w, height: 320,
-              marginLeft: 55, marginRight: 20, marginTop: 20, marginBottom: 40,
               x: {label: 'Year', tickFormat: d => String(d)},
               y: {label: "Bachelor's+ (%)", grid: true, domain: [20, 85]},
               color: {domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: town === 'All'},
@@ -138,9 +135,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const towns = [...new Set(data.map(d => d.town))];
             const w = el.clientWidth || 700;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               width: w, height: 60 + towns.length * 60,
-              marginLeft: 110, marginRight: 20, marginTop: 30, marginBottom: 40,
               x: {label: 'Share (%)', tickFormat: d => d + '%', grid: true},
               y: {label: null},
               color: {domain: LEVELS, range: LEVELS.map(l => LEVEL_COLORS[l]), legend: true},
@@ -183,9 +179,8 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const data = town === 'All' ? earningsRaw : earningsRaw.filter(d => d.town === town);
             const w = el.clientWidth || 700;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               width: w, height: 360,
-              marginLeft: 110, marginRight: 20, marginTop: 20, marginBottom: 50,
               x: {label: 'Education Level', domain: LEVEL_ORDER},
               y: {label: 'Median Earnings', grid: true, tickFormat: d => '$' + Math.round(d/1000) + 'k'},
               color: {domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: true},
@@ -223,11 +218,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const data = withRate.filter(d => d.glp != null).sort((a, b) => b.glp - a.glp);
             const w = el.clientWidth || 750;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               title: "Grade-Level Proficiency Across North Mecklenburg (2024-25)",
               width: w,
               height: 100 + data.length * 22,
-              marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
               x: {label: "Grade-Level Proficiency (%)", domain: [0, 100], grid: true},
               y: {label: null, domain: data.map(d => d.school)},
               marks: [
@@ -280,10 +274,9 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const data = filtered.slice().sort((a, b) => b.index_score - a.index_score);
             const w = el.clientWidth || 750;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               width: w,
               height: 100 + data.length * 22,
-              marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
               x: {label: "Growth Index Score (0 = met expected growth)", domain: [-8, 8], grid: true},
               y: {label: null, domain: data.map(d => d.school)},
               color: {
@@ -346,11 +339,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const data = withRate.filter(d => d.grad_4yr != null).sort((a, b) => b.grad_4yr - a.grad_4yr);
             const w = el.clientWidth || 700;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               title: "Four-Year Graduation Rate: North Meck High Schools (2024-25)",
               width: w,
               height: 100 + data.length * 22,
-              marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
               x: {label: "Four-Year Cohort Graduation Rate (%)", domain: [0, 100], grid: true},
               y: {label: null, domain: data.map(d => d.school)},
               color: {
@@ -408,11 +400,10 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             const data = filtered.slice().sort((a, b) => b.gap - a.gap);
             const w = el.clientWidth || 750;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               subtitle: "Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students",
               width: w,
               height: 100 + data.length * 22,
-              marginLeft: 220, marginRight: 20, marginTop: 30, marginBottom: 40,
               x: {label: "Grade-Level Proficient (%)", domain: [0, 100], grid: true},
               y: {label: null, domain: data.map(d => d.school)},
               color: {
@@ -496,12 +487,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             ]).filter(d => d.value != null);
             const w = el.clientWidth || 750;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               title: "High School College & Career Readiness: North Meck (2024-25)",
               subtitle: "Grades 9–12 only",
               width: w,
               height: 60 + data.length * 46,
-              marginLeft: 220, marginRight: 20, marginTop: 40, marginBottom: 40,
               x: {label: "Percent of students (%)", domain: [0, 100], grid: true},
               y: {axis: null, domain: ["Grade-Level Proficient", "College/Career Ready"]},
               fy: {label: null, domain: data.map(d => d.school)},
@@ -563,12 +553,11 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
               .sort((a, b) => b.gap - a.gap);
             const w = el.clientWidth || 750;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               title: "Economic Achievement Gap in North Meck High Schools (2024-25)",
               subtitle: "Grades 9–12 grade-level proficiency: economically disadvantaged vs. not",
               width: w,
               height: 100 + data.length * 22,
-              marginLeft: 200, marginRight: 20, marginTop: 30, marginBottom: 40,
               x: {label: "Grade-Level Proficient (%)", domain: [0, 100], grid: true},
               y: {label: null, domain: data.map(d => d.school)},
               color: {
@@ -640,7 +629,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             });
             const w = el.clientWidth || 760;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               subtitle: "Indexed to 2018 = 100. K-12 student counts rose only 3–6% while town populations grew 14–26%.",
               caption: "Source: U.S. Census Bureau, ACS 5-Year Estimates, Tables B01003 and B14007. Population shown is age 3+, the universe for the ACS school enrollment question.",
               width: w,
@@ -680,16 +669,15 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
           const TOWN_COLORS = window.TOWN_COLORS;
           const el = document.getElementById('chart-total-enrollment-trend');
           const allValues = enrollment.map(d => d.n_enrolled_total);
-          const yMin = Math.floor(Math.min(...allValues) / 1000) * 1000;
+          const yMin = 0;
           const yMax = Math.ceil(Math.max(...allValues) / 1000) * 1000;
           function render(town) {
             const data = (town === 'All' ? enrollment : enrollment.filter(d => d.town === town))
               .slice().sort((a, b) => a.year - b.year);
             const w = el.clientWidth || 700;
             el.innerHTML = '';
-            el.append(Plot.plot({
+            el.append(window.stdPlot({
               width: w, height: 340,
-              marginLeft: 65, marginRight: 20, marginTop: 20, marginBottom: 40,
               x: {label: "Year", tickFormat: d => String(d), insetLeft: 12, insetRight: 12},
               y: {label: "Total Enrollment", grid: true, interval: 1000, domain: [yMin, yMax]},
               color: {domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: town === 'All'},
