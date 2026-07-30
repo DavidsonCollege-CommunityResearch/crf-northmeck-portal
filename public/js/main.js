@@ -12,6 +12,12 @@ var MD_DATA_BASE = (function(){
   return './';
 })();
 
+// Shared town color palette — viridis-based (colorblind-safe), one definition
+// used by every chart script (housing.js, education.js, etc.) instead of each
+// one declaring its own colors. Change a town's color here and it updates
+// everywhere at once.
+window.TOWN_COLORS = { Cornelius: "#440154", Davidson: "#21908c", Huntersville: "#b5de2b" };
+
 window.loadData = async function(name){
   var res = await fetch(MD_DATA_BASE + 'data/' + name + '.json');
   if (!res.ok) throw new Error('Failed to load data/' + name + '.json: HTTP ' + res.status);
