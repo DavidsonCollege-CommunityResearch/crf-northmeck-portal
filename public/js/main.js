@@ -27,6 +27,9 @@ window.stdPlot = function(opts) {
   if (!merged.style) {
     merged.style = { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "12px" };
   }
+  if (merged.y && typeof merged.y === "object" && merged.y.domain === undefined && merged.y.zero === undefined) {
+    merged.y = Object.assign({}, merged.y, { zero: true });
+  }
   if (merged.y && typeof merged.y === "object" && typeof merged.y.label === "string" && merged.y.label && !merged.y.label.startsWith("↑")) {
     merged.y = Object.assign({}, merged.y, { label: "↑ " + merged.y.label });
   }
