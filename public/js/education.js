@@ -638,7 +638,7 @@ window.Plot = Plot;
               marginRight: 20,
               x: {label: "Year", tickFormat: "d", ticks: [2018, 2020, 2022, 2024]},
               fx: {label: null},
-              y: {label: "Index (2018 = 100)", domain: [95, 130], grid: true},
+              y: {label: "Index (2018 = 100)", domain: (() => { const vals = enrollIndex.map(d => d.index); const lo = Math.floor(Math.min(...vals) / 5) * 5 - 5; const hi = Math.ceil(Math.max(...vals) / 5) * 5 + 5; return [lo, hi]; })(), grid: true},
               color: {legend: true, domain: ["Total population (3+)", "K-12 enrollment"], range: ["#b5495b", "#3b6ea5"], label: null},
               facet: {data: enrollIndex, x: "town"},
               marks: [
