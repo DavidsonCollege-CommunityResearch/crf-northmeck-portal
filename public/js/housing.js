@@ -4,7 +4,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 // Block 1 (module)
 (async function() {
 
-        const TOWN_C = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_C = window.TOWN_COLORS;
         const TOWNS = ["Cornelius", "Davidson", "Huntersville"];
         const FONT = { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "12px" };
 
@@ -180,7 +180,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
             style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
             x: { label: "Year →", labelOffset: 50, ticks: [2018,2019,2020,2021,2022,2023,2024], tickFormat: d => String(d) },
             y: { label: "↑ Median rent ($/mo)", labelOffset: 52, grid: true, tickFormat: d => "$" + d.toLocaleString(), domain: [0, Math.ceil(Math.max(...data.map(d => d.median_rent)) / 200) * 200 + 200] },
-            color: { domain: ["Cornelius","Davidson","Huntersville"], range: ["#3f4e75","#f0a500","#e05c4b"], legend: town === "All" },
+            color: { domain: ["Cornelius","Davidson","Huntersville"], range: Object.values(window.TOWN_COLORS), legend: town === "All" },
             marks: [
               Plot.line(data, { x: "year", y: "median_rent", stroke: "town", strokeWidth: 2.5 }),
               Plot.dot(data,  { x: "year", y: "median_rent", fill: "town", r: 4,
@@ -495,7 +495,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 6 (module)
 (async function() {
-        const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS = window.TOWN_COLORS;
         document.getElementById("rti-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
         document.getElementById("hpti-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
         let afRows;
@@ -572,7 +572,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 7 (module)
 (async function() {
-          const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+          const TOWN_COLORS = window.TOWN_COLORS;
           document.getElementById("population-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
           let rows;
           try {
@@ -623,7 +623,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 8 (module)
 (async function() {
-          const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+          const TOWN_COLORS = window.TOWN_COLORS;
           const TENURE_COLORS = { "Owner-occupied": "#3f4e75", "Renter-occupied": "#e05c4b" };
 
           let rows = [];
@@ -792,7 +792,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 // Block 11 (module)
 (async function() {
 
-        const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS = window.TOWN_COLORS;
 
         let burdenTrend;
         try {
@@ -853,7 +853,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 12 (module)
 (async function() {
-          const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+          const TOWN_COLORS = window.TOWN_COLORS;
           let rows = [];
           let activeTown = "All";
 
@@ -920,7 +920,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
         const raceData = [{"town":"Cornelius","race":"White alone","total":12014,"owner":8802,"renter":3212,"ownership_rate":73.3,"renter_rate":26.7},{"town":"Davidson","race":"White alone","total":4809,"owner":3934,"renter":875,"ownership_rate":81.8,"renter_rate":18.2},{"town":"Huntersville","race":"White alone","total":18426,"owner":13928,"renter":4498,"ownership_rate":75.6,"renter_rate":24.4},{"town":"Cornelius","race":"Black or African American","total":511,"owner":148,"renter":363,"ownership_rate":29,"renter_rate":71},{"town":"Davidson","race":"Black or African American","total":392,"owner":245,"renter":147,"ownership_rate":62.5,"renter_rate":37.5},{"town":"Huntersville","race":"Black or African American","total":3544,"owner":1679,"renter":1865,"ownership_rate":47.4,"renter_rate":52.6},{"town":"Cornelius","race":"American Indian/Alaska Native","total":61,"owner":8,"renter":53,"ownership_rate":13.1,"renter_rate":86.9},{"town":"Cornelius","race":"Asian","total":325,"owner":166,"renter":159,"ownership_rate":51.1,"renter_rate":48.9},{"town":"Davidson","race":"Asian","total":120,"owner":120,"renter":0,"ownership_rate":100,"renter_rate":0},{"town":"Huntersville","race":"Asian","total":1206,"owner":1100,"renter":106,"ownership_rate":91.2,"renter_rate":8.8},{"town":"Cornelius","race":"Some other race","total":182,"owner":80,"renter":102,"ownership_rate":44,"renter_rate":56},{"town":"Huntersville","race":"Some other race","total":708,"owner":393,"renter":315,"ownership_rate":55.5,"renter_rate":44.5},{"town":"Cornelius","race":"Two or more races","total":791,"owner":446,"renter":345,"ownership_rate":56.4,"renter_rate":43.6},{"town":"Davidson","race":"Two or more races","total":237,"owner":143,"renter":94,"ownership_rate":60.3,"renter_rate":39.7},{"town":"Huntersville","race":"Two or more races","total":1150,"owner":850,"renter":300,"ownership_rate":73.9,"renter_rate":26.1},{"town":"Cornelius","race":"White, not Hispanic","total":11924,"owner":8754,"renter":3170,"ownership_rate":73.4,"renter_rate":26.6},{"town":"Davidson","race":"White, not Hispanic","total":4744,"owner":3882,"renter":862,"ownership_rate":81.8,"renter_rate":18.2},{"town":"Huntersville","race":"White, not Hispanic","total":18158,"owner":13763,"renter":4395,"ownership_rate":75.8,"renter_rate":24.2},{"town":"Cornelius","race":"Hispanic or Latino","total":578,"owner":310,"renter":268,"ownership_rate":53.6,"renter_rate":46.4},{"town":"Davidson","race":"Hispanic or Latino","total":165,"owner":78,"renter":87,"ownership_rate":47.3,"renter_rate":52.7},{"town":"Huntersville","race":"Hispanic or Latino","total":1621,"owner":963,"renter":658,"ownership_rate":59.4,"renter_rate":40.6}];
 
         const coreData = raceData.filter(d => CORE_RACES.includes(d.race));
-        const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS = window.TOWN_COLORS;
 
         let activeView = "ownership";
         let activeRaceTown = window.__masterTown || "All";
@@ -1221,7 +1221,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 17 (module)
 (async function() {
-        const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS = window.TOWN_COLORS;
 
         let dpRows = [];
 
@@ -1269,7 +1269,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
         const PTR_BRACKETS = ["Less than $10k","$10k-$19,999","$20k-$34,999","$35k-$49,999","$50k-$74,999","$75k-$99,999","$100k-$149,999"];
         const ptrData = await window.loadData('dlib-ptr-by-bracket');
 
-        const TOWN_COLORS_PTR = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS_PTR = window.TOWN_COLORS;
         const BRACKET_ORDER = PTR_BRACKETS.slice(1);
         let activePtrTown = "all";
 
@@ -1350,7 +1350,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 19 (module)
 (async function() {
-          const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+          const TOWN_COLORS = window.TOWN_COLORS;
           document.getElementById("median-income-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
           let rows;
           try {
@@ -1388,7 +1388,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 // Block 20 (module)
 (async function() {
 
-        const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS = window.TOWN_COLORS;
 
         document.getElementById("gini-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
         document.getElementById("ptr-trend-chart").innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>';
@@ -1465,7 +1465,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 21 (module)
 (async function() {
-        const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS = window.TOWN_COLORS;
         const SEGMENTS = ["Below FPL", "ALICE", "Above ALICE threshold"];
         const SEG_COLORS = { "Below FPL": "#e05c4b", "ALICE": "#f0a500", "Above ALICE threshold": "#3f4e75" };
 
@@ -1585,7 +1585,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 22 (module)
 (async function() {
-        const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS = window.TOWN_COLORS;
         const METRIC_LABELS = {
           renter_no_car: "Renter no-car rate (%)",
           owner_no_car: "Owner no-car rate (%)",
@@ -1633,7 +1633,7 @@ import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm"
 
 // Block 23 (module)
 (async function() {
-        const TOWN_COLORS = { Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b" };
+        const TOWN_COLORS = window.TOWN_COLORS;
         const MOB_LABELS = {
           edu: "Adults with bachelor's or higher (%)",
           poverty: "Poverty rate (%)",
