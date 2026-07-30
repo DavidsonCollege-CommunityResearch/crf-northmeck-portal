@@ -179,44 +179,41 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       <div class="sec-head"><span class="eyebrow">School Demographics</span><h2 class="sec-h">Who is in the classroom, and how has that changed?</h2><p class="lead">The racial, ethnic, and economic composition of North Meck schools reflects — and sometimes diverges from — the communities they serve. Tracking these patterns over time reveals how growth, attendance zones, and school choice interact with equity.</p></div>
 
       <div class="grid-2" style="margin-bottom:28px">
-        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Racial &amp; ethnic composition by school (2023)</div>
-          <div class="card-s">% enrolled by race/ethnicity</div>
-          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
-            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-            <div style="font-size:12px;margin-top:4px">Source: NCES CCD</div>
+        <div class="card viz-host" id="race-gap-avg-host">
+          <div class="card-t">Proficiency Gap by Race, Average Across Schools</div>
+          <div class="card-s">Percentage-point gap vs. white students' proficiency rate · North Meck schools</div>
+          <div id="chart-race-gap-avg"></div>
+          <div class="callout">
+            <div class="callout-t">This shows an achievement gap, not enrollment composition: a 20-point gap means that group's proficiency rate is 20 points below white students' rate at the same schools, not that the group makes up 20% of enrollment. American Indian students are excluded from this average — only 1 school reported a value, too few to average meaningfully.</div>
+            <div class="callout-s">Source: NC School Report Cards, NC DPI</div>
           </div>
         </div>
 
-        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Racial composition trends over time</div>
-          <div class="card-s">Change in % by race group</div>
-          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
-            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-            <div style="font-size:12px;margin-top:4px">Source: NCES CCD</div>
+        <div class="card viz-host" id="race-gap-top-host">
+          <div class="card-t">Schools With the Largest Race-Based Proficiency Gap</div>
+          <div class="card-s">Largest reported gap per school, top 12 · colored by comparison group</div>
+          <div id="chart-race-gap-top"></div>
+          <div class="callout">
+            <div class="callout-s">Source: NC School Report Cards, NC DPI</div>
           </div>
         </div>
       </div>
 
       <div class="grid-2" style="margin-bottom:28px">
-        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Free &amp; reduced lunch eligibility by school</div>
-          <div class="card-s">Economic disadvantage proxy · % qualifying students</div>
-          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
-            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-            <div style="font-size:12px;margin-top:4px">Source: NCES CCD Lunch Program Survey</div>
+        <div class="card viz-host" id="economic-gap-host">
+          <div class="card-t">Economic Disadvantage: Proficiency Gap by School</div>
+          <div class="card-s">Economically disadvantaged students' proficiency rate vs. their peers, by school</div>
+          <div id="chart-economic-gap"></div>
+          <div class="callout">
+            <div class="callout-s">Source: NC School Report Cards, NC DPI</div>
           </div>
         </div>
-        <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">English Language Learner &amp; IEP rates by school</div>
-          <div class="card-s">% ELL and % students with disabilities</div>
-          <div style="padding:48px 0;text-align:center;color:var(--ink-3)">
-            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-            <div style="font-size:12px;margin-top:4px">Source: NCES CCD / EDFacts</div>
+        <div class="card viz-host" id="disability-gap-host">
+          <div class="card-t">Students With Disabilities: Proficiency Gap by School</div>
+          <div class="card-s">Students with disabilities' proficiency rate vs. their peers, by school</div>
+          <div id="chart-disability-gap"></div>
+          <div class="callout">
+            <div class="callout-s">Source: NC School Report Cards, NC DPI</div>
           </div>
         </div>
       </div>
