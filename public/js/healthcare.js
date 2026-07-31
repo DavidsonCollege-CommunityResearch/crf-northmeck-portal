@@ -967,7 +967,7 @@ function renderOverviewAgeUnins() {
           vis.gridContainer = d3.select(vis.config.parentElement)
             .append("div")
             .style("display", "grid")
-            .style("grid-template-columns", "repeat(2, max-content)")
+            .style("grid-template-columns", "repeat(2, 1fr)")
             .style("gap", "16px");
 
           // One empty svg and title per age group
@@ -1341,7 +1341,10 @@ function renderOverviewAgeUnins() {
         var el = clear('hc-ins-age-trend'); if(!el) return;
         if(!window.HC_INS_DATA || !window.HC_INS_DATA.length) return;
         if(!town){
-          new TownAgeUninsTrendChart({ parentElement: '#hc-ins-age-trend', panelWidth: 300, panelHeight: 250 }, window.HC_INS_DATA);
+          var gridGap = 16;
+          var containerWidth = el.clientWidth || 900;
+          var computedPanelWidth = Math.floor((containerWidth - gridGap) / 2);
+          new TownAgeUninsTrendChart({ parentElement: '#hc-ins-age-trend', panelWidth: computedPanelWidth, panelHeight: 250 }, window.HC_INS_DATA);
         } else {
           var rows = window.HC_INS_DATA.filter(function(d){ return d.Town === town; });
           if(!rows.length) return;
