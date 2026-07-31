@@ -176,7 +176,7 @@ window.Plot = Plot;
       { label: '$100k+',     pct: +(latest.income_100k_plus / total * 100).toFixed(1) },
     ];
     return window.stdPlot({
-      width: w, height: 210, marginBottom: 36, style: STYLE,
+      width: w, height: 210, marginBottom: 36, marginLeft: 90, style: STYLE,
       x: { label: 'Share of households (%) →', labelOffset: 30, domain: [0, 100],
            tickFormat: d => d + '%' },
       y: { label: null, domain: brackets.map(d => d.label) },
@@ -202,28 +202,45 @@ window.Plot = Plot;
     ],
   }));
 
-  reg('nd-poverty-chart', ECON, (rows, w) => window.stdPlot({
-    width: w, height: 200, marginBottom: 48, style: STYLE,
-    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-    y: { label: '↑ Poverty Rate', labelOffset: 40, grid: true,
-         domain: [0, Math.min(100, yMax(rows, 'poverty_rate', 1.3))],
-         tickFormat: d => d + '%' },
-    marks: [
-      Plot.line(rows, { x: 'year', y: 'poverty_rate', stroke: RED, strokeWidth: 2.5 }),
-      Plot.dot(rows,  { x: 'year', y: 'poverty_rate', fill: RED, r: 4,
-        tip: true, title: d => `${d.year}\n${d.poverty_rate}% below poverty line` }),
-      Plot.ruleY([0]),
-    ],
-  }));
+  reg('nd-income-dist-trend-chart', ECON, (rows, w) => {
+    const BRACKETS = ['Under $25k', '$25k–$50k', '$50k–$100k', '$100k+'];
+    const BRACKET_COLORS = {
+      'Under $25k':  '#440154',
+      '$25k–$50k':   '#31688e',
+      '$50k–$100k':  '#35b779',
+      '$100k+':      '#fde725',
+    };
+    const long = [];
+    rows.forEach(d => {
+      const tot = d.total_households || 0;
+      if (!tot) return;
+      long.push({ year: d.year, bracket: 'Under $25k',  pct: +(d.income_under_25k / tot * 100).toFixed(1) });
+      long.push({ year: d.year, bracket: '$25k–$50k',   pct: +(d.income_25k_50k   / tot * 100).toFixed(1) });
+      long.push({ year: d.year, bracket: '$50k–$100k',  pct: +(d.income_50k_100k  / tot * 100).toFixed(1) });
+      long.push({ year: d.year, bracket: '$100k+',      pct: +(d.income_100k_plus / tot * 100).toFixed(1) });
+    });
+    if (!long.length) return null;
+    return window.stdPlot({
+      width: w, height: 300, marginBottom: 56, marginRight: 20, style: STYLE,
+      x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+      y: { label: 'Share of Households (%)', labelOffset: 48, grid: true, domain: [0, 100], tickFormat: d => d + '%' },
+      color: { domain: BRACKETS, range: BRACKETS.map(b => BRACKET_COLORS[b]), legend: true },
+      marks: [
+        Plot.barY(long, Plot.stackY({ order: BRACKETS, x: 'year', y: 'pct', fill: 'bracket',
+          tip: true, title: d => `${d.bracket}\n${d.year}: ${d.pct}%` })),
+        Plot.ruleY([0]),
+      ],
+    });
+  });
 
-  reg('nd-gini-chart', ECON, (rows, w) => window.stdPlot({
-    width: w, height: 200, marginBottom: 48, style: STYLE,
-    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-    y: { label: '↑ Gini Index', labelOffset: 40, grid: true, domain: [0, 1] },
+  reg('nd-total-households-chart', ECON, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: 'Total Households', labelOffset: 52, grid: true,
+         domain: [0, yMax(rows, 'total_households', 1.15)] },
     marks: [
-      Plot.line(rows, { x: 'year', y: 'gini', stroke: BLUE2, strokeWidth: 2.5 }),
-      Plot.dot(rows,  { x: 'year', y: 'gini', fill: BLUE2, r: 4,
-        tip: true, title: d => `${d.year}\nGini: ${d.gini}` }),
+      Plot.barY(rows, { x: 'year', y: 'total_households', fill: ACCENT, rx: 3,
+        tip: true, title: d => `${d.year}\n${d.total_households.toLocaleString()} households` }),
       Plot.ruleY([0]),
     ],
   }));
