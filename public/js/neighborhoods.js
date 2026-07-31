@@ -320,7 +320,7 @@ window.Plot = Plot;
     };
     const long = [];
     rows.forEach(d => {
-      const tot = d.total_pop_25_plus || 0;
+      const tot = d.pop_25_plus || 0;
       if (!tot) return;
       long.push({ year: d.year, level: 'Less than HS',    pct: +(d.n_less_than_hs    / tot * 100).toFixed(1) });
       long.push({ year: d.year, level: 'HS / Equivalent', pct: +(d.n_hs_or_equiv     / tot * 100).toFixed(1) });
@@ -336,8 +336,8 @@ window.Plot = Plot;
       y: { label: 'Share of Adults 25+ (%)', labelOffset: 48, grid: true, domain: [0, 100], tickFormat: d => d + '%' },
       color: { domain: LEVELS, range: LEVELS.map(l => LEVEL_COLORS[l]), legend: true },
       marks: [
-        Plot.barY(long, { x: 'year', y: 'pct', fill: 'level', order: LEVELS,
-          tip: true, title: d => `${d.level}\n${d.year}: ${d.pct}%` }),
+        Plot.barY(long, Plot.stackY({ order: LEVELS, x: 'year', y: 'pct', fill: 'level',
+          tip: true, title: d => `${d.level}\n${d.year}: ${d.pct}%` })),
         Plot.ruleY([0]),
       ],
     });
@@ -361,10 +361,10 @@ window.Plot = Plot;
     width: w, height: 240, marginBottom: 48, style: STYLE,
     x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: 'Population 25+', labelOffset: 52, grid: true,
-         domain: [0, yMax(rows, 'total_pop_25_plus', 1.15)] },
+         domain: [0, yMax(rows, 'pop_25_plus', 1.15)] },
     marks: [
-      Plot.barY(rows, { x: 'year', y: 'total_pop_25_plus', fill: ACCENT, rx: 3,
-        tip: true, title: d => `${d.year}\n${d.total_pop_25_plus.toLocaleString()} adults 25+` }),
+      Plot.barY(rows, { x: 'year', y: 'pop_25_plus', fill: ACCENT, rx: 3,
+        tip: true, title: d => `${d.year}\n${d.pop_25_plus.toLocaleString()} adults 25+` }),
       Plot.ruleY([0]),
     ],
   }));
