@@ -308,32 +308,44 @@ window.Plot = Plot;
   // TAB: EDUCATION
   // ════════════════════════════════════════════════════════════════════════════
 
-  reg('nd-attainment-chart', EDUC, (rows, w) => {
-    const latest = rows[rows.length - 1];
-    if (!latest) return null;
-    const attData = [
-      { label: 'Less than HS',    pct: latest.pct_less_than_hs },
-      { label: 'HS / Equivalent', pct: latest.pct_hs_or_equiv },
-      { label: "Bachelor's",      pct: latest.pct_bachelors },
-      { label: "Bachelor's+",     pct: latest.pct_bachelors_or_higher },
-    ];
+  reg('nd-attainment-composition-chart', EDUC, (rows, w) => {
+    const LEVELS = ['Less than HS', 'HS / Equivalent', 'Some College', "Associate's", "Bachelor's", 'Graduate/Prof.'];
+    const LEVEL_COLORS = {
+      'Less than HS':    '#440154',
+      'HS / Equivalent': '#414487',
+      'Some College':    '#2a788e',
+      "Associate's":     '#22a884',
+      "Bachelor's":      '#7ad151',
+      'Graduate/Prof.':  '#fde725',
+    };
+    const long = [];
+    rows.forEach(d => {
+      const tot = d.total_pop_25_plus || 0;
+      if (!tot) return;
+      long.push({ year: d.year, level: 'Less than HS',    pct: +(d.n_less_than_hs    / tot * 100).toFixed(1) });
+      long.push({ year: d.year, level: 'HS / Equivalent', pct: +(d.n_hs_or_equiv     / tot * 100).toFixed(1) });
+      long.push({ year: d.year, level: 'Some College',    pct: +(d.n_some_college    / tot * 100).toFixed(1) });
+      long.push({ year: d.year, level: "Associate's",     pct: +(d.n_associates      / tot * 100).toFixed(1) });
+      long.push({ year: d.year, level: "Bachelor's",      pct: +(d.n_bachelors       / tot * 100).toFixed(1) });
+      long.push({ year: d.year, level: 'Graduate/Prof.',  pct: +(d.n_graduate_or_prof/ tot * 100).toFixed(1) });
+    });
+    if (!long.length) return null;
     return window.stdPlot({
-      width: w, height: 210, marginBottom: 36, style: STYLE,
-      x: { label: 'Share of adults 25+ (%) →', labelOffset: 30, domain: [0, 100],
-           tickFormat: d => d + '%' },
-      y: { label: null, domain: attData.map(d => d.label) },
+      width: w, height: 300, marginBottom: 70, marginRight: 20, style: STYLE,
+      x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+      y: { label: 'Share of Adults 25+ (%)', labelOffset: 48, grid: true, domain: [0, 100], tickFormat: d => d + '%' },
+      color: { domain: LEVELS, range: LEVELS.map(l => LEVEL_COLORS[l]), legend: true },
       marks: [
-        Plot.barX(attData, { x: 'pct', y: 'label', fill: ACCENT, rx: 3 }),
-        Plot.text(attData, { x: 'pct', y: 'label', text: d => (d.pct || 0) + '%', dx: 6,
-          textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
-        Plot.ruleX([0]),
+        Plot.barY(long, { x: 'year', y: 'pct', fill: 'level', order: LEVELS,
+          tip: true, title: d => `${d.level}\n${d.year}: ${d.pct}%` }),
+        Plot.ruleY([0]),
       ],
     });
   });
 
   reg('nd-bachelors-chart', EDUC, (rows, w) => window.stdPlot({
     width: w, height: 240, marginBottom: 48, style: STYLE,
-    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: "% Bachelor's or Higher", labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'pct_bachelors_or_higher', 1.3))],
          tickFormat: d => d + '%' },
@@ -345,19 +357,31 @@ window.Plot = Plot;
     ],
   }));
 
-  reg('nd-k12-chart', EDUC, (rows, w) => {
-    const mx = Math.max(...rows.map(d => d.n_enrolled_k12 || 0));
-    return window.stdPlot({
-      width: w, height: 200, marginBottom: 48, style: STYLE,
-      x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-      y: { label: '↑ K–12 Enrollment', labelOffset: 48, grid: true,
-           domain: [0, Math.ceil((mx * 1.2) / 10) * 10 || 10] },
-      marks: [
-        Plot.barY(rows, { x: 'year', y: 'n_enrolled_k12', fill: ACCENT, rx: 3 }),
-        Plot.ruleY([0]),
-      ],
-    });
-  });
+  reg('nd-pop25-chart', EDUC, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: 'Population 25+', labelOffset: 52, grid: true,
+         domain: [0, yMax(rows, 'total_pop_25_plus', 1.15)] },
+    marks: [
+      Plot.barY(rows, { x: 'year', y: 'total_pop_25_plus', fill: ACCENT, rx: 3,
+        tip: true, title: d => `${d.year}\n${d.total_pop_25_plus.toLocaleString()} adults 25+` }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-less-hs-chart', EDUC, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: '% Less Than High School', labelOffset: 44, grid: true,
+         domain: [0, Math.max(5, Math.ceil(Math.max(...rows.map(d => d.pct_less_than_hs || 0)) * 1.3))],
+         tickFormat: d => d + '%' },
+    marks: [
+      Plot.line(rows, { x: 'year', y: 'pct_less_than_hs', stroke: RED, strokeWidth: 2.5 }),
+      Plot.dot(rows,  { x: 'year', y: 'pct_less_than_hs', fill: RED, r: 4,
+        tip: true, title: d => `${d.year}\n${d.pct_less_than_hs}% less than HS` }),
+      Plot.ruleY([0]),
+    ],
+  }));
 
   // ════════════════════════════════════════════════════════════════════════════
   // TAB: TRANSPORTATION
