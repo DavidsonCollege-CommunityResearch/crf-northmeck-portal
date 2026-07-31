@@ -107,18 +107,24 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
           </div>
         </div>
         <div class="nbhd-sub-section">
-          <div class="nbhd-sub-h">Poverty &amp; Inequality</div>
-          <p class="nbhd-sub-lead">Poverty rate and income inequality (Gini index) for the block group.</p>
+          <div class="nbhd-sub-h">Income Over Time</div>
+          <p class="nbhd-sub-lead">How the income bracket mix has shifted since 2020, and how the number of households has grown alongside it.</p>
           <div class="g2">
             <div class="card viz-host">
-              <div class="card-t">Poverty Rate</div>
-              <div class="card-s">% of households below the federal poverty line</div>
-              <div id="nd-poverty-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="card-t">Household Income Distribution Over Time</div>
+              <div class="card-s">Share of households in each income bracket, by year</div>
+              <div id="nd-income-dist-trend-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="callout">
+                <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+              </div>
             </div>
             <div class="card viz-host">
-              <div class="card-t">Income Inequality (Gini Index)</div>
-              <div class="card-s">0 = perfect equality, 1 = maximum inequality</div>
-              <div id="nd-gini-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="card-t">Total Households Over Time</div>
+              <div class="card-s">Number of households, by year</div>
+              <div id="nd-total-households-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="callout">
+                <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+              </div>
             </div>
           </div>
         </div>
