@@ -133,31 +133,31 @@ window.Plot = Plot;
       { group: 'Other / multiracial', pct: +(other / total * 100).toFixed(1) },
     ];
     return window.stdPlot({
-      width: w, height: 240, marginBottom: 36, style: STYLE,
-      x: { label: 'Share of population (%) →', labelOffset: 30, domain: [0, 100],
+      width: w, height: 280, marginBottom: 56, style: STYLE,
+      y: { label: 'Share of population (%)', labelOffset: 48, grid: true, domain: [0, 100],
            tickFormat: d => d + '%' },
-      y: { label: null, domain: raceData.map(d => d.group) },
+      x: { label: null, domain: raceData.map(d => d.group) },
       marks: [
-        Plot.barX(raceData, { x: 'pct', y: 'group', fill: d => RACE_COLORS[d.group], rx: 3 }),
-        Plot.text(raceData, { x: 'pct', y: 'group', text: d => d.pct + '%', dx: 6,
-          textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
-        Plot.ruleX([0]),
+        Plot.barY(raceData, { x: 'group', y: 'pct', fill: d => RACE_COLORS[d.group], rx: 3 }),
+        Plot.text(raceData, { x: 'group', y: 'pct', text: d => d.pct + '%', dy: -8,
+          fill: 'var(--ink-2)', fontSize: 12 }),
+        Plot.ruleY([0]),
       ],
     });
   });
 
   reg('nd-hl-chart', DEMO, (rows, w) => window.stdPlot({
-    width: w, height: 240, marginBottom: 48, style: STYLE,
-    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-    y: { label: '↑ % Hispanic or Latino', labelOffset: 40, grid: true,
+    width: w, height: 240, marginBottom: 36, marginLeft: 54, style: STYLE,
+    y: { label: null, domain: rows.map(d => d.year), tickFormat: String },
+    x: { label: 'Share Hispanic or Latino (%)', labelOffset: 30, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'hispanic_rate', 1.3))],
          tickFormat: d => d + '%' },
     marks: [
-      Plot.barY(rows, { x: 'year', y: 'hispanic_rate', fill: RED, rx: 3 }),
-      Plot.text(rows, { x: 'year', y: 'hispanic_rate',
-        text: d => (d.hispanic_rate || 0) + '%', dy: -6, textAnchor: 'middle',
-        fill: 'var(--ink-2)', fontSize: 12 }),
-      Plot.ruleY([0]),
+      Plot.barX(rows, { x: 'hispanic_rate', y: 'year', fill: RED, rx: 3 }),
+      Plot.text(rows, { x: 'hispanic_rate', y: 'year',
+        text: d => (d.hispanic_rate || 0) + '%', dx: 6,
+        textAnchor: 'start', fill: 'var(--ink-2)', fontSize: 12 }),
+      Plot.ruleX([0]),
     ],
   }));
 
