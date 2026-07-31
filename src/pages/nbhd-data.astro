@@ -199,27 +199,44 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       <div class="wrap">
         <div class="nbhd-sub-section" style="margin-top:40px">
           <div class="nbhd-sub-h">Commute Mode</div>
-          <p class="nbhd-sub-lead">How residents get to work — driving alone, transit, walking, cycling, or working from home.</p>
+          <p class="nbhd-sub-lead">How residents get to work: driving alone, transit, walking, cycling, or working from home, and how that mix has shifted since 2018.</p>
           <div class="g2">
             <div class="card viz-host">
               <div class="card-t">Commute Mode Share</div>
-              <div class="card-s">% of workers by primary mode of transportation, most recent ACS year</div>
+              <div class="card-s">% of workers by primary mode of transportation, most recent <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> year</div>
               <div id="nd-commute-mode-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
             </div>
             <div class="card viz-host">
-              <div class="card-t">Average Commute Time</div>
-              <div class="card-s">Average one-way commute in minutes</div>
-              <div id="nd-commute-time-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="card-t">Commute Mode Over Time</div>
+              <div class="card-s">Share of workers driving alone, using public transit, or working from home, by year</div>
+              <div id="nd-commute-trend-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="callout">
+                <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+              </div>
             </div>
           </div>
         </div>
+
         <div class="nbhd-sub-section">
-          <div class="nbhd-sub-h">Vehicle Access</div>
-          <p class="nbhd-sub-lead">Households with no vehicle available — a key indicator of transportation hardship in a car-dependent region.</p>
-          <div class="card viz-host">
-            <div class="card-t">Zero-Vehicle Households</div>
-            <div class="card-s">Number of households with no car, truck, or van</div>
-            <div id="nd-no-vehicle-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+          <div class="nbhd-sub-h">Remote Work &amp; Workforce</div>
+          <p class="nbhd-sub-lead">Remote work reshaped commuting patterns nationally after 2020. Tracking it locally shows how much of that shift reached this neighborhood, and how its working-age population has grown alongside it.</p>
+          <div class="g2">
+            <div class="card viz-host">
+              <div class="card-t">Remote Work Adoption Over Time</div>
+              <div class="card-s">% of workers working from home, by year</div>
+              <div id="nd-remote-work-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="callout">
+                <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+              </div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Total Workers Over Time</div>
+              <div class="card-s">Number of employed residents age 16 and over, by year</div>
+              <div id="nd-total-workers-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="callout">
+                <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
