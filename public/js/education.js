@@ -220,7 +220,6 @@ window.Plot = Plot;
             const w = el.clientWidth || 750;
             el.innerHTML = '';
             el.append(window.stdPlot({
-              title: "Grade-Level Proficiency Across North Mecklenburg (2024-25)",
               width: w,
               height: 100 + data.length * 22,
               x: {label: "Grade-Level Proficiency (%)", domain: [0, 100], grid: true},
@@ -341,7 +340,6 @@ window.Plot = Plot;
             const w = el.clientWidth || 700;
             el.innerHTML = '';
             el.append(window.stdPlot({
-              title: "Four-Year Graduation Rate: North Meck High Schools (2024-25)",
               width: w,
               height: 100 + data.length * 22,
               x: {label: "Four-Year Cohort Graduation Rate (%)", domain: [0, 100], grid: true},
@@ -402,7 +400,6 @@ window.Plot = Plot;
             const w = el.clientWidth || 750;
             el.innerHTML = '';
             el.append(window.stdPlot({
-              subtitle: "Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students",
               width: w,
               height: 100 + data.length * 22,
               x: {label: "Grade-Level Proficient (%)", domain: [0, 100], grid: true},
@@ -489,8 +486,6 @@ window.Plot = Plot;
             const w = el.clientWidth || 750;
             el.innerHTML = '';
             el.append(window.stdPlot({
-              title: "High School College & Career Readiness: North Meck (2024-25)",
-              subtitle: "Grades 9–12 only",
               width: w,
               height: 60 + data.length * 46,
               x: {label: "Percent of students (%)", domain: [0, 100], grid: true},
@@ -555,8 +550,6 @@ window.Plot = Plot;
             const w = el.clientWidth || 750;
             el.innerHTML = '';
             el.append(window.stdPlot({
-              title: "Economic Achievement Gap in North Meck High Schools (2024-25)",
-              subtitle: "Grades 9–12 grade-level proficiency: economically disadvantaged vs. not",
               width: w,
               height: 100 + data.length * 22,
               x: {label: "Grade-Level Proficient (%)", domain: [0, 100], grid: true},
@@ -631,8 +624,6 @@ window.Plot = Plot;
             const w = el.clientWidth || 760;
             el.innerHTML = '';
             el.append(window.stdPlot({
-              subtitle: "Indexed to 2018 = 100. K-12 student counts rose only 3–6% while town populations grew 14–26%.",
-              caption: "Source: U.S. Census Bureau, ACS 5-Year Estimates, Tables B01003 and B14007. Population shown is age 3+, the universe for the ACS school enrollment question.",
               width: w,
               height: 300,
               marginRight: 20,
