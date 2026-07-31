@@ -2049,3 +2049,124 @@ function renderOverviewAgeUnins() {
       window.__cdRender = cdRenderAll;
     })();
 })();
+
+// Block 6 (plain) - Preventive Care & Screening Rates
+(function() {
+  var PC_BLUE  = '#2E86AB';
+  var PC_DARK  = '#1B4F72';
+  var PC_AMBER = '#E8A838';
+  var PC_TEXT  = '#444';
+  var TOWNS    = ['Cornelius', 'Davidson', 'Huntersville'];
+
+  // Each measure uses the most recent year all three towns reported a value.
+  // CDC PLACES releases different measures on different survey cycles, so the
+  // year genuinely varies by measure, not by a data gap.
+  var PC_DATA = [
+    { measure: 'Checkup',       year: 2023, town: 'Cornelius',    val: 79.9 },
+    { measure: 'Checkup',       year: 2023, town: 'Davidson',     val: 79.4 },
+    { measure: 'Checkup',       year: 2023, town: 'Huntersville', val: 78.4 },
+    { measure: 'Cholesterol',   year: 2023, town: 'Cornelius',    val: 90.7 },
+    { measure: 'Cholesterol',   year: 2023, town: 'Davidson',     val: 89.0 },
+    { measure: 'Cholesterol',   year: 2023, town: 'Huntersville', val: 89.7 },
+    { measure: 'Cervical',      year: 2020, town: 'Cornelius',    val: 88.5 },
+    { measure: 'Cervical',      year: 2020, town: 'Davidson',     val: 87.1 },
+    { measure: 'Cervical',      year: 2020, town: 'Huntersville', val: 89.1 },
+    { measure: 'Colon',         year: 2020, town: 'Cornelius',    val: 76.1 },
+    { measure: 'Colon',         year: 2020, town: 'Davidson',     val: 77.5 },
+    { measure: 'Colon',         year: 2020, town: 'Huntersville', val: 75.1 },
+    { measure: 'Mammogram',     year: 2020, town: 'Cornelius',    val: 80.7 },
+    { measure: 'Mammogram',     year: 2020, town: 'Davidson',     val: 80.6 },
+    { measure: 'Mammogram',     year: 2020, town: 'Huntersville', val: 81.0 },
+    { measure: 'Dental',        year: 2020, town: 'Cornelius',    val: 73.7 },
+    { measure: 'Dental',        year: 2020, town: 'Davidson',     val: 75.2 },
+    { measure: 'Dental',        year: 2020, town: 'Huntersville', val: 73.8 }
+  ];
+  var MEASURES = ['Checkup', 'Cholesterol', 'Cervical', 'Colon', 'Mammogram', 'Dental'];
+
+  var PC_TT = document.createElement('div');
+  PC_TT.style.cssText = 'position:fixed;pointer-events:none;background:#1a1a2e;color:#fff;font:500 12px Hanken Grotesk,sans-serif;padding:7px 11px;border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.22);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:9999';
+  document.body.appendChild(PC_TT);
+  function ttShow(html, e) { PC_TT.innerHTML = html; PC_TT.style.opacity = '1'; ttMove(e); }
+  function ttMove(e) { PC_TT.style.left = (e.clientX + 14) + 'px'; PC_TT.style.top = (e.clientY - 36) + 'px'; }
+  function ttHide() { PC_TT.style.opacity = '0'; }
+
+  var colorByTown = d3.scaleOrdinal().domain(TOWNS).range([PC_BLUE, PC_DARK, PC_AMBER]);
+  var pcTown = window.__masterTown || 'All';
+
+  function renderPreventiveCare() {
+    var el = document.getElementById('chart-preventive-care');
+    if (!el) return;
+    el.innerHTML = '';
+    var town = pcTown;
+    var W = el.offsetWidth || 640;
+    var M = { top: 24, right: 20, bottom: 58, left: 54 };
+    var iw = W - M.left - M.right;
+    var ih = 240;
+    var H = ih + M.top + M.bottom;
+
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var g = svg.append('g').attr('transform', 'translate(' + M.left + ',' + M.top + ')');
+
+    var x = d3.scaleBand().domain(MEASURES).range([0, iw]).padding(0.28);
+    var y = d3.scaleLinear().domain([0, 100]).range([ih, 0]);
+
+    g.append('g').call(d3.axisLeft(y).tickSize(-iw).tickFormat('')).call(function(ax) {
+      ax.select('.domain').remove();
+      ax.selectAll('.tick line').attr('stroke', '#e8e8e8');
+    });
+
+    if (!town || town === 'All') {
+      var x1 = d3.scaleBand().domain(TOWNS).range([0, x.bandwidth()]).padding(0.08);
+      MEASURES.forEach(function(m) {
+        var grp = g.append('g').attr('transform', 'translate(' + x(m) + ',0)');
+        PC_DATA.filter(function(d) { return d.measure === m; }).forEach(function(d) {
+          var bx = x1(d.town), bw = x1.bandwidth();
+          grp.append('rect').attr('x', bx).attr('y', y(d.val)).attr('width', bw).attr('height', ih - y(d.val))
+            .attr('fill', colorByTown(d.town)).attr('rx', 2)
+            .on('mouseover', function(event) { ttShow('<b>' + d.town + '</b> &middot; ' + d.measure + ' (' + d.year + '): ' + d.val + '%', event); })
+            .on('mousemove', ttMove).on('mouseout', ttHide);
+        });
+      });
+      TOWNS.forEach(function(t, i) {
+        svg.append('rect').attr('x', M.left + i * 105).attr('y', H - 13).attr('width', 10).attr('height', 10).attr('fill', colorByTown(t)).attr('rx', 2);
+        svg.append('text').attr('x', M.left + i * 105 + 13).attr('y', H - 4).attr('font-size', 11).attr('fill', PC_TEXT).text(t);
+      });
+    } else {
+      var rows = PC_DATA.filter(function(d) { return d.town === town; });
+      MEASURES.forEach(function(m) {
+        var d = rows.find(function(r) { return r.measure === m; });
+        if (!d) return;
+        var bx = x(m), bw = x.bandwidth();
+        g.append('rect').attr('x', bx).attr('y', y(d.val)).attr('width', bw).attr('height', ih - y(d.val))
+          .attr('fill', colorByTown(town)).attr('rx', 2)
+          .on('mouseover', function(event) { ttShow('<b>' + m + '</b> (' + d.year + '): ' + d.val + '%', event); })
+          .on('mousemove', ttMove).on('mouseout', ttHide);
+        g.append('text').attr('x', bx + bw / 2).attr('y', y(d.val) + 16).attr('text-anchor', 'middle')
+          .attr('font-size', 12).attr('font-weight', '500').attr('fill', '#fff').text(d.val + '%');
+      });
+      svg.append('text').attr('x', M.left + iw / 2).attr('y', H - 4).attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', PC_TEXT).text(town);
+    }
+
+    g.append('g').attr('transform', 'translate(0,' + ih + ')').call(d3.axisBottom(x)).call(function(ax) {
+      ax.select('.domain').remove();
+      ax.selectAll('text').attr('font-size', 11);
+    });
+    g.append('g').call(d3.axisLeft(y).tickFormat(function(d) { return d + '%'; }).ticks(5)).call(function(ax) {
+      ax.select('.domain').remove();
+    });
+  }
+
+  var pcEl = document.getElementById('chart-preventive-care');
+  if (pcEl) {
+    var ro = new ResizeObserver(function(entries) {
+      if (entries[0].contentRect.width > 0) renderPreventiveCare();
+    });
+    ro.observe(pcEl);
+    if (pcEl.offsetWidth > 0) renderPreventiveCare();
+  }
+
+  document.addEventListener('masterTownChange', function(e) {
+    pcTown = (e.detail && e.detail.town) || 'All';
+    renderPreventiveCare();
+  });
+})();
