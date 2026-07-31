@@ -313,64 +313,6 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 
       </div>
 
-      <div class="g2" style="margin-bottom:28px">
-        <!-- Block 3: Age of housing stock -->
-        <div style="margin-bottom:0">
-          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">How old is the housing, and what does that mean for maintenance and habitability?</h3>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Age of housing stock</div>
-            <div class="card-s">Grouped bar by decade of construction across North Meck towns</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: ACS Table B25034 (needs Census pull)</div>
-            </div>
-          </div>
-        </div>
-        <!-- Block 4: Vacancy rates -->
-        <div style="margin-bottom:0">
-          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">Is the rental market tight? Low vacancy means less bargaining power for renters.</h3>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Vacancy rates over time</div>
-            <div class="card-s">Line chart: vacancy rate by town, 2018–2024</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: ACS Table B25004 (needs Census pull)</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="g2" style="margin-bottom:28px">
-        <!-- Block 5: Subsidized units -->
-        <div style="margin-bottom:0">
-          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">How many units in North Meck are subsidized, and how has that changed?</h3>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Subsidized and affordable units</div>
-            <div class="card-s">Bar chart: total vs. subsidized vs. units affordable at 80% AMI</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: HUD Picture of Subsidized Households + LIHTC database</div>
-            </div>
-          </div>
-        </div>
-        <!-- Block 6: New construction -->
-        <div style="margin-bottom:0">
-          <h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">Where is new housing being built, and does it serve lower-income households?</h3>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">New construction vs. existing stock</div>
-            <div class="card-s">Bar chart of building permits by year, with notes on typical price points</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: Mecklenburg County building permits / GIS</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -464,21 +406,6 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
   <div class="tabpane" data-pane="homeownership">
     <div class="wrap">
       <div class="sec-head"><span class="eyebrow">Homeownership &amp; Equity</span><h2 class="sec-h">Who gets to build wealth through homeownership, and who is locked out?</h2></div>
-
-      <!-- Block 1: Homeownership rates over time -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What share of households own vs. rent in each town, and how has that changed?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Key numbers (2024): Davidson 84%, Cornelius 72%, Huntersville 72%. But the trend matters: ownership shares have shifted as rents push some residents out while attracting higher-income buyers.</p>
-        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Homeownership rates over time</div>
-          <div class="card-s">Line chart: owner share (owner-occupied ÷ total occupied) by town, 2018–2024</div>
-          <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
-            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-            <div style="font-size:12px;margin-top:4px">Data source: ACS 2018–2024</div>
-          </div>
-        </div>
-      </div>
 
       <!-- Block 2: Homeownership gap by race -->
       <div style="margin-bottom:36px">
