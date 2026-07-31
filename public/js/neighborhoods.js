@@ -494,19 +494,17 @@ window.Plot = Plot;
     ],
   }));
 
-  reg('nd-grandparent-chart', CHLD, (rows, w) => {
-    const mx = Math.max(...rows.map(d => d.grandparent_caregivers || 0));
-    return window.stdPlot({
-      width: w, height: 200, marginBottom: 48, style: STYLE,
-      x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-      y: { label: '↑ Households', labelOffset: 48, grid: true,
-           domain: [0, Math.ceil((mx * 1.2) / 5) * 5 || 10] },
-      marks: [
-        Plot.barY(rows, { x: 'year', y: 'grandparent_caregivers', fill: BLUE2, rx: 3 }),
-        Plot.ruleY([0]),
-      ],
-    });
-  });
+  reg('nd-total-under18-chart', CHLD, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: 'Children Under 18', labelOffset: 52, grid: true,
+         domain: [0, yMax(rows, 'total_under_18', 1.15)] },
+    marks: [
+      Plot.barY(rows, { x: 'year', y: 'total_under_18', fill: ACCENT, rx: 3,
+        tip: true, title: d => `${d.year}\n${d.total_under_18.toLocaleString()} children under 18` }),
+      Plot.ruleY([0]),
+    ],
+  }));
 
   // ── Neighborhood switching ────────────────────────────────────────────────
   function setNbhdDataByKey(key) {
