@@ -168,12 +168,15 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       <div class="wrap">
         <div class="nbhd-sub-section" style="margin-top:40px">
           <div class="nbhd-sub-h">Educational Attainment</div>
-          <p class="nbhd-sub-lead">Highest level of education completed by residents 25 and older in this block group.</p>
+          <p class="nbhd-sub-lead">Highest level of education completed by residents 25 and older in this neighborhood, and how that mix has shifted since 2020.</p>
           <div class="g2">
             <div class="card viz-host">
-              <div class="card-t">Attainment by Level</div>
-              <div class="card-s">Share of adults 25+ by education level, most recent ACS year</div>
-              <div id="nd-attainment-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="card-t">Educational Attainment Composition Over Time</div>
+              <div class="card-s">Share of adults 25+ by highest level completed, by year</div>
+              <div id="nd-attainment-composition-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="callout">
+                <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+              </div>
             </div>
             <div class="card viz-host">
               <div class="card-t">Bachelor's Degree or Higher Rate</div>
@@ -183,12 +186,25 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
           </div>
         </div>
         <div class="nbhd-sub-section">
-          <div class="nbhd-sub-h">School Enrollment</div>
-          <p class="nbhd-sub-lead">Number of children enrolled in K–12 in this block group.</p>
-          <div class="card viz-host">
-            <div class="card-t">K–12 Enrollment</div>
-            <div class="card-s">Number of residents 3+ enrolled in kindergarten through grade 12</div>
-            <div id="nd-k12-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+          <div class="nbhd-sub-h">Attainment Trends</div>
+          <p class="nbhd-sub-lead">Two ends of the same scale: how many adults live here, and whether the share without a high school diploma is growing or shrinking.</p>
+          <div class="g2">
+            <div class="card viz-host">
+              <div class="card-t">Population 25+ Over Time</div>
+              <div class="card-s">Number of residents age 25 and older, by year</div>
+              <div id="nd-pop25-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="callout">
+                <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+              </div>
+            </div>
+            <div class="card viz-host">
+              <div class="card-t">Less Than High School Rate Over Time</div>
+              <div class="card-s">% of adults 25+ without a high school diploma or equivalent</div>
+              <div id="nd-less-hs-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="callout">
+                <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
