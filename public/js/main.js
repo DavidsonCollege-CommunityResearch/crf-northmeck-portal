@@ -19,13 +19,28 @@ var MD_DATA_BASE = (function(){
 // Shared chart defaults — one wrapper every Plot-based chart script uses
 // instead of calling Plot.plot() directly, so margins, font, and axis-arrow
 // conventions stay consistent site-wide without editing each chart by hand.
-window.CHART_MARGINS = { marginLeft: 64, marginRight: 24, marginTop: 24, marginBottom: 48 };
+window.CHART_MARGINS = { marginLeft: 64, marginRight: 40, marginTop: 24, marginBottom: 48 };
 window.fmtDollar = function(d) { return "$" + Math.round(d).toLocaleString(); };
 window.fmtPercent = function(d) { return d + "%"; };
 window.stdPlot = function(opts) {
   const merged = Object.assign({}, window.CHART_MARGINS, opts);
   if (!merged.style) {
     merged.style = { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "12px" };
+  }
+  // Self-adjusting left margin: if the y-axis has a fixed list of text labels
+  // (category names like town or school names), make sure marginLeft is wide
+  // enough for the longest one actually present, rather than relying on each
+  // chart hardcoding a guessed pixel number that can fall short for long
+  // names it wasn't tested against. Only raises the margin, never shrinks a
+  // value a chart already explicitly set larger for its own reasons.
+  if (merged.y && typeof merged.y === "object" && Array.isArray(merged.y.domain) &&
+      merged.y.domain.length && merged.y.domain.every(function(d){ return typeof d === "string"; })) {
+    var longest = merged.y.domain.reduce(function(a, b){ return b.length > a.length ? b : a; }, "");
+    var fontSize = parseInt((merged.style && merged.style.fontSize) || "12", 10) || 12;
+    var neededLeft = Math.ceil(longest.length * fontSize * 0.62) + 26;
+    if (!(opts.marginLeft > neededLeft)) {
+      merged.marginLeft = neededLeft;
+    }
   }
   if (merged.y && typeof merged.y === "object" && merged.y.domain === undefined && merged.y.zero === undefined) {
     merged.y = Object.assign({}, merged.y, { zero: true });
