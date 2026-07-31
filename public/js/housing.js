@@ -98,7 +98,7 @@ window.Plot = Plot;
         /* ── Chart 3: Home values (horizontal bar + US ref) ── */
         const homeDisplay = [...homeData].reverse();
         const c3 = window.stdPlot({
-          width: w("ovf-home"), height: 240,
+          width: w("ovf-home"), height: 240, marginRight: 55,
           style: FONT,
           x: { label: "Median home value", labelOffset: 42, grid: true,
                tickFormat: d => "$" + (d/1000).toFixed(0) + "k" },
