@@ -280,12 +280,15 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
           </div>
         </div>
         <div class="nbhd-sub-section">
-          <div class="nbhd-sub-h">Grandparent Caregivers</div>
-          <p class="nbhd-sub-lead">Households where a grandparent is the primary caregiver for grandchildren under 18.</p>
+          <div class="nbhd-sub-h">Children Under 18</div>
+          <p class="nbhd-sub-lead">Total number of children under 18 living in this neighborhood, and how that's changed since 2020.</p>
           <div class="card viz-host">
-            <div class="card-t">Grandparent Caregiver Households</div>
-            <div class="card-s">Number of grandparent-headed households responsible for grandchildren</div>
-            <div id="nd-grandparent-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+            <div class="card-t">Total Children Under 18 Over Time</div>
+            <div class="card-s">Number of residents under age 18, by year</div>
+            <div id="nd-total-under18-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+            <div class="callout">
+              <div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
+            </div>
           </div>
         </div>
       </div>
