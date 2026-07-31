@@ -447,13 +447,12 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many North Meck households are financially vulnerable but invisible to traditional poverty measures?</h3>
         <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The Federal Poverty Level (FPL) was designed in the 1960s and does not account for regional cost differences. In North Meck, where costs are high, the FPL misses a large share of struggling households. The ALICE framework (Asset Limited, Income Constrained, Employed) fills this gap.</p>
         <div class="callout info" style="margin-bottom:16px"><div class="callout-t"><strong>"Standard poverty data makes it look like North Meck doesn't need services. ALICE shows the real picture."</strong></div><div class="callout-s">— Diane Means, Ada Jenkins Center · Davidson West</div></div>
-        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">ALICE households and the hidden gap</div>
-          <div class="card-s">Three-segment stacked bar: below FPL / ALICE / financially stable · Mecklenburg County</div>
-          <div style="padding:28px 0;text-align:center;color:var(--ink-3)">
-            <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-            <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-            <div style="font-size:12px;margin-top:4px">Data source: United Way NC ALICE report, Mecklenburg County download · unitedforalice.org</div>
+        <div class="card viz-host" id="alice-county-composition-host">
+          <div class="card-t">ALICE Households and the Hidden Gap</div>
+          <div class="card-s">Below FPL / ALICE / financially stable, most recent year · Mecklenburg County</div>
+          <div id="alice-county-composition-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+          <div class="callout">
+            <div class="callout-s">Source: United Way NC ALICE Report, Mecklenburg County · <a href="https://www.unitedforalice.org" target="_blank" rel="noopener">unitedforalice.org</a></div>
           </div>
         </div>
       </div>
