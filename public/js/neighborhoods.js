@@ -387,32 +387,52 @@ window.Plot = Plot;
     });
   });
 
-  reg('nd-commute-time-chart', TRAN, (rows, w) => window.stdPlot({
-    width: w, height: 240, marginBottom: 48, style: STYLE,
-    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-    y: { label: '↑ Avg. Commute (min)', labelOffset: 48, grid: true,
-         domain: [0, Math.ceil(Math.max(...rows.map(d => d.avg_commute_minutes || 0)) * 1.2 / 5) * 5 || 60] },
-    marks: [
-      Plot.line(rows, { x: 'year', y: 'avg_commute_minutes', stroke: ACCENT, strokeWidth: 2.5 }),
-      Plot.dot(rows,  { x: 'year', y: 'avg_commute_minutes', fill: ACCENT, r: 4,
-        tip: true, title: d => `${d.year}\n${d.avg_commute_minutes} min avg. commute` }),
-      Plot.ruleY([0]),
-    ],
-  }));
-
-  reg('nd-no-vehicle-chart', TRAN, (rows, w) => {
-    const mx = Math.max(...rows.map(d => d.households_no_vehicle || 0));
+  reg('nd-commute-trend-chart', TRAN, (rows, w) => {
+    const long = [];
+    rows.forEach(d => {
+      long.push({ year: d.year, series: 'Drove alone',      pct: d.pct_drove_alone });
+      long.push({ year: d.year, series: 'Public transit',   pct: d.pct_public_transit });
+      long.push({ year: d.year, series: 'Worked from home', pct: d.pct_worked_from_home });
+    });
+    const SERIES_COLORS = { 'Drove alone': ACCENT, 'Public transit': BLUE2, 'Worked from home': GOLD };
     return window.stdPlot({
-      width: w, height: 200, marginBottom: 48, style: STYLE,
-      x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-      y: { label: '↑ Households', labelOffset: 48, grid: true,
-           domain: [0, Math.ceil((mx * 1.2) / 5) * 5 || 10] },
+      width: w, height: 240, marginBottom: 48, style: STYLE,
+      x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+      y: { label: 'Share of workers (%)', labelOffset: 48, grid: true, domain: [0, 100], tickFormat: d => d + '%' },
+      color: { domain: Object.keys(SERIES_COLORS), range: Object.values(SERIES_COLORS), legend: true },
       marks: [
-        Plot.barY(rows, { x: 'year', y: 'households_no_vehicle', fill: RED, rx: 3 }),
+        Plot.line(long, { x: 'year', y: 'pct', stroke: 'series', strokeWidth: 2.5 }),
+        Plot.dot(long,  { x: 'year', y: 'pct', fill: 'series', r: 3.5,
+          tip: true, title: d => `${d.series}\n${d.year}: ${d.pct}%` }),
         Plot.ruleY([0]),
       ],
     });
   });
+
+  reg('nd-remote-work-chart', TRAN, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: 'Working From Home (%)', labelOffset: 48, grid: true,
+         domain: [0, Math.ceil(Math.max(...rows.map(d => d.pct_worked_from_home || 0)) * 1.2 / 5) * 5 || 20] },
+    marks: [
+      Plot.line(rows, { x: 'year', y: 'pct_worked_from_home', stroke: GOLD, strokeWidth: 2.5 }),
+      Plot.dot(rows,  { x: 'year', y: 'pct_worked_from_home', fill: GOLD, r: 4,
+        tip: true, title: d => `${d.year}\n${d.pct_worked_from_home}% worked from home` }),
+      Plot.ruleY([0]),
+    ],
+  }));
+
+  reg('nd-total-workers-chart', TRAN, (rows, w) => window.stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
+    y: { label: 'Total Workers', labelOffset: 48, grid: true,
+         domain: [0, yMax(rows, 'total_workers', 1.15)] },
+    marks: [
+      Plot.barY(rows, { x: 'year', y: 'total_workers', fill: ACCENT, rx: 3,
+        tip: true, title: d => `${d.year}\n${d.total_workers.toLocaleString()} workers` }),
+      Plot.ruleY([0]),
+    ],
+  }));
 
   // ════════════════════════════════════════════════════════════════════════════
   // TAB: CHILDCARE
