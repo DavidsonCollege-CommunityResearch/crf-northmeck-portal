@@ -1462,7 +1462,7 @@ window.Plot = Plot;
         const SEGMENTS = ["Below FPL", "ALICE", "Above ALICE threshold"];
         const SEG_COLORS = { "Below FPL": "#e05c4b", "ALICE": "#f0a500", "Above ALICE threshold": "#3f4e75" };
 
-        ['alice-bar-chart','alice-trend-chart','alice-county-chart'].forEach(id =>
+        ['alice-bar-chart','alice-trend-chart','alice-county-chart','alice-county-composition-chart'].forEach(id =>
           document.getElementById(id).innerHTML = '<p style="color:#888;font-family:\'Hanken Grotesk\',sans-serif;padding:12px">Loading data…</p>'
         );
 
@@ -1476,7 +1476,7 @@ window.Plot = Plot;
           countyRows = countyRows2;
         } catch(e) {
           console.error("ALICE load failed:", e);
-          ['alice-bar-chart','alice-trend-chart','alice-county-chart'].forEach(id => window.mdShowError(id));
+          ['alice-bar-chart','alice-trend-chart','alice-county-chart','alice-county-composition-chart'].forEach(id => window.mdShowError(id));
         }
 
         if (townRows && townRows.length) {
@@ -1570,6 +1570,30 @@ window.Plot = Plot;
               Plot.barX(bars, { x: "pct", y: "label", fill: "color", rx: 3,
                 tip: true, title: d => `${d.label}\n${d.pct.toFixed(1)}% below ALICE threshold` }),
               Plot.text(bars, { x: "pct", y: "label", text: d => d.pct.toFixed(1)+"%", textAnchor: "start", dx: 5, fontSize: 11, fill: "#555" }),
+              Plot.ruleX([0]),
+            ]
+          }));
+        }
+
+        // ── 4. County-wide composition — same 3-segment breakdown, county level ──
+        if (countyRows && countyRows.length) {
+          const maxYearC2 = Math.max(...countyRows.map(d => d.year));
+          const latest = countyRows.find(d => d.year === maxYearC2);
+          const long = [
+            { label: latest.county, segment: "Below FPL",             pct: latest.poverty_households    / latest.total_households * 100, n: latest.poverty_households },
+            { label: latest.county, segment: "ALICE",                 pct: latest.alice_households       / latest.total_households * 100, n: latest.alice_households },
+            { label: latest.county, segment: "Above ALICE threshold", pct: latest.above_alice_households / latest.total_households * 100, n: latest.above_alice_households },
+          ];
+          const w4 = document.getElementById("alice-county-composition-chart").offsetWidth || 480;
+          document.getElementById("alice-county-composition-chart").replaceChildren(window.stdPlot({
+            width: w4, height: 140, marginBottom: 40,
+            style: { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px" },
+            x: { label: "Share of households", labelOffset: 35, tickFormat: d => d.toFixed(0)+"%", domain: [0,100] },
+            y: { label: null },
+            color: { domain: SEGMENTS, range: SEGMENTS.map(s => SEG_COLORS[s]), legend: true },
+            marks: [
+              Plot.barX(long, Plot.stackX({ order: SEGMENTS, x: "pct", y: "label", fill: "segment",
+                tip: true, title: d => `${d.label} · ${maxYearC2}\n${d.segment}: ${d.pct.toFixed(1)}% (${d.n.toLocaleString()} households)` })),
               Plot.ruleX([0]),
             ]
           }));
