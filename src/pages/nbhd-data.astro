@@ -60,8 +60,8 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
     <div class="tabpane active" data-pane="nd-demographics">
       <div class="wrap">
         <div class="nbhd-sub-section" style="margin-top:40px">
-          <div class="nbhd-sub-h">Population &amp; Race</div>
-          <p class="nbhd-sub-lead">Total population and racial/ethnic composition of the block groups approximating this neighborhood, from ACS 5-year estimates.</p>
+          <div class="nbhd-sub-h">Population &amp; Ethnicity</div>
+          <p class="nbhd-sub-lead">Total population and Hispanic or Latino population share of the block groups approximating this neighborhood, from ACS 5-year estimates.</p>
           <div class="g2">
             <div class="card viz-host">
               <div class="card-t">Total Population</div>
@@ -69,19 +69,19 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
               <div id="nd-pop-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
             </div>
             <div class="card viz-host">
-              <div class="card-t">Racial &amp; Ethnic Composition</div>
-              <div class="card-s">Share of population by race/ethnicity, most recent ACS year</div>
-              <div id="nd-race-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+              <div class="card-t">Hispanic or Latino Population Rate</div>
+              <div class="card-s">% of residents identifying as Hispanic or Latino</div>
+              <div id="nd-hl-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
             </div>
           </div>
         </div>
         <div class="nbhd-sub-section">
-          <div class="nbhd-sub-h">Ethnicity</div>
-          <p class="nbhd-sub-lead">Hispanic or Latino share of the total population.</p>
+          <div class="nbhd-sub-h">Race</div>
+          <p class="nbhd-sub-lead">Share of the population by race, most recent ACS year.</p>
           <div class="card viz-host">
-            <div class="card-t">Hispanic or Latino Population Rate</div>
-            <div class="card-s">% of residents identifying as Hispanic or Latino</div>
-            <div id="nd-hl-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
+            <div class="card-t">Racial &amp; Ethnic Composition</div>
+            <div class="card-s">Share of population by race/ethnicity, most recent ACS year</div>
+            <div id="nd-race-chart" style="width:100%"><p style="color:#888;font-family:'Hanken Grotesk',sans-serif;padding:12px">Loading data…</p></div>
           </div>
         </div>
       </div>
