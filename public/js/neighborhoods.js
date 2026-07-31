@@ -161,21 +161,6 @@ window.Plot = Plot;
     ],
   }));
 
-  reg('nd-fb-chart', DEMO, (rows, w) => window.stdPlot({
-    width: w, height: 240, marginBottom: 48, style: STYLE,
-    x: { label: 'Year →', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
-    y: { label: '↑ % Foreign-Born', labelOffset: 40, grid: true,
-         domain: [0, Math.min(100, yMax(rows, 'foreign_born_rate', 1.3))],
-         tickFormat: d => d + '%' },
-    marks: [
-      Plot.barY(rows, { x: 'year', y: 'foreign_born_rate', fill: BLUE2, rx: 3 }),
-      Plot.text(rows, { x: 'year', y: 'foreign_born_rate',
-        text: d => (d.foreign_born_rate || 0) + '%', dy: -6, textAnchor: 'middle',
-        fill: 'var(--ink-2)', fontSize: 12 }),
-      Plot.ruleY([0]),
-    ],
-  }));
-
   // ════════════════════════════════════════════════════════════════════════════
   // TAB: ECONOMIC PROFILE
   // ════════════════════════════════════════════════════════════════════════════
