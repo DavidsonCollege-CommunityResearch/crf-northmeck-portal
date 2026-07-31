@@ -344,7 +344,7 @@ window.Plot = Plot;
   });
 
   reg('nd-bachelors-chart', EDUC, (rows, w) => window.stdPlot({
-    width: w, height: 240, marginBottom: 48, style: STYLE,
+    width: w, height: 300, marginBottom: 48, style: STYLE,
     x: { label: 'Year', labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String },
     y: { label: "% Bachelor's or Higher", labelOffset: 40, grid: true,
          domain: [0, Math.min(100, yMax(rows, 'pct_bachelors_or_higher', 1.3))],
