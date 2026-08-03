@@ -285,6 +285,21 @@ const SIMPLE_QUERIES = {
     ORDER BY town, year
   `,
 
+  // Previously a static, manually-exported file with no query backing it.
+  // Wired up here so it refreshes automatically like everything else.
+  'school-race-gap': `
+    SELECT school, comparison_group, white_pct, comparison_pct, gap
+    FROM nmidw.agg_school_race_gap
+    ORDER BY school, comparison_group
+  `,
+
+  // Same as above - was static/orphaned, now a real query.
+  'school-disability-gap': `
+    SELECT school, swd_pct, nswd_pct, gap
+    FROM nmidw.agg_school_disability_gap
+    ORDER BY school
+  `,
+
   // ── United Neighborhoods: one file per topic, all five neighborhoods ────────
   // Each file has a neighborhood_name column so the JS can filter on tab/nbhd
   // switch. East Catawba has data in the DB but the UI marks it "coming soon".
