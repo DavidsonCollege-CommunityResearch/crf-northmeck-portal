@@ -751,6 +751,356 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
         ['median_household_income_usd','integer','Median household income in dollars (ACS Table B19013). Includes all income sources before taxes.']
       ],
       notes: 'ACS 5-year estimates are rolling averages centered on the reference year. Population and household counts reflect ACS estimates, not decennial Census counts. Racial composition data is available separately in the portal charts.'
+    },
+    'alice-town': {
+      filename: 'nmidw_alice_households_by_town_2024',
+      source: 'United Way of North Carolina, ALICE Economic Viability Dashboard (household counts modeled against Census ACS income data)',
+      years: '2024',
+      jsonFile: 'alice-town',
+      codebook: [
+        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
+        ['year','integer','Reference year for the estimate'],
+        ['total_households','integer','Total households in the town'],
+        ['poverty_households','integer','Households with income below the Federal Poverty Level'],
+        ['alice_households','integer','Households above the poverty line but below the ALICE Threshold, meaning income doesn\'t cover a basic survival budget (housing, food, transportation, childcare, healthcare) for the area'],
+        ['above_alice_households','integer','Households with income at or above the ALICE Threshold']
+      ],
+      notes: 'ALICE stands for Asset Limited, Income Constrained, Employed. It captures households working but still unable to afford a basic survival budget, a group the Federal Poverty Level alone misses, which matters in a suburban area like North Meck where the poverty rate is low but the cost of living is high. This is a single-year (2024) snapshot, not a trend. Source: United Way of North Carolina ALICE Report.'
+    },
+    'alice-county': {
+      filename: 'nmidw_alice_households_mecklenburg_county_2010-2024',
+      source: 'United Way of North Carolina, ALICE Economic Viability Dashboard',
+      years: '2010–2024 (biennial, non-consecutive)',
+      jsonFile: 'alice-county',
+      codebook: [
+        ['county','text','County name (Mecklenburg County)'],
+        ['year','integer','Reference year for the estimate'],
+        ['total_households','integer','Total households in the county'],
+        ['poverty_households','integer','Households with income below the Federal Poverty Level'],
+        ['alice_households','integer','Households above the poverty line but below the ALICE Threshold'],
+        ['above_alice_households','integer','Households with income at or above the ALICE Threshold']
+      ],
+      notes: 'County-level companion to the town-level ALICE dataset, covering Mecklenburg County as a whole across ten reporting years rather than a single year. ALICE reports are released roughly every two years, so the year gaps here are expected, not missing data. Source: United Way of North Carolina ALICE Report.'
+    },
+    'economic-mobility': {
+      filename: 'nmidw_economic_mobility_by_town_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates',
+      years: '2018–2024',
+      jsonFile: 'economic-mobility',
+      codebook: [
+        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
+        ['year','integer','ACS survey year'],
+        ['edu','decimal','Share of the population 25+ holding a bachelor\'s or master\'s degree, as a percentage'],
+        ['poverty','decimal','Share of the population living below the Federal Poverty Level, as a percentage'],
+        ['unemployment','decimal','Share of the civilian labor force that is unemployed, as a percentage']
+      ],
+      notes: 'These three rates are commonly used together as a rough proxy for economic mobility, though none of them measures mobility directly (movement between income levels over time). ACS 5-year estimates.'
+    },
+    'infrastructure-access': {
+      filename: 'nmidw_infrastructure_access_by_town_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates',
+      years: '2018–2024',
+      jsonFile: 'infrastructure-access',
+      codebook: [
+        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
+        ['year','integer','ACS survey year'],
+        ['renter_no_car','decimal','Share of renter households with no vehicle available, as a percentage'],
+        ['owner_no_car','decimal','Share of owner households with no vehicle available, as a percentage'],
+        ['no_internet','decimal','Share of households with no internet subscription of any kind, as a percentage'],
+        ['labor_uninsured','decimal','Share of the civilian labor force with no health insurance coverage, as a percentage'],
+        ['senior_uninsured','decimal','Share of residents 65+ with no health insurance coverage, as a percentage']
+      ],
+      notes: 'This dataset spans three access dimensions (transportation, internet, insurance) that are grouped together in the source table rather than three separate ones. ACS 5-year estimates.'
+    },
+    'healthcare-insurance': {
+      filename: 'nmidw_healthcare_insurance_by_town_2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, Table B27010',
+      years: '2024',
+      jsonFile: 'healthcare-insurance',
+      codebook: [
+        ['GEOID','text','Census geographic identifier for the town'],
+        ['Town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
+        ['Tot_pop','integer','Total resident population'],
+        ['year','integer','ACS survey year'],
+        ['all_ins','integer','Total population with any health insurance coverage'],
+        ['all_unins','integer','Total population with no health insurance coverage'],
+        ['ins_U18 / unins_U18','integer','Population under 18 with / without health insurance'],
+        ['ins_19_25 / unins_19_25','integer','Population 19–25 with / without health insurance'],
+        ['ins_26_34 / unins_26_34','integer','Population 26–34 with / without health insurance'],
+        ['ins_35_64 / unins_35_64','integer','Population 35–64 with / without health insurance'],
+        ['ins_65_over / unins_65_over','integer','Population 65+ with / without health insurance'],
+        ['emp_based_ins','integer','Population covered through an employer or union plan'],
+        ['dir_purchase_ins','integer','Population covered through a directly-purchased plan'],
+        ['medicare_cov','integer','Population covered by Medicare'],
+        ['medicaid_cov','integer','Population covered by Medicaid or other means-tested public coverage'],
+        ['tricare_cov','integer','Population covered by TRICARE/military health coverage'],
+        ['VA_cov','integer','Population covered through VA health care'],
+        ['other_cov_type','integer','Population covered through some other plan type not listed above'],
+        ['emp_insured / emp_uninsured','integer','Employed labor force with / without insurance'],
+        ['unemp_insured / unemp_uninsured','integer','Unemployed labor force with / without insurance'],
+        ['ins_U25 / no_ins_U25','integer','Population in households earning under $25k with / without insurance'],
+        ['ins_25_50 / no_ins_25_50','integer','Population in households earning $25k–$50k with / without insurance'],
+        ['ins_50_75 / no_ins_50_75','integer','Population in households earning $50k–$75k with / without insurance'],
+        ['ins_75_100 / no_ins_75_100','integer','Population in households earning $75k–$100k with / without insurance'],
+        ['ins_100_above / no_ins_100_above','integer','Population in households earning $100k+ with / without insurance']
+      ],
+      notes: 'This dataset joins two source tables (coverage type by age, and coverage by employment/income status), so column groups come from different ACS cross-tabulations rather than one single table. Counts are people, not households. 2024 ACS 5-year estimates.'
+    },
+    'school-proficiency': {
+      filename: 'nmidw_school_grade_level_proficiency_2024',
+      source: 'NC Department of Public Instruction, School Report Card data',
+      years: '2024',
+      jsonFile: 'grade-level-proficiency',
+      codebook: [
+        ['school','text','School name'],
+        ['grade_span','text','Grades served by the school (e.g. K-5, 9-12)'],
+        ['town','text','Town the school is located in'],
+        ['is_title_1','boolean','Whether the school receives Title I federal funding for high-poverty enrollment'],
+        ['glp','decimal','Grade-Level Proficient rate, as a percentage'],
+        ['glp_raw','text','Original state-reported proficiency figure, kept as text since some values are reported as a range or suppressed rather than a single number'],
+        ['ccr','decimal','College/Career Ready rate, as a percentage']
+      ],
+      notes: 'School-level data naming individual schools alongside performance metrics. Flagged for sign-off before public release given the equity sensitivity of school-by-school comparisons. Source: NC School Report Cards.'
+    },
+    'school-growth': {
+      filename: 'nmidw_school_academic_growth_2024',
+      source: 'NC Department of Public Instruction, School Report Card data (EVAAS growth index)',
+      years: '2024',
+      jsonFile: 'school-academic-growth',
+      codebook: [
+        ['school','text','School name'],
+        ['grade_span','text','Grades served by the school'],
+        ['town','text','Town the school is located in'],
+        ['status','text','State growth status category (e.g. Exceeded, Met, Not Met)'],
+        ['index_score','decimal','EVAAS growth index score. Positive values indicate more growth than expected for the year; negative values indicate less']
+      ],
+      notes: 'Growth measures year-over-year student progress, not absolute achievement level, a school can show strong growth while still having a low proficiency rate, or vice versa. Same sign-off flag as the other school-level datasets.'
+    },
+    'school-graduation': {
+      filename: 'nmidw_four_year_graduation_rate_2024',
+      source: 'NC Department of Public Instruction, School Report Card data',
+      years: '2024',
+      jsonFile: 'four-year-school-graduation',
+      codebook: [
+        ['school','text','High school name'],
+        ['town','text','Town the school is located in'],
+        ['grad_4yr','decimal','Four-year cohort graduation rate, as a percentage'],
+        ['grad_4yr_raw','text','Original state-reported figure, kept as text since some values are suppressed for small cohort size rather than reported as a number']
+      ],
+      notes: 'Applies only to high schools. Small graduating classes can make year-to-year swings look larger than they are. Same sign-off flag as the other school-level datasets.'
+    },
+    'school-economic-gap': {
+      filename: 'nmidw_school_achievement_economic_gap_2024',
+      source: 'NC Department of Public Instruction, School Report Card data',
+      years: '2024',
+      jsonFile: 'school-achievement-and-economic-gap',
+      codebook: [
+        ['school','text','School name'],
+        ['town','text','Town the school is located in'],
+        ['econ_disadv','decimal','Grade-Level Proficient rate among economically disadvantaged students, as a percentage'],
+        ['not_disadv','decimal','Grade-Level Proficient rate among non-economically-disadvantaged students, as a percentage'],
+        ['gap','decimal','Percentage-point gap between the two groups (not_disadv minus econ_disadv)']
+      ],
+      notes: 'A separate, high-school-only version of this same comparison exists (school-hs-economic-gap). Same sign-off flag as the other school-level datasets given it names individual schools alongside an equity gap.'
+    },
+    'school-hs-economic-gap': {
+      filename: 'nmidw_hs_achievement_economic_gap_2024',
+      source: 'NC Department of Public Instruction, School Report Card data',
+      years: '2024',
+      jsonFile: 'highschool-achievement-economic-gap',
+      codebook: [
+        ['school','text','High school name'],
+        ['town','text','Town the school is located in'],
+        ['econ_disadv','decimal','Grade-Level Proficient rate among economically disadvantaged students, as a percentage'],
+        ['not_disadv','decimal','Grade-Level Proficient rate among non-economically-disadvantaged students, as a percentage'],
+        ['gap','decimal','Percentage-point gap between the two groups (not_disadv minus econ_disadv)']
+      ],
+      notes: 'High-school-only counterpart to school-economic-gap, which covers all grade levels. Same sign-off flag as the other school-level datasets.'
+    },
+    'school-race-gap': {
+      filename: 'nmidw_school_race_gap_2024',
+      source: 'NC Department of Public Instruction, School Report Card data',
+      years: '2024',
+      jsonFile: 'school-race-gap',
+      codebook: [
+        ['school','text','School name'],
+        ['comparison_group','text','Racial/ethnic group being compared against the White student proficiency rate (Black, Hispanic, Asian, American Indian, or Two or More Races)'],
+        ['white_pct','decimal','Grade-Level Proficient rate among White students at the school, as a percentage'],
+        ['comparison_pct','decimal','Grade-Level Proficient rate among the comparison group at the school, as a percentage'],
+        ['gap','decimal','Percentage-point gap (white_pct minus comparison_pct)']
+      ],
+      notes: 'Each school can appear multiple times, once per comparison group with enough students to report. Same sign-off flag as the other school-level datasets.'
+    },
+    'school-disability-gap': {
+      filename: 'nmidw_school_disability_gap_2024',
+      source: 'NC Department of Public Instruction, School Report Card data',
+      years: '2024',
+      jsonFile: 'school-disability-gap',
+      codebook: [
+        ['school','text','School name'],
+        ['swd_pct','decimal','Grade-Level Proficient rate among students with disabilities, as a percentage'],
+        ['nswd_pct','decimal','Grade-Level Proficient rate among students without disabilities, as a percentage'],
+        ['gap','decimal','Percentage-point gap (nswd_pct minus swd_pct)']
+      ],
+      notes: 'Same sign-off flag as the other school-level datasets given it names individual schools alongside an equity gap.'
+    },
+    'school-enrollment': {
+      filename: 'nmidw_school_enrollment_by_town_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates',
+      years: '2018–2024',
+      jsonFile: 'pop-growth-k12-enrollment',
+      codebook: [
+        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
+        ['year','integer','ACS survey year'],
+        ['total_pop_3_plus','integer','Total population age 3 and over (the population eligible to be enrolled in school)'],
+        ['n_enrolled_k12_total','integer','Number of residents enrolled in K-12 school'],
+        ['n_enrolled_total','integer','Number of residents enrolled in school at any level (preschool through graduate)']
+      ],
+      notes: 'This is town-level residency data (who lives in the town and is enrolled somewhere), not school-level enrollment counts, it doesn\'t tell you how many students attend a school located in that town. ACS 5-year estimates.'
+    },
+    'nbhd-demographics': {
+      filename: 'nmidw_neighborhood_demographics_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group level, rolled up to neighborhood boundaries',
+      years: '2018–2024',
+      jsonFile: 'nbhd-demographics',
+      codebook: [
+        ['neighborhood_name','text','One of the five United Neighborhoods (Pottstown, West Davidson, Smithville, Huntington Green, East Catawba)'],
+        ['year','integer','ACS survey year'],
+        ['total_population','integer','Total resident population estimate'],
+        ['race_white','integer','Population identifying as White alone'],
+        ['race_black','integer','Population identifying as Black or African American alone'],
+        ['race_asian','integer','Population identifying as Asian alone'],
+        ['hispanic_latino','integer','Population identifying as Hispanic or Latino (any race)'],
+        ['hispanic_rate','decimal','Hispanic/Latino population as a percentage of total population'],
+        ['foreign_born','integer','Foreign-born population'],
+        ['foreign_born_rate','decimal','Foreign-born population as a percentage of total population']
+      ],
+      notes: 'Neighborhood boundaries are approximated from Census block groups, since neighborhoods themselves aren\'t official Census geography, so figures are estimates, not exact counts. Some neighborhoods span more than one block group, in which case values are summed (counts) or recalculated from summed counts (rates), never averaged directly. Block-group boundary approximation carries more uncertainty for smaller neighborhoods. There is an unresolved documented boundary question for one shared block group between Smithville and East Catawba, flagged separately for review.'
+    },
+    'nbhd-economic': {
+      filename: 'nmidw_neighborhood_economic_profile_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group level, rolled up to neighborhood boundaries',
+      years: '2018–2024',
+      jsonFile: 'nbhd-economic',
+      codebook: [
+        ['neighborhood_name','text','One of the five United Neighborhoods'],
+        ['year','integer','ACS survey year'],
+        ['total_households','integer','Total households'],
+        ['income_under_25k','integer','Households earning under $25,000'],
+        ['income_25k_50k','integer','Households earning $25,000–$50,000'],
+        ['income_50k_100k','integer','Households earning $50,000–$100,000'],
+        ['income_100k_plus','integer','Households earning $100,000 or more'],
+        ['median_household_income','integer','Median household income in dollars, weighted by household count where the neighborhood spans multiple block groups'],
+        ['gini','decimal','Gini coefficient of income inequality (0 = perfect equality, 1 = maximum inequality), weighted by household count'],
+        ['below_poverty','integer','Households with income below the Federal Poverty Level'],
+        ['poverty_rate','decimal','Households below the Federal Poverty Level as a percentage of total households']
+      ],
+      notes: 'Same block-group rollup caveats as the neighborhood demographics dataset apply here.'
+    },
+    'nbhd-housing': {
+      filename: 'nmidw_neighborhood_housing_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group level, rolled up to neighborhood boundaries',
+      years: '2018–2024',
+      jsonFile: 'nbhd-housing',
+      codebook: [
+        ['neighborhood_name','text','One of the five United Neighborhoods'],
+        ['year','integer','ACS survey year'],
+        ['total_housing_units','integer','Total housing units'],
+        ['owner_occupied','integer','Owner-occupied housing units'],
+        ['renter_occupied','integer','Renter-occupied housing units'],
+        ['owner_rate','decimal','Owner-occupied units as a percentage of total housing units'],
+        ['renter_rate','decimal','Renter-occupied units as a percentage of total housing units'],
+        ['median_gross_rent','integer','Median monthly gross rent in dollars, weighted by renter-occupied unit count'],
+        ['median_home_value','integer','Median owner-occupied home value in dollars, weighted by owner-occupied unit count'],
+        ['cost_burdened','integer','Renter households spending 30%+ of income on housing'],
+        ['severely_burdened','integer','Renter households spending 50%+ of income on housing'],
+        ['burden_rate','decimal','Cost-burdened renter households as a percentage of all renter-occupied units'],
+        ['owner_no_vehicle','integer','Owner households with no vehicle available'],
+        ['renter_no_vehicle','integer','Renter households with no vehicle available']
+      ],
+      notes: 'Same block-group rollup caveats as the neighborhood demographics dataset apply here.'
+    },
+    'nbhd-education': {
+      filename: 'nmidw_neighborhood_education_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group level, rolled up to neighborhood boundaries',
+      years: '2018–2024',
+      jsonFile: 'nbhd-education',
+      codebook: [
+        ['neighborhood_name','text','One of the five United Neighborhoods'],
+        ['year','integer','ACS survey year'],
+        ['pop_25_plus','integer','Population age 25 and over'],
+        ['n_less_than_hs','integer','Population 25+ with less than a high school diploma'],
+        ['n_hs_or_equiv','integer','Population 25+ with a high school diploma or equivalent'],
+        ['n_some_college','integer','Population 25+ with some college, no degree'],
+        ['n_associates','integer',"Population 25+ with an associate's degree"],
+        ['n_bachelors','integer',"Population 25+ with a bachelor's degree"],
+        ['n_graduate_or_prof','integer','Population 25+ with a graduate or professional degree'],
+        ['pct_less_than_hs','decimal','Share of population 25+ with less than a high school diploma, as a percentage'],
+        ['pct_hs_or_equiv','decimal','Share of population 25+ with a high school diploma or equivalent, as a percentage'],
+        ['pct_bachelors','decimal',"Share of population 25+ with a bachelor's degree, as a percentage"],
+        ['pct_bachelors_or_higher','decimal',"Share of population 25+ with a bachelor's degree or higher, as a percentage"],
+        ['n_enrolled_total','integer','Residents currently enrolled in school at any level'],
+        ['n_enrolled_k12','integer','Residents currently enrolled in K-12 school']
+      ],
+      notes: 'Same block-group rollup caveats as the neighborhood demographics dataset apply here.'
+    },
+    'nbhd-transportation': {
+      filename: 'nmidw_neighborhood_transportation_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group level, rolled up to neighborhood boundaries',
+      years: '2018–2024',
+      jsonFile: 'nbhd-transportation',
+      codebook: [
+        ['neighborhood_name','text','One of the five United Neighborhoods'],
+        ['year','integer','ACS survey year'],
+        ['total_workers','integer','Total workers age 16 and over'],
+        ['drove_alone','integer','Workers who commute by driving alone'],
+        ['public_transit','integer','Workers who commute by public transit'],
+        ['walked','integer','Workers who commute by walking'],
+        ['bicycle','integer','Workers who commute by bicycle'],
+        ['worked_from_home','integer','Workers who work from home'],
+        ['pct_drove_alone','decimal','Share of workers who drove alone, as a percentage'],
+        ['pct_public_transit','decimal','Share of workers who used public transit, as a percentage'],
+        ['pct_worked_from_home','decimal','Share of workers who worked from home, as a percentage'],
+        ['avg_commute_minutes','decimal','Average one-way commute time in minutes, weighted by worker count'],
+        ['households_no_vehicle','integer','Households with no vehicle available']
+      ],
+      notes: 'Same block-group rollup caveats as the neighborhood demographics dataset apply here.'
+    },
+    'nbhd-childcare': {
+      filename: 'nmidw_neighborhood_childcare_2018-2024',
+      source: 'U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group level, rolled up to neighborhood boundaries',
+      years: '2018–2024',
+      jsonFile: 'nbhd-childcare',
+      codebook: [
+        ['neighborhood_name','text','One of the five United Neighborhoods'],
+        ['year','integer','ACS survey year'],
+        ['total_under_18','integer','Total population under 18'],
+        ['children_under6','integer','Children under age 6'],
+        ['children_6_17','integer','Children age 6-17'],
+        ['under6_needs_childcare','integer','Children under 6 in households where all present parents are in the labor force, an ACS-based proxy for likely childcare need'],
+        ['pct_under6_needs_childcare','decimal','Share of children under 6 likely needing childcare, as a percentage'],
+        ['age6_17_needs_afterschool','integer','Children age 6-17 in households where all present parents are in the labor force, a proxy for likely after-school care need'],
+        ['pct_6_17_needs_afterschool','decimal','Share of children 6-17 likely needing after-school care, as a percentage'],
+        ['grandparent_caregivers','integer','Households where a grandparent is the primary caregiver for a co-resident grandchild']
+      ],
+      notes: '"Needs childcare" and "needs after-school care" are modeled proxies based on parental labor-force participation, not a direct survey question about childcare arrangements or unmet need. Same block-group rollup caveats as the neighborhood demographics dataset apply here.'
+    },
+    'mhsu-facilities': {
+      filename: 'nmidw_mental_health_substance_use_facilities',
+      source: 'SAMHSA Behavioral Health Treatment Services Locator',
+      years: 'Current as of most recent SAMHSA data pull',
+      jsonFile: 'mental-health-facilities',
+      codebook: [
+        ['facility_name','text','Facility name'],
+        ['street1','text','Street address'],
+        ['city','text','City'],
+        ['phone','text','Facility phone number'],
+        ['website','text','Facility website, where available'],
+        ['latitude','decimal','Latitude coordinate'],
+        ['longitude','decimal','Longitude coordinate'],
+        ['types','text','Facility type(s) offered (e.g. mental health, substance use), comma-separated where a facility offers more than one']
+      ],
+      notes: 'This is a directory of treatment facility locations, not a dataset about mental health prevalence or outcomes. Limited to facilities in or near Mecklenburg County. Source: SAMHSA facility locator.'
     }
   };
 
@@ -1046,6 +1396,77 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
 })();
 
 /* ── VIZ EXPAND ── */
+// Maps a chart/table container's DOM id to its Data Library dataset id (the
+// `data-id` on the matching .dlib-row in data-library.astro). Built by tracing
+// every window.loadData(...) call in housing.js/education.js/healthcare.js
+// back to the chart element(s) it renders into. A handful of charts on the
+// site are still hardcoded JS arrays with no live table behind them yet
+// (the 3 Charlotte-region charts, the Preventive Care chart, the housing-types
+// and race-ownership charts on the Housing page, and the education-page
+// enrollment/attainment/earnings trend charts) — those are intentionally left
+// out here, so their download link falls back to the plain Data Library page.
+// chart-economic-gap is also intentionally left out: it currently loads a
+// 'school-economic-gap' JSON file that has no query behind it in
+// refresh-data.mjs and doesn't match the 'school-achievement-and-economic-gap'
+// dataset's data, so it's unclear which table it should map to. Flag for Pete.
+// Mental Health prevalence charts (mh-depbar-chart, mh-distressbar-chart) are
+// left out per instruction, since they pull from gold.cdc_places, not main.
+var CHART_TO_DATASET = {
+  // Housing
+  'rent-chart':'economic-trends', 'income-rent-chart':'economic-trends', 'home-value-chart':'economic-trends',
+  'ovf-rent':'economic-trends', 'ovf-home':'economic-trends', 'ovf-ptr':'economic-trends', 'ovf-dp':'economic-trends',
+  'hpti-chart':'economic-trends', 'rti-chart':'economic-trends',
+  'down-payment-chart':'economic-trends', 'gini-chart':'economic-trends', 'ptr-trend-chart':'economic-trends',
+  'population-chart':'demographics', 'race-summary-table-wrap':'demographics',
+  'race-comp-chart':'demographics', 'race-trend-chart':'demographics', 'median-income-chart':'demographics',
+  'tenure-chart':'housing-burden', 'burden-trend-chart':'housing-burden', 'severely-burdened-chart':'housing-burden',
+  'burden-chart':'burden-by-bracket',
+  'ptr-chart':'ptr-by-bracket',
+  'alice-bar-chart':'alice-town', 'alice-trend-chart':'alice-town',
+  'alice-county-chart':'alice-county', 'alice-county-composition-chart':'alice-county',
+  'infra-chart':'infrastructure-access',
+  'mobility-chart':'economic-mobility',
+  // Education
+  'chart-grade-level-proficiency':'school-proficiency', 'chart-hs-ccr':'school-proficiency',
+  'chart-school-academic-growth':'school-growth',
+  'chart-four-year-graduation-rate':'school-graduation',
+  'chart-school-achievement-economic-gap':'school-economic-gap',
+  'chart-hs-achievement-economic-gap':'school-hs-economic-gap',
+  'chart-pop-vs-k12':'school-enrollment', 'chart-total-enrollment-trend':'school-enrollment',
+  'chart-race-gap-avg':'school-race-gap', 'chart-race-gap-top':'school-race-gap',
+  'chart-disability-gap':'school-disability-gap',
+  // Healthcare
+  'hc-ins-dot-wrap':'healthcare-insurance', 'hc-ins-heatmap-title':'healthcare-insurance',
+  'hc-ins-heatmap-sub':'healthcare-insurance', 'hc-ins-heatmap':'healthcare-insurance',
+  'mh-address-btn':'mhsu-facilities', 'mh-address-input':'mhsu-facilities', 'mh-facility-map':'mhsu-facilities',
+  // Neighborhoods (nbhd-data.astro)
+  'nd-pop-chart':'nbhd-demographics', 'nd-hl-chart':'nbhd-demographics', 'nd-race-chart':'nbhd-demographics',
+  'nd-income-dist-chart':'nbhd-economic', 'nd-income-trend-chart':'nbhd-economic',
+  'nd-income-dist-trend-chart':'nbhd-economic', 'nd-total-households-chart':'nbhd-economic',
+  'nd-tenure-chart':'nbhd-housing', 'nd-rent-value-chart':'nbhd-housing', 'nd-burden-chart':'nbhd-housing',
+  'nd-attainment-composition-chart':'nbhd-education', 'nd-bachelors-chart':'nbhd-education',
+  'nd-pop25-chart':'nbhd-education', 'nd-less-hs-chart':'nbhd-education',
+  'nd-commute-mode-chart':'nbhd-transportation', 'nd-commute-trend-chart':'nbhd-transportation',
+  'nd-remote-work-chart':'nbhd-transportation', 'nd-total-workers-chart':'nbhd-transportation',
+  'nd-under6-chart':'nbhd-childcare', 'nd-afterschool-chart':'nbhd-childcare', 'nd-total-under18-chart':'nbhd-childcare'
+};
+// Finds the dataset id for a viz-host: checks the host itself and every
+// descendant for either a matching id (CHART_TO_DATASET) or an explicit
+// data-dlib attribute (used for the hardcoded neighborhood mini-charts, which
+// have no unique id to key off of).
+function findDatasetForHost(root){
+  if(!root) return null;
+  var direct=root.getAttribute && root.getAttribute('data-dlib');
+  if(direct) return direct;
+  if(root.id && CHART_TO_DATASET[root.id]) return CHART_TO_DATASET[root.id];
+  var withDlib=root.querySelector('[data-dlib]');
+  if(withDlib) return withDlib.getAttribute('data-dlib');
+  var els=root.querySelectorAll('[id]');
+  for(var i=0;i<els.length;i++){
+    if(CHART_TO_DATASET[els[i].id]) return CHART_TO_DATASET[els[i].id];
+  }
+  return null;
+}
 (function(){
   function makeTools(host){
     var tools=document.createElement('div'); tools.className='viz-tools';
@@ -1095,6 +1516,16 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
     var ownTools=root.querySelector('.viz-tools');
     if(ownTools) ownTools.style.display='none';
     body.appendChild(root); // move (not clone) — keeps all event listeners
+    // Point "Download the data used in this chart" at this specific chart's
+    // dataset in the Data Library, scrolled/highlighted on arrival. Falls
+    // back to the plain Data Library page for charts with no live table yet.
+    var dlLink=document.querySelector('.viz-download-link');
+    if(dlLink){
+      var dsId=findDatasetForHost(root);
+      var baseHref=dlLink.getAttribute('data-base-href')||dlLink.href;
+      dlLink.setAttribute('data-base-href', baseHref);
+      dlLink.href = dsId ? (baseHref+'#dlib-'+dsId) : baseHref;
+    }
     document.getElementById('vizModal').classList.add('open'); document.body.style.overflow='hidden';
     // Re-render charts at modal width after layout settles
     setTimeout(function(){
