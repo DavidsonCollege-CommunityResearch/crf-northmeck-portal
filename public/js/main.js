@@ -1495,12 +1495,34 @@ function closeHelpForm() {
   modal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
 }
+// TODO: replace with your real reCAPTCHA v2 site key from
+// https://www.google.com/recaptcha/admin (the public key, safe to expose here).
+var RECAPTCHA_SITE_KEY = '6LdnnXMtAAAAAF6OLVd0MT2zf0B-PtnC4HdIJZaH';
+window.__recaptchaIssueId = undefined;
+window.__recaptchaFeedbackId = undefined;
+// Called automatically once the reCAPTCHA API script finishes loading (see the
+// ?onload= param on the script tag in HelpModal.astro). Only the Issue tab's
+// widget is rendered here, since it's the visible tab by default; the
+// Feedback tab's widget renders lazily in switchHelpTab() to avoid the
+// zero-width rendering bug that happens inside a display:none container.
+function grecaptchaOnLoad() {
+  window.__recaptchaIssueId = grecaptcha.render('recaptchaIssue', { sitekey: RECAPTCHA_SITE_KEY });
+}
+window.grecaptchaOnLoad = grecaptchaOnLoad;
+
 function switchHelpTab(type) {
   var isIssue = type === 'issue';
   document.getElementById('helpTabIssue').classList.toggle('active', isIssue);
   document.getElementById('helpTabFeedback').classList.toggle('active', !isIssue);
   document.getElementById('helpFormIssue').style.display = isIssue ? 'block' : 'none';
   document.getElementById('helpFormFeedback').style.display = isIssue ? 'none' : 'block';
+  // The Feedback form starts hidden (display:none), and reCAPTCHA renders
+  // incorrectly (zero width) if built inside a hidden container. So its
+  // widget is rendered lazily, the first time this tab is actually shown,
+  // rather than eagerly at page load alongside the Issue tab's widget.
+  if (!isIssue && window.__recaptchaFeedbackId === undefined && window.grecaptcha) {
+    window.__recaptchaFeedbackId = grecaptcha.render('recaptchaFeedback', { sitekey: RECAPTCHA_SITE_KEY });
+  }
 }
 // Shows/hides the "Please specify" box under an Issue Type / Feedback Type
 // dropdown, only when "Other" is selected.
@@ -1534,6 +1556,12 @@ function handleHelpSubmit(type) {
     }
   }
 
+  var widgetId = type === 'issue' ? window.__recaptchaIssueId : window.__recaptchaFeedbackId;
+  if (!window.grecaptcha || widgetId === undefined || !grecaptcha.getResponse(widgetId)) {
+    alert('Please check the "I\'m not a robot" box before submitting.');
+    return false;
+  }
+
   var form = document.getElementById(type === 'issue' ? 'helpFormIssue' : 'helpFormFeedback');
   var urlPathField = document.getElementById(type === 'issue' ? 'issueUrlPath' : 'feedbackUrlPath');
   var btn = document.getElementById(type === 'issue' ? 'issueSubmitBtn' : 'feedbackSubmitBtn');
@@ -1544,6 +1572,7 @@ function handleHelpSubmit(type) {
 
   setTimeout(function() {
     form.classList.add('sent');
+    grecaptcha.reset(widgetId);
   }, 1200);
 
   return true;
