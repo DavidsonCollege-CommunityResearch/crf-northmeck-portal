@@ -1,6 +1,9 @@
 ---
 ---
 <!-- ════ HELP MODAL (Report an issue / Give feedback) ════ -->
+<!-- reCAPTCHA v2: the site key is set in main.js (RECAPTCHA_SITE_KEY constant),
+     not in this file — this file just holds the empty widget containers below. -->
+<script src="https://www.google.com/recaptcha/api.js?onload=grecaptchaOnLoad&render=explicit" async defer></script>
 <iframe name="helpHiddenIframe" style="display:none;"></iframe>
 
 <div class="help-modal" id="helpModal" aria-hidden="true">
@@ -80,6 +83,10 @@
         <input type="email" id="issueEmail" name="email" placeholder="you@example.com" />
       </div>
 
+      <div class="help-field">
+        <div id="recaptchaIssue"></div>
+      </div>
+
       <button type="submit" class="help-submit" id="issueSubmitBtn">Send report</button>
       <div class="help-success" id="helpSuccessIssue">
         <i class="ti ti-circle-check"></i> Thanks, we've got it and will take a look.
@@ -137,6 +144,10 @@
       <div class="help-field">
         <label for="feedbackEmail">Your email <span class="opt">(optional, if you'd like a reply)</span></label>
         <input type="email" id="feedbackEmail" name="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="help-field">
+        <div id="recaptchaFeedback"></div>
       </div>
 
       <button type="submit" class="help-submit" id="feedbackSubmitBtn">Send feedback</button>
