@@ -871,33 +871,39 @@ var FACTS = [
   { icon:'ti-ripple',title:'Lake Norman',desc:"NC's largest man-made lake, formed by damming the Catawba River in 1963." },
   { icon:'ti-building-bank',title:'Davidson College',desc:'Founded in 1837; its best-known alumnus is NBA star Stephen Curry.' },
   { icon:'ti-history',title:"Battle of Cowan's Ford",desc:'General Davidson fell here in 1781, now beneath Lake Norman.' },
-  { icon:'ti-home-heart',title:'Smithville',desc:'Settled in 1908 by formerly enslaved families on land sold by Jacob Smith.' },
+  { icon:'ti-home-heart',title:'Smithville',desc:"Settled in 1908 by formerly enslaved families, on land Jacob Smith sold or gave outright to those who couldn't afford it." },
   { icon:'ti-plant',title:'How Cornelius began',desc:"The town was born from an 1890s dispute over weighing cotton." },
   { icon:'ti-school',title:'Torrence-Lytle School',desc:"From 1937–1966, the area's only high school for Black students." },
   { icon:'ti-train',title:'The railroad town',desc:'Incorporated in 1873, Huntersville grew up around its rail depot.' },
   { icon:'ti-building-factory',title:'Linden Cotton Factory',desc:"Davidson's first textile mill, built on Depot Street in 1890." },
   { icon:'ti-trending-up',title:'A fast-growing region',desc:'Huntersville grew from 4,000 residents in 1990 to 60,000 today.' },
-  { icon:'ti-walk',title:'Walkable by design',desc:'Davidson banned drive-thru windows in the 1990s to stay walkable.' },
   { icon:'ti-feather',title:'Carolina Raptor Center',desc:'At Latta Preserve, home to 30+ species of eagles and owls.' },
   { icon:'ti-flag',title:'Loch Norman Games',desc:'Historic Rural Hill hosts the Loch Norman Highland Games each April.' },
   { icon:'ti-building-monument',title:'A protected downtown',desc:"Davidson's core earned National Register Historic status in 2009." },
-  { icon:'ti-droplet',title:'Mountain Island Lake',desc:'A Catawba reservoir supplying drinking water across Mecklenburg.' }
+  { icon:'ti-anchor',title:'Cornelius, once Liverpool',desc:"The town was first incorporated as 'Liverpool,' nicknamed for its cotton trade, before being renamed to honor investor Joseph Benjamin Cornelius." },
+  { icon:'ti-book',title:"Huntersville's first name",desc:'Originally called Craighead after a Presbyterian minister, the town was renamed for landowner Robert Boston Hunter.' },
+  { icon:'ti-building-church',title:'Hopewell Presbyterian',desc:'Founded in 1762, this church lent its name to Hopewell High School, still teaching North Meck students today.' },
+  { icon:'ti-map-pin',title:'Davidson College, NC',desc:"The town wasn't originally called Davidson at all; it was incorporated as 'Davidson College, NC,' shortened in 1891." },
+  { icon:'ti-shield-check',title:"North Carolina's safest city",desc:'In 2025, Davidson was ranked the safest city in North Carolina by SafeWise.' }
 ];
 var FACTS_ES = [
   { title:'Lago Norman',desc:'El lago artificial más grande de NC, formado al represar el río Catawba en 1963.' },
   { title:'Davidson College',desc:'Fundado en 1837; su exalumno más conocido es la estrella de la NBA Stephen Curry.' },
   { title:"Batalla de Cowan's Ford",desc:'El general Davidson cayó aquí en 1781, hoy bajo el lago Norman.' },
-  { title:'Smithville',desc:'Fundado en 1908 por familias anteriormente esclavizadas en tierras vendidas por Jacob Smith.' },
+  { title:'Smithville',desc:'Fundado en 1908 por familias anteriormente esclavizadas, en tierras que Jacob Smith vendió o entregó a quienes no podían pagarlas.' },
   { title:'Cómo nació Cornelius',desc:'El pueblo surgió de una disputa de la década de 1890 sobre el pesaje del algodón.' },
   { title:'Escuela Torrence-Lytle',desc:'De 1937 a 1966, la única secundaria de la zona para estudiantes negros.' },
   { title:'El pueblo del ferrocarril',desc:'Incorporado en 1873, Huntersville creció alrededor de su estación de tren.' },
   { title:'Fábrica de algodón Linden',desc:"El primer molino textil de Davidson, construido en Depot Street en 1890." },
   { title:'Una región de rápido crecimiento',desc:'Huntersville pasó de 4,000 residentes en 1990 a 60,000 hoy.' },
-  { title:'Caminable por diseño',desc:'Davidson prohibió las ventanillas de autoservicio en los años 90 para seguir siendo caminable.' },
   { title:'Carolina Raptor Center',desc:'En Latta Preserve, hogar de más de 30 especies de águilas y búhos.' },
-  { title:'Juegos de Loch Norman',desc:'El histórico Rural Hill hosts the Loch Norman Highland Games cada abril.' },
+  { title:'Juegos de Loch Norman',desc:'El histórico Rural Hill alberga los Loch Norman Highland Games cada abril.' },
   { title:'Un centro protegido',desc:'El núcleo de Davidson obtuvo el estatus histórico del Registro Nacional en 2009.' },
-  { title:'Lago Mountain Island',desc:'Un embalse del Catawba que suministra agua potable en todo Mecklenburg.' }
+  { title:'Cornelius, antes Liverpool',desc:"El pueblo se incorporó primero como 'Liverpool', apodado así por su comercio de algodón, antes de ser renombrado en honor al inversionista Joseph Benjamin Cornelius." },
+  { title:'El primer nombre de Huntersville',desc:'Originalmente llamado Craighead en honor a un ministro presbiteriano, el pueblo fue renombrado por el terrateniente Robert Boston Hunter.' },
+  { title:'Iglesia Presbiteriana Hopewell',desc:'Fundada en 1762, esta iglesia dio su nombre a Hopewell High School, que hoy sigue educando a estudiantes de North Meck.' },
+  { title:'Davidson College, NC',desc:"El pueblo no se llamó Davidson desde el principio; se incorporó como 'Davidson College, NC', y el nombre se acortó en 1891." },
+  { title:'La ciudad más segura de Carolina del Norte',desc:'En 2025, Davidson fue clasificado como la ciudad más segura de Carolina del Norte según SafeWise.' }
 ];
 (function(){
   var bar=document.getElementById('factsBar'); if(!bar) return;
