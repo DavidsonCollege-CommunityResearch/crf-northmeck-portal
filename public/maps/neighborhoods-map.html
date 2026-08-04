@@ -1929,7 +1929,42 @@ _htmlwidgets2["default"].widget({
           map = _leaflet2["default"].map(el, data.options);
         }
 
-        preventUnintendedZoomOnScroll(map); // Store some state in the map object
+        // Scroll-wheel zoom is permanently disabled so page scrolling never
+        // gets hijacked by the map. Zoom is still available via the +/-
+        // buttons (zoomControl), which is a separate, unaffected handler.
+        // (Previously called preventUnintendedZoomOnScroll(map), a heuristic
+        // that disabled/re-enabled scroll zoom based on mouse movement, but
+        // it could still let the first scroll tick through before disabling.)
+        map.scrollWheelZoom.disable();
+
+        // "Home" button: resets the map to its original starting view (the
+        // bounding box that frames all 3 towns and 5 neighborhoods) so users
+        // who pan/zoom away and get lost can find their way back with one
+        // click. Stacks under the zoom (+/-) and layers controls since both
+        // already live in the topleft corner.
+        var HOME_BOUNDS = [[35.347522, -80.961445], [35.519207, -80.753355]];
+        var HomeControl = _leaflet2["default"].Control.extend({
+          options: { position: "topleft" },
+          onAdd: function () {
+            var container = _leaflet2["default"].DomUtil.create("div", "leaflet-bar leaflet-control");
+            var link = _leaflet2["default"].DomUtil.create("a", "", container);
+            link.href = "#";
+            link.title = "Reset to starting view";
+            link.setAttribute("aria-label", "Reset to starting view");
+            link.setAttribute("role", "button");
+            link.style.display = "flex";
+            link.style.alignItems = "center";
+            link.style.justifyContent = "center";
+            link.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4h4v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>';
+            _leaflet2["default"].DomEvent.disableClickPropagation(container);
+            _leaflet2["default"].DomEvent.on(link, "click", function (e) {
+              _leaflet2["default"].DomEvent.preventDefault(e);
+              map.fitBounds(HOME_BOUNDS);
+            });
+            return container;
+          }
+        });
+        map.addControl(new HomeControl());
 
         map.leafletr = {
           // Has the map ever rendered successfully?
