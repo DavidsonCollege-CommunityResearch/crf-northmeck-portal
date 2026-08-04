@@ -123,9 +123,8 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
         <h2 class="sec-h" style="font-size:32px" data-es="Los lugares con historias que contar">The places with stories to tell</h2>
         <p class="lead" data-es="Dentro de Davidson, Cornelius y Huntersville hay cinco vecindarios que cargan generaciones de historia.">Within Davidson, Cornelius, and Huntersville are five neighborhoods carrying generations of history. Explore who they are and why they matter.</p>
       </div>
+      <button class="btn btn-o" style="margin-top:26px" onclick="window.location='neighborhoods.html'"><i class="ti ti-map-2"></i> <span data-es="Explora los vecindarios">Explore the neighborhoods</span></button>
       <div class="nbhd-carousel">
-        <button class="spot-arrow nbhd-prev" id="nbhdPrev" aria-label="Previous neighborhoods" onclick="nbhdStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
-        <button class="spot-arrow nbhd-next" id="nbhdNext" aria-label="More neighborhoods" onclick="nbhdStep(1)"><i class="ti ti-chevron-right" style="font-weight:500;font-size:19px"></i></button>
         <div class="nbhd-grid" id="nbhdTrack">
           <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-pottstown'"><span class="town">HUNTERSVILLE</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Pottstown</span><span class="ds" data-es="Un vecindario históricamente afroamericano con raíces profundas en Huntersville.">A historically African American neighborhood with deep roots in Huntersville.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
           <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-westdavidson'"><span class="town">Davidson</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>West Davidson</span><span class="ds" data-es="Una comunidad arraigada en el lado oeste del pueblo, con su propia historia.">A long-standing community on the west side of town, with its own history.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
@@ -134,7 +133,6 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
           <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-eastcatawba'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>East Catawba</span><span class="ds" data-es="El quinto vecindario unido; su historia y datos aún se están recopilando.">The fifth united neighborhood. Its history and data are still being gathered.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
         </div>
       </div>
-      <button class="btn btn-o" style="margin-top:26px" onclick="window.location='neighborhoods.html'"><i class="ti ti-map-2"></i> <span data-es="Explora los vecindarios">Explore the neighborhoods</span></button>
     </div>
   </section>
 
