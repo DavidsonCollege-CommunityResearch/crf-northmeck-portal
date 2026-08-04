@@ -1354,19 +1354,6 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
   window.addEventListener('load',function(){ track.scrollLeft=0; });
 })();
 
-/* ── NEIGHBORHOODS CAROUSEL ── */
-(function(){
-  var track=document.getElementById('nbhdTrack'); if(!track) return;
-  var prev=document.getElementById('nbhdPrev'),next=document.getElementById('nbhdNext');
-  function stepBy(){ var card=track.querySelector('.nbhd-tcard'); return card?card.getBoundingClientRect().width+16:track.clientWidth; }
-  function update(){ var max=track.scrollWidth-track.clientWidth-2; prev.disabled=track.scrollLeft<=2; next.disabled=track.scrollLeft>=max; }
-  window.nbhdStep=function(d){ track.scrollBy({left:d*stepBy(),behavior:'smooth'}); };
-  var t; track.addEventListener('scroll',function(){ clearTimeout(t); t=setTimeout(update,90); });
-  track.scrollLeft=0; update();
-  window.addEventListener('load',function(){ track.scrollLeft=0; update(); });
-  window.addEventListener('pagehide',function(){ track.scrollLeft=0; });
-})();
-
 /* ── ROTATING STORY LINKS ── */
 (function(){
   var STORY = {
