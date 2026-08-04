@@ -471,10 +471,8 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 .fact-dash{color:var(--ink-3);flex:none}
 .fact-desc{color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:clip;min-width:0}
 /* NEIGHBORHOODS TEASER */
-.nbhd-carousel{position:relative;margin-top:26px}
-.nbhd-grid{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-inline:52px;padding:6px 0}
-.nbhd-grid::-webkit-scrollbar{display:none}
-.nbhd-grid .nbhd-tcard{flex:0 0 calc((100% - 32px)/3);scroll-snap-align:start}
+.nbhd-carousel{margin-top:26px}
+.nbhd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .nbhd-prev{left:4px}
 .nbhd-next{right:4px}
 .nbhd-tcard{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:20px;cursor:pointer;display:flex;flex-direction:column;gap:7px;transition:transform .2s,box-shadow .2s,border-color .2s}
@@ -760,8 +758,7 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
   .blog-track .bcard{flex:0 0 78%}
   .blog-prev,.blog-next{display:none}
   .topics-prev,.topics-next{display:none}
-  .nbhd-grid{margin-inline:0}
-  .nbhd-grid .nbhd-tcard{flex:0 0 78%}
+  .nbhd-grid{grid-template-columns:1fr}
   .spot-arrow{display:none}
   .partner{grid-template-columns:1fr;gap:28px;padding:40px 0}
   .nbhd-grid2{grid-template-columns:1fr;gap:30px}
