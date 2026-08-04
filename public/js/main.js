@@ -663,6 +663,14 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
       var vis=Array.prototype.some.call(s.querySelectorAll('.dlib-row'),function(r){ return r.style.display!=='none'; });
       s.style.display=vis?'':'none';
     });
+    // Once a topic filter is active, rows from several original sections can
+    // mix together under one header (a row tagged "housing economics" shows
+    // under Economic Well-Being too), so the section headers stop being an
+    // accurate label. Hide them and show a flat list instead; they come back
+    // once the topic filter is cleared.
+    document.getElementById('dlibResults').querySelectorAll('.dlib-section-h').forEach(function(h){
+      h.style.display = (state.topic==='all') ? '' : 'none';
+    });
     document.getElementById('dlibEmpty').style.display=any?'none':'block';
   };
   window.dlibClear = function(){
