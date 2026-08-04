@@ -81,29 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-/* ── LANGUAGE (EN / ES) ── */
-window.LANG = localStorage.getItem('nm_lang') || 'en';
-function applyI18n(){
-  var es = window.LANG === 'es';
-  document.querySelectorAll('[data-es]').forEach(function(el){
-    if (el.getAttribute('data-en') === null) el.setAttribute('data-en', el.textContent);
-    el.textContent = es ? el.getAttribute('data-es') : el.getAttribute('data-en');
-  });
-  document.querySelectorAll('[data-es-placeholder]').forEach(function(el){
-    if (el.getAttribute('data-en-placeholder') === null) el.setAttribute('data-en-placeholder', el.getAttribute('placeholder') || '');
-    el.setAttribute('placeholder', es ? el.getAttribute('data-es-placeholder') : el.getAttribute('data-en-placeholder'));
-  });
-  document.documentElement.lang = es ? 'es' : 'en';
-  document.querySelectorAll('.lang-opt').forEach(function(b){ b.classList.toggle('on', b.dataset.lang === window.LANG); });
-  window.dispatchEvent(new CustomEvent('langchange'));
-}
-function setLang(lang){
-  window.LANG = (lang === 'es') ? 'es' : 'en';
-  localStorage.setItem('nm_lang', window.LANG);
-  applyI18n();
-}
-window.setLang = setLang;
-document.addEventListener('DOMContentLoaded', applyI18n);
 
 // ── Nav search ──────────────────────────────────────────────────────────────
 var NAV_INDEX = [
