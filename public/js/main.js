@@ -1848,40 +1848,6 @@ function findDatasetForHost(root){
   else init();
 })();
 
-/* ── MAP MODAL OVERRIDE ── */
-function openMap() {
-  var modal = document.getElementById("map-modal");
-  var iframe = document.getElementById("map-iframe");
-  if (modal) {
-    if (iframe && (!iframe.src || iframe.src === window.location.href)) {
-      iframe.src = "map-overview.html";
-    }
-    modal.style.display = "flex";
-    document.body.style.overflow = "hidden";
-  } else {
-    // Fallback: use nmap SVG modal
-    var nmap = document.getElementById('nmapModal');
-    if (nmap) { nmap.classList.add('open'); document.body.style.overflow='hidden'; }
-  }
-}
-function closeMap() {
-  var modal = document.getElementById("map-modal");
-  if (modal) { modal.style.display = "none"; document.body.style.overflow = ""; }
-  var nmap = document.getElementById('nmapModal');
-  if (nmap) { nmap.classList.remove('open'); document.body.style.overflow = ""; }
-}
-window.openMap = openMap;
-window.closeMap = closeMap;
-document.addEventListener('DOMContentLoaded', function() {
-  var modal = document.getElementById("map-modal");
-  if (modal) {
-    modal.addEventListener("click", function(e) { if (e.target === this) closeMap(); });
-  }
-});
-document.addEventListener("keydown", function(e) {
-  if (e.key === "Escape") closeMap();
-});
-
 /* ── HELP MODAL (Report an issue / Give feedback) ── */
 function openHelpForm(type) {
   var modal = document.getElementById('helpModal');
