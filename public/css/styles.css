@@ -647,9 +647,7 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 .viz-share .ti{font-size:15px}
 .minichart.viz-host>.viz-tools{top:9px;right:9px}
 .theme-pill{font-family:inherit;font-size:11px;font-weight:600;line-height:1;padding:5px 10px;border-radius:999px;border:none}
-.viz-theme-tag{position:absolute;top:12px;left:12px;z-index:6;cursor:pointer}
-.minichart.viz-host>.viz-theme-tag{top:9px;left:9px}
-#vizBody .viz-theme-tag{position:static;margin-bottom:10px}
+.viz-theme-tag{display:inline-block;position:static;margin:0 0 8px;cursor:pointer}
 .theme-affordability{background:oklch(0.945 0.03 230);color:oklch(0.42 0.09 230)}
 .theme-economic-mobility{background:oklch(0.945 0.03 145);color:oklch(0.40 0.09 145)}
 .theme-racial-equity{background:oklch(0.945 0.03 330);color:oklch(0.42 0.09 330)}
