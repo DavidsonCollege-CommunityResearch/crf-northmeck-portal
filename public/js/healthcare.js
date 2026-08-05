@@ -2053,38 +2053,26 @@ function renderOverviewAgeUnins() {
     })();
 })();
 
-// Block 6 (plain) - Preventive Care & Screening Rates
-(function() {
+// Block 6 (module) - Preventive Care & Screening Rates
+(async function() {
   var PC_BLUE  = '#2E86AB';
   var PC_DARK  = '#1B4F72';
   var PC_AMBER = '#E8A838';
   var PC_TEXT  = '#444';
   var TOWNS    = ['Cornelius', 'Davidson', 'Huntersville'];
+  var MEASURES = ['Checkup', 'Cholesterol', 'Cervical', 'Colon', 'Mammogram', 'Dental'];
 
   // Each measure uses the most recent year all three towns reported a value.
   // CDC PLACES releases different measures on different survey cycles, so the
   // year genuinely varies by measure, not by a data gap.
-  var PC_DATA = [
-    { measure: 'Checkup',       year: 2023, town: 'Cornelius',    val: 79.9 },
-    { measure: 'Checkup',       year: 2023, town: 'Davidson',     val: 79.4 },
-    { measure: 'Checkup',       year: 2023, town: 'Huntersville', val: 78.4 },
-    { measure: 'Cholesterol',   year: 2023, town: 'Cornelius',    val: 90.7 },
-    { measure: 'Cholesterol',   year: 2023, town: 'Davidson',     val: 89.0 },
-    { measure: 'Cholesterol',   year: 2023, town: 'Huntersville', val: 89.7 },
-    { measure: 'Cervical',      year: 2020, town: 'Cornelius',    val: 88.5 },
-    { measure: 'Cervical',      year: 2020, town: 'Davidson',     val: 87.1 },
-    { measure: 'Cervical',      year: 2020, town: 'Huntersville', val: 89.1 },
-    { measure: 'Colon',         year: 2020, town: 'Cornelius',    val: 76.1 },
-    { measure: 'Colon',         year: 2020, town: 'Davidson',     val: 77.5 },
-    { measure: 'Colon',         year: 2020, town: 'Huntersville', val: 75.1 },
-    { measure: 'Mammogram',     year: 2020, town: 'Cornelius',    val: 80.7 },
-    { measure: 'Mammogram',     year: 2020, town: 'Davidson',     val: 80.6 },
-    { measure: 'Mammogram',     year: 2020, town: 'Huntersville', val: 81.0 },
-    { measure: 'Dental',        year: 2020, town: 'Cornelius',    val: 73.7 },
-    { measure: 'Dental',        year: 2020, town: 'Davidson',     val: 75.2 },
-    { measure: 'Dental',        year: 2020, town: 'Huntersville', val: 73.8 }
-  ];
-  var MEASURES = ['Checkup', 'Cholesterol', 'Cervical', 'Colon', 'Mammogram', 'Dental'];
+  var PC_DATA;
+  try {
+    PC_DATA = await window.loadData('cdc-preventive-care');
+  } catch(e) {
+    console.error("Failed to load cdc-preventive-care:", e);
+    window.mdShowError('chart-preventive-care');
+    return;
+  }
 
   var PC_TT = document.createElement('div');
   PC_TT.style.cssText = 'position:fixed;pointer-events:none;background:#1a1a2e;color:#fff;font:500 12px Hanken Grotesk,sans-serif;padding:7px 11px;border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.22);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:9999';
