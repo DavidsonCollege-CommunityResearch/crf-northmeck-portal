@@ -203,7 +203,7 @@ em{font-style:italic}a{text-decoration:none;color:inherit}button{font-family:inh
 .bc-lbl{font-size:11px;color:var(--ink-3);text-align:center;margin-top:8px;line-height:1.35}
 .bc-lbl b{display:block;color:var(--ink);font-size:12px;font-weight:600}
 /* Minichart bars (84px) — scoped to avoid conflict */
-.minichart .bars{height:150px;gap:9px;margin-bottom:0}
+.minichart .bars{height:84px;gap:9px;margin-bottom:0}
 .minichart .bar{flex:1;max-width:none;background:var(--accent-line);border-radius:4px 4px 0 0;border-top:none;min-height:4px;position:relative}
 .minichart .bar .bv{position:absolute;top:-14px;left:0;right:0;text-align:center;font-size:9px;font-weight:600;color:var(--ink-2);white-space:nowrap}
 .minichart .bar.bar-now{background:var(--accent-soft);border-top:3px solid var(--accent)}
@@ -646,6 +646,17 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 .viz-expand .ti{font-size:14px}
 .viz-share .ti{font-size:15px}
 .minichart.viz-host>.viz-tools{top:9px;right:9px}
+.theme-pill{font-family:inherit;font-size:11px;font-weight:600;line-height:1;padding:5px 10px;border-radius:999px;border:none}
+.viz-theme-tag{position:absolute;top:12px;left:12px;z-index:6;cursor:pointer}
+.minichart.viz-host>.viz-theme-tag{top:9px;left:9px}
+#vizBody .viz-theme-tag{position:static;margin-bottom:10px}
+.theme-affordability{background:oklch(0.945 0.03 230);color:oklch(0.42 0.09 230)}
+.theme-economic-mobility{background:oklch(0.945 0.03 145);color:oklch(0.40 0.09 145)}
+.theme-racial-equity{background:oklch(0.945 0.03 330);color:oklch(0.42 0.09 330)}
+.theme-demographics{background:oklch(0.945 0.02 60);color:oklch(0.42 0.05 60)}
+.viz-theme-tip{position:fixed;z-index:80;max-width:240px;background:var(--dark);color:var(--on-dark);font-size:12.5px;line-height:1.5;padding:9px 12px;border-radius:8px;box-shadow:0 6px 20px oklch(0.27 0.012 60 / 0.28)}
+.viz-theme-tip strong{display:block;font-weight:700;margin-bottom:2px}
+.dlib-theme-tag{cursor:default;margin-right:6px}
 .modal.viz-modal{width:880px;padding:30px 34px 28px}
 .viz-modal-head{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:8px}
 .viz-modal-head .ti{font-size:15px}
