@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+
+// Hidden for 2026 -- no data sourced yet. Flip to true once it is.
+const SHOW_ED_RESOURCES = false;
 ---
 <BaseLayout title="Education · North Meck Insights">
 
@@ -22,7 +25,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       <span class="tab" data-tab="ed-enrollment" onclick="setTab(this)">Enrollment &amp; Growth</span>
       <span class="tab" data-tab="ed-demographics" onclick="setTab(this)">School Demographics</span>
       <span class="tab" data-tab="ed-performance" onclick="setTab(this)">Academic Performance</span>
-      <span class="tab" data-tab="ed-resources" onclick="setTab(this)">Resources &amp; Staffing</span>
+      {SHOW_ED_RESOURCES && <span class="tab" data-tab="ed-resources" onclick="setTab(this)">Resources &amp; Staffing</span>}
       <span class="tab" data-tab="ed-attainment" onclick="setTab(this)">Educational Attainment</span>
     </div>
   </div>
@@ -362,7 +365,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
     </div>
   </div>
 
-  <!-- TAB: resources & staffing -->
+  {SHOW_ED_RESOURCES && (
   <div class="tabpane" data-pane="ed-resources">
     <div class="wrap">
       <div class="sec-head"><span class="eyebrow">Resources &amp; Staffing</span><h2 class="sec-h">Are schools adequately staffed and funded as enrollment climbs?</h2><p class="lead">Teacher-to-student ratios, per-pupil expenditure, and staff counts reveal whether resources are keeping pace with growth — and whether all North Meck schools receive equitable investment.</p></div>
@@ -410,6 +413,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
       </div>
     </div>
   </div>
+  )}
 
   <!-- TAB: educational attainment -->
   <div class="tabpane" data-pane="ed-attainment">
