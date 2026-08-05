@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-North Meck Insights: a static, public-data portal built by Davidson College's Community Research Fellows (CRF) program. It presents housing, education, and healthcare data for North Mecklenburg, NC (Davidson, Cornelius, Huntersville) plus profiles of five "United Neighborhoods." Built with Astro (static output, no server), bilingual (EN/ES) throughout.
+North Meck Insights: a static, public-data portal built by Davidson College's Community Research Fellows (CRF) program. It presents housing, education, and healthcare data for North Mecklenburg, NC (Davidson, Cornelius, Huntersville) plus profiles of five "United Neighborhoods." Built with Astro (static output, no server).
 
 ## Running it
 
@@ -21,7 +21,7 @@ North Meck Insights: a static, public-data portal built by Davidson College's Co
 `astro.config.mjs` sets `base: '/crf-northmeck-portal/'` (GitHub Pages project-site path) and `trailingSlash: 'never'`. `import.meta.env.BASE_URL` doesn't reliably end in `/`, so pages normalize it with `.replace(/\/*$/, '/')` before building asset URLs.
 
 **JS is one shared file plus one file per topic dashboard, served from `public/js/` (not processed by Astro/Vite, plain script tags):**
-- `public/js/main.js`: nav (incl. client-side search over a hardcoded `NAV_INDEX` array, with a `pageMap` translating search result keys to `.html` filenames; keep both in sync when adding or renaming pages), EN/ES language toggle (`data-es`/`data-en` attribute pairs plus `localStorage`), glossary modal, accessibility panel (text size, contrast, dyslexia font, screen-reader-via-`SpeechSynthesis`, etc., all persisted to `localStorage`), the "facts bar" ticker, the home-page data-spotlight/topic/neighborhood/blog carousels, the North Meck SVG map modal, `window.loadData(name)` (fetches `data/<name>.json` relative to wherever `main.js` was loaded from), and the Data Library download UI on `data-library.astro` (CSV/Excel/codebook export, driven by the `DATASETS` registry in `main.js`).
+- `public/js/main.js`: nav (incl. client-side search over a hardcoded `NAV_INDEX` array, with a `pageMap` translating search result keys to `.html` filenames; keep both in sync when adding or renaming pages), glossary modal, accessibility panel (text size, contrast, dyslexia font, screen-reader-via-`SpeechSynthesis`, etc., all persisted to `localStorage`), the "facts bar" ticker, the home-page data-spotlight/topic/neighborhood/blog carousels, the North Meck SVG map modal, `window.loadData(name)` (fetches `data/<name>.json` relative to wherever `main.js` was loaded from), and the Data Library download UI on `data-library.astro` (CSV/Excel/codebook export, driven by the `DATASETS` registry in `main.js`).
 - `public/js/housing.js`, `healthcare.js`, `education.js`, `neighborhoods.js`: one file per dashboard page, each self-contained (chart rendering, tab/chip filtering, town selection) and loaded only by its corresponding page.
 - Charts are hand-rolled with **D3 v6** and **Observable Plot** (both CDN) rather than a shared charting library. Tabs (`setTab`), town filter chips (`setChip`, dispatching a `masterTownChange` custom event), and per-chart render functions registered on `window.__renders` are the general pattern for wiring a chip/tab click to a redraw.
 - `neighborhoods.astro` and `nbhd-data.astro` use a Leaflet map (CDN) plus a `NBHD_META` lookup table in `main.js` for neighborhood metadata.
@@ -34,7 +34,5 @@ North Meck Insights: a static, public-data portal built by Davidson College's Co
 `pottstown-demographics` was previously broken for the same reason but is now resolved: the table `nmidw.agg_neighborhood_demographics` exists and returns data correctly.
 
 **Styling:** a single `public/css/styles.css` using CSS custom properties (`--accent`, `--ink`, `--paper`, etc. defined in `:root`) with `oklch()` colors. No CSS framework, no preprocessor. Per-page inline `style="..."` attributes are used heavily alongside the stylesheet, so don't assume all visual rules live in `styles.css`.
-
-**i18n pattern:** every user-facing string that needs a Spanish translation carries a `data-es="..."` attribute alongside its English text content; `applyI18n()` in `main.js` swaps `textContent` based on `window.LANG` (persisted in `localStorage` as `nm_lang`) and fires a `langchange` event that other modules (e.g. the facts bar) listen for. When adding new user-facing copy, add the matching `data-es` attribute rather than introducing a new i18n mechanism.
 
 **Assets:** images live under `public/images/`, all real (not placeholder) photography and logos supplied by the design team. Note `mulliss-logo.jpg` is a JPG despite the site's older references expecting a `.png`; the `about.astro` image tag was updated to match the actual file rather than converting the file to PNG.
