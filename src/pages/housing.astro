@@ -103,35 +103,6 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
 
       </div>
 
-
-      <!-- Overview hero chart: Rent vs. Income indexed -->
-      <div class="card viz-host" id="income-rent-chart-host" style="margin-bottom:24px">
-        <div class="card-t">Rent vs. Income Growth, Indexed to 2018</div>
-        <div class="card-s">When the rent line rises above the income line, affordability is eroding · North Mecklenburg</div>
-        <div class="filterbar" style="margin-bottom:14px">
-          <span class="lbl">Town:</span>
-          <button class="chip on" data-rent-town="All">All towns</button>
-          <button class="chip" data-rent-town="Cornelius">Cornelius</button>
-          <button class="chip" data-rent-town="Davidson">Davidson</button>
-          <button class="chip" data-rent-town="Huntersville">Huntersville</button>
-        </div>
-        <div id="income-rent-chart" style="width:100%"></div>
-        <div class="callout warn"><div class="callout-t">In Davidson, rents rose 68% between 2018 and 2024 while incomes rose 37%. The gap is widest here, but every town shows the same divergence.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024 · index set to 100 in 2018 so towns can be compared on the same scale regardless of starting dollar values</div></div>
-      </div>
-
-      <div class="g2" style="margin-top:8px">
-        <div class="callout info">
-          <div class="callout-t"><strong>The story behind the numbers:</strong> North Meck's three towns look wealthy on the surface: median incomes of $113K–$156K and homeownership above 70% read as prosperity. But that aggregate picture conceals deep pressure on renters, low-income households, and communities of color who keep these towns running.</div>
-          <div class="callout-s">Explore each tab to see who is affected, where the pressure is highest, and what it means for communities like Davidson West.</div>
-        </div>
-        <div class="map-ph">
-          <i class="ti ti-map-2"></i>
-          <div class="t">Cost burden by neighborhood</div>
-          <div class="s">Choropleth map · click a neighborhood to filter every chart</div>
-          <div class="scale"></div>
-          <div class="scale-lbl">low → high cost burden · Viridis · alt text provided</div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -179,6 +150,21 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
         </div>
         <div id="home-value-chart" style="width:100%"></div>
         <div class="callout"><div class="callout-t">In Cornelius, home values rose 91% between 2018 and 2024. Median incomes rose just 28% over the same period.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
+      </div>
+
+      <!-- Chart: Rent vs Income Growth (moved from Overview) -->
+      <div class="card viz-host" id="income-rent-chart-host" style="margin-top:22px">
+        <div class="card-t">Rent vs. Income Growth, Indexed to 2018</div>
+        <div class="card-s">When the rent line rises above the income line, affordability is eroding · North Mecklenburg</div>
+        <div class="filterbar" style="margin-bottom:14px">
+          <span class="lbl">Town:</span>
+          <button class="chip on" data-rent-town="All">All towns</button>
+          <button class="chip" data-rent-town="Cornelius">Cornelius</button>
+          <button class="chip" data-rent-town="Davidson">Davidson</button>
+          <button class="chip" data-rent-town="Huntersville">Huntersville</button>
+        </div>
+        <div id="income-rent-chart" style="width:100%"></div>
+        <div class="callout warn"><div class="callout-t">In Davidson, rents rose 68% between 2018 and 2024 while incomes rose 37%. The gap is widest here, but every town shows the same divergence.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024 · index set to 100 in 2018 so towns can be compared on the same scale regardless of starting dollar values</div></div>
       </div>
 
 
