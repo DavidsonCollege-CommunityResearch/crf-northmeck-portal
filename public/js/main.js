@@ -605,7 +605,7 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
 
 /* ── DATA LIBRARY ── */
 (function(){
-  var state = { search:'', geo:'all', topic:'all' };
+  var state = { search:'', geo:'all', topic:'all', theme:'all' };
 
   /* ── filter / UI ── */
   window.dlibToggle = function(btn){
@@ -633,6 +633,7 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
       if (state.search && r.getAttribute('data-name').indexOf(state.search)<0) ok=false;
       if (state.geo!=='all' && r.getAttribute('data-geo')!==state.geo) ok=false;
       if (state.topic!=='all' && (' '+r.getAttribute('data-topic')+' ').indexOf(' '+state.topic+' ')<0) ok=false;
+      if (state.theme!=='all' && (' '+r.getAttribute('data-theme')+' ').indexOf(' '+state.theme+' ')<0) ok=false;
       r.style.display=ok?'':'none';
       if (ok) any=true;
     });
@@ -646,12 +647,12 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
     // accurate label. Hide them and show a flat list instead; they come back
     // once the topic filter is cleared.
     document.getElementById('dlibResults').querySelectorAll('.dlib-section-h').forEach(function(h){
-      h.style.display = (state.topic==='all') ? '' : 'none';
+      h.style.display = (state.topic==='all' && state.theme==='all') ? '' : 'none';
     });
     document.getElementById('dlibEmpty').style.display=any?'none':'block';
   };
   window.dlibClear = function(){
-    state={search:'',geo:'all',topic:'all'};
+    state={search:'',geo:'all',topic:'all',theme:'all'};
     var s=document.getElementById('dlibSearch'); if(s) s.value='';
     document.querySelectorAll('.dlib-dd').forEach(function(dd){
       var btn=dd.querySelector('.dlib-dd-btn'),txt=btn.querySelector('.dlib-dd-txt');
@@ -1439,6 +1440,113 @@ function findDatasetForHost(root){
   }
   return null;
 }
+
+/* ── CHART THEME TAGS ── */
+// Every chart on the site gets tagged with one of 3 editorial themes that run
+// through the portal (affordability, economic mobility, racial equity), or a
+// 4th catch-all (demographics) for charts that are descriptive rather than
+// tied to one of those 3 storylines. Racial Equity is reserved for charts
+// that show an explicit gap between racial groups; charts that just show
+// racial composition/counts with no comparison go to Demographics instead.
+var THEME_DEFS = {
+  'affordability': { label:'Affordability', text:'Whether housing, insurance, and other basic costs are within reach for local incomes.' },
+  'economic-mobility': { label:'Economic mobility', text:'Whether people have a realistic path to higher income and financial stability over time.' },
+  'racial-equity': { label:'Racial equity', text:'Where outcomes differ by race, and by how much.' },
+  'demographics': { label:'Demographics', text:'Who lives here: population, composition, and how the area is changing.' }
+};
+var CHART_TO_THEME = {
+  // Housing — Affordability
+  'rent-chart':'affordability', 'income-rent-chart':'affordability', 'home-value-chart':'affordability',
+  'ovf-rent':'affordability', 'ovf-home':'affordability', 'ovf-ptr':'affordability', 'ovf-dp':'affordability',
+  'hpti-chart':'affordability', 'rti-chart':'affordability', 'down-payment-chart':'affordability',
+  'burden-trend-chart':'affordability', 'severely-burdened-chart':'affordability', 'burden-chart':'affordability',
+  'ptr-chart':'affordability', 'ptr-trend-chart':'affordability', 'tenure-chart':'affordability',
+  'infra-chart':'affordability',
+  'chart-housing-wage':'affordability', 'chart-fmr-bedroom':'affordability', 'chart-ami-gap':'affordability',
+  // Housing — Economic mobility
+  'gini-chart':'economic-mobility', 'alice-bar-chart':'economic-mobility', 'alice-trend-chart':'economic-mobility',
+  'alice-county-chart':'economic-mobility', 'alice-county-composition-chart':'economic-mobility',
+  'mobility-chart':'economic-mobility',
+  // Housing — Racial equity
+  'race-chart':'racial-equity',
+  // Housing — Demographics
+  'population-chart':'demographics', 'race-summary-table-wrap':'demographics', 'race-comp-chart':'demographics',
+  'race-trend-chart':'demographics', 'median-income-chart':'demographics', 'housing-types-chart':'demographics',
+  // Education — Economic mobility
+  'chart-level-trend':'economic-mobility', 'chart-bach-trend':'economic-mobility',
+  'chart-attainment-breakdown':'economic-mobility', 'chart-earnings':'economic-mobility',
+  'chart-grade-level-proficiency':'economic-mobility', 'chart-hs-ccr':'economic-mobility',
+  'chart-school-academic-growth':'economic-mobility', 'chart-four-year-graduation-rate':'economic-mobility',
+  'chart-school-achievement-economic-gap':'economic-mobility', 'chart-hs-achievement-economic-gap':'economic-mobility',
+  'chart-economic-gap':'economic-mobility',
+  // Education — Racial equity
+  'chart-race-gap-avg':'racial-equity', 'chart-race-gap-top':'racial-equity',
+  // Education — Demographics
+  'chart-k12-trend':'demographics', 'chart-pop-vs-k12':'demographics', 'chart-total-enrollment-trend':'demographics',
+  'chart-disability-gap':'demographics',
+  // Healthcare — Affordability
+  'hc-ins-dot-wrap':'affordability', 'hc-ins-heatmap-title':'affordability', 'hc-ins-heatmap-sub':'affordability',
+  'hc-ins-heatmap':'affordability', 'hc-ins-age':'affordability', 'hc-ins-age-trend':'affordability',
+  'hc-ins-emp':'affordability', 'hc-ins-income':'affordability', 'hc-ins-trend':'affordability',
+  'hc-overview-age-uninsured':'affordability',
+  // Healthcare — Demographics
+  'mh-depbar-chart':'demographics', 'mh-distressbar-chart':'demographics', 'mh-address-btn':'demographics',
+  'mh-address-input':'demographics', 'mh-facility-map':'demographics', 'cd-diabetes-chart':'demographics',
+  'cd-hbp-chart':'demographics', 'cd-obesity-chart':'demographics', 'chart-preventive-care':'demographics',
+  // Neighborhoods dashboard — Affordability
+  'nd-tenure-chart':'affordability', 'nd-rent-value-chart':'affordability', 'nd-burden-chart':'affordability',
+  'nd-commute-mode-chart':'affordability', 'nd-commute-trend-chart':'affordability',
+  'nd-remote-work-chart':'affordability', 'nd-total-workers-chart':'affordability',
+  // Neighborhoods dashboard — Economic mobility
+  'nd-income-dist-chart':'economic-mobility', 'nd-income-trend-chart':'economic-mobility',
+  'nd-income-dist-trend-chart':'economic-mobility', 'nd-total-households-chart':'economic-mobility',
+  'nd-attainment-composition-chart':'economic-mobility', 'nd-bachelors-chart':'economic-mobility',
+  'nd-pop25-chart':'economic-mobility', 'nd-less-hs-chart':'economic-mobility',
+  // Neighborhoods dashboard — Demographics
+  'nd-pop-chart':'demographics', 'nd-hl-chart':'demographics', 'nd-race-chart':'demographics',
+  'nd-under6-chart':'demographics', 'nd-afterschool-chart':'demographics', 'nd-total-under18-chart':'demographics'
+};
+function findThemeForHost(root){
+  if(!root) return null;
+  var direct=root.getAttribute && root.getAttribute('data-theme');
+  if(direct) return direct;
+  if(root.id && CHART_TO_THEME[root.id]) return CHART_TO_THEME[root.id];
+  var withTheme=root.querySelector('[data-theme]');
+  if(withTheme) return withTheme.getAttribute('data-theme');
+  var els=root.querySelectorAll('[id]');
+  for(var i=0;i<els.length;i++){
+    if(CHART_TO_THEME[els[i].id]) return CHART_TO_THEME[els[i].id];
+  }
+  return null;
+}
+var themeTipEl=null;
+function closeThemeTip(){ if(themeTipEl){ themeTipEl.remove(); themeTipEl=null; } }
+window.toggleThemeTip=function(tag,def){
+  if(themeTipEl && themeTipEl._forTag===tag){ closeThemeTip(); return; }
+  closeThemeTip();
+  var tip=document.createElement('div'); tip.className='viz-theme-tip'; tip.setAttribute('role','tooltip');
+  tip.innerHTML='<strong>'+def.label+'</strong>'+def.text;
+  document.body.appendChild(tip);
+  var r=tag.getBoundingClientRect(), tw=tip.offsetWidth;
+  tip.style.left=Math.max(8,Math.min(r.left,window.innerWidth-tw-8))+'px';
+  tip.style.top=(r.bottom+8)+'px';
+  themeTipEl=tip; themeTipEl._forTag=tag;
+};
+document.addEventListener('click',function(e){
+  if(themeTipEl && !e.target.closest('.viz-theme-tag') && !e.target.closest('.viz-theme-tip')) closeThemeTip();
+});
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeThemeTip(); });
+window.addEventListener('scroll',closeThemeTip,true);
+function makeThemeTag(host){
+  var theme=findThemeForHost(host), def=theme&&THEME_DEFS[theme];
+  if(!def) return null;
+  var tag=document.createElement('button'); tag.type='button';
+  tag.className='theme-pill viz-theme-tag theme-'+theme;
+  tag.textContent=def.label;
+  tag.setAttribute('aria-label',def.label+', click for what this theme means');
+  tag.onclick=function(e){ e.stopPropagation(); window.toggleThemeTip(tag,def); };
+  return tag;
+}
 (function(){
   function makeTools(host){
     var tools=document.createElement('div'); tools.className='viz-tools';
@@ -1452,6 +1560,10 @@ function findDatasetForHost(root){
     b.innerHTML='<i class="ti ti-arrows-diagonal"></i><span>Expand</span>';
     tools.appendChild(share); tools.appendChild(b); return tools;
   }
+  function decorate(root){
+    if(!root.querySelector('.viz-tools')) root.appendChild(makeTools(root));
+    if(!root.querySelector('.viz-theme-tag')){ var tag=makeThemeTag(root); if(tag) root.appendChild(tag); }
+  }
   function initViz(){
     var set=new Set();
     document.querySelectorAll('.bars').forEach(function(bars){
@@ -1463,16 +1575,13 @@ function findDatasetForHost(root){
     document.querySelectorAll('.srow-viz').forEach(function(s){ set.add(s); });
     set.forEach(function(root){
       if(!root||root.classList.contains('viz-host')) return;
-      root.classList.add('viz-host'); root.appendChild(makeTools(root));
+      root.classList.add('viz-host'); decorate(root);
     });
-    document.querySelectorAll('.viz-host').forEach(function(root){
-      if(root.querySelector('.viz-tools')) return;
-      root.appendChild(makeTools(root));
-    });
+    document.querySelectorAll('.viz-host').forEach(function(root){ decorate(root); });
     document.querySelectorAll('table').forEach(function(tbl){
       if(tbl.closest('.viz-host')) return;
       var host=document.createElement('div'); host.className='viz-host table-host';
-      tbl.parentNode.insertBefore(host,tbl); host.appendChild(tbl); host.appendChild(makeTools(host));
+      tbl.parentNode.insertBefore(host,tbl); host.appendChild(tbl); decorate(host);
     });
   }
   window.expandViz=function(btn){
