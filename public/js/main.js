@@ -100,9 +100,7 @@ var NAV_INDEX = [
   { title:'Homeownership', sub:'Homeownership rates, racial composition', page:'housing', icon:'ti-home' },
   // Healthcare subtopics
   { title:'Health Insurance', sub:'Uninsured rates, coverage gaps', page:'healthcare', icon:'ti-shield-check' },
-  { title:'Access to Care', sub:'Primary care, HPSA, healthcare providers', page:'healthcare', icon:'ti-stethoscope' },
   { title:'Mental Health', sub:'Mental health outcomes and provider access', page:'healthcare', icon:'ti-brain' },
-  { title:'Maternal Health', sub:'Birth outcomes, prenatal care', page:'healthcare', icon:'ti-heart' },
   { title:'Chronic Disease', sub:'Diabetes, hypertension, obesity rates', page:'healthcare', icon:'ti-activity' },
   // Income & need
   { title:'Income & Economic Need', sub:'Gini index, poverty, ALICE, infrastructure', page:'housing', icon:'ti-trending-up' },
