@@ -20,11 +20,11 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
     <div class="wrap hero-grid">
       <div class="hero-text">
         <span class="eyebrow hero-eyebrow" style="margin-bottom:6px;line-height:0;font-size:0"></span>
-        <h1 class="hero-h1" style="font-family:Times;font-size:56px;color:rgb(0,0,0)"><span data-es="Entendiendo el norte de Mecklenburg,">Understanding North Mecklenburg,</span> <span style="color:var(--accent)" data-es="un vecino a la vez.">one neighbor at a time.</span></h1>
-        <p class="hero-sub" data-es="Datos públicos y claros sobre vivienda, educación y salud en el norte de Mecklenburg, investigados por estudiantes de Davidson College y creados para quienes viven aquí.">Clear, public data on housing, education, and healthcare in North Mecklenburg, researched by Davidson College students and built for the people who live here.</p>
+        <h1 class="hero-h1" style="font-family:Times;font-size:56px;color:rgb(0,0,0)"><span>Understanding North Mecklenburg,</span> <span style="color:var(--accent)">one neighbor at a time.</span></h1>
+        <p class="hero-sub">Clear, public data on housing, education, and healthcare in North Mecklenburg, researched by Davidson College students and built for the people who live here.</p>
         <div class="hero-btns">
-          <button class="btn btn-p" onclick="window.location='topics.html'"><i class="ti ti-chart-histogram"></i> <span data-es="Explora los datos">Explore the data</span></button>
-          <button class="btn btn-o" onclick="openMap()"><i class="ti ti-map-2"></i> <span data-es="Explora el mapa">Explore the map</span></button>
+          <button class="btn btn-p" onclick="window.location='topics.html'"><i class="ti ti-chart-histogram"></i> <span>Explore the data</span></button>
+          <button class="btn btn-o" onclick="openMap()"><i class="ti ti-map-2"></i> <span>Explore the map</span></button>
         </div>
       </div>
       <div class="hero-media">
@@ -38,11 +38,11 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
     <div class="wrap">
       <div class="sec-head spot-head">
         <div class="spot-eyebrow-row">
-          <span class="eyebrow" style="font-size:15px" data-es="Dato destacado">Data Spotlight</span>
+          <span class="eyebrow" style="font-size:15px">Data Spotlight</span>
         </div>
-        <h2 class="sec-h spot-h" id="spotH" style="font-size:32px">The housing squeeze, in four numbers</h2>
+        <h2 class="sec-h spot-h" id="spotH" style="font-size:32px">The Housing Squeeze in North Meck</h2>
         <button class="spot-topic" id="spotTopic" type="button" data-topic="housing" title="Open the Housing dashboard" onclick="window.location.href=(this.dataset.topic||'housing')+'.html'"><i class="ti ti-building-community" id="spotTopicIcon"></i><span id="spotTopicName" style="font-size:14px">Housing</span><i class="ti ti-arrow-narrow-right spot-topic-go"></i></button>
-        <p class="lead spot-lead" id="spotLead">A quick read on affordability in North Meck. The fuller picture lives in the topic dashboards.</p>
+        <p class="lead spot-lead" id="spotLead">Rising rents, home prices, and savings timelines show how far affordability has slipped across North Meck.</p>
       </div>
       <div class="spot-carousel">
         <button class="spot-arrow spot-prev" id="spotPrev" aria-label="Previous topic" onclick="spotStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
@@ -55,25 +55,25 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
               <div class="stat"><div class="stat-n"><span class="cur">$</span>693k</div><div class="stat-l">median home in Davidson, 4× the U.S. national median</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
               <div class="stat"><div class="stat-n">~10 yrs</div><div class="stat-l">to save a 20% down payment at a 10% annual savings rate</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="housing" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
+            <button class="spot-readmore" onclick="storyGo(this)" data-topic="housing" style="font-size:17px"><span class="rs-pre">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
           <div class="spot-slide" data-topic="education">
             <div class="stats stats-4">
-              <div class="stat"><div class="stat-n warn">68.6 pts</div><div class="stat-l" data-es="brecha de dominio del nivel de grado entre la escuela con mejor y peor desempeño en North Meck">gap in grade-level proficiency between North Meck's highest- and lowest-performing schools</div><span class="stat-src">NC DPI, 2024–25</span></div>
-              <div class="stat"><div class="stat-n warn">47.4 pts</div><div class="stat-l" data-es="brecha de dominio entre estudiantes hispanos y blancos en Cornelius Elementary">proficiency gap between Hispanic and white students at Cornelius Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
-              <div class="stat"><div class="stat-n warn">61.4 pts</div><div class="stat-l" data-es="brecha de dominio para estudiantes con discapacidades en Barnette Elementary">proficiency gap for students with disabilities at Barnette Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
-              <div class="stat"><div class="stat-n warn">42.1 pts</div><div class="stat-l" data-es="brecha de dominio para estudiantes en desventaja económica en Huntersville Elementary">proficiency gap for economically disadvantaged students at Huntersville Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
+              <div class="stat"><div class="stat-n warn">68.6 pts</div><div class="stat-l">gap in grade-level proficiency between North Meck's highest- and lowest-performing schools</div><span class="stat-src">NC DPI, 2024–25</span></div>
+              <div class="stat"><div class="stat-n warn">47.4 pts</div><div class="stat-l">proficiency gap between Hispanic and white students at Cornelius Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
+              <div class="stat"><div class="stat-n warn">61.4 pts</div><div class="stat-l">proficiency gap for students with disabilities at Barnette Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
+              <div class="stat"><div class="stat-n warn">42.1 pts</div><div class="stat-l">proficiency gap for economically disadvantaged students at Huntersville Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="education" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
+            <button class="spot-readmore" onclick="storyGo(this)" data-topic="education" style="font-size:17px"><span class="rs-pre">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
           <div class="spot-slide" data-topic="healthcare">
             <div class="stats stats-4">
               <div class="stat"><div class="stat-n warn">5%</div><div class="stat-l">of residents uninsured in Cornelius &amp; Huntersville — thousands without a safety net</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
               <div class="stat"><div class="stat-n warn">26–34</div><div class="stat-l">age group with the highest uninsured rate — off parental plans, often no employer coverage</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n warn">5.4×</div><div class="stat-l" data-es="más probable estar sin seguro si el hogar gana menos de $25 mil frente a más de $100 mil">more likely to be uninsured if your household earns under $25k vs. over $100k</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-              <div class="stat"><div class="stat-n">95%</div><div class="stat-l" data-es="de los residentes empleados tienen cobertura, frente al 76% de los desempleados">of employed residents have coverage, vs. 76% for unemployed residents</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+              <div class="stat"><div class="stat-n warn">5.4×</div><div class="stat-l">more likely to be uninsured if your household earns under $25k vs. over $100k</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+              <div class="stat"><div class="stat-n">95%</div><div class="stat-l">of employed residents have coverage, vs. 76% for unemployed residents</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
             </div>
-            <button class="spot-readmore" onclick="storyGo(this)" data-topic="healthcare" style="font-size:17px"><span class="rs-pre" data-es="Lee la historia:">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
+            <button class="spot-readmore" onclick="storyGo(this)" data-topic="healthcare" style="font-size:17px"><span class="rs-pre">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
           </div>
         </div>
         <div class="spot-dots" id="spotDots"></div>
@@ -85,33 +85,33 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
   <section class="section alt">
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="Temas">Topics</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="¿Qué define la vida diaria aquí?">What shapes daily life here?</h2>
-        <p class="lead" data-es="Un vistazo a las tendencias de asequibilidad, movilidad económica y equidad racial en el norte de Mecklenburg, con un panorama más detallado en cada panel temático.">A look at affordability, economic mobility, and racial equity trends across North Mecklenburg, with a deeper picture in each topic dashboard.</p>
+        <span class="eyebrow" style="font-size:15px">Topics</span>
+        <h2 class="sec-h" style="font-size:32px">What shapes daily life here?</h2>
+        <p class="lead">A look at affordability, economic mobility, and racial equity trends across North Mecklenburg, with a deeper picture in each topic dashboard.</p>
       </div>
       <div class="topics-carousel">
         <div class="topics" id="topicsTrack">
           <div class="tcard is-active" onclick="window.location='housing.html'">
             <div class="tc-icon"><i class="ti ti-building-community"></i></div>
-            <div class="tc-t" data-es="Vivienda">Housing</div>
-            <div class="tc-b" data-es="Rentas, carga de costo, desalojos y la brecha de asequibilidad en North Meck.">Rents, cost burden, evictions, and the affordability gap across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jun 2026">Last Updated: Jun 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
+            <div class="tc-t">Housing</div>
+            <div class="tc-b">Rents, cost burden, evictions, and the affordability gap across North Meck.</div>
+            <div class="tc-foot"><span class="badge b-live dot">Last Updated: Jun 2026</span><span class="tc-go">Open →</span></div>
           </div>
           <div class="tcard" onclick="window.location='education.html'">
             <div class="tc-icon"><i class="ti ti-school"></i></div>
-            <div class="tc-t" data-es="Educación">Education</div>
-            <div class="tc-b" data-es="Matrícula K–12, composición escolar y acceso por vecindario.">K–12 enrollment, school composition, and access by neighborhood.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jul 2026">Last Updated: Jul 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
+            <div class="tc-t">Education</div>
+            <div class="tc-b">K–12 enrollment, school composition, and access by neighborhood.</div>
+            <div class="tc-foot"><span class="badge b-live dot">Last Updated: Jul 2026</span><span class="tc-go">Open →</span></div>
           </div>
           <div class="tcard" onclick="window.location='healthcare.html'">
             <div class="tc-icon"><i class="ti ti-heartbeat"></i></div>
-            <div class="tc-t" data-es="Salud">Healthcare</div>
-            <div class="tc-b" data-es="Acceso a la atención, cobertura de seguro y resultados de salud en North Meck.">Access to care, insurance coverage, and health outcomes across North Meck.</div>
-            <div class="tc-foot"><span class="badge b-live dot" data-es="Actualizado: jul 2026">Last Updated: Jul 2026</span><span class="tc-go" data-es="Abrir →">Open →</span></div>
+            <div class="tc-t">Healthcare</div>
+            <div class="tc-b">Access to care, insurance coverage, and health outcomes across North Meck.</div>
+            <div class="tc-foot"><span class="badge b-live dot">Last Updated: Jul 2026</span><span class="tc-go">Open →</span></div>
           </div>
         </div>
       </div>
-      <p class="topics-note"><i class="ti ti-seeding"></i> <span data-es="La seguridad alimentaria y otros temas son agregados por cada nueva generación de Fellows cada verano.">New topics are added by each incoming cohort of CRF Fellows.</span></p>
+      <p class="topics-note"><i class="ti ti-seeding"></i> <span>New topics are added by each incoming cohort of CRF Fellows.</span></p>
     </div>
   </section>
 
@@ -119,18 +119,18 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
   <section class="section">
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="VECINDARIOS UNIDOS">UNITED NEIGHBORHOODS</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Los lugares con historias que contar">The places with stories to tell</h2>
-        <p class="lead" data-es="Dentro de Davidson, Cornelius y Huntersville hay cinco vecindarios que cargan generaciones de historia.">Within Davidson, Cornelius, and Huntersville are five neighborhoods carrying generations of history. Explore who they are and why they matter.</p>
+        <span class="eyebrow" style="font-size:15px">UNITED NEIGHBORHOODS</span>
+        <h2 class="sec-h" style="font-size:32px">The places with stories to tell</h2>
+        <p class="lead">Within Davidson, Cornelius, and Huntersville are five neighborhoods carrying generations of history. Explore who they are and why they matter.</p>
       </div>
-      <button class="btn btn-o" style="margin-top:26px" onclick="window.location='neighborhoods.html'"><i class="ti ti-map-2"></i> <span data-es="Explora los vecindarios">Explore the neighborhoods</span></button>
+      <button class="btn btn-o" style="margin-top:26px" onclick="window.location='neighborhoods.html'"><i class="ti ti-map-2"></i> <span>Explore the neighborhoods</span></button>
       <div class="nbhd-carousel">
         <div class="nbhd-grid" id="nbhdTrack">
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-pottstown'"><span class="town">HUNTERSVILLE</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Pottstown</span><span class="ds" data-es="Un vecindario históricamente afroamericano con raíces profundas en Huntersville.">A historically African American neighborhood with deep roots in Huntersville.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-westdavidson'"><span class="town">Davidson</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>West Davidson</span><span class="ds" data-es="Una comunidad arraigada en el lado oeste del pueblo, con su propia historia.">A long-standing community on the west side of town, with its own history.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-smithville'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Smithville</span><span class="ds" data-es="Una de las comunidades afroamericanas más antiguas de Cornelius, enfrentando cambios.">One of Cornelius's oldest African American communities, facing change.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-huntingtongreen'"><span class="town">Huntersville</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Huntington Green</span><span class="ds" data-es="Un vecindario en Huntersville con una historia que vale la pena contar.">A neighborhood in Huntersville with a story worth telling.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
-          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-eastcatawba'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>East Catawba</span><span class="ds" data-es="El quinto vecindario unido; su historia y datos aún se están recopilando.">The fifth united neighborhood. Its history and data are still being gathered.</span><span class="tc-go" data-es="Explora →">Explore →</span></div>
+          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-pottstown'"><span class="town">HUNTERSVILLE</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Pottstown</span><span class="ds">A historically African American neighborhood with deep roots in Huntersville.</span><span class="tc-go">Explore →</span></div>
+          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-westdavidson'"><span class="town">Davidson</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>West Davidson</span><span class="ds">A long-standing community on the west side of town, with its own history.</span><span class="tc-go">Explore →</span></div>
+          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-smithville'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Smithville</span><span class="ds">One of Cornelius's oldest African American communities, facing change.</span><span class="tc-go">Explore →</span></div>
+          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-huntingtongreen'"><span class="town">Huntersville</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Huntington Green</span><span class="ds">A neighborhood in Huntersville with a story worth telling.</span><span class="tc-go">Explore →</span></div>
+          <div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-eastcatawba'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>East Catawba</span><span class="ds">The fifth united neighborhood. Its history and data are still being gathered.</span><span class="tc-go">Explore →</span></div>
         </div>
       </div>
     </div>
@@ -140,9 +140,9 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
   <section class="section alt">
     <div class="wrap">
       <div class="sec-head">
-        <span class="eyebrow" style="font-size:15px" data-es="HISTORIAS">STORIES</span>
-        <h2 class="sec-h" style="font-size:32px" data-es="Lo que encontramos y por qué importa">What we found, and why it matters</h2>
-        <p class="lead" data-es="Lecturas breves para quienes viven aquí: claras, cortas y sin tecnicismos.">Short reads for the people who live here that are clear, brief, and jargon-free.</p>
+        <span class="eyebrow" style="font-size:15px">STORIES</span>
+        <h2 class="sec-h" style="font-size:32px">What we found, and why it matters</h2>
+        <p class="lead">Short reads for the people who live here that are clear, brief, and jargon-free.</p>
       </div>
       <div class="blog-carousel">
         <button class="spot-arrow blog-prev" id="blogPrev" aria-label="Previous posts" onclick="blogStep(-1)"><i class="ti ti-chevron-left" style="font-weight:500;font-size:19px"></i></button>
@@ -163,15 +163,15 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
     <div class="wrap split" style="align-items:stretch">
       <div>
         <div class="sec-head" style="margin-bottom:18px">
-          <span class="eyebrow" style="font-size:15px" data-es="Nuestro enfoque">Our approach</span>
-          <h2 class="sec-h" style="margin-bottom:9px;font-size:32px" data-es="¿Qué es la investigación basada en la comunidad?">What is community-based research?</h2>
-          <p class="lead" data-es="Investigación que parte de las necesidades de la propia comunidad, no desde afuera hacia adentro.">Research that begins with the needs of the community itself and not from the outside in.</p>
+          <span class="eyebrow" style="font-size:15px">Our approach</span>
+          <h2 class="sec-h" style="margin-bottom:9px;font-size:32px">What is community-based research?</h2>
+          <p class="lead">Research that begins with the needs of the community itself and not from the outside in.</p>
         </div>
         <div class="prose" style="max-width:560px">
-          <p data-es="La investigación basada en la comunidad se define como una forma de investigación en la que la pregunta surge de las necesidades de un grupo de personas.">Community-based research is defined as a form of investigation in which the question arises from the needs of a group of individuals. The Community Research Fellows use this approach, including the voices of community members and leaders within data collection and presentation, to produce the most comprehensive and accurate picture of North Mecklenburg possible.</p>
+          <p>Community-based research is defined as a form of investigation in which the question arises from the needs of a group of individuals. The Community Research Fellows use this approach, including the voices of community members and leaders within data collection and presentation, to produce the most comprehensive and accurate picture of North Mecklenburg possible.</p>
           <p class="meta" style="margin-top:2px">Beckman &amp; Long, 2016, p. 1</p>
         </div>
-        <button class="btn btn-o" style="font-size:13.5px;padding:10px 18px;margin-top:24px" onclick="window.location='about.html';setTimeout(function(){var e=document.getElementById('about-partners');if(e)window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-90,behavior:'smooth'});},130)" data-es="Conoce a nuestros socios">Meet our partners</button>
+        <button class="btn btn-o" style="font-size:13.5px;padding:10px 18px;margin-top:24px" onclick="window.location='about.html';setTimeout(function(){var e=document.getElementById('about-partners');if(e)window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-90,behavior:'smooth'});},130)">Meet our partners</button>
       </div>
       <img src="images/cbr-photo.jpg" alt="Davidson students talking with a North Meck resident" style="width:100%;height:100%;min-height:360px;object-fit:cover;border-radius:var(--rl);display:block">
     </div>
