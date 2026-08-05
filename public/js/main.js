@@ -1220,36 +1220,16 @@ var FACTS = [
   { icon:'ti-map-pin',title:'Davidson College, NC',desc:"The town wasn't originally called Davidson at all; it was incorporated as 'Davidson College, NC,' shortened in 1891." },
   { icon:'ti-shield-check',title:"North Carolina's safest city",desc:'In 2025, Davidson was ranked the safest city in North Carolina by SafeWise.' }
 ];
-var FACTS_ES = [
-  { title:'Lago Norman',desc:'El lago artificial más grande de NC, formado al represar el río Catawba en 1963.' },
-  { title:'Davidson College',desc:'Fundado en 1837; su exalumno más conocido es la estrella de la NBA Stephen Curry.' },
-  { title:"Batalla de Cowan's Ford",desc:'El general Davidson cayó aquí en 1781, hoy bajo el lago Norman.' },
-  { title:'Smithville',desc:'Fundado en 1908 por familias anteriormente esclavizadas, en tierras que Jacob Smith vendió o entregó a quienes no podían pagarlas.' },
-  { title:'Cómo nació Cornelius',desc:'El pueblo surgió de una disputa de la década de 1890 sobre el pesaje del algodón.' },
-  { title:'Escuela Torrence-Lytle',desc:'De 1937 a 1966, la única secundaria de la zona para estudiantes negros.' },
-  { title:'El pueblo del ferrocarril',desc:'Incorporado en 1873, Huntersville creció alrededor de su estación de tren.' },
-  { title:'Fábrica de algodón Linden',desc:"El primer molino textil de Davidson, construido en Depot Street en 1890." },
-  { title:'Una región de rápido crecimiento',desc:'Huntersville pasó de 4,000 residentes en 1990 a 60,000 hoy.' },
-  { title:'Carolina Raptor Center',desc:'En Latta Preserve, hogar de más de 30 especies de águilas y búhos.' },
-  { title:'Juegos de Loch Norman',desc:'El histórico Rural Hill alberga los Loch Norman Highland Games cada abril.' },
-  { title:'Un centro protegido',desc:'El núcleo de Davidson obtuvo el estatus histórico del Registro Nacional en 2009.' },
-  { title:'Cornelius, antes Liverpool',desc:"El pueblo se incorporó primero como 'Liverpool', apodado así por su comercio de algodón, antes de ser renombrado en honor al inversionista Joseph Benjamin Cornelius." },
-  { title:'El primer nombre de Huntersville',desc:'Originalmente llamado Craighead en honor a un ministro presbiteriano, el pueblo fue renombrado por el terrateniente Robert Boston Hunter.' },
-  { title:'Iglesia Presbiteriana Hopewell',desc:'Fundada en 1762, esta iglesia dio su nombre a Hopewell High School, que hoy sigue educando a estudiantes de North Meck.' },
-  { title:'Davidson College, NC',desc:"El pueblo no se llamó Davidson desde el principio; se incorporó como 'Davidson College, NC', y el nombre se acortó en 1891." },
-  { title:'La ciudad más segura de Carolina del Norte',desc:'En 2025, Davidson fue clasificado como la ciudad más segura de Carolina del Norte según SafeWise.' }
-];
 (function(){
   var bar=document.getElementById('factsBar'); if(!bar) return;
   var rot=document.getElementById('factsRot');
   var iconEl=document.getElementById('factIcon'),titleEl=document.getElementById('factTitle'),descEl=document.getElementById('factDesc');
   var i=0, paused=false, swapT;
   function paint(n){
-    var f=(window.LANG==='es'&&FACTS_ES[n])?FACTS_ES[n]:FACTS[n];
+    var f=FACTS[n];
     iconEl.className='ti '+FACTS[n].icon;
     titleEl.textContent=f.title; descEl.textContent=f.desc;
   }
-  window.addEventListener('langchange',function(){ paint(i); });
   function swap(){
     rot.style.opacity=0; rot.style.transform='translateY(4px)';
     clearTimeout(swapT);
@@ -1263,11 +1243,10 @@ var FACTS_ES = [
 
 /* ── DATA SPOTLIGHT CAROUSEL ── */
 var SPOT = [
-  { topic:'housing',   label:'Explore Housing data',   label_es:'Explora los datos de Vivienda',       icon:'ti-building-community', h:'The housing squeeze, in four numbers',   h_es:'La presión de la vivienda, en cuatro cifras',   lead:'A look at affordability, economic mobility, and racial equity trends across North Mecklenburg, with a deeper picture in each topic dashboard.', lead_es:'Una mirada a las tendencias de asequibilidad, movilidad económica y equidad racial en North Mecklenburg, con un panorama más profundo en cada panel temático.' },
-  { topic:'education', label:'Explore Education data', label_es:'Explora los datos de Educación',      icon:'ti-school',             h:'The opportunity gap at a glance',         h_es:'La brecha de oportunidades de un vistazo',       lead:'Proficiency gaps between student groups, and between schools, show where opportunity is most unequal across North Meck.', lead_es:'Las brechas de dominio entre grupos de estudiantes y entre escuelas muestran dónde la oportunidad es más desigual en North Meck.' },
-  { topic:'healthcare', label:'Explore Healthcare data', label_es:'Explora los datos de Salud',             icon:'ti-heartbeat',          h:'Coverage gaps hiding in plain sight',     h_es:'Brechas de cobertura a plena vista',             lead:'Who is uninsured in North Meck, which age groups face the most risk, and how employment status shapes access to care.', lead_es:'Quiénes no tienen seguro en North Meck, qué grupos de edad enfrentan mayor riesgo y cómo el empleo define el acceso a la salud.' },
+  { topic:'housing',   label:'Explore Housing data',   icon:'ti-building-community', h:'The Housing Squeeze in North Meck',   lead:'Rising rents, home prices, and savings timelines show how far affordability has slipped across North Meck.' },
+  { topic:'education', label:'Explore Education data', icon:'ti-school',             h:'Proficiency Gaps in North Meck',      lead:'Proficiency gaps between student groups, and between schools, show where opportunity is most unequal across North Meck.' },
+  { topic:'healthcare', label:'Explore Healthcare data', icon:'ti-heartbeat',        h:'Healthcare Coverage Gaps in North Meck', lead:'Who is uninsured in North Meck, which age groups face the most risk, and how employment status shapes access to care.' },
 ];
-var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] : o[f]; };
 (function(){
   var track=document.getElementById('spotTrack'); if(!track) return;
   var hEl=document.getElementById('spotH'),leadEl=document.getElementById('spotLead');
@@ -1286,9 +1265,9 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
     if(topicEl){ topicEl.style.opacity=0; topicEl.dataset.topic=SPOT[i].topic; }
     clearTimeout(swapTimer);
     swapTimer=setTimeout(function(){
-      hEl.textContent=TR(SPOT[i],'h'); leadEl.textContent=TR(SPOT[i],'lead');
+      hEl.textContent=SPOT[i].h; leadEl.textContent=SPOT[i].lead;
       if(topicIcon) topicIcon.className='ti '+SPOT[i].icon;
-      if(topicName) topicName.textContent=TR(SPOT[i],'label');
+      if(topicName) topicName.textContent=SPOT[i].label;
       hEl.style.opacity=1; leadEl.style.opacity=1;
       if(topicEl) topicEl.style.opacity=1;
     }, 170);
@@ -1297,7 +1276,6 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
   }
   window.spotGo=function(i){ i=Math.max(0,Math.min(SPOT.length-1,i)); idx=i; render(i); track.scrollTo({left:i*track.clientWidth,behavior:'smooth'}); };
   window.spotStep=function(d){ window.spotGo(idx+d); };
-  window.addEventListener('langchange',function(){ render(idx); });
   function syncFromScroll(){
     var i=Math.max(0,Math.min(SPOT.length-1,Math.round(track.scrollLeft/track.clientWidth)));
     if(i!==idx){ idx=i; render(i); }
@@ -1334,14 +1312,13 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
 (function(){
   var STORY = {
     housing: [
-      { t:'Why it now takes $31 an hour to afford a one-bedroom', t_es:'Por qué ahora se necesitan $31 por hora para pagar un apartamento de una habitación', go:'post-housing' },
-      { t:'Black renters are twice as likely to be cost-burdened', t_es:'Los inquilinos negros tienen el doble de probabilidad de estar sobrecargados por el costo', go:'post-housing' },
-      { t:'52,000 filings: what the eviction data really tells us', t_es:'52,000 demandas: lo que los datos de desalojo realmente nos dicen', go:'post-housing' }
+      { t:'Why it now takes $31 an hour to afford a one-bedroom', go:'post-housing' },
+      { t:'Black renters are twice as likely to be cost-burdened', go:'post-housing' },
+      { t:'52,000 filings: what the eviction data really tells us', go:'post-housing' }
     ],
-    education: [{ t:'The racial makeup of North Meck schools, explained', t_es:'La composición racial de las escuelas de North Meck, explicada', go:'blog' }],
+    education: [{ t:'The racial makeup of North Meck schools, explained', go:'blog' }],
     healthcare: [{ t:'Why young adults in North Meck are falling through the coverage gap', go:'blog' }],
   };
-  var ST=function(o){ return (window.LANG==='es'&&o.t_es)?o.t_es:o.t; };
   var HOLD=4500, ANIM=430;
   window.storyGo=function(btn){ window.location = (btn._go === 'post-housing' ? 'blog' : (btn._go||'blog')) + '.html'; };
   document.querySelectorAll('.spot-readmore[data-topic]').forEach(function(btn){
@@ -1349,14 +1326,13 @@ var TR = function(o,f){ return (window.LANG==='es' && o[f+'_es']) ? o[f+'_es'] :
     if(!list.length) return;
     var el=btn.querySelector('.rs-title'),txt=btn.querySelector('.rs-text');
     var i=0;
-    txt.textContent=ST(list[i]); btn._go=list[i].go;
-    window.addEventListener('langchange',function(){ txt.textContent=ST(list[i]); });
+    txt.textContent=list[i].t; btn._go=list[i].go;
     if(list.length<2) return;
     setInterval(function(){
       el.style.transition='transform .42s cubic-bezier(.4,0,.2,1), opacity .42s ease';
       el.style.transform='translateY(-115%)'; el.style.opacity='0';
       setTimeout(function(){
-        i=(i+1)%list.length; txt.textContent=ST(list[i]); btn._go=list[i].go;
+        i=(i+1)%list.length; txt.textContent=list[i].t; btn._go=list[i].go;
         el.style.transition='none'; el.style.transform='translateY(115%)';
         void el.offsetHeight;
         el.style.transition='transform .42s cubic-bezier(.4,0,.2,1), opacity .42s ease';
@@ -1734,7 +1710,6 @@ function makeThemeTag(host){
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',runAll);
   else runAll();
-  window.addEventListener('langchange',runAll);
 })();
 
 /* ── SHARE SYSTEM ── */
