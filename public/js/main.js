@@ -1562,7 +1562,7 @@ function makeThemeTag(host){
   }
   function decorate(root){
     if(!root.querySelector('.viz-tools')) root.appendChild(makeTools(root));
-    if(!root.querySelector('.viz-theme-tag')){ var tag=makeThemeTag(root); if(tag) root.appendChild(tag); }
+    if(!root.querySelector('.viz-theme-tag')){ var tag=makeThemeTag(root); if(tag) root.insertBefore(tag,root.firstChild); }
   }
   function initViz(){
     var set=new Set();
