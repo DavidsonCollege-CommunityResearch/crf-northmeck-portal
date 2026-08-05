@@ -751,33 +751,55 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
       ],
       notes: 'ALICE stands for Asset Limited, Income Constrained, Employed. It captures households working but still unable to afford a basic survival budget, a group the Federal Poverty Level alone misses, which matters in a suburban area like North Meck where the poverty rate is low but the cost of living is high. This is a single-year (2024) snapshot, not a trend. Source: United Way of North Carolina ALICE Report.'
     },
-    'mh-distress': {
-      filename: 'nmidw_cdc_frequent_mental_distress_2019-2023',
-      source: 'Centers for Disease Control and Prevention (CDC), PLACES: Local Data for Better Health',
-      years: '2019, 2021, 2023',
-      jsonFile: 'mh-distress',
+    'charlotte-housing-wage': {
+      filename: 'nmidw_charlotte_housing_wage_2025',
+      source: 'National Low Income Housing Coalition (NLIHC), Out of Reach 2025; U.S. Bureau of Labor Statistics, Occupational Employment & Wage Statistics',
+      years: '2025',
+      jsonFile: 'charlotte-housing-wage',
       codebook: [
-        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
-        ['year','integer','PLACES survey cycle year'],
-        ['val','decimal','Age-adjusted prevalence (%) of adults reporting frequent mental distress (14+ days of poor mental health in the past 30 days)'],
-        ['lo','decimal','Lower bound of the 95% confidence interval'],
-        ['hi','decimal','Upper bound of the 95% confidence interval']
+        ['occupation','text','Occupation title, or "Housing Wage Needed" for the benchmark row'],
+        ['hourly_wage','decimal','Hourly wage in dollars'],
+        ['category','text','"Benchmark" for the housing wage threshold, "Occupation" for actual local wage data']
       ],
-      notes: 'CDC PLACES estimates are model-based small-area estimates derived from BRFSS survey data, not a full census of residents. Confidence intervals widen for less populous towns like Davidson.'
+      notes: 'The housing wage is the hourly pay a full-time worker needs so that rent on a 2-bedroom unit at Fair Market Rent does not exceed 30% of income. Occupational wages are BLS OEWS estimates for the Charlotte-Concord-Gastonia MSA, not North Meck specifically.'
     },
-    'mh-depression': {
-      filename: 'nmidw_cdc_depression_prevalence_2019-2023',
-      source: 'Centers for Disease Control and Prevention (CDC), PLACES: Local Data for Better Health',
-      years: '2019, 2021, 2023',
-      jsonFile: 'mh-depression',
+    'charlotte-fmr-bedroom': {
+      filename: 'nmidw_charlotte_fmr_by_bedroom_2025',
+      source: 'U.S. Dept. of Housing & Urban Development (HUD), FY2025 Fair Market Rents',
+      years: '2025',
+      jsonFile: 'charlotte-fmr-bedroom',
       codebook: [
-        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
-        ['year','integer','PLACES survey cycle year'],
-        ['val','decimal','Age-adjusted prevalence (%) of adults ever told by a health professional they have a depressive disorder'],
-        ['lo','decimal','Lower bound of the 95% confidence interval'],
-        ['hi','decimal','Upper bound of the 95% confidence interval']
+        ['region','text','Metro area: Charlotte, Raleigh, or Atlanta'],
+        ['bedrooms','text','Unit size (Studio through 4-Bedroom)'],
+        ['fmr','integer','Fair Market Rent in dollars per month']
       ],
-      notes: 'CDC PLACES estimates are model-based small-area estimates derived from BRFSS survey data, not a full census of residents. Confidence intervals widen for less populous towns like Davidson.'
+      notes: 'FMRs are generally set at the 40th percentile of gross rents for standard-quality units in each metro area. Compares Charlotte-Concord-Gastonia against two peer Southeast metros, not North Meck specifically.'
+    },
+    'charlotte-ami-gap': {
+      filename: 'nmidw_charlotte_ami_affordability_gap_2025',
+      source: 'U.S. Dept. of Housing & Urban Development (HUD), FY2025 Income Limits & Fair Market Rents',
+      years: '2025',
+      jsonFile: 'charlotte-ami-gap',
+      codebook: [
+        ['bedrooms','text','Unit size (Studio through 4-Bedroom)'],
+        ['ami_level','text','Income tier as a percentage of Area Median Income (AMI)'],
+        ['max_affordable_rent','integer','Maximum rent affordable at 30% of income for this AMI tier, in dollars per month'],
+        ['fmr','integer','Fair Market Rent for the same unit size, in dollars per month, for comparison']
+      ],
+      notes: 'Charlotte-Concord-Gastonia HUD Metro FMR Area, not North Meck specifically. A household is priced out whenever max_affordable_rent falls short of fmr.'
+    },
+    'cdc-preventive-care': {
+      filename: 'nmidw_cdc_preventive_care_screening',
+      source: 'Centers for Disease Control and Prevention (CDC), PLACES: Local Data for Better Health',
+      years: 'Checkup & Cholesterol screening: 2023 · Cervical, colon, mammogram & dental: 2020',
+      jsonFile: 'cdc-preventive-care',
+      codebook: [
+        ['measure','text','Preventive care measure: Checkup, Cholesterol, Cervical, Colon, Mammogram, or Dental'],
+        ['year','integer','PLACES survey cycle year for this measure'],
+        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
+        ['val','decimal','Crude prevalence (%) of adults reporting this preventive service']
+      ],
+      notes: 'Crude (not age-adjusted) prevalence, matching how the on-page chart displays them. Each measure comes from a different CDC PLACES survey cycle, so the year genuinely varies by measure rather than reflecting a data gap. Sourced from the main warehouse (agg_town_cdc_prevention), unlike the mental-health prevalence charts.'
     },
     'alice-county': {
       filename: 'nmidw_alice_households_mecklenburg_county_2010-2024',
@@ -1376,10 +1398,14 @@ var SPOT = [
 // every window.loadData(...) call in housing.js/education.js/healthcare.js
 // back to the chart element(s) it renders into. A handful of charts on the
 // site are still hardcoded JS arrays with no live table behind them yet
-// (the 3 Charlotte-region charts, the Preventive Care chart, the housing-types
-// and race-ownership charts on the Housing page, and the education-page
-// enrollment/attainment/earnings trend charts) — those are intentionally left
-// out here, so their download link falls back to the plain Data Library page.
+// (the housing-types and race-ownership charts on the Housing page, and the
+// education-page enrollment/attainment/earnings trend charts) — those are
+// intentionally left out here, so their download link falls back to the
+// plain Data Library page. The 3 Charlotte-region charts and the Preventive
+// Care chart were in that same state; as of [today], all 4 now load live
+// from the main warehouse (agg_charlotte_occupation_housing_wage,
+// agg_charlotte_fair_market_rent, agg_charlotte_ami_affordability_gap,
+// agg_town_cdc_prevention) and are mapped below.
 // chart-economic-gap is also intentionally left out: it currently loads a
 // 'school-economic-gap' JSON file that has no query behind it in
 // refresh-data.mjs and doesn't match the 'school-achievement-and-economic-gap'
@@ -1401,11 +1427,13 @@ var CHART_TO_DATASET = {
   'alice-county-chart':'alice-county', 'alice-county-composition-chart':'alice-county',
   'infra-chart':'infrastructure-access',
   'mobility-chart':'economic-mobility',
+  'chart-housing-wage':'charlotte-housing-wage', 'chart-fmr-bedroom':'charlotte-fmr-bedroom',
+  'chart-ami-gap':'charlotte-ami-gap',
   // Education
   'chart-grade-level-proficiency':'school-proficiency', 'chart-hs-ccr':'school-proficiency',
   'chart-school-academic-growth':'school-growth',
   'chart-four-year-graduation-rate':'school-graduation',
-  'chart-school-achievement-economic-gap':'school-economic-gap', 'chart-economic-gap':'school-economic-gap',
+  'chart-school-achievement-economic-gap':'school-economic-gap',
   'chart-hs-achievement-economic-gap':'school-hs-economic-gap',
   'chart-pop-vs-k12':'school-enrollment', 'chart-total-enrollment-trend':'school-enrollment',
   'chart-race-gap-avg':'school-race-gap', 'chart-race-gap-top':'school-race-gap',
@@ -1414,7 +1442,7 @@ var CHART_TO_DATASET = {
   'hc-ins-dot-wrap':'healthcare-insurance', 'hc-ins-heatmap-title':'healthcare-insurance',
   'hc-ins-heatmap-sub':'healthcare-insurance', 'hc-ins-heatmap':'healthcare-insurance',
   'mh-address-btn':'mhsu-facilities', 'mh-address-input':'mhsu-facilities', 'mh-facility-map':'mhsu-facilities',
-  'mh-distressbar-chart':'mh-distress', 'mh-depbar-chart':'mh-depression',
+  'chart-preventive-care':'cdc-preventive-care',
   // Neighborhoods (nbhd-data.astro)
   'nd-pop-chart':'nbhd-demographics', 'nd-hl-chart':'nbhd-demographics', 'nd-race-chart':'nbhd-demographics',
   'nd-income-dist-chart':'nbhd-economic', 'nd-income-trend-chart':'nbhd-economic',
