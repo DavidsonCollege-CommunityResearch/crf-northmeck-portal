@@ -23,7 +23,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
     <p class="meta" style="margin-top:10px;font-size:13px;color:var(--ink-3)" data-es="Datos de censo (ACS 5-year 2024, Decenal 2020) vía tidycensus. Los límites de vecindarios se muestran a nivel de grupo de bloque (línea discontinua) y de manzana (línea continua).">Census data (ACS 5-year 2024, 2020 Decennial) via tidycensus. Neighborhood boundaries shown at block-group level (dashed) and block level (solid).</p>
     <div style="margin-top:44px">
       <span class="eyebrow" style="display:block;font-size:15px">Where they are</span>
-      <h3 class="sec-h" style="font-size:24px;margin-top:10px"></h3>
+      <h3 class="sec-h" style="font-size:24px;margin-top:10px">Five neighborhoods, three towns</h3>
       <div class="loc">
         <div class="loc-town"><div class="loc-town-h"><i class="ti ti-map-pin"></i> Davidson</div><div class="loc-town-sub">Northern Mecklenburg</div><div class="loc-pills"><span class="loc-pill" onclick="scrollToNbhd('nbhd-westdavidson')">West Davidson</span></div></div>
         <div class="loc-town"><div class="loc-town-h"><i class="ti ti-map-pin"></i> Cornelius</div><div class="loc-town-sub">Northern Mecklenburg</div><div class="loc-pills"><span class="loc-pill" onclick="scrollToNbhd('nbhd-smithville')">Smithville</span><span class="loc-pill" onclick="scrollToNbhd('nbhd-eastcatawba')">East Catawba</span></div></div>
@@ -55,7 +55,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
               <div class="nstat"><div class="nstat-n">$1.72M</div><div class="nstat-l">County purchase of the 30-acre Valea Village tract, 2022</div></div>
               <div class="nstat"><div class="nstat-n">1937</div><div class="nstat-l">Torrence-Lytle School built; closed 1966</div></div>
             </div>
-            <div class="minichart" data-dlib="nbhd-demographics"><div class="minichart-h">Pottstown block-group population, 2020–2024</div>
+            <div class="minichart" data-dlib="nbhd-demographics" data-theme="demographics"><div class="minichart-h">Pottstown block-group population, 2020–2024</div>
               <div class="bars"><div class="bar" style="height:71%"><span class="bv">4.2k</span></div><div class="bar" style="height:78%"><span class="bv">4.6k</span></div><div class="bar" style="height:92%"><span class="bv">5.4k</span></div><div class="bar" style="height:98%"><span class="bv">5.8k</span></div><div class="bar bar-now" style="height:100%"><span class="bv">5.9k</span></div></div>
               <div class="bars-x"><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span></div>
               <div class="minichart-cap">Pottstown's block-group population grew 41% from 2020 to 2024 as development surrounds it. Source: ACS 5-year.</div>
@@ -86,7 +86,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
               <div class="nstat"><div class="nstat-n">2009</div><div class="nstat-l">Listed within the Davidson Historic District</div></div>
               <div class="nstat"><div class="nstat-n">398</div><div class="nstat-l">Contributing historic resources in the district</div></div>
             </div>
-            <div class="minichart" data-dlib="nbhd-demographics"><div class="minichart-h">West Davidson block-group population, 2020–2024</div>
+            <div class="minichart" data-dlib="nbhd-demographics" data-theme="demographics"><div class="minichart-h">West Davidson block-group population, 2020–2024</div>
               <div class="bars"><div class="bar" style="height:87%"><span class="bv">2.1k</span></div><div class="bar" style="height:94%"><span class="bv">2.3k</span></div><div class="bar" style="height:100%"><span class="bv">2.5k</span></div><div class="bar" style="height:89%"><span class="bv">2.2k</span></div><div class="bar bar-now" style="height:83%"><span class="bv">2.0k</span></div></div>
               <div class="bars-x"><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span></div>
               <div class="minichart-cap">West Davidson's block-group population peaked at 2,456 in 2022 and has since modestly declined. Source: ACS 5-year.</div>
@@ -117,7 +117,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
               <div class="nstat"><div class="nstat-n">205</div><div class="nstat-l">New homes &amp; apartments in the revitalization plan</div></div>
               <div class="nstat"><div class="nstat-n">$500K</div><div class="nstat-l">State preservation funding secured, 2022</div></div>
             </div>
-            <div class="minichart" data-dlib="nbhd-demographics"><div class="minichart-h">Smithville block-group population, 2020–2024</div>
+            <div class="minichart" data-dlib="nbhd-demographics" data-theme="demographics"><div class="minichart-h">Smithville block-group population, 2020–2024</div>
               <div class="bars"><div class="bar" style="height:100%"><span class="bv">2.0k</span></div><div class="bar" style="height:98%"><span class="bv">1.9k</span></div><div class="bar" style="height:95%"><span class="bv">1.9k</span></div><div class="bar" style="height:91%"><span class="bv">1.8k</span></div><div class="bar bar-now" style="height:95%"><span class="bv">1.9k</span></div></div>
               <div class="bars-x"><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span></div>
               <div class="minichart-cap">Smithville's block-group population has held relatively steady, reflecting community resilience amid development pressure. Source: ACS 5-year.</div>
@@ -147,7 +147,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
               <div class="nstat"><div class="nstat-n">Pool</div><div class="nstat-l">Community pool &amp; playground at its center</div></div>
               <div class="nstat"><div class="nstat-n">Walkable</div><div class="nstat-l">Close to schools, shopping, and amenities</div></div>
             </div>
-            <div class="minichart" data-dlib="nbhd-demographics"><div class="minichart-h">Huntington Green block-group population, 2020–2024</div>
+            <div class="minichart" data-dlib="nbhd-demographics" data-theme="demographics"><div class="minichart-h">Huntington Green block-group population, 2020–2024</div>
               <div class="bars"><div class="bar" style="height:92%"><span class="bv">2.9k</span></div><div class="bar" style="height:99%"><span class="bv">3.2k</span></div><div class="bar" style="height:99%"><span class="bv">3.2k</span></div><div class="bar" style="height:100%"><span class="bv">3.2k</span></div><div class="bar bar-now" style="height:98%"><span class="bv">3.2k</span></div></div>
               <div class="bars-x"><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span></div>
               <div class="minichart-cap">Huntington Green's block-group population grew steadily from about 2,900 in 2020 to 3,200 in recent years. Source: ACS 5-year.</div>
@@ -177,7 +177,7 @@ const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
               <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">Key landmark or institution, to be verified</div></div>
               <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">A defining statistic, to be verified</div></div>
             </div>
-            <div class="minichart" data-dlib="nbhd-demographics"><div class="minichart-h">East Catawba block-group population, 2020–2024</div>
+            <div class="minichart" data-dlib="nbhd-demographics" data-theme="demographics"><div class="minichart-h">East Catawba block-group population, 2020–2024</div>
               <div class="bars"><div class="bar" style="height:81%"><span class="bv">8.6k</span></div><div class="bar" style="height:87%"><span class="bv">9.2k</span></div><div class="bar" style="height:89%"><span class="bv">9.5k</span></div><div class="bar" style="height:93%"><span class="bv">9.9k</span></div><div class="bar bar-now" style="height:100%"><span class="bv">10.6k</span></div></div>
               <div class="bars-x"><span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span></div>
               <div class="minichart-cap">East Catawba's block-group population grew 23% from 2020 to 2024, reaching 10,600. Source: ACS 5-year.</div>
