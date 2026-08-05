@@ -1,0 +1,47 @@
+[
+  {
+    "occupation": "Registered Nurses",
+    "hourly_wage": 40.42,
+    "category": "Occupation"
+  },
+  {
+    "occupation": "Housing Wage Needed",
+    "hourly_wage": 35.08,
+    "category": "Benchmark"
+  },
+  {
+    "occupation": "Heavy & Tractor-Trailer Truck Drivers",
+    "hourly_wage": 26.54,
+    "category": "Occupation"
+  },
+  {
+    "occupation": "Customer Service Representatives",
+    "hourly_wage": 20.7,
+    "category": "Occupation"
+  },
+  {
+    "occupation": "Laborers & Freight/Stock Movers",
+    "hourly_wage": 17.49,
+    "category": "Occupation"
+  },
+  {
+    "occupation": "Stockers and Order Fillers",
+    "hourly_wage": 17.46,
+    "category": "Occupation"
+  },
+  {
+    "occupation": "Retail Salespersons",
+    "hourly_wage": 16.49,
+    "category": "Occupation"
+  },
+  {
+    "occupation": "Fast Food/Counter Workers",
+    "hourly_wage": 13.88,
+    "category": "Occupation"
+  },
+  {
+    "occupation": "Cashiers",
+    "hourly_wage": 13.77,
+    "category": "Occupation"
+  }
+]

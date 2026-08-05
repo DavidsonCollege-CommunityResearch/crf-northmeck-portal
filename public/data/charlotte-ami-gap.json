@@ -1,0 +1,122 @@
+[
+  {
+    "bedrooms": "1-Bedroom",
+    "ami_level": "30% AMI",
+    "max_affordable_rent": 674,
+    "fmr": 1647
+  },
+  {
+    "bedrooms": "1-Bedroom",
+    "ami_level": "50% AMI",
+    "max_affordable_rent": 1122,
+    "fmr": 1647
+  },
+  {
+    "bedrooms": "1-Bedroom",
+    "ami_level": "80% AMI",
+    "max_affordable_rent": 1795,
+    "fmr": 1647
+  },
+  {
+    "bedrooms": "1-Bedroom",
+    "ami_level": "100% AMI",
+    "max_affordable_rent": 2245,
+    "fmr": 1647
+  },
+  {
+    "bedrooms": "2-Bedroom",
+    "ami_level": "30% AMI",
+    "max_affordable_rent": 758,
+    "fmr": 1824
+  },
+  {
+    "bedrooms": "2-Bedroom",
+    "ami_level": "50% AMI",
+    "max_affordable_rent": 1262,
+    "fmr": 1824
+  },
+  {
+    "bedrooms": "2-Bedroom",
+    "ami_level": "80% AMI",
+    "max_affordable_rent": 2020,
+    "fmr": 1824
+  },
+  {
+    "bedrooms": "2-Bedroom",
+    "ami_level": "100% AMI",
+    "max_affordable_rent": 2525,
+    "fmr": 1824
+  },
+  {
+    "bedrooms": "3-Bedroom",
+    "ami_level": "30% AMI",
+    "max_affordable_rent": 841,
+    "fmr": 2250
+  },
+  {
+    "bedrooms": "3-Bedroom",
+    "ami_level": "50% AMI",
+    "max_affordable_rent": 1402,
+    "fmr": 2250
+  },
+  {
+    "bedrooms": "3-Bedroom",
+    "ami_level": "80% AMI",
+    "max_affordable_rent": 2244,
+    "fmr": 2250
+  },
+  {
+    "bedrooms": "3-Bedroom",
+    "ami_level": "100% AMI",
+    "max_affordable_rent": 2805,
+    "fmr": 2250
+  },
+  {
+    "bedrooms": "4-Bedroom",
+    "ami_level": "30% AMI",
+    "max_affordable_rent": 909,
+    "fmr": 2852
+  },
+  {
+    "bedrooms": "4-Bedroom",
+    "ami_level": "50% AMI",
+    "max_affordable_rent": 1515,
+    "fmr": 2852
+  },
+  {
+    "bedrooms": "4-Bedroom",
+    "ami_level": "80% AMI",
+    "max_affordable_rent": 2424,
+    "fmr": 2852
+  },
+  {
+    "bedrooms": "4-Bedroom",
+    "ami_level": "100% AMI",
+    "max_affordable_rent": 3030,
+    "fmr": 2852
+  },
+  {
+    "bedrooms": "Studio",
+    "ami_level": "30% AMI",
+    "max_affordable_rent": 590,
+    "fmr": 1586
+  },
+  {
+    "bedrooms": "Studio",
+    "ami_level": "50% AMI",
+    "max_affordable_rent": 982,
+    "fmr": 1586
+  },
+  {
+    "bedrooms": "Studio",
+    "ami_level": "80% AMI",
+    "max_affordable_rent": 1571,
+    "fmr": 1586
+  },
+  {
+    "bedrooms": "Studio",
+    "ami_level": "100% AMI",
+    "max_affordable_rent": 1965,
+    "fmr": 1586
+  }
+]

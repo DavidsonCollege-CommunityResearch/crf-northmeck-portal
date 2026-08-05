@@ -1,0 +1,77 @@
+[
+  {
+    "region": "Atlanta",
+    "bedrooms": "1-Bedroom",
+    "fmr": 1653
+  },
+  {
+    "region": "Atlanta",
+    "bedrooms": "2-Bedroom",
+    "fmr": 1830
+  },
+  {
+    "region": "Atlanta",
+    "bedrooms": "3-Bedroom",
+    "fmr": 2205
+  },
+  {
+    "region": "Atlanta",
+    "bedrooms": "4-Bedroom",
+    "fmr": 2653
+  },
+  {
+    "region": "Atlanta",
+    "bedrooms": "Studio",
+    "fmr": 1591
+  },
+  {
+    "region": "Charlotte",
+    "bedrooms": "1-Bedroom",
+    "fmr": 1647
+  },
+  {
+    "region": "Charlotte",
+    "bedrooms": "2-Bedroom",
+    "fmr": 1824
+  },
+  {
+    "region": "Charlotte",
+    "bedrooms": "3-Bedroom",
+    "fmr": 2250
+  },
+  {
+    "region": "Charlotte",
+    "bedrooms": "4-Bedroom",
+    "fmr": 2852
+  },
+  {
+    "region": "Charlotte",
+    "bedrooms": "Studio",
+    "fmr": 1586
+  },
+  {
+    "region": "Raleigh",
+    "bedrooms": "1-Bedroom",
+    "fmr": 1592
+  },
+  {
+    "region": "Raleigh",
+    "bedrooms": "2-Bedroom",
+    "fmr": 1763
+  },
+  {
+    "region": "Raleigh",
+    "bedrooms": "3-Bedroom",
+    "fmr": 2192
+  },
+  {
+    "region": "Raleigh",
+    "bedrooms": "4-Bedroom",
+    "fmr": 2961
+  },
+  {
+    "region": "Raleigh",
+    "bedrooms": "Studio",
+    "fmr": 1533
+  }
+]
