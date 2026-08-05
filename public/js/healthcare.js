@@ -1,484 +1,2175 @@
----
-import BaseLayout from '../layouts/BaseLayout.astro';
-const base = import.meta.env.BASE_URL.replace(/\/*$/, '/');
+// Healthcare page scripts
+import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
 
-// Hidden for 2026 -- no data sourced yet. Flip to true once it is.
-const SHOW_HC_ACCESS = false;
-const SHOW_HC_MATERNAL = false;
----
-<BaseLayout title="Healthcare · North Meck Insights">
+// Block 1 (plain)
+(function() {
+    (function(){
+      // ── Shared style tokens ──────────────────────────────────────────
+      var INS_BLUE   = '#2E86AB';
+      var INS_AMBER  = '#E8A838';
+      var INS_TEXT   = '#444';
+      var INS_LABEL  = '#555';
+      var INS_FONT   = "500 12px 'Hanken Grotesk', sans-serif";
 
-<div class="page active" style="display:block">
+      // ── Helper: clear a container and return it ──────────────────────
+      function clear(id){ var el = document.getElementById(id); if(el) el.innerHTML=''; return el; }
 
-  <div class="wrap">
-    <div class="crumb"><a onclick={`window.location='${base}index.html'`}>Home</a><i class="ti ti-chevron-right"></i><span>Healthcare</span></div>
-    <div class="dash-hero" style="margin-bottom:56px">
-      <div class="split" style="align-items:flex-start">
-        <div>
-          <span class="eyebrow" style="font-size:15px">Healthcare access &amp; outcomes</span>
-          <h1 class="dash-h1">Who can get care in North Meck, how far is it, and what does it cost them?</h1>
-          <p class="lead dash-lead" style="margin-bottom:0">Insurance coverage, provider access, mental health, and chronic disease are all shaped by income and geography. This section follows the data to show where gaps are widest and who bears the highest burden.</p>
-        </div>
-      </div>
-    </div>
-    <div class="tabs" id="healthcare-tabs">
-      <span class="tab active" data-tab="hc-overview" onclick="setTab(this)">Overview</span>
-      <span class="tab" data-tab="hc-insurance" onclick="setTab(this)">Health Insurance</span>
-      {SHOW_HC_ACCESS && <span class="tab" data-tab="hc-access" onclick="setTab(this)">Access to Care</span>}
-      <span class="tab" data-tab="hc-mental" onclick="setTab(this)">Mental Health</span>
-      {SHOW_HC_MATERNAL && <span class="tab" data-tab="hc-maternal" onclick="setTab(this)">Maternal &amp; Child Health</span>}
-      <span class="tab" data-tab="hc-chronic" onclick="setTab(this)">Chronic Disease</span>
-    </div>
-  </div>
-  <div class="wrap dash-filter">
-    <div class="filterbar">
-      <span class="lbl">Area:</span>
-      <span class="chip on" onclick="setChip(this)">All North Meck</span>
-      <span class="chip" onclick="setChip(this)">Cornelius</span>
-      <span class="chip" onclick="setChip(this)">Davidson</span>
-      <span class="chip" onclick="setChip(this)">Huntersville</span>
-      <span class="hint">filters every chart</span>
-    </div>
-  </div>
+      // ── Shared floating tooltip ───────────────────────────────────────
+      var TT = document.createElement('div');
+      TT.style.cssText = 'position:fixed;pointer-events:none;background:#1a1a2e;color:#fff;font:500 12px Hanken Grotesk,sans-serif;padding:7px 11px;border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.22);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:9999';
+      document.body.appendChild(TT);
+      function ttShow(html, e){ TT.innerHTML=html; TT.style.opacity='1'; ttMove(e); }
+      function ttMove(e){ TT.style.left=(e.clientX+14)+'px'; TT.style.top=(e.clientY-36)+'px'; }
+      function ttHide(){ TT.style.opacity='0'; }
 
-  <!-- TAB: overview -->
-  <div class="tabpane active" data-pane="hc-overview">
-    <div class="wrap">
-      <div class="stat-rows" style="margin-bottom:48px">
+      // ── 1. HEATMAP — always all towns, filtered to activeYear ────────
+      function renderHeatmap(data, year){
+        var el = clear('hc-ins-heatmap'); if(!el) return;
+        var rows = data.filter(function(d){ return d.year === year; });
+        if(!rows.length) return;
 
-        <!-- Stat 1: Uninsured rate -->
-        <div class="stat-row">
-          <div class="srow-fig">
-            <div class="stat-n warn">~1 in 2</div>
-            <p class="stat-l">uninsured residents in every North Meck town are working-age adults 35–64 — the single largest age group without coverage</p>
-            <span class="stat-src">ACS 2024 · Table B27001</span>
-          </div>
-          <div class="card viz-host">
-            <div class="card-t">Uninsured rate by town &amp; age group</div>
-            <div class="card-s">Share of uninsured population by age group · ACS 2024</div>
-            <div id="hc-overview-age-uninsured"></div>
-          </div>
-        </div>
+        var types = [
+          { key:'emp_based_ins', label:'Employer-based' },
+          { key:'dir_purchase_ins', label:'Direct-purchase' },
+          { key:'medicare_cov', label:'Medicare' },
+          { key:'medicaid_cov', label:'Medicaid' },
+          { key:'tricare_cov', label:'Tricare' },
+          { key:'VA_cov', label:'VA' },
+          { key:'other_cov_type', label:'Other' },
+          { key:'all_unins', label:'Uninsured' }
+        ];
+        var towns = ['Cornelius','Davidson','Huntersville'];
 
-        <!-- Stat 2: Mental health -->
-        <!--
-        <div class="stat-row">
-          <div class="srow-fig">
-            <div class="stat-n warn">1 in 5</div>
-            <p class="stat-l">adults experiences a mental health condition each year, yet most do not receive treatment in communities with limited provider access</p>
-            <span class="stat-src">SAMHSA · data coming</span>
-          </div>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Mental health provider availability by town</div>
-            <div class="card-s">Psychiatrists, psychologists, and licensed counselors per 10,000 residents</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: HRSA Health Workforce · SAMHSA behavioral health data</div>
-            </div>
-          </div>
-        </div>
-        -->
+        var cellW = 95, cellH = 54, padX = 14, labelLeft = 110, top = 48, legendH = 32;
+        var W = labelLeft + types.length * (cellW + padX);
+        var H = top + towns.length * (cellH + padX) + legendH + 10;
 
-        <!-- Stat 3: Provider shortage -->
-        <!--
-        <div class="stat-row">
-          <div class="srow-fig">
-            <div class="stat-n warn">HPSA</div>
-            <p class="stat-l">parts of North Meck fall within Health Professional Shortage Areas, meaning residents travel further or wait longer for primary care</p>
-            <span class="stat-src">HRSA · data coming</span>
-          </div>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Primary care providers per 10,000 residents</div>
-            <div class="card-s">Active primary care physicians by zip code · HRSA HPSA designations</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: HRSA Data Warehouse · Health Professional Shortage Areas</div>
-            </div>
-          </div>
-        </div>
-        -->
+        var colorScale = d3.scaleSequential(d3.interpolateBlues).domain([0, 65]);
 
-        <!-- Stat 4: Chronic disease -->
-        <div class="stat-row">
-          <div class="srow-fig">
-            <div class="stat-n warn">~11%</div>
-            <p class="stat-l">of Mecklenburg adults have diagnosed diabetes, with rates highest among lower-income and minority populations</p>
-            <span class="stat-src">CDC PLACES · data coming</span>
-          </div>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Chronic disease prevalence by town</div>
-            <div class="card-s">Diabetes, obesity, and hypertension rates · CDC PLACES census-tract estimates</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: CDC PLACES · Local-level health estimates, 2024 release</div>
-            </div>
-          </div>
-        </div>
+        var svg = d3.select(el).append('svg')
+          .attr('width', '100%').attr('height', H).attr('viewBox', '0 0 '+W+' '+H)
+          .attr('style','font-family:Hanken Grotesk,sans-serif');
 
-      </div>
-    </div>
-  </div>
+        // column headers
+        types.forEach(function(t, i){
+          svg.append('text')
+            .attr('x', labelLeft + i*(cellW+padX) + cellW/2)
+            .attr('y', top - 8)
+            .attr('text-anchor','middle')
+            .attr('font-size', 11).attr('fill', '#1B4F72').attr('font-weight','600')
+            .text(t.label);
+        });
 
-  <!-- TAB: health insurance -->
-  <div class="tabpane" data-pane="hc-insurance">
-    <div class="wrap">
-      <div class="sec-head"><span class="eyebrow">Health Insurance</span><h2 class="sec-h">Who has coverage, and who is one medical bill away from a financial crisis?</h2><p class="lead">Insurance status is a primary driver of whether people seek preventive care or delay treatment until a condition becomes an emergency. In North Meck, income and employment type shape coverage more than geography alone.</p></div>
+        rows.forEach(function(d, ri){
+          // row label
+          svg.append('text')
+            .attr('x', labelLeft - 8).attr('y', top + ri*(cellH+padX) + cellH/2 + 4)
+            .attr('text-anchor','end').attr('font-size', 12).attr('fill', INS_TEXT)
+            .text(d.Town);
 
-      <!-- Dot chart: always all three towns -->
-      <div id="hc-ins-dot-wrap" style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many residents are uninsured?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Each dot represents one person per 100 residents. Orange dots are uninsured.</p>
-        <div class="card viz-host" style="padding:24px 20px 16px">
-          <div class="card-t">Overall insurance coverage rate by town (2024)</div>
-          <div class="card-s">ACS 2024 · 1 dot = 1 person per 100 residents · all three towns</div>
-          <div id="hc-ins-dot" style="overflow-x:auto;margin-top:12px"></div>
-        </div>
-        <div class="callout info" style="margin-top:16px"><div class="callout-t">Davidson has the lowest uninsured rate in North Meck — roughly 3 in 100 residents lack coverage — while Cornelius and Huntersville each sit around 5 in 100. Even these low rates represent thousands of residents without a safety net for medical emergencies.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
-      </div>
+          types.forEach(function(t, ci){
+            var val = (d[t.key] / d.Tot_pop) * 100;
+            var x = labelLeft + ci*(cellW+padX), y = top + ri*(cellH+padX);
+            svg.append('rect').attr('x',x).attr('y',y)
+              .attr('width',cellW).attr('height',cellH).attr('rx',6)
+              .attr('fill', colorScale(val));
+            svg.append('text').attr('x',x+cellW/2).attr('y',y+cellH/2+4)
+              .attr('text-anchor','middle').attr('font-size',12).attr('font-weight','600')
+              .attr('fill', val > 35 ? '#fff' : '#1B4F72')
+              .text(val.toFixed(1)+'%');
+          });
+        });
 
-      <!-- Coverage type: heatmap (all towns) or bar chart (single town) -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How do people get their insurance — employer, marketplace, Medicaid, or none?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Coverage type reveals economic vulnerability. Employer-sponsored insurance disappears with job loss. Medicaid enrollment signals low income. Marketplace coverage comes with cost and enrollment barriers.</p>
-        <div class="card viz-host" style="padding:24px 20px 16px">
-          <div class="card-t" id="hc-ins-heatmap-title">Insurance coverage type by town (2024)</div>
-          <div class="card-s" id="hc-ins-heatmap-sub">ACS Table B27010 · % of total population · all three towns shown</div>
-          <div class="filterbar" style="margin:10px 0 8px">
-            <span class="chip on" data-hcins-global="all" onclick="hcInsGlobalChip(this)">All towns</span>
-            <span class="chip" data-hcins-global="Cornelius" onclick="hcInsGlobalChip(this)">Cornelius</span>
-            <span class="chip" data-hcins-global="Davidson" onclick="hcInsGlobalChip(this)">Davidson</span>
-            <span class="chip" data-hcins-global="Huntersville" onclick="hcInsGlobalChip(this)">Huntersville</span>
-          </div>
-          <div id="hc-ins-heatmap" style="overflow-x:auto;margin-top:12px"></div>
-        </div>
-        <div class="callout" style="margin-top:16px"><div class="callout-t">Employer-based insurance dominates across all three towns, reflecting North Meck's relatively high employment rate. However, Huntersville shows notably higher Medicaid enrollment than Cornelius or Davidson — a signal of greater income diversity and lower-wage employment in its fastest-growing corridors. Uninsured rates remain low overall, but even a 5–7% gap represents thousands of residents without coverage.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27010</div></div>
-      </div>
-
-      <!-- Income + Age side by side, each with own chips -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Who faces the greatest coverage gap?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Lower-income households and working-age adults aged 26–64 carry the highest uninsured rates.</p>
-        <div class="g2">
-          <div class="card viz-host" style="padding:20px 16px 12px">
-            <div class="card-t">By income bracket (2024)</div>
-            <div class="card-s">ACS B27016 · insured vs. uninsured rate</div>
-            <div class="filterbar" style="margin:10px 0 4px">
-              <span class="chip on" data-hcins-chart="income" data-hcins-town="all" onclick="hcInsLocalChip(this)">All</span>
-              <span class="chip" data-hcins-chart="income" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
-              <span class="chip" data-hcins-chart="income" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
-              <span class="chip" data-hcins-chart="income" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
-            </div>
-            <div id="hc-ins-income"></div>
-            <div class="callout info" style="margin-top:16px"><div class="callout-t">The coverage gap widens sharply at lower incomes — households earning under $25k are uninsured at nearly 3× the rate of those earning $75k or more, reflecting Medicaid eligibility gaps and the inability to afford marketplace premiums without employer contributions.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27016</div></div>
-          </div>
-          <div class="card viz-host" style="padding:20px 16px 12px">
-            <div class="card-t">By age group (2024)</div>
-            <div class="card-s">ACS B27001 · insured vs. uninsured rate</div>
-            <div class="filterbar" style="margin:10px 0 4px">
-              <span class="chip on" data-hcins-chart="age" data-hcins-town="all" onclick="hcInsLocalChip(this)">All</span>
-              <span class="chip" data-hcins-chart="age" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
-              <span class="chip" data-hcins-chart="age" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
-              <span class="chip" data-hcins-chart="age" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
-            </div>
-            <div id="hc-ins-age"></div>
-            <div class="callout warn" style="margin-top:16px"><div class="callout-t">Adults aged 26–34 carry the highest uninsured rate of any age group — they've aged off parental plans and often work gig or service jobs without employer coverage. Children under 19 and seniors 65+ show near-universal coverage through CHIP and Medicare respectively.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27001</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Age-group uninsurance trend across towns, 2017-2024 -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How has the uninsured rate by age shifted since 2017?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Tracking each age group's uninsured rate year over year shows whether coverage gaps are closing or widening, and for whom.</p>
-        <div class="card viz-host" style="padding:20px 16px 12px">
-          <div class="card-t">Uninsurance by age over time</div>
-          <div class="card-s">ACS 2017–2024 · uninsured rate by age group</div>
-          <div class="filterbar" style="margin:10px 0 4px">
-            <span class="chip on" data-hcins-chart="agetrend" data-hcins-town="all" onclick="hcInsLocalChip(this)">All towns</span>
-            <span class="chip" data-hcins-chart="agetrend" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
-            <span class="chip" data-hcins-chart="agetrend" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
-            <span class="chip" data-hcins-chart="agetrend" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
-          </div>
-          <div id="hc-ins-age-trend"></div>
-        </div>
-      </div>
-
-      <!-- Trend + Employment side by side, each with own chips -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is coverage improving, and does employment predict it?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Coverage rates have remained relatively stable since 2017 — but small shifts matter for thousands of residents. Employment status is strongly predictive of whether someone has a plan at all.</p>
-        <div class="g2">
-          <div class="card viz-host" style="padding:20px 16px 12px">
-            <div class="card-t">Insurance coverage trend (2017–2024)</div>
-            <div class="card-s">ACS 5-year estimates · all years</div>
-            <div class="filterbar" style="margin:10px 0 4px">
-              <span class="chip on" data-hcins-chart="trend" data-hcins-town="all" onclick="hcInsLocalChip(this)">All</span>
-              <span class="chip" data-hcins-chart="trend" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
-              <span class="chip" data-hcins-chart="trend" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
-              <span class="chip" data-hcins-chart="trend" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
-            </div>
-            <div id="hc-ins-trend"></div>
-            <div class="callout" style="margin-top:16px"><div class="callout-t">Overall coverage rates have held steady at 92–95% since 2017, but the trend masks variation: Davidson has consistently led all three towns in coverage while Huntersville — despite rapid population growth — has seen the slowest improvement per capita.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2017–2024</div></div>
-          </div>
-          <div class="card viz-host" style="padding:20px 16px 12px">
-            <div class="card-t">By employment status (2024)</div>
-            <div class="card-s">ACS B27011 · employed vs. unemployed</div>
-            <div class="filterbar" style="margin:10px 0 4px">
-              <span class="chip on" data-hcins-chart="emp" data-hcins-town="all" onclick="hcInsLocalChip(this)">All</span>
-              <span class="chip" data-hcins-chart="emp" data-hcins-town="Cornelius" onclick="hcInsLocalChip(this)">Cornelius</span>
-              <span class="chip" data-hcins-chart="emp" data-hcins-town="Davidson" onclick="hcInsLocalChip(this)">Davidson</span>
-              <span class="chip" data-hcins-chart="emp" data-hcins-town="Huntersville" onclick="hcInsLocalChip(this)">Huntersville</span>
-            </div>
-            <div id="hc-ins-emp"></div>
-            <div class="callout warn" style="margin-top:16px"><div class="callout-t">Employment is the single strongest predictor of coverage: employed residents are insured at ~93%, versus under 70% for unemployed residents. Job loss without a safety net leaves families immediately exposed — and North Meck's service-sector workforce has the least cushion.</div><div class="callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27011</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── D3 Insurance Charts ─────────────────────────────────────── -->
+        // gradient legend
+        var lgX = labelLeft, lgY = H - legendH + 4, lgW = 180;
+        var defs = svg.append('defs');
+        var grad = defs.append('linearGradient').attr('id','hc-hm-grad').attr('x1','0%').attr('x2','100%');
+        d3.range(0,1.01,0.1).forEach(function(s){
+          grad.append('stop').attr('offset',s*100+'%').attr('stop-color', colorScale(s*65));
+        });
+        svg.append('rect').attr('x',lgX).attr('y',lgY).attr('width',lgW).attr('height',10).attr('rx',4).attr('fill','url(#hc-hm-grad)');
+        svg.append('text').attr('x',lgX-4).attr('y',lgY+8).attr('text-anchor','end').attr('font-size',10).attr('fill',INS_LABEL).text('Low %');
+        svg.append('text').attr('x',lgX+lgW+4).attr('y',lgY+8).attr('font-size',10).attr('fill',INS_LABEL).text('High %');
+      }
 
 
-    <!-- ─────────────────────────────────────────────────────────────── -->
-  </div>
+      // ── 2. INCOME chart — side-by-side bars per bracket ─────────────
+      function renderIncome(rows){
+        var el = clear('hc-ins-income'); if(!el||!rows.length) return;
+        var d = rows[0];
+        var brackets = [
+          { label:'Under $25k', ins:(d.ins_U25/(d.ins_U25+d.no_ins_U25))*100, unins:(d.no_ins_U25/(d.ins_U25+d.no_ins_U25))*100 },
+          { label:'$25k–$50k',  ins:(d.ins_25_50/(d.ins_25_50+d.no_ins_25_50))*100, unins:(d.no_ins_25_50/(d.ins_25_50+d.no_ins_25_50))*100 },
+          { label:'$50k–$75k',  ins:(d.ins_50_75/(d.ins_50_75+d.no_ins_50_75))*100, unins:(d.no_ins_50_75/(d.ins_50_75+d.no_ins_50_75))*100 },
+          { label:'$75k–$100k', ins:(d.ins_75_100/(d.ins_75_100+d.no_ins_75_100))*100, unins:(d.no_ins_75_100/(d.ins_75_100+d.no_ins_75_100))*100 },
+          { label:'Above $100k',ins:(d.ins_100_above/(d.ins_100_above+d.no_ins_100_above))*100, unins:(d.no_ins_100_above/(d.ins_100_above+d.no_ins_100_above))*100 }
+        ];
+        var mL=105, mR=16, mT=16, mB=52, bH=18, gap=10, subGap=3;
+        var W=440, rowH=bH*2+subGap+gap;
+        var H=mT+brackets.length*rowH+mB;
+        var xScale=d3.scaleLinear().domain([0,100]).range([0,W-mL-mR]);
+        var colorScale=d3.scaleOrdinal().domain(['Insured','Uninsured']).range([INS_BLUE,INS_AMBER]);
+        var svg=d3.select(el).append('svg').attr('width','100%').attr('height',H).attr('viewBox','0 0 '+W+' '+H).attr('style','font-family:Hanken Grotesk,sans-serif');
+        var g=svg.append('g').attr('transform','translate('+mL+','+mT+')');
+        
+        
+        
+        brackets.forEach(function(b,i){
+          var y0=i*rowH;
+          g.append('text').attr('x',-6).attr('y',y0+bH*1+subGap/2).attr('text-anchor','end').attr('dominant-baseline','middle').attr('font-size',11).attr('fill',INS_TEXT).text(b.label);
+          [['Insured',b.ins],['Uninsured',b.unins]].forEach(function(pair,j){
+            var ry=y0+j*(bH+subGap);
+            g.append('rect').attr('x',0).attr('y',ry).attr('width',xScale(pair[1])).attr('height',bH).attr('fill',colorScale(pair[0])).attr('rx',2)
+              .on('mouseover',function(e){ ttShow('<b>'+b.label+'</b> · '+pair[0]+': <b>'+pair[1].toFixed(1)+'%</b>',e); })
+              .on('mousemove',ttMove).on('mouseout',ttHide);
+            if(pair[1]>4) g.append('text').attr('x',xScale(pair[1])+3).attr('y',ry+bH/2).attr('dominant-baseline','middle').attr('font-size',10).attr('fill',INS_LABEL).text(pair[1].toFixed(1)+'%');
+          });
+        });
+        // x axis
+        var axG=g.append('g').attr('transform','translate(0,'+brackets.length*rowH+')');
+        axG.call(d3.axisBottom(xScale).ticks(5).tickFormat(function(d){return d+'%'}));
+        axG.select('.domain').attr('stroke','#ccc');
+        axG.selectAll('line').attr('stroke','#ccc');
+        axG.selectAll('text').attr('font-size',10).attr('fill',INS_LABEL);
+        // legend
+        var lgY=brackets.length*rowH+36;
+        ['Insured','Uninsured'].forEach(function(k,i){ g.append('rect').attr('x',i*90).attr('y',lgY).attr('width',10).attr('height',10).attr('fill',colorScale(k)); g.append('text').attr('x',i*90+13).attr('y',lgY+8).attr('font-size',10).attr('fill',INS_LABEL).text(k); });
+      }
 
-  {SHOW_HC_ACCESS && (
-  <div class="tabpane" data-pane="hc-access">
-    <div class="wrap">
-      <div class="sec-head"><span class="eyebrow">Access to Care</span><h2 class="sec-h">Can residents actually get to a doctor when they need one?</h2><p class="lead">Having insurance is not the same as having access. Provider shortages, distance, wait times, and cost-sharing all determine whether care is truly reachable. North Meck's rapid growth has outpaced healthcare infrastructure in several corridors.</p></div>
+  // 2.1. Overall INCOME CHART (Town level) - Shows up under "All"
+  class TownUninsByIncome {
+    constructor(_config, _data) {
+        this.config = {
+            parentElement: _config.parentElement,
+            containerWidth: _config.containerWidth || 600,
+            containerHeight: _config.containerHeight || 350,
+            margin: _config.margin || {top: 50, right: 30, bottom: 80, left: 60},
+            dispatcher: _config.dispatcher
+        }
+        this.data = _data;
+        this.initVis();
+    }
 
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many primary care providers serve each town, relative to population?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The standard benchmark is one primary care physician per 2,500 residents. Areas falling below this are designated Health Professional Shortage Areas (HPSAs) by federal health agencies.</p>
-        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Primary care providers per 10,000 residents by town</div>
-          <div class="card-s">Active PCPs · HRSA NPPES provider data · 2024</div>
-          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: HRSA NPPES · National Plan and Provider Enumeration System</div></div>
-        </div>
-      </div>
+    initVis() {
+        let vis = this;
 
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are residents getting preventive care — checkups, screenings, and vaccinations?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Preventive care utilization is a leading indicator of system access. Low screening and vaccination rates suggest either cost barriers, lack of providers, or both.</p>
-        <div class="g2">
-          <div class="card viz-host" id="preventive-care-host">
-            <div class="card-t">Preventive Care &amp; Screening Rates</div>
-            <div class="card-s">Most recent year available per measure · CDC PLACES</div>
-            <div id="chart-preventive-care"></div>
-            <div class="callout">
-              <div class="callout-s">Each measure comes from a different CDC PLACES survey cycle, so the year shown varies by measure (noted on hover). Source: CDC PLACES.</div>
-            </div>
-          </div>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Proximity to nearest hospital or urgent care</div>
-            <div class="card-s">Drive time in minutes by neighborhood · CMS facility data</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
-          </div>
-        </div>
-      </div>
+        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right; 
+        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does cost-sharing affect whether people actually use their coverage?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">High deductibles and copays can make insured residents functionally uninsured for non-emergency care. This is especially common among marketplace and high-deductible employer plans.</p>
-        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Cost as a barrier to care — delayed or forgone treatment</div>
-          <div class="card-s">Share of adults who delayed care due to cost in the past year · BRFSS</div>
-          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC BRFSS · Behavioral Risk Factor Surveillance System</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  )}
+        vis.svg = d3.select(vis.config.parentElement)
+           .append("svg")
+           .attr("width", "100%")
+           .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}` );
 
-  <!-- TAB: mental health -->
-  <div class="tabpane" data-pane="hc-mental">
-    <div class="wrap">
-      <div class="sec-head"><span class="eyebrow">Mental Health</span><h2 class="sec-h">Is mental healthcare reachable for North Meck residents who need it?</h2><p class="lead">Mental health conditions are common and treatable, but access to care is constrained by provider shortages, insurance limits, stigma, and cost. The gap between need and treatment is widest in communities with fewer resources.</p></div>
+        vis.chart = vis.svg.append("g")
+           .attr("transform", `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
 
-      <!-- Section 1: Depression & mental distress prevalence -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How prevalent are depression and mental distress in North Meck communities?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">CDC PLACES provides model estimates of depression and frequent mental distress (14+ poor mental health days in the past 30) using behavioral surveillance data — allowing comparison across towns and years.</p>
-        <div class="g2">
-          <div class="card viz-host" id="mh-distressbar-host">
-            <div class="card-t">Frequent Mental Distress by Year</div>
-            <div class="card-s">2019, 2021, 2023 · Age-adjusted · CDC PLACES</div>
-            <div class="filterbar" style="margin:10px 0 4px">
-              <span class="chip on" data-mh-chart="distress" data-mh-town="all" onclick="mhLocalChip(this)">All</span>
-              <span class="chip" data-mh-chart="distress" data-mh-town="Cornelius" onclick="mhLocalChip(this)">Cornelius</span>
-              <span class="chip" data-mh-chart="distress" data-mh-town="Davidson" onclick="mhLocalChip(this)">Davidson</span>
-              <span class="chip" data-mh-chart="distress" data-mh-town="Huntersville" onclick="mhLocalChip(this)">Huntersville</span>
-            </div>
-            <div id="mh-distressbar-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
-          </div>
-          <div class="card viz-host" id="mh-depbar-host">
-            <div class="card-t">Depression Prevalence by Year</div>
-            <div class="card-s">2019, 2021, 2023 · Age-adjusted · CDC PLACES</div>
-            <div class="filterbar" style="margin:10px 0 4px">
-              <span class="chip on" data-mh-chart="depression" data-mh-town="all" onclick="mhLocalChip(this)">All</span>
-              <span class="chip" data-mh-chart="depression" data-mh-town="Cornelius" onclick="mhLocalChip(this)">Cornelius</span>
-              <span class="chip" data-mh-chart="depression" data-mh-town="Davidson" onclick="mhLocalChip(this)">Davidson</span>
-              <span class="chip" data-mh-chart="depression" data-mh-town="Huntersville" onclick="mhLocalChip(this)">Huntersville</span>
-            </div>
-            <div id="mh-depbar-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
-          </div>
-        </div>
-      </div>
+        // Color scale - one color per town 
+        vis.colorScale = d3.scaleOrdinal()
+           .domain(["Cornelius", "Davidson", "Huntersville"])      
+           .range(["#1A5276", "#F0A500", "#C0392B"]);
 
-      <!-- Section 2: Facility map -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Where are mental health and substance use facilities located?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">DHHS-licensed mental health and substance use facilities in Mecklenburg County. Search your address to find facilities within a given radius.</p>
-        <div class="card" id="mh-map-card">
-          <div class="card-t">Mental Health &amp; Substance Use Facility Locations</div>
-          <div class="card-s">57 licensed facilities · Mecklenburg County · NC DHHS</div>
-          <div style="display:flex;gap:8px;margin:14px 0 10px">
-            <input id="mh-address-input" type="text" placeholder="Enter your address" style="flex:1;padding:8px 12px;border:1px solid var(--line-2);border-radius:8px;font-size:13px;font-family:'Hanken Grotesk',sans-serif;background:var(--paper);color:var(--ink);outline:none">
-            <button id="mh-address-btn" style="padding:8px 18px;background:#2E86AB;color:#fff;border:none;border-radius:8px;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;font-weight:500">Search</button>
-          </div>
-          <div id="mh-facility-map" style="height:420px;border-radius:8px;overflow:hidden;border:1px solid var(--line)"></div>
-          <div class="filterbar" style="margin-top:12px;margin-bottom:0">
-            <button class="chip on" data-mh-radius="all">All</button>
-            <button class="chip" data-mh-radius="5">5 miles</button>
-            <button class="chip" data-mh-radius="15">15 miles</button>
-            <button class="chip" data-mh-radius="25">25 miles</button>
-          </div>
-        </div>
-      </div>
+        // X scale - Income brackets (Categorical)
+        vis.xScale = d3.scaleBand()
+           .range([0, vis.width])
+           .padding(0.2);
 
-      <!-- Section 3: Provider shortage coming soon -->
-      <!--
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does mental health burden vary by income and race?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Mental health outcomes are not evenly distributed. Lower-income residents and communities of color report higher rates of distress, yet face the greatest barriers to treatment access.</p>
-        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Mental distress rate by income bracket &amp; race</div>
-          <div class="card-s">Cross-tabulated distress rates · BRFSS county-level data</div>
-          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC BRFSS · Mecklenburg County module</div></div>
-        </div>
-      </div>
-      -->
-    </div>
+        // X subscale - Towns within each Income bracket (Categorical)
+        vis.xSubScale = d3.scaleBand()
+           .domain(["Cornelius", "Davidson", "Huntersville"])
+           .padding(0.05);
+       
+        // Y scale - Uninsured Rate (Percentage)
+        vis.yScale = d3.scaleLinear()
+           .range([vis.height, 0]);
 
-    <!-- ── Mental Health CDC charts (D3, inline data) ── -->
+        // Gridlines group - drawn BEFORE axes so bars sit on top
+        vis.gridG = vis.chart.append("g")
+           .attr("class", "grid");
 
+        // Axis Groups
+        vis.xAxisG = vis.chart.append("g")
+           .attr("class", "axis x-axis")
+           .attr("transform", `translate(0, ${vis.height})`);
 
+        vis.yAxisG = vis.chart.append("g")
+           .attr("class", "axis y-axis");
 
-  </div>
+        // Tooltip
+        vis.tooltip = d3.select(vis.config.parentElement)
+           .append("div")
+           .attr("class", "tooltip")
+           .style("opacity", 0)
+           .style("position", "fixed")
+           .style("pointer-events", "none")
+           .style("background", "#1a1a2e")
+           .style("color", "#fff")
+           .style("font", "500 12px 'Hanken Grotesk', sans-serif")
+           .style("padding", "7px 11px")
+           .style("border-radius", "7px")
+           .style("z-index", "9999");
 
-  {SHOW_HC_MATERNAL && (
-  <div class="tabpane" data-pane="hc-maternal">
-    <div class="wrap">
-      <div class="sec-head"><span class="eyebrow">Maternal &amp; Child Health</span><h2 class="sec-h">Are mothers and children in North Meck getting the care they need?</h2><p class="lead">Birth outcomes, prenatal access, and early childhood health are foundational indicators of community wellbeing — and persistent markers of racial and economic inequality. The CRF's two-generation lens makes this tab especially central to our research.</p></div>
+        // Chart title 
+        vis.svg.append("text")
+           .attr("class", "chart-title")
+           .attr("x", vis.config.margin.left + vis.width / 2)
+           .attr("y", 20)
+           .attr("text-anchor", "middle")
+           .style("font-size", "0.8rem")
+           .style("font-weight", "600")
+           .style("fill", "#1B4F72")
+           .text("Uninsurance Rates by Income Bracket, North Mecklenburg 2024");
 
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are mothers receiving prenatal care early enough in their pregnancy?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">First-trimester prenatal care is strongly associated with better birth outcomes. Late or no prenatal care is a marker of access barriers — insurance gaps, provider shortages, or transportation challenges.</p>
-        <div class="g2">
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Prenatal care initiation by trimester</div>
-            <div class="card-s">First / second / third trimester or no care · NC vital stats</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
-          </div>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Low birth weight rate by race &amp; town</div>
-            <div class="card-s">% of births under 2,500g · NC SCHS vital statistics</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is there a racial gap in birth outcomes in North Meck?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Black mothers in Mecklenburg County face significantly higher rates of preterm birth and low birth weight than white mothers — a disparity driven by structural factors, chronic stress, and unequal access to quality care.</p>
-        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Preterm birth rate by race &amp; ethnicity</div>
-          <div class="card-s">% of births before 37 weeks by maternal race · NC SCHS vital statistics</div>
-          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: NC State Center for Health Statistics · Vital statistics births data</div></div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are children getting well-child visits and vaccinations on schedule?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Well-child visit rates and childhood vaccination coverage are key indicators of whether families have a consistent healthcare home — and whether children are being screened for developmental delays early enough to intervene.</p>
-        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Childhood vaccination coverage &amp; well-child visit rates</div>
-          <div class="card-s">% of children meeting HEDIS benchmarks · Medicaid claims or NCIR</div>
-          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: NC Immunization Registry · Mecklenburg Health Dept</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-  )}
-
-  <!-- TAB: chronic disease -->
-  <div class="tabpane" data-pane="hc-chronic">
-    <div class="wrap">
-      <div class="sec-head"><span class="eyebrow">Chronic Disease &amp; Prevention</span><h2 class="sec-h">How much chronic disease burden does North Meck carry, and is it preventable?</h2><p class="lead">Diabetes, obesity, and hypertension are among the most prevalent and costly chronic conditions in the United States. Their rates are shaped by income, food access, housing stability, and stress — making them direct downstream indicators of the social determinants this portal tracks.</p></div>
-
-      <!-- Section 1: Chronic disease metric charts -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How do diabetes, obesity, and hypertension rates compare across towns?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Age-adjusted prevalence estimates from CDC PLACES (2019, 2021, 2023), allowing trend comparison within and between towns.</p>
-        <div class="g2" style="margin-bottom:20px">
-          <div class="card viz-host" id="cd-diabetes-host">
-            <div class="card-t">Age-adjusted Diabetes Prevalence</div>
-            <div class="card-s">2019 · 2021 · 2023 · CDC PLACES</div>
-            <div id="cd-diabetes-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
-          </div>
-          <div class="card viz-host" id="cd-obesity-host">
-            <div class="card-t">Obesity Prevalence</div>
-            <div class="card-s">2019 · 2021 · 2023 · CDC PLACES</div>
-            <div id="cd-obesity-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
-          </div>
-        </div>
-        <div class="card viz-host" id="cd-hbp-host">
-          <div class="card-t">High Blood Pressure Prevalence</div>
-          <div class="card-s">2019 · 2021 · 2023 · CDC PLACES</div>
-          <div id="cd-hbp-chart" style="width:100%"><p style="padding:24px;color:var(--ink-3);font-size:13px">Loading…</p></div>
-        </div>
-      </div>
-
-      <!-- Section 2: Coming soon -->
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are high-chronic-disease areas the same as high-cost-burden areas?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Chronic disease and housing cost burden often overlap — residents under financial stress are less likely to maintain preventive care, take medications consistently, or avoid high-stress environments that worsen chronic conditions.</p>
-        <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-          <div class="card-t" style="color:var(--ink-2)">Chronic disease rate vs. housing cost burden — scatter by census tract</div>
-          <div class="card-s">CDC PLACES disease rate × ACS cost burden rate · North Meck tracts</div>
-          <div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC PLACES · ACS Table B25070 · Gross rent as % of income</div></div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:36px">
-        <h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are residents getting screened for the conditions most likely to affect them?</h3>
-        <p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Screening rates for colorectal cancer, cervical cancer, and cholesterol are lower among uninsured and lower-income populations — allowing preventable conditions to progress untreated.</p>
-        <div class="g2">
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Cancer screening rates by town</div>
-            <div class="card-s">Colorectal, cervical, breast cancer screening · CDC PLACES</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
-          </div>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Physical inactivity &amp; sleep deprivation rates</div>
-            <div class="card-s">Behavioral risk factors linked to chronic disease · CDC PLACES</div>
-            <div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Chronic Disease charts (D3, inline data) ── -->
-
-  </div>
+        // Arrow marker definition for the annotation for Davidson
+        vis.svg.append("defs").append("marker")
+           .attr("id", "arrow")
+           .attr("viewBox", "0 -5 10 10")
+           .attr("refX", 8)
+           .attr("refY", 0)
+           .attr("markerWidth", 6)
+           .attr("markerHeight", 6)
+           .attr("orient", "auto")
+           .append("path")
+           .attr("d", "M0, -5L10, 0L0, 5")
+           .attr("fill", "#1B4F72");
 
 
-</div>
+        /**
+         * Axis labels
+        */
 
-<Fragment slot="page-scripts">
-  <script is:inline type="module" src={`${base}js/healthcare.js`}></script>
-</Fragment>
-</BaseLayout>
+        // X-axis label
+        vis.svg.append("text")
+           .attr("class", "axis-label")
+           .attr("x", vis.config.margin.left + vis.width / 2)
+           .attr("y", vis.config.containerHeight - 30)
+           .attr("text-anchor", "middle")
+           .style("font-size", "0.85rem")
+           .style("fill", "#1B4F72")
+           .text("Income bracket");
+
+        // Y-axis label
+        vis.svg.append("text")
+           .attr("class", "axis-label")
+           .attr("x", -(vis.config.margin.top + vis.height / 2))
+           .attr("y", 15)
+           .attr("transform", "rotate(-90)")
+           .attr("text-anchor", "middle")
+           .style("font-size", "0.85rem")
+           .style("fill", "#1B4F72")
+           .text("Uninsured rate (%)");
+
+        vis.updateVis(); 
+
+    }
+
+
+    updateVis(){
+        let vis = this;
+
+        const brackets = ["Below $25k", "$25k-$50k", "$50k-$75k", "$75k-$100k", "Above $100k"];
+        const towns = ["Cornelius", "Davidson", "Huntersville"];
+
+        // For each income bracket, calculate the uninsured rate per town 
+        vis.chartData = [
+            {
+                bracket: "Below $25k",
+                Cornelius: (vis.data.find(d => d.Town === "Cornelius").no_ins_U25 / (vis.data.find(d => d.Town === "Cornelius").ins_U25 + vis.data.find(d => d.Town === "Cornelius").no_ins_U25)) * 100,
+                Davidson: (vis.data.find(d => d.Town === "Davidson").no_ins_U25 / (vis.data.find(d => d.Town === "Davidson").ins_U25 + vis.data.find(d => d.Town === "Davidson").no_ins_U25)) * 100,
+                Huntersville: (vis.data.find(d => d.Town === "Huntersville").no_ins_U25 / (vis.data.find(d => d.Town === "Huntersville").ins_U25 + vis.data.find(d => d.Town === "Huntersville").no_ins_U25)) * 100
+            },
+
+            {
+                bracket: "$25k-$50k",
+                Cornelius: (vis.data.find(d => d.Town === "Cornelius").no_ins_25_50 / (vis.data.find(d => d.Town === "Cornelius").ins_25_50 + vis.data.find(d => d.Town === "Cornelius").no_ins_25_50)) * 100,
+                Davidson: (vis.data.find(d => d.Town === "Davidson").no_ins_25_50 / (vis.data.find(d => d.Town === "Davidson").ins_25_50 + vis.data.find(d => d.Town === "Davidson").no_ins_25_50)) * 100,
+                Huntersville: (vis.data.find(d => d.Town === "Huntersville").no_ins_25_50 / (vis.data.find(d => d.Town === "Huntersville").ins_25_50 + vis.data.find(d => d.Town === "Huntersville").no_ins_25_50)) * 100
+            },
+
+            {
+                bracket: "$50k-$75k",
+                Cornelius: (vis.data.find(d => d.Town === "Cornelius").no_ins_50_75 / (vis.data.find(d => d.Town === "Cornelius").ins_50_75 + vis.data.find(d => d.Town === "Cornelius").no_ins_50_75)) * 100,
+                Davidson: (vis.data.find(d => d.Town === "Davidson").no_ins_50_75 / (vis.data.find(d => d.Town === "Davidson").ins_50_75 + vis.data.find(d => d.Town === "Davidson").no_ins_50_75)) * 100,
+                Huntersville: (vis.data.find(d => d.Town === "Huntersville").no_ins_50_75 / (vis.data.find(d => d.Town === "Huntersville").ins_50_75 + vis.data.find(d => d.Town === "Huntersville").no_ins_50_75)) * 100
+            },
+
+            {
+                bracket: "$75k-$100k",
+                Cornelius: (vis.data.find(d => d.Town === "Cornelius").no_ins_75_100 / (vis.data.find(d => d.Town === "Cornelius").ins_75_100 + vis.data.find(d => d.Town === "Cornelius").no_ins_75_100)) * 100,
+                Davidson: (vis.data.find(d => d.Town === "Davidson").no_ins_75_100 / (vis.data.find(d => d.Town === "Davidson").ins_75_100 + vis.data.find(d => d.Town === "Davidson").no_ins_75_100)) * 100,
+                Huntersville: (vis.data.find(d => d.Town === "Huntersville").no_ins_75_100 / (vis.data.find(d => d.Town === "Huntersville").ins_75_100 + vis.data.find(d => d.Town === "Huntersville").no_ins_75_100)) * 100
+            },
+
+            {
+                bracket: "Above $100k",
+                Cornelius: (vis.data.find(d => d.Town === "Cornelius").no_ins_100_above / (vis.data.find(d => d.Town === "Cornelius").ins_100_above + vis.data.find(d => d.Town === "Cornelius").no_ins_100_above)) * 100,
+                Davidson: (vis.data.find(d => d.Town === "Davidson").no_ins_100_above / (vis.data.find(d => d.Town === "Davidson").ins_100_above + vis.data.find(d => d.Town === "Davidson").no_ins_100_above)) * 100,
+                Huntersville: (vis.data.find(d => d.Town === "Huntersville").no_ins_100_above / (vis.data.find(d => d.Town === "Huntersville").ins_100_above + vis.data.find(d => d.Town === "Huntersville").no_ins_100_above)) * 100
+            }
+        ];
+
+        // Set scale domains
+        vis.xScale.domain(vis.chartData.map(d => d.bracket));
+        vis.xSubScale.range([0, vis.xScale.bandwidth()]);
+
+        const allRates = vis.chartData.flatMap(d => towns.map(t => d[t]));
+        vis.yScale.domain([0, d3.max(allRates) * 1.2]);
+
+        vis.renderVis(); 
+    
+    }
+
+
+    renderVis() {
+        let vis = this;
+
+        const towns = ["Cornelius", "Davidson", "Huntersville"];
+
+        // Create a group per income bracket
+        const bracketGroups = vis.chart.selectAll("g.bracket")
+            .data(vis.chartData)
+            .join("g")
+            .attr("class", "bracket")
+            .attr("transform", d => `translate(${vis.xScale(d.bracket)}, 0)`);
+
+        // Draw the background horizontal grid lines
+        vis.gridG
+           .call(d3.axisLeft(vis.yScale)
+              .tickSize(-vis.width)
+              .tickFormat("")
+            )
+           .call(g => g.select(".domain").remove())
+           .call(g => g.selectAll(".tick line")
+              .attr("stroke", "#e0e0e0")
+            );
+
+        // Draw the rectangular bars
+        bracketGroups.selectAll("rect")
+            .data(d => towns.map(town => ({ town, value: d[town], bracket: d.bracket })))
+            .join("rect")
+            .attr("x", d => vis.xSubScale(d.town))
+            .attr("y", d => vis.yScale(d.value))
+            .attr("width", vis.xSubScale.bandwidth())
+            .attr("height", d => vis.height - vis.yScale(d.value))
+            .attr("fill", d => vis.colorScale(d.town))
+            .attr("rx", 1) // curvature of the bars
+            .on("mouseover", function(event, d) {
+                vis.tooltip
+                   .style("opacity", 1)
+                   .html(`<strong>${d.town}</strong> (${d.bracket}): ${d.value.toFixed(1)}% uninsured`);
+            })
+            .on("mousemove", function(event) {
+                vis.tooltip
+                   .style("left", (event.clientX + 14) + "px")
+                   .style("top", (event.clientY - 36) + "px");
+            })
+            .on("mouseout", function() {
+                vis.tooltip.style("opacity", 0);
+            });
+
+
+    // Update axes
+    vis.xAxisG.call(d3.axisBottom(vis.xScale));
+    vis.yAxisG.call(d3.axisLeft(vis.yScale).tickFormat(d => d + "%"));
+
+    // Add an annotation for Davidson's 0% uninsurance rate in the $50k-$75k bracket
+       const annotationBracket = vis.chartData.find(d => d.bracket === "$50k-$75k");
+       const annotationX = vis.xScale("$50k-$75k") + vis.xSubScale("Davidson") + vis.xSubScale.bandwidth() / 2;
+       const annotationY = vis.yScale(0);
+
+       vis.chart.append("line")
+          .attr("x1", annotationX)
+          .attr("x2", annotationX)
+          .attr("y1", annotationY - 30)
+          .attr("y2", annotationY - 5)
+          .attr("stroke", "#1B4F72")
+          .attr("stroke-width", 1.5)
+          .attr("marker-end", "url(#arrow)");
+
+       vis.chart.append("text")
+          .attr("x", annotationX)
+          .attr("y", annotationY - 35)
+          .attr("text-anchor", "middle")
+          .style("font-size", "0.7rem")
+          .style("fill", "#1B4F72")
+          .text("0% (Davidson)");
+
+    // Legend
+    const legend = vis.svg.selectAll(".legend")
+       .data(towns)
+       .join("g")
+       .attr("class", "legend")
+       .attr("transform", (d, i) => `translate(${vis.config.margin.left + i * 110}, ${vis.config.containerHeight - 10})`);
+
+    legend.append("rect")
+       .attr("width", 12)
+       .attr("height", 12)
+       .attr("fill", d => vis.colorScale(d));
+
+    legend.append("text")
+       .attr("x", 16)
+       .attr("y", 10)
+       .style("fill", "#1B4F72")
+       .style("font-size", "0.8rem")
+       .text(d => d);
+    }
+} // End of overall TownUninsByIncome class
+
+
+// Add an adapter 
+ function renderIncomeUninsByTown(rows) {
+   var el = clear('hc-ins-income'); 
+   if(!el||!rows.length) return;
+   new TownUninsByIncome({parentElement: "#hc-ins-income", containerWidth: el.offsetWidth||600}, rows);
+ }
+
+
+
+
+      // ── 3. AGE chart — side-by-side bars (same format as income) ────────
+      function renderAge(rows){
+        var el = clear('hc-ins-age'); if(!el||!rows.length) return;
+        var d = rows[0];
+        var groups = [
+          { label:'Under 19', ins:(d.ins_U18/(d.ins_U18+d.unins_U18))*100, unins:(d.unins_U18/(d.ins_U18+d.unins_U18))*100 },
+          { label:'19–25',    ins:(d.ins_19_25/(d.ins_19_25+d.unins_19_25))*100, unins:(d.unins_19_25/(d.ins_19_25+d.unins_19_25))*100 },
+          { label:'26–34',    ins:(d.ins_26_34/(d.ins_26_34+d.unins_26_34))*100, unins:(d.unins_26_34/(d.ins_26_34+d.unins_26_34))*100 },
+          { label:'35–64',    ins:(d.ins_35_64/(d.ins_35_64+d.unins_35_64))*100, unins:(d.unins_35_64/(d.ins_35_64+d.unins_35_64))*100 },
+          { label:'65+',      ins:(d.ins_65_over/(d.ins_65_over+d.unins_65_over))*100, unins:(d.unins_65_over/(d.ins_65_over+d.unins_65_over))*100 }
+        ];
+        var mL=70, mR=16, mT=16, mB=52, bH=18, gap=10, subGap=3;
+        var W=440, rowH=bH*2+subGap+gap;
+        var H=mT+groups.length*rowH+mB;
+        var xScale=d3.scaleLinear().domain([0,100]).range([0,W-mL-mR]);
+        var colorScale=d3.scaleOrdinal().domain(['Insured','Uninsured']).range([INS_BLUE,INS_AMBER]);
+        var svg=d3.select(el).append('svg').attr('width','100%').attr('height',H).attr('viewBox','0 0 '+W+' '+H).attr('style','font-family:Hanken Grotesk,sans-serif');
+        var g=svg.append('g').attr('transform','translate('+mL+','+mT+')');
+        groups.forEach(function(b,i){
+          var y0=i*rowH;
+          g.append('text').attr('x',-6).attr('y',y0+bH+subGap/2).attr('text-anchor','end').attr('dominant-baseline','middle').attr('font-size',11).attr('fill',INS_TEXT).text(b.label);
+          [['Insured',b.ins],['Uninsured',b.unins]].forEach(function(pair,j){
+            var ry=y0+j*(bH+subGap);
+            g.append('rect').attr('x',0).attr('y',ry).attr('width',xScale(pair[1])).attr('height',bH).attr('fill',colorScale(pair[0])).attr('rx',2)
+              .on('mouseover',function(e){ ttShow('<b>'+b.label+'</b> · '+pair[0]+': <b>'+pair[1].toFixed(1)+'%</b>',e); })
+              .on('mousemove',ttMove).on('mouseout',ttHide);
+            if(pair[1]>4) g.append('text').attr('x',xScale(pair[1])+3).attr('y',ry+bH/2).attr('dominant-baseline','middle').attr('font-size',10).attr('fill',INS_LABEL).text(pair[1].toFixed(1)+'%');
+          });
+        });
+        var axG=g.append('g').attr('transform','translate(0,'+groups.length*rowH+')');
+        axG.call(d3.axisBottom(xScale).ticks(5).tickFormat(function(d){return d+'%'}));
+        axG.select('.domain').attr('stroke','#ccc'); axG.selectAll('line').attr('stroke','#ccc'); axG.selectAll('text').attr('font-size',10).attr('fill',INS_LABEL);
+        var lgY=groups.length*rowH+36;
+        ['Insured','Uninsured'].forEach(function(k,i){ g.append('rect').attr('x',i*90).attr('y',lgY).attr('width',10).attr('height',10).attr('fill',colorScale(k)); g.append('text').attr('x',i*90+13).attr('y',lgY+8).attr('font-size',10).attr('fill',INS_LABEL).text(k); });
+      }
+
+      // 3.1. The Overall Insurance By Age Town comparison chart -- (Shows up by default and under the 'ALL' category)
+ class TownUninsByAgeChart {
+  constructor(_config, _data) {
+    this.config = {
+      parentElement: _config.parentElement,
+      containerWidth: _config.containerWidth || 600,
+      containerHeight: _config.containerHeight || 300,
+      margin: _config.margin || {top: 40, right: 30, bottom: 60, left: 100},
+      dispatcher: _config.dispatcher,
+      compact: _config.compact || false
+    }
+    this.data = _data;
+    this.initVis();
+  }
+
+  initVis() {
+    let vis = this; 
+
+    vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right; 
+    vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+
+    vis.svg = d3.select(vis.config.parentElement)
+       .append("svg")
+       .attr("width", "100%")
+       .attr("viewBox", `0 0 ${vis.config.containerWidth} ${vis.config.containerHeight}`);
+    
+    vis.chart = vis.svg.append("g")
+       .attr("transform", `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
+
+    // Color scale - one color per age group
+    vis.colorScale = d3.scaleOrdinal()
+       .domain(["Under 18", "19-25", "26-34", "35-64", "65+"])      
+       .range(["#1A5276", "#2E86C1", "#85C1E9", "#F0A500", "#C0392B"]);
+       
+
+    // X scale - share of uninsured population (percentage)
+    vis.xScale = d3.scaleLinear()
+       .range([0, vis.width]);
+
+    // Y scale - towns (categorical)
+    vis.yScale = d3.scaleBand()
+       .range([0, vis.height])
+       .padding(0.3);
+
+    // Axis Groups
+    vis.xAxisG = vis.chart.append("g")
+       .attr("class", "axis x-axis")
+       .attr("transform", `translate(0, ${vis.height})`);
+
+    vis.yAxisG = vis.chart.append("g")
+    .attr("class", "axis y-axis");
+
+    // Tooltip
+    vis.tooltip = d3.select(vis.config.parentElement)
+       .append("div")
+       .attr("class", "tooltip")
+       .style("opacity", 0)
+       .style("position", "fixed")
+       .style("pointer-events", "none")
+       .style("background", "#1a1a2e")
+       .style("color", "#fff")
+       .style("font", "500 12px 'Hanken Grotesk', sans-serif")
+       .style("padding", "7px 11px")
+       .style("border-radius", "7px")
+       .style("z-index", "9999");
+
+
+    if(!vis.config.compact){
+      // Chart Title
+      vis.svg.append("text")
+         .attr("class", "chart-title")
+         .attr("x", vis.config.margin.left + vis.width / 2)
+         .attr("y", 20)
+         .attr("text-anchor", "middle")
+         .style("font-size", "0.8rem")
+         .style("font-weight", "600")
+         .style("fill", "#1B4F72")
+         .text("Uninsurance Rates by Age, North Mecklenburg 2024");
+
+      // Axis labels
+      vis.svg.append("text")
+         .attr("class", "axis-label")
+         .attr("x", vis.config.margin.left + vis.width / 2)
+         .attr("y", vis.config.containerHeight - 20)
+         .attr("text-anchor", "middle")
+         .style("font-size", "0.85rem")
+         .style("fill", "#1B4F72")
+         .text("Share of uninsured population (%)");
+
+      vis.svg.append("text")
+         .attr("class", "axis-label")
+         .attr("x", -(vis.config.margin.top + vis.height / 2))
+         .attr("y", 20)
+         .attr("transform", "rotate(-90)")
+         .attr("text-anchor", "middle")
+         .style("font-size", "0.85rem")
+         .style("fill", "#1B4F72")
+         .text("Town");
+    }
+
+    vis.updateVis();
+  }
+
+  updateVis() {
+    let vis = this; 
+
+    // Calculate each age group's share of the town's total uninsured population 
+
+    // First, get the unique towns
+    const towns = [...new Set(vis.data.map(d => d.Town))]
+
+    vis.chartData = towns.map(town => {
+        //Find the row for a town (one row per town)
+        const row = vis.data.find(d => d.Town === town); 
+
+        const u18_UninsRate = (row.unins_U18 / row.all_unins) * 100;
+        const adultUnins_19_25 = row.unins_19_25; // Use row because we fetched data for each town above
+        const adultUnins_26_34 = row.unins_26_34;
+        const adultUnins_35_64 = row.unins_35_64;
+        const adultUnins_19_25_Rate = (adultUnins_19_25 / row.all_unins) * 100;
+        const adultUnins_26_34_Rate = (adultUnins_26_34 / row.all_unins) * 100;
+        const adultUnins_35_64_Rate = (adultUnins_35_64 / row.all_unins) * 100;
+        const over65UninsRate = (row.unins_65_over / row.all_unins) * 100; 
+
+        return {
+            town: town,
+            "Under 18": u18_UninsRate, 
+            "19-25": adultUnins_19_25_Rate,
+            "26-34": adultUnins_26_34_Rate,
+            "35-64": adultUnins_35_64_Rate,
+            "65+": over65UninsRate
+        };
+    });
+
+    // Stack the data 
+    vis.stack = d3.stack()
+       .keys(["Under 18", "19-25", "26-34", "35-64", "65+"]);
+
+    vis.stackedData = vis.stack(vis.chartData); 
+
+    // Set scale domains
+    vis.xScale.domain([0, 100]);
+    vis.yScale.domain(vis.chartData.map(d => d.town));
+
+    vis.renderVis(); 
+
+  }
+
+  renderVis() {
+    let vis = this;
+
+    // Draw the stacked bars
+    vis.chart.selectAll("g.layer")
+       .data(vis.stackedData)
+       .join("g")
+       .attr("class", "layer")
+       .attr("fill", d => vis.colorScale(d.key))
+       .selectAll("rect")
+       .data(d => d)
+       .join("rect")
+       .attr("y", d => vis.yScale(d.data.town))
+       .attr("x", d => vis.xScale(d[0]))
+       .attr("width", d => vis.xScale(d[1]) - vis.xScale(d[0]))
+       .attr("height", vis.yScale.bandwidth())
+       .on("mouseover", function(event, d) {
+          let value = (d[1] - d[0]).toFixed(1);
+          let label = d3.select(this.parentNode).datum().key;
+          vis.tooltip
+             .style("opacity", 1)
+             .html(`<strong>${label}</strong>: ${value}% of uninsured population`);
+       })
+       .on("mousemove", function(event) {
+          vis.tooltip  
+             .style("left", (event.clientX + 14) + "px")
+             .style("top", (event.clientY - 36) + "px");
+       })
+       .on("mouseout", function() {
+          vis.tooltip.style("opacity", 0);
+       });
+
+       // Update axes
+       vis.xAxisG.call(d3.axisBottom(vis.xScale)
+          .tickValues([0, 25, 50, 75, 100])
+          .tickFormat(d => d + "%"));
+
+       vis.yAxisG.call(d3.axisLeft(vis.yScale));
+
+       // Legend
+       const legendGap = vis.config.compact ? 62 : 90;
+       const swatch = vis.config.compact ? 9 : 12;
+       const legend = vis.svg.selectAll(".legend")
+            .data(["Under 18", "19-25", "26-34", "35-64", "65+"])
+            .join("g")
+            .attr("class", "legend")
+            .attr("transform", (d, i) => `translate(${vis.config.margin.left + i * legendGap}, ${vis.config.containerHeight - (vis.config.compact ? 16 : 10)})`);
+
+        legend.append("rect")
+            .attr("width", swatch)
+            .attr("height", swatch)
+            .attr("fill", d => vis.colorScale(d));
+
+        legend.append("text")
+            .attr("x", swatch + 4)
+            .attr("y", swatch - 1)
+            .style("fill", "#1B4F72")
+            .style("font-size", vis.config.compact ? "0.65rem" : "0.8rem")
+            .text(d => d);
+  }
+
+} // End of TownUninsByAgeChart class
+
+// Add adapter
+function renderAgeUninsByTown(rows) {
+   var el = clear('hc-ins-age');
+   if(!el||!rows.length) return;
+   new TownUninsByAgeChart({parentElement: "#hc-ins-age", containerWidth: el.offsetWidth||600}, rows);
+ }
+
+// Compact adapter for the Overview tab's "~1 in 10 uninsured" stat card — always all three towns
+function renderOverviewAgeUnins() {
+  var el = clear('hc-overview-age-uninsured');
+  if(!el || !window.HC_INS_DATA || !window.HC_INS_DATA.length) return;
+  var data2024 = window.HC_INS_DATA.filter(function(d){ return d.year === 2024; });
+  if(!data2024.length) return;
+  new TownUninsByAgeChart({
+    parentElement: "#hc-overview-age-uninsured",
+    containerWidth: el.offsetWidth || 420,
+    containerHeight: 258,
+    margin: {top: 12, right: 16, bottom: 46, left: 78},
+    compact: true
+  }, data2024);
+}
+
+
+
+
+      // ── 4. TREND chart — line chart over years ───────────────────────
+      function renderTrend(rows){
+        var el = clear('hc-ins-trend'); if(!el||!rows.length) return;
+        rows = rows.slice().sort(function(a,b){return a.year-b.year;});
+        var trendData = rows.map(function(d){
+          var tot = d.all_ins + d.all_unins || 1;
+          return { year:d.year, Insured:(d.all_ins/tot)*100, Uninsured:(d.all_unins/tot)*100 };
+        });
+        var mL=52, mR=20, mT=16, mB=52, W=440, H=260;
+        var xScale=d3.scalePoint().domain(trendData.map(function(d){return d.year;})).range([0,W-mL-mR]).padding(0.4);
+        var yScale=d3.scaleLinear().domain([0,100]).range([H-mT-mB,0]);
+        var colorScale=d3.scaleOrdinal().domain(['Insured','Uninsured']).range([INS_BLUE,INS_AMBER]);
+        var svg=d3.select(el).append('svg').attr('width','100%').attr('height',H).attr('viewBox','0 0 '+W+' '+H).attr('style','font-family:Hanken Grotesk,sans-serif');
+        var g=svg.append('g').attr('transform','translate('+mL+','+mT+')');
+        var lineH=H-mT-mB;
+        ['Insured','Uninsured'].forEach(function(key){
+          var line=d3.line().x(function(d){return xScale(d.year);}).y(function(d){return yScale(d[key]);});
+          g.append('path').datum(trendData).attr('fill','none').attr('stroke',colorScale(key)).attr('stroke-width',2.5).attr('d',line);
+          g.selectAll('.dot-'+key).data(trendData).join('circle').attr('class','dot-'+key)
+            .attr('cx',function(d){return xScale(d.year);}).attr('cy',function(d){return yScale(d[key]);}).attr('r',5).attr('fill',colorScale(key))
+            .on('mouseover',function(e,d){ ttShow('<b>'+d.year+'</b> · '+key+': <b>'+d[key].toFixed(1)+'%</b>',e); })
+            .on('mousemove',ttMove).on('mouseout',ttHide);
+        });
+        var axX=g.append('g').attr('transform','translate(0,'+lineH+')');
+        axX.call(d3.axisBottom(xScale)); axX.select('.domain').attr('stroke','#ccc'); axX.selectAll('line').attr('stroke','#ccc'); axX.selectAll('text').attr('font-size',10).attr('fill',INS_LABEL);
+        var axY=g.append('g');
+        axY.call(d3.axisLeft(yScale).ticks(5).tickFormat(function(d){return d+'%'})); axY.select('.domain').attr('stroke','#ccc'); axY.selectAll('line').attr('stroke','#ccc'); axY.selectAll('text').attr('font-size',10).attr('fill',INS_LABEL);
+        var lgY=lineH+38;
+        ['Insured','Uninsured'].forEach(function(k,i){ g.append('rect').attr('x',i*90).attr('y',lgY).attr('width',10).attr('height',10).attr('fill',colorScale(k)); g.append('text').attr('x',i*90+13).attr('y',lgY+8).attr('font-size',10).attr('fill',INS_LABEL).text(k); });
+      }
+
+      // ── 5. EMPLOYMENT chart — stacked vertical bars ──────────────────
+      function renderEmp(rows){
+        var el = clear('hc-ins-emp'); if(!el||!rows.length) return;
+        var d = rows[0];
+        var cats = [
+          { label:'Employed',   ins:(d.emp_insured/(d.emp_insured+d.emp_uninsured))*100, unins:(d.emp_uninsured/(d.emp_insured+d.emp_uninsured))*100 },
+          { label:'Unemployed', ins:(d.unemp_insured/(d.unemp_insured+d.unemp_uninsured))*100, unins:(d.unemp_uninsured/(d.unemp_insured+d.unemp_uninsured))*100 }
+        ];
+        var mL=48, mR=20, mT=16, mB=52, bW=80, bGap=60, W=320, H=260;
+        var innerH=H-mT-mB;
+        var yScale=d3.scaleLinear().domain([0,100]).range([innerH,0]);
+        var colorScale=d3.scaleOrdinal().domain(['Insured','Uninsured']).range([INS_BLUE,INS_AMBER]);
+        var svg=d3.select(el).append('svg').attr('width','100%').attr('height',H).attr('viewBox','0 0 '+W+' '+H).attr('style','font-family:Hanken Grotesk,sans-serif');
+        var g=svg.append('g').attr('transform','translate('+mL+','+mT+')');
+        cats.forEach(function(c,i){
+          var x=i*(bW+bGap);
+          var stack=[['Insured',c.ins],['Uninsured',c.unins]];
+          var y0=innerH;
+          stack.forEach(function(pair){
+            var h=innerH-yScale(pair[1]);
+            y0-=h;
+            g.append('rect').attr('x',x).attr('y',y0).attr('width',bW).attr('height',h).attr('fill',colorScale(pair[0])).attr('rx',2)
+              .on('mouseover',function(e){ ttShow('<b>'+c.label+'</b> · '+pair[0]+': <b>'+pair[1].toFixed(1)+'%</b>',e); })
+              .on('mousemove',ttMove).on('mouseout',ttHide);
+            if(pair[1]>3) g.append('text').attr('x',x+bW/2).attr('y',y0+h/2).attr('text-anchor','middle').attr('dominant-baseline','middle').attr('font-size',11).attr('fill','#fff').text(pair[1].toFixed(1)+'%');
+          });
+          g.append('text').attr('x',x+bW/2).attr('y',innerH+14).attr('text-anchor','middle').attr('font-size',11).attr('fill',INS_TEXT).text(c.label);
+        });
+        var axY=g.append('g');
+        axY.call(d3.axisLeft(yScale).ticks(5).tickFormat(function(d){return d+'%'})); axY.select('.domain').attr('stroke','#ccc'); axY.selectAll('line').attr('stroke','#ccc'); axY.selectAll('text').attr('font-size',10).attr('fill',INS_LABEL);
+        var lgY=innerH+36;
+        ['Insured','Uninsured'].forEach(function(k,i){ g.append('rect').attr('x',i*90).attr('y',lgY).attr('width',10).attr('height',10).attr('fill',colorScale(k)); g.append('text').attr('x',i*90+13).attr('y',lgY+8).attr('font-size',10).attr('fill',INS_LABEL).text(k); });
+      }
+
+      // ── 6. DOT CHART — 10×10 waffle per town ────────────────────────
+      function renderDotChart(allRows){
+        var el = clear('hc-ins-dot'); if(!el) return;
+        var yr = allRows.filter(function(d){ return d.year === 2024; });
+        var towns = ['Cornelius','Davidson','Huntersville'];
+        var TOWN_COLORS_DOT = { Cornelius:'#3f4e75', Davidson:'#f0a500', Huntersville:'#e05c4b' };
+        var townData = towns.map(function(t){
+          var d = yr.find(function(r){ return r.Town === t; });
+          if(!d) return null;
+          var tot = d.all_ins + d.all_unins || 1;
+          return { town:t, uninsuredCount: Math.round((d.all_unins/tot)*100), pct:(d.all_unins/tot*100).toFixed(1) };
+        }).filter(Boolean);
+
+        var cols=10, dotR=8, dotS=20, gridW=cols*dotS;
+        var perW = gridW + 48, totalW = towns.length * perW + 20;
+        var H = 16 + 10*dotS + 44;
+
+        var svg = d3.select(el).append('svg')
+          .attr('width','100%').attr('height',H)
+          .attr('viewBox','0 0 '+totalW+' '+H)
+          .attr('style','font-family:Hanken Grotesk,sans-serif');
+
+        townData.forEach(function(td, ti){
+          var xOff = ti * perW + 24;
+          svg.append('text').attr('x', xOff+gridW/2).attr('y',12)
+            .attr('text-anchor','middle').attr('font-size',13).attr('font-weight','600')
+            .attr('fill', TOWN_COLORS_DOT[td.town]).text(td.town);
+          svg.append('text').attr('x', xOff+gridW/2).attr('y',24)
+            .attr('text-anchor','middle').attr('font-size',10).attr('fill','#888')
+            .text(td.uninsuredCount+' of 100 uninsured');
+
+          for(var i=0;i<100;i++){
+            var col=i%cols, row=Math.floor(i/cols);
+            var isUnins = i >= (100-td.uninsuredCount);
+            var circ = svg.append('circle')
+              .attr('cx', xOff + col*dotS + dotR)
+              .attr('cy', 30 + row*dotS + dotR)
+              .attr('r', dotR-1)
+              .attr('fill', isUnins ? INS_AMBER : INS_BLUE);
+            (function(iU, town, pct){ circ
+              .on('mouseover', function(e){ ttShow('<b>'+town+'</b> · '+(iU?'Uninsured':'Insured')+(iU?' · '+pct+'% uninsured':''),e); })
+              .on('mousemove',ttMove).on('mouseout',ttHide);
+            })(isUnins, td.town, td.pct);
+          }
+        });
+
+        var lgX = totalW/2 - 85, lgY = H - 12;
+        ['Insured','Uninsured'].forEach(function(k,i){
+          svg.append('circle').attr('cx',lgX+i*100+6).attr('cy',lgY).attr('r',6).attr('fill',i?INS_AMBER:INS_BLUE);
+          svg.append('text').attr('x',lgX+i*100+16).attr('y',lgY+4).attr('font-size',11).attr('fill',INS_TEXT).text(k);
+        });
+      }
+
+      // ── 7. COVERAGE BAR — single town, all insurance types ──────────
+      function renderCoverageBar(d){
+        var el = clear('hc-ins-heatmap'); if(!el) return;
+        var types = [
+          { key:'emp_based_ins',  label:'Employer-based', color:'#1B4F72' },
+          { key:'dir_purchase_ins',label:'Direct-purchase',color:'#2E86AB' },
+          { key:'medicare_cov',   label:'Medicare',       color:'#5DADE2' },
+          { key:'medicaid_cov',   label:'Medicaid',       color:'#90C7E3' },
+          { key:'tricare_cov',    label:'Tricare',        color:'#E8A838' },
+          { key:'VA_cov',         label:'VA',             color:'#D4AC0D' },
+          { key:'other_cov_type', label:'Other',          color:'#A93226' },
+          { key:'all_unins',      label:'Uninsured',      color:'#7B7D7D' }
+        ];
+        var bars = types.map(function(t){
+          return { label:t.label, value:(d[t.key]/d.Tot_pop)*100, color:t.color };
+        });
+
+        var mL=46, mR=20, mT=20, mB=72, W=620, innerH=220;
+        var H=mT+innerH+mB;
+        var yMax = d3.max(bars,function(b){return b.value;}) * 1.2;
+        var xScale = d3.scaleBand().domain(bars.map(function(b){return b.label;})).range([0,W-mL-mR]).padding(0.3);
+        var yScale = d3.scaleLinear().domain([0,yMax]).range([innerH,0]);
+
+        var svg = d3.select(el).append('svg').attr('width','100%').attr('height',H)
+          .attr('viewBox','0 0 '+W+' '+H)
+          .attr('style','font-family:Hanken Grotesk,sans-serif');
+        var g = svg.append('g').attr('transform','translate('+mL+','+mT+')');
+
+        // Y axis label
+        svg.append('text').attr('transform','rotate(-90)')
+          .attr('x',-(mT+innerH/2)).attr('y',14)
+          .attr('text-anchor','middle').attr('font-size',11).attr('fill',INS_LABEL)
+          .text('Percent covered (%)');
+
+        bars.forEach(function(b){
+          var x=xScale(b.label), bh=innerH-yScale(b.value), y=yScale(b.value);
+          g.append('rect').attr('x',x).attr('y',y).attr('width',xScale.bandwidth()).attr('height',bh).attr('fill',b.color).attr('rx',3)
+            .on('mouseover',function(e){ ttShow('<b>'+b.label+'</b>: <b>'+b.value.toFixed(1)+'%</b>',e); })
+            .on('mousemove',ttMove).on('mouseout',ttHide);
+          if(bh > 12) g.append('text').attr('x',x+xScale.bandwidth()/2).attr('y',y-5)
+            .attr('text-anchor','middle').attr('font-size',10).attr('fill','#555').text(b.value.toFixed(1)+'%');
+        });
+
+        var axY = g.append('g');
+        axY.call(d3.axisLeft(yScale).ticks(5).tickFormat(function(d){return d+'%';}));
+        axY.select('.domain').attr('stroke','#ccc'); axY.selectAll('line').attr('stroke','#ccc'); axY.selectAll('text').attr('font-size',10).attr('fill',INS_LABEL);
+
+        var axX = g.append('g').attr('transform','translate(0,'+innerH+')');
+        axX.call(d3.axisBottom(xScale).tickSize(0));
+        axX.select('.domain').attr('stroke','#ccc');
+        axX.selectAll('text').attr('transform','rotate(-30)').style('text-anchor','end').attr('font-size',11).attr('fill',INS_LABEL);
+
+        // X axis label
+        svg.append('text').attr('x',mL+(W-mL-mR)/2).attr('y',H-4)
+          .attr('text-anchor','middle').attr('font-size',11).attr('fill',INS_LABEL).text('Type of insurance');
+      }
+
+      
+
+      // ── Aggregation helper (for "All North Meck") ────────────────────
+      var NUM_COLS = ['emp_insured','emp_uninsured','unemp_insured','unemp_uninsured','ins_U25','no_ins_U25','ins_25_50','no_ins_25_50','ins_50_75','no_ins_50_75','ins_75_100','no_ins_75_100','ins_100_above','no_ins_100_above','all_ins','all_unins','ins_U18','unins_U18','ins_19_25','unins_19_25','ins_26_34','unins_26_34','ins_35_64','unins_35_64','ins_65_over','unins_65_over','emp_based_ins','dir_purchase_ins','medicare_cov','medicaid_cov','tricare_cov','VA_cov','other_cov_type','Tot_pop'];
+      function aggregate(rows){
+        if(!rows.length) return [];
+        var out = { year: rows[0].year, Town: 'All North Meck' };
+        NUM_COLS.forEach(function(k){
+          out[k] = rows.reduce(function(s,d){ return s + (d[k]||0); }, 0);
+        });
+        return [out];
+      }
+
+      // ── Per-chart town state ─────────────────────────────────────────
+      window.window.HC_INS_DATA = null;
+      var HC_INS_TOWNS = { income: null, age: null, trend: null, emp: null, agetrend: null };
+
+      function getSingleRows(town){
+        var yr = window.HC_INS_DATA.filter(function(d){ return d.year === 2024; });
+        return town ? yr.filter(function(d){ return d.Town === town; }) : aggregate(yr);
+      }
+      function getTrendRows(town){
+        if(town) return window.HC_INS_DATA.filter(function(d){ return d.Town === town; });
+        var byYear={};
+        window.HC_INS_DATA.forEach(function(d){ if(!byYear[d.year]) byYear[d.year]=[]; byYear[d.year].push(d); });
+        return Object.keys(byYear).sort().map(function(y){ return aggregate(byYear[y])[0]; });
+      }
+
+      // ── 8. AGE TREND — 2x2 grid, uninsured rate per age group by year, all towns ──
+      class TownAgeUninsTrendChart {
+        constructor(_config, _data) {
+          this.config = {
+            parentElement: _config.parentElement,
+            panelWidth: _config.panelWidth || 480,
+            panelHeight: _config.panelHeight || 400,
+            margin: _config.margin || {top: 36, right: 20, bottom: 40, left: 50}
+          };
+          this.data = _data;
+          this.initVis();
+        }
+
+        initVis() {
+          let vis = this;
+
+          vis.groups = ["Under 18", "19-64", "65+", "Total Population"];
+
+          vis.width = vis.config.panelWidth - vis.config.margin.left - vis.config.margin.right;
+          vis.height = vis.config.panelHeight - vis.config.margin.top - vis.config.margin.bottom;
+
+          vis.colorScale = d3.scaleOrdinal()
+            .domain(["Cornelius", "Davidson", "Huntersville"])
+            .range(["#2a78d6", "#1baf7a", "#eda100"]);
+
+          // Shared legend — one for the whole grid, not per panel
+          vis.legend = d3.select(vis.config.parentElement)
+            .append("div")
+            .style("display", "flex")
+            .style("gap", "16px")
+            .style("justify-content", "center")
+            .style("margin-bottom", "10px")
+            .style("font-size", "0.8rem");
+
+          vis.colorScale.domain().forEach(town => {
+            const item = vis.legend.append("span")
+              .style("display", "flex")
+              .style("align-items", "center")
+              .style("gap", "6px");
+            item.append("span")
+              .style("width", "10px")
+              .style("height", "10px")
+              .style("display", "inline-block")
+              .style("border-radius", "2px")
+              .style("background", vis.colorScale(town));
+            item.append("span").text(town);
+          });
+
+          // Tooltip — shared across all four panels
+          vis.tooltip = d3.select(vis.config.parentElement)
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("position", "fixed")
+            .style("pointer-events", "none")
+            .style("background", "#1a1a2e")
+            .style("color", "#fff")
+            .style("font", "500 12px 'Hanken Grotesk', sans-serif")
+            .style("padding", "7px 11px")
+            .style("border-radius", "7px")
+            .style("z-index", "9999");
+
+          // 2x2 grid to hold the four panels
+          vis.gridContainer = d3.select(vis.config.parentElement)
+            .append("div")
+            .style("display", "grid")
+            .style("grid-template-columns", "repeat(2, 1fr)")
+            .style("gap", "16px");
+
+          // One empty svg and title per age group
+          vis.panels = {};
+          vis.groups.forEach(group => {
+            const svg = vis.gridContainer.append("svg")
+              .attr("width", vis.config.panelWidth)
+              .attr("height", vis.config.panelHeight);
+
+            svg.append("text")
+              .attr("x", vis.config.panelWidth / 2)
+              .attr("y", 20)
+              .attr("text-anchor", "middle")
+              .style("font-size", "0.85rem")
+              .style("font-weight", "600")
+              .style("fill", "#1B4F72")
+              .text(group);
+
+            // X-axis label
+            svg.append("text")
+              .attr("class", "axis-label")
+              .attr("x", vis.config.margin.left + vis.width / 2)
+              .attr("y", vis.config.panelHeight - 8)
+              .attr("text-anchor", "middle")
+              .style("font-size", "0.75rem")
+              .style("fill", "#1B4F72")
+              .text("Year");
+
+            // Y-axis label
+            svg.append("text")
+              .attr("class", "axis-label")
+              .attr("x", -(vis.config.margin.top + vis.height / 2))
+              .attr("y", 15)
+              .attr("transform", "rotate(-90)")
+              .attr("text-anchor", "middle")
+              .style("font-size", "0.75rem")
+              .style("fill", "#1B4F72")
+              .text("Uninsured rate (%)");
+
+            // Chart group — offset by margin
+            const chart = svg.append("g")
+              .attr("transform", `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
+
+            const xScale = d3.scalePoint()
+              .range([0, vis.width])
+              .padding(0.5);
+
+            const yScale = d3.scaleLinear()
+              .range([vis.height, 0]);
+
+            const xAxisG = chart.append("g")
+              .attr("class", "axis x-axis")
+              .attr("transform", `translate(0, ${vis.height})`);
+
+            const yAxisG = chart.append("g")
+              .attr("class", "axis y-axis");
+
+            vis.panels[group] = { svg, chart, xScale, yScale, xAxisG, yAxisG };
+          });
+
+          vis.updateVis();
+        }
+
+        updateVis() {
+          let vis = this;
+
+          vis.towns = [...new Set(vis.data.map(d => d.Town))];
+
+          // For each town, sort by year, then compute yearly uninsurance rates per age group
+          vis.townRates = vis.towns.map(town => {
+            const townRecords = vis.data.filter(d => d.Town === town);
+            const sortedRecords = [...townRecords].sort((a, b) => a.year - b.year);
+
+            const yearlyRates = sortedRecords.map(d => {
+              const u18Rate = (d.unins_U18 / (d.ins_U18 + d.unins_U18)) * 100;
+              const adultIns_19_64 = d.ins_19_25 + d.ins_26_34 + d.ins_35_64;
+              const adultUnins_19_64 = d.unins_19_25 + d.unins_26_34 + d.unins_35_64;
+              const unins_19_64Rate = (adultUnins_19_64 / (adultIns_19_64 + adultUnins_19_64)) * 100;
+              const over65UninsRate = (d.unins_65_over / (d.ins_65_over + d.unins_65_over)) * 100;
+              const totalUninsRate = (d.all_unins / (d.all_ins + d.all_unins)) * 100;
+
+              return {
+                year: d.year,
+                "Under 18": u18Rate,
+                "19-64": unins_19_64Rate,
+                "65+": over65UninsRate,
+                "Total Population": totalUninsRate
+              };
+            });
+
+            return { town, yearlyRates };
+          });
+
+          // All years, shared across every panel's x-axis
+          vis.allYears = vis.townRates.length > 0
+            ? vis.townRates[0].yearlyRates.map(d => d.year)
+            : [];
+
+          // For each panel (age group), build one line per town and set that panel's scales
+          vis.groups.forEach(group => {
+            const panel = vis.panels[group];
+
+            panel.chartData = vis.townRates.map(t => ({
+              town: t.town,
+              values: t.yearlyRates.map(d => ({ year: d.year, value: d[group] }))
+            }));
+
+            panel.xScale.domain(vis.allYears);
+
+            const allValues = panel.chartData.flatMap(t => t.values.map(v => v.value));
+            panel.yScale.domain([0, d3.max(allValues) * 1.2]);
+          });
+
+          vis.renderVis();
+        }
+
+        renderVis() {
+          let vis = this;
+
+          vis.groups.forEach(group => {
+            const panel = vis.panels[group];
+
+            const lineGenerator = d3.line()
+              .x(d => panel.xScale(d.year))
+              .y(d => panel.yScale(d.value));
+
+            // One line per town
+            panel.chart.selectAll(".trend-line")
+              .data(panel.chartData)
+              .join("path")
+              .attr("class", "trend-line")
+              .attr("fill", "none")
+              .attr("stroke", d => vis.colorScale(d.town))
+              .attr("stroke-width", 2.5)
+              .attr("d", d => lineGenerator(d.values));
+
+            // Dots for each town's points
+            panel.chartData.forEach(townData => {
+              panel.chart.selectAll(`.dot-${townData.town.replace(/\s/g, "")}`)
+                .data(townData.values)
+                .join("circle")
+                .attr("class", `dot-${townData.town.replace(/\s/g, "")}`)
+                .attr("cx", d => panel.xScale(d.year))
+                .attr("cy", d => panel.yScale(d.value))
+                .attr("r", 3.5)
+                .attr("fill", vis.colorScale(townData.town))
+                .on("mouseover", function(_event, d) {
+                  vis.tooltip
+                    .style("opacity", 1)
+                    .html(`<strong>${townData.town}</strong> · ${group} (${d.year}): ${d.value.toFixed(1)}%`);
+                })
+                .on("mousemove", function(event) {
+                  vis.tooltip
+                    .style("left", (event.clientX + 14) + "px")
+                    .style("top", (event.clientY - 36) + "px");
+                })
+                .on("mouseout", function() {
+                  vis.tooltip.style("opacity", 0);
+                });
+            });
+
+            panel.xAxisG.call(d3.axisBottom(panel.xScale));
+            panel.yAxisG.call(d3.axisLeft(panel.yScale).ticks(5).tickFormat(d => d + "%"));
+          });
+        }
+      } // End of TownAgeUninsTrendChart
+
+      // ── 8b. AGE TREND — single town, one panel with 4 age-group lines ──
+      class AgeUninsTrendChart {
+        constructor(_config, _data) {
+          this.config = {
+            parentElement: _config.parentElement,
+            containerWidth: _config.containerWidth || 650,
+            containerHeight: _config.containerHeight || 420,
+            margin: _config.margin || {top: 40, right: 100, bottom: 50, left: 60},
+            dispatcher: _config.dispatcher
+          };
+          this.data = _data;
+          this.initVis();
+        }
+
+        initVis() {
+          let vis = this;
+
+          vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
+          vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+
+          vis.svg = d3.select(vis.config.parentElement)
+            .append("svg")
+            .attr("width", vis.config.containerWidth)
+            .attr("height", vis.config.containerHeight);
+
+          vis.chart = vis.svg.append("g")
+            .attr("transform", `translate(${vis.config.margin.left}, ${vis.config.margin.top})`);
+
+          // Color scale - one color per age group
+          vis.colorScale = d3.scaleOrdinal()
+            .domain(["Under 18", "19-64", "65+", "Total population"])
+            .range(["#2E86AB", "#1B4F72", "#E8A838", "#7B7D7D"]);
+
+          // X scale - years (categorical, since they're not evenly spaced)
+          vis.xScale = d3.scalePoint()
+            .range([0, vis.width])
+            .padding(0.5);
+
+          // Y scale - uninsured percentage
+          vis.yScale = d3.scaleLinear()
+            .range([vis.height, 0]);
+
+          vis.xAxisG = vis.chart.append("g")
+            .attr("class", "axis x-axis")
+            .attr("transform", `translate(0, ${vis.height})`);
+
+          vis.yAxisG = vis.chart.append("g")
+            .attr("class", "axis y-axis");
+
+          // Tooltip — fixed + clientX/Y, matching the other tooltips on this page
+          vis.tooltip = d3.select(vis.config.parentElement)
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0)
+            .style("position", "fixed")
+            .style("pointer-events", "none")
+            .style("background", "#1a1a2e")
+            .style("color", "#fff")
+            .style("font", "500 12px 'Hanken Grotesk', sans-serif")
+            .style("padding", "7px 11px")
+            .style("border-radius", "7px")
+            .style("z-index", "9999");
+
+          // Axis labels
+          vis.svg.append("text")
+            .attr("class", "axis-label")
+            .attr("x", vis.config.margin.left + vis.width / 2)
+            .attr("y", vis.config.containerHeight - 10)
+            .attr("text-anchor", "middle")
+            .style("font-size", "0.85rem")
+            .style("fill", "#1B4F72")
+            .text("Year");
+
+          vis.svg.append("text")
+            .attr("class", "axis-label")
+            .attr("x", -(vis.config.margin.top + vis.height / 2))
+            .attr("y", 15)
+            .attr("transform", "rotate(-90)")
+            .attr("text-anchor", "middle")
+            .style("font-size", "0.85rem")
+            .style("fill", "#1B4F72")
+            .text("Uninsured rate (%)");
+
+          vis.updateVis();
+        }
+
+        updateVis() {
+          let vis = this;
+
+          const sortedData = [...vis.data].sort((a, b) => a.year - b.year);
+
+          const yearlyUninsRates = sortedData.map(d => {
+            const u18Rate = (d.unins_U18 / (d.ins_U18 + d.unins_U18)) * 100;
+            const adultIns_19_64 = d.ins_19_25 + d.ins_26_34 + d.ins_35_64;
+            const adultUnins_19_64 = d.unins_19_25 + d.unins_26_34 + d.unins_35_64;
+            const unins_19_64Rate = (adultUnins_19_64 / (adultIns_19_64 + adultUnins_19_64)) * 100;
+            const over65UninsRate = (d.unins_65_over / (d.ins_65_over + d.unins_65_over)) * 100;
+            const totalUninsRate = (d.all_unins / (d.all_ins + d.all_unins)) * 100;
+
+            return {
+              year: d.year,
+              "Under 18": u18Rate,
+              "19-64": unins_19_64Rate,
+              "65+": over65UninsRate,
+              "Total population": totalUninsRate
+            };
+          });
+
+          const groups = ["Under 18", "19-64", "65+", "Total population"];
+
+          vis.chartData = groups.map(group => ({
+            group: group,
+            values: yearlyUninsRates.map(d => ({ year: d.year, value: d[group] }))
+          }));
+
+          vis.xScale.domain(yearlyUninsRates.map(d => d.year));
+
+          const allRates = yearlyUninsRates.flatMap(d => groups.map(g => d[g]));
+          vis.yScale.domain([0, d3.max(allRates) * 1.2]);
+
+          vis.renderVis();
+        }
+
+        renderVis() {
+          let vis = this;
+
+          const lineGenerator = d3.line()
+            .x(d => vis.xScale(d.year))
+            .y(d => vis.yScale(d.value));
+
+          // One line per group
+          vis.chart.selectAll(".trend-line")
+            .data(vis.chartData)
+            .join("path")
+            .attr("class", "trend-line")
+            .attr("fill", "none")
+            .attr("stroke", d => vis.colorScale(d.group))
+            .attr("stroke-width", 2.5)
+            .attr("d", d => lineGenerator(d.values));
+
+          // Dots for each group, for every year
+          vis.chartData.forEach(function(groupData) {
+            vis.chart.selectAll(`.dot-${groupData.group.replace(/\s|\+/g, "")}`)
+              .data(groupData.values)
+              .join("circle")
+              .attr("class", `dot-${groupData.group.replace(/\s|\+/g, "")}`)
+              .attr("cx", d => vis.xScale(d.year))
+              .attr("cy", d => vis.yScale(d.value))
+              .attr("r", 4)
+              .attr("fill", vis.colorScale(groupData.group))
+              .on("mouseover", function(event, d) {
+                vis.tooltip
+                  .style("opacity", 1)
+                  .html(`<strong>${groupData.group}</strong> (${d.year}): ${d.value.toFixed(1)}%`);
+              })
+              .on("mousemove", function(event) {
+                vis.tooltip
+                  .style("left", (event.clientX + 14) + "px")
+                  .style("top", (event.clientY - 36) + "px");
+              })
+              .on("mouseout", function() {
+                vis.tooltip.style("opacity", 0);
+              });
+          });
+
+          // Line-end labels - one per group, positioned at the last data point
+          vis.chart.selectAll(".line-label")
+            .data(vis.chartData)
+            .join("text")
+            .attr("class", "line-label")
+            .attr("x", d => vis.xScale(d.values[d.values.length - 1].year) + 8)
+            .attr("y", d => vis.yScale(d.values[d.values.length - 1].value))
+            .attr("dy", "0.35em")
+            .style("font-size", "0.75rem")
+            .style("fill", d => vis.colorScale(d.group))
+            .text(d => d.group);
+
+          // In case there are overlapping line-end labels
+          const labelPositions = vis.chartData.map(d => ({
+            group: d.group,
+            y: vis.yScale(d.values[d.values.length - 1].value)
+          })).sort((a, b) => a.y - b.y);
+
+          const minGap = 14;
+          for (let i = 1; i < labelPositions.length; i++) {
+            if (labelPositions[i].y - labelPositions[i - 1].y < minGap) {
+              labelPositions[i].y = labelPositions[i - 1].y + minGap;
+            }
+          }
+
+          vis.chart.selectAll(".line-label")
+            .attr("y", function(d) {
+              const adjusted = labelPositions.find(l => l.group === d.group);
+              return adjusted.y;
+            });
+
+          vis.xAxisG.call(d3.axisBottom(vis.xScale));
+          vis.yAxisG.call(d3.axisLeft(vis.yScale).tickFormat(d => d + "%"));
+        }
+      } // End of AgeUninsTrendChart
+
+      // Adapter — 2x2 grid for "All towns", single-panel 4-line chart for one town
+      function renderAgeTrend(town){
+        var el = clear('hc-ins-age-trend'); if(!el) return;
+        if(!window.HC_INS_DATA || !window.HC_INS_DATA.length) return;
+        if(!town){
+          var gridGap = 16;
+          var containerWidth = el.clientWidth || 900;
+          var computedPanelWidth = Math.floor((containerWidth - gridGap) / 2);
+          new TownAgeUninsTrendChart({ parentElement: '#hc-ins-age-trend', panelWidth: computedPanelWidth, panelHeight: 250 }, window.HC_INS_DATA);
+        } else {
+          var rows = window.HC_INS_DATA.filter(function(d){ return d.Town === town; });
+          if(!rows.length) return;
+          new AgeUninsTrendChart({ parentElement: '#hc-ins-age-trend' }, rows);
+        }
+      }
+
+      function hcInsRenderAll(){
+        if(!window.HC_INS_DATA) return;
+        var data2024 = window.HC_INS_DATA.filter(function(d){ return d.year === 2024; });
+        renderHeatmap(data2024, 2024);
+        renderDotChart(data2024);
+
+        if (!HC_INS_TOWNS.income) {
+          renderIncomeUninsByTown(window.HC_INS_DATA.filter(function(d){ return d.year === 2024; }));
+        }
+        else{
+          renderIncome(getSingleRows(HC_INS_TOWNS.income));
+        }
+
+       // renderIncome(getSingleRows(HC_INS_TOWNS.income));
+       // renderAge(getSingleRows(HC_INS_TOWNS.age));
+       
+        if (!HC_INS_TOWNS.age) {
+          renderAgeUninsByTown(window.HC_INS_DATA.filter(function(d){ return d.year === 2024; }));
+        }
+        else{
+          renderAge(getSingleRows(HC_INS_TOWNS.age));
+        }
+
+        renderTrend(getTrendRows(HC_INS_TOWNS.trend));
+        renderEmp(getSingleRows(HC_INS_TOWNS.emp));
+        renderAgeTrend(HC_INS_TOWNS.agetrend);
+        renderOverviewAgeUnins();
+      }
+      window.hcInsRenderAll = hcInsRenderAll;
+
+      // ── Global town chip handler (dot chart + heatmap/coverage bar) ──
+      window.hcInsGlobalChip = function(el){
+        var val = el.dataset.hcinsGlobal;
+        document.querySelectorAll('[data-hcins-global]').forEach(function(c){
+          c.classList.toggle('on', c === el);
+        });
+        var data2024 = window.HC_INS_DATA.filter(function(d){ return d.year === 2024; });
+        var dotWrap = document.getElementById('hc-ins-dot-wrap');
+        var titleEl = document.getElementById('hc-ins-heatmap-title');
+        var subEl   = document.getElementById('hc-ins-heatmap-sub');
+        if(val === 'all'){
+          if(dotWrap) dotWrap.style.display = '';
+          if(titleEl) titleEl.textContent = 'Insurance coverage type by town (2024)';
+          if(subEl)   subEl.textContent   = 'ACS Table B27010 · % of total population · all three towns shown';
+          renderHeatmap(data2024, 2024);
+          renderDotChart(data2024);
+        } else {
+          if(dotWrap) dotWrap.style.display = 'none';
+          var row = data2024.find(function(d){ return d.Town === val; });
+          if(titleEl) titleEl.textContent = 'Insurance coverage mix — ' + val + ' (2024)';
+          if(subEl)   subEl.textContent   = 'ACS Table B27010 · % of total population · select a different town above';
+          if(row) renderCoverageBar(row);
+        }
+      };
+
+      // ── Per-chart chip handler ───────────────────────────────────────
+      window.hcInsLocalChip = function(el){
+        var chart = el.dataset.hcinsChart;
+        var town = el.dataset.hcinsTown === 'all' ? null : el.dataset.hcinsTown;
+        document.querySelectorAll('[data-hcins-chart="'+chart+'"]').forEach(function(c){
+          c.classList.toggle('on', c === el);
+        });
+        HC_INS_TOWNS[chart] = town;
+       // if(chart === 'income') renderIncome(getSingleRows(town));
+        if(chart == 'income') {
+          if (!town) renderIncomeUninsByTown(window.HC_INS_DATA.filter(function(d){ return d.year === 2024; }));
+          else renderIncome(getSingleRows(town));
+        }
+        //else if(chart === 'age')    renderAge(getSingleRows(town));
+        if(chart == 'age') {
+          if (!town) renderAgeUninsByTown(window.HC_INS_DATA.filter(function(d){ return d.year === 2024; }));
+          else renderAge(getSingleRows(town));
+        }
+        else if(chart === 'trend')  renderTrend(getTrendRows(town));
+        else if(chart === 'emp')    renderEmp(getSingleRows(town));
+        else if(chart === 'agetrend') renderAgeTrend(town);
+      };
+
+      // Data loaded via the static-JSON module script below; render called from there.
+
+      /* eslint-disable */ if(false){window.HC_INS_DATA = [{"GEOID":"3714700","Town":"Cornelius","Tot_pop":28052,"year":2017,"emp_insured":12599,"emp_uninsured":1015,"unemp_insured":494,"unemp_uninsured":203,"ins_U25":2303,"no_ins_U25":399,"ins_25_50":3103,"no_ins_25_50":331,"ins_50_75":2983,"no_ins_50_75":374,"ins_75_100":3716,"no_ins_75_100":419,"ins_100_above":13715,"no_ins_100_above":664,"all_ins":25828,"all_unins":2187,"ins_U18":6245,"unins_U18":452,"ins_19_25":1369,"unins_19_25":172,"ins_26_34":2951,"unins_26_34":321,"ins_35_64":11304,"unins_35_64":1175,"ins_65_over":3959,"unins_65_over":67,"emp_based_ins":14332,"dir_purchase_ins":2758,"medicare_cov":3383,"medicaid_cov":1167,"tricare_cov":271,"VA_cov":53,"other_cov_type":1066},{"GEOID":"3716400","Town":"Davidson","Tot_pop":12325,"year":2017,"emp_insured":5221,"emp_uninsured":390,"unemp_insured":217,"unemp_uninsured":12,"ins_U25":655,"no_ins_U25":29,"ins_25_50":675,"no_ins_25_50":211,"ins_50_75":1049,"no_ins_50_75":74,"ins_75_100":802,"no_ins_75_100":77,"ins_100_above":7083,"no_ins_100_above":108,"all_ins":11689,"all_unins":554,"ins_U18":3191,"unins_U18":91,"ins_19_25":1723,"unins_19_25":115,"ins_26_34":800,"unins_26_34":75,"ins_35_64":4506,"unins_35_64":273,"ins_65_over":1469,"unins_65_over":0,"emp_based_ins":6490,"dir_purchase_ins":1135,"medicare_cov":1240,"medicaid_cov":487,"tricare_cov":48,"VA_cov":14,"other_cov_type":407},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":53302,"year":2017,"emp_insured":24907,"emp_uninsured":1965,"unemp_insured":561,"unemp_uninsured":395,"ins_U25":2471,"no_ins_U25":702,"ins_25_50":4854,"no_ins_25_50":857,"ins_50_75":6365,"no_ins_50_75":627,"ins_75_100":7395,"no_ins_75_100":772,"ins_100_above":28528,"no_ins_100_above":421,"all_ins":49627,"all_unins":3389,"ins_U18":15113,"unins_U18":536,"ins_19_25":2279,"unins_19_25":236,"ins_26_34":5595,"unins_26_34":700,"ins_35_64":22047,"unins_35_64":1879,"ins_65_over":4593,"unins_65_over":38,"emp_based_ins":31261,"dir_purchase_ins":3830,"medicare_cov":3737,"medicaid_cov":2112,"tricare_cov":560,"VA_cov":27,"other_cov_type":2224},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":28649,"year":2018,"emp_insured":12833,"emp_uninsured":1146,"unemp_insured":416,"unemp_uninsured":140,"ins_U25":2259,"no_ins_U25":536,"ins_25_50":2768,"no_ins_25_50":362,"ins_50_75":2936,"no_ins_50_75":405,"ins_75_100":3736,"no_ins_75_100":149,"ins_100_above":14518,"no_ins_100_above":907,"all_ins":26225,"all_unins":2359,"ins_U18":6461,"unins_U18":501,"ins_19_25":1368,"unins_19_25":97,"ins_26_34":2746,"unins_26_34":439,"ins_35_64":11823,"unins_35_64":1269,"ins_65_over":3827,"unins_65_over":53,"emp_based_ins":15227,"dir_purchase_ins":2966,"medicare_cov":3214,"medicaid_cov":1072,"tricare_cov":281,"VA_cov":54,"other_cov_type":1191},{"GEOID":"3716400","Town":"Davidson","Tot_pop":12666,"year":2018,"emp_insured":5218,"emp_uninsured":310,"unemp_insured":159,"unemp_uninsured":0,"ins_U25":398,"no_ins_U25":41,"ins_25_50":722,"no_ins_25_50":142,"ins_50_75":1029,"no_ins_50_75":29,"ins_75_100":758,"no_ins_75_100":111,"ins_100_above":7743,"no_ins_100_above":92,"all_ins":12158,"all_unins":431,"ins_U18":3546,"unins_U18":86,"ins_19_25":1621,"unins_19_25":38,"ins_26_34":735,"unins_26_34":102,"ins_35_64":4660,"unins_35_64":205,"ins_65_over":1596,"unins_65_over":0,"emp_based_ins":7153,"dir_purchase_ins":1177,"medicare_cov":1269,"medicaid_cov":454,"tricare_cov":24,"VA_cov":14,"other_cov_type":413},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":54572,"year":2018,"emp_insured":25458,"emp_uninsured":1693,"unemp_insured":588,"unemp_uninsured":285,"ins_U25":2589,"no_ins_U25":708,"ins_25_50":5007,"no_ins_25_50":962,"ins_50_75":6237,"no_ins_50_75":554,"ins_75_100":7041,"no_ins_75_100":379,"ins_100_above":30200,"no_ins_100_above":589,"all_ins":51087,"all_unins":3204,"ins_U18":15528,"unins_U18":645,"ins_19_25":2314,"unins_19_25":237,"ins_26_34":6067,"unins_26_34":649,"ins_35_64":22441,"unins_35_64":1635,"ins_65_over":4737,"unins_65_over":38,"emp_based_ins":31463,"dir_purchase_ins":4085,"medicare_cov":3895,"medicaid_cov":2607,"tricare_cov":519,"VA_cov":48,"other_cov_type":2076},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":29256,"year":2019,"emp_insured":12809,"emp_uninsured":1129,"unemp_insured":346,"unemp_uninsured":167,"ins_U25":2343,"no_ins_U25":455,"ins_25_50":2682,"no_ins_25_50":227,"ins_50_75":3417,"no_ins_50_75":346,"ins_75_100":3053,"no_ins_75_100":196,"ins_100_above":15441,"no_ins_100_above":1018,"all_ins":26943,"all_unins":2242,"ins_U18":6587,"unins_U18":492,"ins_19_25":1682,"unins_19_25":115,"ins_26_34":2160,"unins_26_34":497,"ins_35_64":12182,"unins_35_64":1071,"ins_65_over":4332,"unins_65_over":67,"emp_based_ins":15836,"dir_purchase_ins":3045,"medicare_cov":3643,"medicaid_cov":1204,"tricare_cov":222,"VA_cov":96,"other_cov_type":1252},{"GEOID":"3716400","Town":"Davidson","Tot_pop":12735,"year":2019,"emp_insured":5178,"emp_uninsured":301,"unemp_insured":125,"unemp_uninsured":21,"ins_U25":408,"no_ins_U25":39,"ins_25_50":894,"no_ins_25_50":166,"ins_50_75":1230,"no_ins_50_75":80,"ins_75_100":600,"no_ins_75_100":27,"ins_100_above":7542,"no_ins_100_above":123,"all_ins":12231,"all_unins":435,"ins_U18":3535,"unins_U18":61,"ins_19_25":1659,"unins_19_25":7,"ins_26_34":645,"unins_26_34":123,"ins_35_64":4673,"unins_35_64":229,"ins_65_over":1719,"unins_65_over":15,"emp_based_ins":6831,"dir_purchase_ins":1481,"medicare_cov":1325,"medicaid_cov":508,"tricare_cov":41,"VA_cov":13,"other_cov_type":482},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":55980,"year":2019,"emp_insured":25379,"emp_uninsured":1723,"unemp_insured":670,"unemp_uninsured":178,"ins_U25":2704,"no_ins_U25":568,"ins_25_50":4765,"no_ins_25_50":840,"ins_50_75":6265,"no_ins_50_75":538,"ins_75_100":6715,"no_ins_75_100":467,"ins_100_above":31987,"no_ins_100_above":833,"all_ins":52450,"all_unins":3258,"ins_U18":15894,"unins_U18":697,"ins_19_25":2698,"unins_19_25":225,"ins_26_34":5697,"unins_26_34":542,"ins_35_64":22771,"unins_35_64":1736,"ins_65_over":5390,"unins_65_over":58,"emp_based_ins":31936,"dir_purchase_ins":3963,"medicare_cov":4576,"medicaid_cov":2963,"tricare_cov":639,"VA_cov":38,"other_cov_type":2164},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":30925,"year":2021,"emp_insured":12865,"emp_uninsured":1134,"unemp_insured":406,"unemp_uninsured":170,"ins_U25":1796,"no_ins_U25":311,"ins_25_50":3275,"no_ins_25_50":495,"ins_50_75":2974,"no_ins_50_75":246,"ins_75_100":3598,"no_ins_75_100":270,"ins_100_above":17064,"no_ins_100_above":891,"all_ins":28712,"all_unins":2213,"ins_U18":6957,"unins_U18":495,"ins_19_25":1808,"unins_19_25":103,"ins_26_34":1924,"unins_26_34":503,"ins_35_64":12635,"unins_35_64":1077,"ins_65_over":5388,"unins_65_over":35,"emp_based_ins":16915,"dir_purchase_ins":2500,"medicare_cov":4565,"medicaid_cov":1578,"tricare_cov":224,"VA_cov":154,"other_cov_type":1494},{"GEOID":"3716400","Town":"Davidson","Tot_pop":14644,"year":2021,"emp_insured":5905,"emp_uninsured":406,"unemp_insured":137,"unemp_uninsured":28,"ins_U25":755,"no_ins_U25":201,"ins_25_50":611,"no_ins_25_50":64,"ins_50_75":1226,"no_ins_50_75":60,"ins_75_100":797,"no_ins_75_100":14,"ins_100_above":8999,"no_ins_100_above":285,"all_ins":13950,"all_unins":639,"ins_U18":3601,"unins_U18":95,"ins_19_25":1907,"unins_19_25":18,"ins_26_34":686,"unins_26_34":156,"ins_35_64":5513,"unins_35_64":347,"ins_65_over":2243,"unins_65_over":23,"emp_based_ins":8361,"dir_purchase_ins":1759,"medicare_cov":1668,"medicaid_cov":553,"tricare_cov":59,"VA_cov":9,"other_cov_type":561},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":60166,"year":2021,"emp_insured":26870,"emp_uninsured":1888,"unemp_insured":622,"unemp_uninsured":415,"ins_U25":2369,"no_ins_U25":598,"ins_25_50":5570,"no_ins_25_50":583,"ins_50_75":5600,"no_ins_50_75":684,"ins_75_100":7831,"no_ins_75_100":473,"ins_100_above":35109,"no_ins_100_above":1097,"all_ins":56495,"all_unins":3448,"ins_U18":16246,"unins_U18":747,"ins_19_25":2992,"unins_19_25":252,"ins_26_34":4843,"unins_26_34":963,"ins_35_64":25337,"unins_35_64":1477,"ins_65_over":7077,"unins_65_over":9,"emp_based_ins":35282,"dir_purchase_ins":4334,"medicare_cov":5889,"medicaid_cov":2942,"tricare_cov":505,"VA_cov":77,"other_cov_type":2549},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":31396,"year":2022,"emp_insured":13772,"emp_uninsured":877,"unemp_insured":338,"unemp_uninsured":129,"ins_U25":1267,"no_ins_U25":248,"ins_25_50":3409,"no_ins_25_50":379,"ins_50_75":2896,"no_ins_50_75":118,"ins_75_100":2724,"no_ins_75_100":179,"ins_100_above":19459,"no_ins_100_above":713,"all_ins":29759,"all_unins":1637,"ins_U18":6874,"unins_U18":322,"ins_19_25":1855,"unins_19_25":82,"ins_26_34":2405,"unins_26_34":400,"ins_35_64":12782,"unins_35_64":797,"ins_65_over":5843,"unins_65_over":36,"emp_based_ins":17679,"dir_purchase_ins":2560,"medicare_cov":4699,"medicaid_cov":1106,"tricare_cov":139,"VA_cov":145,"other_cov_type":1721},{"GEOID":"3716400","Town":"Davidson","Tot_pop":15199,"year":2022,"emp_insured":6179,"emp_uninsured":375,"unemp_insured":128,"unemp_uninsured":23,"ins_U25":704,"no_ins_U25":178,"ins_25_50":653,"no_ins_25_50":45,"ins_50_75":1187,"no_ins_50_75":55,"ins_75_100":652,"no_ins_75_100":13,"ins_100_above":9836,"no_ins_100_above":278,"all_ins":14554,"all_unins":581,"ins_U18":3567,"unins_U18":98,"ins_19_25":2029,"unins_19_25":15,"ins_26_34":680,"unins_26_34":140,"ins_35_64":6005,"unins_35_64":309,"ins_65_over":2273,"unins_65_over":19,"emp_based_ins":8973,"dir_purchase_ins":1637,"medicare_cov":1743,"medicaid_cov":513,"tricare_cov":39,"VA_cov":0,"other_cov_type":529},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":61202,"year":2022,"emp_insured":28351,"emp_uninsured":1899,"unemp_insured":851,"unemp_uninsured":443,"ins_U25":1994,"no_ins_U25":619,"ins_25_50":4854,"no_ins_25_50":473,"ins_50_75":6253,"no_ins_50_75":760,"ins_75_100":6366,"no_ins_75_100":258,"ins_100_above":37985,"no_ins_100_above":1327,"all_ins":57485,"all_unins":3450,"ins_U18":15523,"unins_U18":693,"ins_19_25":3413,"unins_19_25":298,"ins_26_34":5247,"unins_26_34":1036,"ins_35_64":25617,"unins_35_64":1414,"ins_65_over":7685,"unins_65_over":9,"emp_based_ins":35450,"dir_purchase_ins":4282,"medicare_cov":6506,"medicaid_cov":2700,"tricare_cov":392,"VA_cov":111,"other_cov_type":2697},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":32009,"year":2023,"emp_insured":13829,"emp_uninsured":852,"unemp_insured":412,"unemp_uninsured":100,"ins_U25":1246,"no_ins_U25":261,"ins_25_50":3107,"no_ins_25_50":425,"ins_50_75":2774,"no_ins_50_75":73,"ins_75_100":2707,"no_ins_75_100":130,"ins_100_above":20624,"no_ins_100_above":659,"all_ins":30461,"all_unins":1548,"ins_U18":7069,"unins_U18":263,"ins_19_25":1855,"unins_19_25":84,"ins_26_34":2434,"unins_26_34":337,"ins_35_64":12899,"unins_35_64":808,"ins_65_over":6204,"unins_65_over":56,"emp_based_ins":18204,"dir_purchase_ins":2498,"medicare_cov":5063,"medicaid_cov":1328,"tricare_cov":40,"VA_cov":186,"other_cov_type":1479},{"GEOID":"3716400","Town":"Davidson","Tot_pop":14852,"year":2023,"emp_insured":6049,"emp_uninsured":252,"unemp_insured":235,"unemp_uninsured":27,"ins_U25":805,"no_ins_U25":162,"ins_25_50":424,"no_ins_25_50":36,"ins_50_75":777,"no_ins_50_75":66,"ins_75_100":595,"no_ins_75_100":12,"ins_100_above":10096,"no_ins_100_above":205,"all_ins":14294,"all_unins":492,"ins_U18":3444,"unins_U18":116,"ins_19_25":1897,"unins_19_25":13,"ins_26_34":630,"unins_26_34":60,"ins_35_64":5992,"unins_35_64":280,"ins_65_over":2331,"unins_65_over":23,"emp_based_ins":8863,"dir_purchase_ins":1591,"medicare_cov":1805,"medicaid_cov":611,"tricare_cov":99,"VA_cov":0,"other_cov_type":512},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":62458,"year":2023,"emp_insured":29602,"emp_uninsured":1769,"unemp_insured":756,"unemp_uninsured":443,"ins_U25":1390,"no_ins_U25":237,"ins_25_50":5206,"no_ins_25_50":362,"ins_50_75":5218,"no_ins_50_75":787,"ins_75_100":6064,"no_ins_75_100":199,"ins_100_above":40958,"no_ins_100_above":1670,"all_ins":58880,"all_unins":3269,"ins_U18":15919,"unins_U18":490,"ins_19_25":3535,"unins_19_25":268,"ins_26_34":5403,"unins_26_34":955,"ins_35_64":26167,"unins_35_64":1525,"ins_65_over":7856,"unins_65_over":31,"emp_based_ins":36709,"dir_purchase_ins":3995,"medicare_cov":6567,"medicaid_cov":2747,"tricare_cov":256,"VA_cov":76,"other_cov_type":2789},{"GEOID":"3714700","Town":"Cornelius","Tot_pop":32783,"year":2024,"emp_insured":14475,"emp_uninsured":860,"unemp_insured":377,"unemp_uninsured":0,"ins_U25":1522,"no_ins_U25":391,"ins_25_50":2725,"no_ins_25_50":424,"ins_50_75":2911,"no_ins_50_75":79,"ins_75_100":2826,"no_ins_75_100":105,"ins_100_above":21208,"no_ins_100_above":562,"all_ins":31193,"all_unins":1561,"ins_U18":7027,"unins_U18":352,"ins_19_25":2083,"unins_19_25":49,"ins_26_34":2950,"unins_26_34":326,"ins_35_64":12635,"unins_35_64":778,"ins_65_over":6498,"unins_65_over":56,"emp_based_ins":17192,"dir_purchase_ins":2894,"medicare_cov":5651,"medicaid_cov":1424,"tricare_cov":137,"VA_cov":93,"other_cov_type":1537},{"GEOID":"3716400","Town":"Davidson","Tot_pop":15660,"year":2024,"emp_insured":6325,"emp_uninsured":269,"unemp_insured":270,"unemp_uninsured":2,"ins_U25":817,"no_ins_U25":160,"ins_25_50":575,"no_ins_25_50":177,"ins_50_75":482,"no_ins_50_75":0,"ins_75_100":769,"no_ins_75_100":12,"ins_100_above":10691,"no_ins_100_above":174,"all_ins":15059,"all_unins":534,"ins_U18":3586,"unins_U18":207,"ins_19_25":2017,"unins_19_25":13,"ins_26_34":672,"unins_26_34":34,"ins_35_64":6371,"unins_35_64":279,"ins_65_over":2413,"unins_65_over":1,"emp_based_ins":9477,"dir_purchase_ins":1278,"medicare_cov":1869,"medicaid_cov":748,"tricare_cov":75,"VA_cov":0,"other_cov_type":649},{"GEOID":"3733120","Town":"Huntersville","Tot_pop":63969,"year":2024,"emp_insured":31116,"emp_uninsured":1775,"unemp_insured":713,"unemp_uninsured":421,"ins_U25":1417,"no_ins_U25":152,"ins_25_50":4682,"no_ins_25_50":414,"ins_50_75":5513,"no_ins_50_75":696,"ins_75_100":6390,"no_ins_75_100":349,"ins_100_above":42456,"no_ins_100_above":1508,"all_ins":60525,"all_unins":3130,"ins_U18":15555,"unins_U18":517,"ins_19_25":3197,"unins_19_25":247,"ins_26_34":6523,"unins_26_34":947,"ins_35_64":26882,"unins_35_64":1340,"ins_65_over":8368,"unins_65_over":79,"emp_based_ins":36979,"dir_purchase_ins":4404,"medicare_cov":6698,"medicaid_cov":2407,"tricare_cov":196,"VA_cov":78,"other_cov_type":3103}]; } // end if(false)
+
+      document.addEventListener('masterTownChange', function(e){
+       var town = (e.detail.town && e.detail.town !== 'All') ? e.detail.town : null; // Listener treats All and null the same.
+        // sync all per-chart chips and state
+        ['income','age','trend','emp','agetrend'].forEach(function(chart){
+          HC_INS_TOWNS[chart] = town;
+          document.querySelectorAll('[data-hcins-chart="'+chart+'"]').forEach(function(c){
+            c.classList.toggle('on', town ? c.dataset.hcinsTown === town : c.dataset.hcinsTown === 'all');
+          });
+        });
+        hcInsRenderAll();
+      });
+    })();
+})();
+
+// Block 2 (module)
+(async function() {
+      try {
+        const rows = await window.loadData('healthcare-insurance');
+        window.window.HC_INS_DATA = rows.map(r => {
+          const out = {};
+          Object.keys(r).forEach(k => { out[k] = typeof r[k] === 'bigint' ? Number(r[k]) : r[k]; });
+          return out;
+        });
+      } catch(e) {
+        console.error('Health insurance data load failed:', e);
+      }
+      if (window.hcInsRenderAll) window.hcInsRenderAll();
+})();
+
+// Block 3 (plain)
+(function() {
+    (function(){
+      var MH_BLUE   = '#2E86AB';
+      var MH_BLUE2  = '#1B4F72';
+      var MH_AMBER  = '#E8A838';
+      var MH_FONT   = "500 12px 'Hanken Grotesk', sans-serif";
+      var MH_TEXT   = '#444';
+      // Single-town (by-year) bar color, keyed by year — red/teal/orange
+      var MH_YEAR_COLORS = ['#C0392B', '#1A7A7A', '#E67E22'];
+
+      // Loaded from public/data/mh-depression.json and mh-distress.json (CDC PLACES,
+      // age-adjusted prevalence) via window.loadData() below — empty until then.
+      var MH_DEPRESSION = [];
+      var MH_DISTRESS = [];
+
+      var TOWNS = ['Cornelius','Davidson','Huntersville'];
+      var YEARS = [2019, 2021, 2023];
+
+      // Shared tooltip
+      var MH_TT = document.createElement('div');
+      MH_TT.style.cssText = 'position:fixed;pointer-events:none;background:#1a1a2e;color:#fff;font:500 12px Hanken Grotesk,sans-serif;padding:7px 11px;border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.22);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:9999';
+      document.body.appendChild(MH_TT);
+      function ttShow(html,e){MH_TT.innerHTML=html;MH_TT.style.opacity='1';ttMove(e);}
+      function ttMove(e){MH_TT.style.left=(e.clientX+14)+'px';MH_TT.style.top=(e.clientY-36)+'px';}
+      function ttHide(){MH_TT.style.opacity='0';}
+
+      // Per-chart town selection — independently settable via each chart's own
+      // chips, but reset in sync when the page-wide master town filter changes.
+      var MH_TOWNS = { distress: null, depression: null };
+
+      // ── Depression bars by year (filterable by town) ───────────────────
+      function renderDepBar(town) {
+        var el = document.getElementById('mh-depbar-chart');
+        if (!el || !MH_DEPRESSION.length) return;
+        el.innerHTML = '';
+        town = town || MH_TOWNS.depression;
+        var W = el.offsetWidth || 420;
+        var M = {top:30, right:20, bottom:50, left:52};
+        var iw = W - M.left - M.right;
+        var ih = 200;
+        var H = ih + M.top + M.bottom;
+
+        var rows;
+        if (!town || town === 'All') {
+          rows = MH_DEPRESSION;
+          // group by year, then town within year
+          var yearGroups = YEARS;
+          var x0 = d3.scaleBand().domain(yearGroups.map(String)).range([0,iw]).padding(0.25);
+          var x1 = d3.scaleBand().domain(TOWNS).range([0,x0.bandwidth()]).padding(0.06);
+          var yMax = d3.max(rows,function(d){return d.hi;});
+          var y = d3.scaleLinear().domain([0,yMax*1.18]).range([ih,0]);
+          var townColor = d3.scaleOrdinal().domain(TOWNS).range([MH_BLUE, MH_BLUE2, MH_AMBER]);
+
+          var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+          var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
+
+          // grid
+          g.append('g').call(d3.axisLeft(y).tickSize(-iw).tickFormat(''))
+            .call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8');});
+
+          yearGroups.forEach(function(yr){
+            var grp = g.append('g').attr('transform','translate('+x0(String(yr))+',0)');
+            var yrRows = rows.filter(function(d){return d.year===yr;});
+            yrRows.forEach(function(d){
+              var bx = x1(d.town);
+              var bw = x1.bandwidth();
+              grp.append('rect')
+                .attr('x',bx).attr('y',y(d.val)).attr('width',bw).attr('height',ih-y(d.val))
+                .attr('fill',townColor(d.town)).attr('rx',2)
+                .on('mouseover',function(event){ttShow('<b>'+d.town+'</b> '+yr+': '+d.val+'%',event);})
+                .on('mousemove',ttMove).on('mouseout',ttHide);
+              // error bar
+              grp.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y(d.lo)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+              grp.append('line').attr('x1',bx+bw/2-4).attr('x2',bx+bw/2+4).attr('y1',y(d.hi)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+              grp.append('line').attr('x1',bx+bw/2-4).attr('x2',bx+bw/2+4).attr('y1',y(d.lo)).attr('y2',y(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
+            });
+          });
+
+          g.append('g').attr('transform','translate(0,'+ih+')')
+            .call(d3.axisBottom(x0).tickFormat(function(d){return d;}))
+            .call(function(ax){ax.select('.domain').remove();});
+          g.append('g').call(d3.axisLeft(y).tickFormat(function(d){return d+'%';}).ticks(5))
+            .call(function(ax){ax.select('.domain').remove();});
+
+          // legend
+          TOWNS.forEach(function(t,i){
+            svg.append('rect').attr('x',M.left+i*100).attr('y',H-13).attr('width',10).attr('height',10).attr('fill',townColor(t)).attr('rx',2);
+            svg.append('text').attr('x',M.left+i*100+13).attr('y',H-4).attr('font-size',11).attr('fill',MH_TEXT).text(t);
+          });
+        } else {
+          // Single town: bars by year
+          rows = MH_DEPRESSION.filter(function(d){return d.town===town;}).sort(function(a,b){return a.year-b.year;});
+          var colorByYear = d3.scaleOrdinal().domain(YEARS).range(MH_YEAR_COLORS);
+          var x = d3.scaleBand().domain(rows.map(function(d){return String(d.year);})).range([0,iw]).padding(0.35);
+          var yMax2 = d3.max(rows,function(d){return d.hi;});
+          var y2 = d3.scaleLinear().domain([0,yMax2*1.18]).range([ih,0]);
+
+          var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+          var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
+
+          g.append('g').call(d3.axisLeft(y2).tickSize(-iw).tickFormat(''))
+            .call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8');});
+
+          rows.forEach(function(d){
+            var bx = x(String(d.year));
+            var bw = x.bandwidth();
+            g.append('rect').attr('x',bx).attr('y',y2(d.val)).attr('width',bw).attr('height',ih-y2(d.val))
+              .attr('fill',colorByYear(d.year)).attr('rx',2)
+              .on('mouseover',function(event){ttShow('<b>'+d.year+'</b>: '+d.val+'% (CI: '+d.lo+'–'+d.hi+'%)',event);})
+              .on('mousemove',ttMove).on('mouseout',ttHide);
+            // bar label
+            g.append('text').attr('x',bx+bw/2).attr('y',y2(d.val)+ih/2.5).attr('text-anchor','middle')
+              .attr('font-size',13).attr('font-weight','500').attr('fill','#fff').text(d.val+'%');
+            // error bar
+            g.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y2(d.lo)).attr('y2',y2(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+            g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y2(d.hi)).attr('y2',y2(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+            g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y2(d.lo)).attr('y2',y2(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
+          });
+
+          g.append('g').attr('transform','translate(0,'+ih+')')
+            .call(d3.axisBottom(x)).call(function(ax){ax.select('.domain').remove();});
+          g.append('g').call(d3.axisLeft(y2).tickFormat(function(d){return d+'%';}).ticks(5))
+            .call(function(ax){ax.select('.domain').remove();});
+        }
+      }
+
+      // ── Frequent mental distress bars by year (filterable by town) ─────
+      function renderDistressBar(town) {
+        var el = document.getElementById('mh-distressbar-chart');
+        if (!el || !MH_DISTRESS.length) return;
+        el.innerHTML = '';
+        town = town || MH_TOWNS.distress;
+        var W = el.offsetWidth || 420;
+        var M = {top:30, right:20, bottom:50, left:52};
+        var iw = W - M.left - M.right;
+        var ih = 200;
+        var H = ih + M.top + M.bottom;
+
+        var rows;
+        if (!town || town === 'All') {
+          rows = MH_DISTRESS;
+          // group by year, then town within year
+          var yearGroups = YEARS;
+          var x0 = d3.scaleBand().domain(yearGroups.map(String)).range([0,iw]).padding(0.25);
+          var x1 = d3.scaleBand().domain(TOWNS).range([0,x0.bandwidth()]).padding(0.06);
+          var yMax = d3.max(rows,function(d){return d.hi;});
+          var y = d3.scaleLinear().domain([0,yMax*1.18]).range([ih,0]);
+          var townColor = d3.scaleOrdinal().domain(TOWNS).range([MH_BLUE, MH_BLUE2, MH_AMBER]);
+
+          var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+          var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
+
+          // grid
+          g.append('g').call(d3.axisLeft(y).tickSize(-iw).tickFormat(''))
+            .call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8');});
+
+          yearGroups.forEach(function(yr){
+            var grp = g.append('g').attr('transform','translate('+x0(String(yr))+',0)');
+            var yrRows = rows.filter(function(d){return d.year===yr;});
+            yrRows.forEach(function(d){
+              var bx = x1(d.town);
+              var bw = x1.bandwidth();
+              grp.append('rect')
+                .attr('x',bx).attr('y',y(d.val)).attr('width',bw).attr('height',ih-y(d.val))
+                .attr('fill',townColor(d.town)).attr('rx',2)
+                .on('mouseover',function(event){ttShow('<b>'+d.town+'</b> '+yr+': '+d.val+'%',event);})
+                .on('mousemove',ttMove).on('mouseout',ttHide);
+              // error bar
+              grp.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y(d.lo)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+              grp.append('line').attr('x1',bx+bw/2-4).attr('x2',bx+bw/2+4).attr('y1',y(d.hi)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+              grp.append('line').attr('x1',bx+bw/2-4).attr('x2',bx+bw/2+4).attr('y1',y(d.lo)).attr('y2',y(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
+            });
+          });
+
+          g.append('g').attr('transform','translate(0,'+ih+')')
+            .call(d3.axisBottom(x0).tickFormat(function(d){return d;}))
+            .call(function(ax){ax.select('.domain').remove();});
+          g.append('g').call(d3.axisLeft(y).tickFormat(function(d){return d+'%';}).ticks(5))
+            .call(function(ax){ax.select('.domain').remove();});
+
+          // legend
+          TOWNS.forEach(function(t,i){
+            svg.append('rect').attr('x',M.left+i*100).attr('y',H-13).attr('width',10).attr('height',10).attr('fill',townColor(t)).attr('rx',2);
+            svg.append('text').attr('x',M.left+i*100+13).attr('y',H-4).attr('font-size',11).attr('fill',MH_TEXT).text(t);
+          });
+        } else {
+          // Single town: bars by year
+          rows = MH_DISTRESS.filter(function(d){return d.town===town;}).sort(function(a,b){return a.year-b.year;});
+          var colorByYear = d3.scaleOrdinal().domain(YEARS).range(MH_YEAR_COLORS);
+          var x = d3.scaleBand().domain(rows.map(function(d){return String(d.year);})).range([0,iw]).padding(0.35);
+          var yMax2 = d3.max(rows,function(d){return d.hi;});
+          var y2 = d3.scaleLinear().domain([0,yMax2*1.18]).range([ih,0]);
+
+          var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+          var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
+
+          g.append('g').call(d3.axisLeft(y2).tickSize(-iw).tickFormat(''))
+            .call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8');});
+
+          rows.forEach(function(d){
+            var bx = x(String(d.year));
+            var bw = x.bandwidth();
+            g.append('rect').attr('x',bx).attr('y',y2(d.val)).attr('width',bw).attr('height',ih-y2(d.val))
+              .attr('fill',colorByYear(d.year)).attr('rx',2)
+              .on('mouseover',function(event){ttShow('<b>'+d.year+'</b>: '+d.val+'% (CI: '+d.lo+'–'+d.hi+'%)',event);})
+              .on('mousemove',ttMove).on('mouseout',ttHide);
+            // bar label
+            g.append('text').attr('x',bx+bw/2).attr('y',y2(d.val)+ih/2.5).attr('text-anchor','middle')
+              .attr('font-size',13).attr('font-weight','500').attr('fill','#fff').text(d.val+'%');
+            // error bar
+            g.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y2(d.lo)).attr('y2',y2(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+            g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y2(d.hi)).attr('y2',y2(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+            g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y2(d.lo)).attr('y2',y2(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
+          });
+
+          g.append('g').attr('transform','translate(0,'+ih+')')
+            .call(d3.axisBottom(x)).call(function(ax){ax.select('.domain').remove();});
+          g.append('g').call(d3.axisLeft(y2).tickFormat(function(d){return d+'%';}).ticks(5))
+            .call(function(ax){ax.select('.domain').remove();});
+        }
+      }
+
+      // Render all
+      function mhRenderAll() {
+        renderDistressBar(MH_TOWNS.distress);
+        renderDepBar(MH_TOWNS.depression);
+      }
+
+      // ── Per-chart chip handler ───────────────────────────────────────
+      window.mhLocalChip = function(el){
+        var chart = el.dataset.mhChart; // 'distress' | 'depression'
+        var town = el.dataset.mhTown === 'all' ? null : el.dataset.mhTown;
+        document.querySelectorAll('[data-mh-chart="'+chart+'"]').forEach(function(c){
+          c.classList.toggle('on', c === el);
+        });
+        MH_TOWNS[chart] = town;
+        if (chart === 'distress') renderDistressBar(town);
+        else if (chart === 'depression') renderDepBar(town);
+      };
+
+      // Load real data, then render (charts show "Loading…" until this resolves)
+      (async function(){
+        try {
+          var loaded = await Promise.all([window.loadData('mh-depression'), window.loadData('mh-distress')]);
+          MH_DEPRESSION = loaded[0];
+          MH_DISTRESS = loaded[1];
+        } catch(e) {
+          console.error('Mental health data load failed:', e);
+        }
+        mhRenderAll();
+      })();
+
+      // ResizeObserver for hidden-tab rendering
+      ['mh-distressbar-chart','mh-depbar-chart'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (!el) return;
+        var ro = new ResizeObserver(function(entries){
+          var w = entries[0].contentRect.width;
+          if (w > 0) mhRenderAll();
+        });
+        ro.observe(el);
+        if (el.offsetWidth > 0) mhRenderAll();
+      });
+
+      // masterTownChange listener — syncs both charts' local chips to the page-wide
+      // town filter, then re-renders (also fires on tab switch via setTab)
+      document.addEventListener('masterTownChange', function(e){
+        var town = (e.detail.town && e.detail.town !== 'All') ? e.detail.town : null;
+        ['distress','depression'].forEach(function(chart){
+          MH_TOWNS[chart] = town;
+          document.querySelectorAll('[data-mh-chart="'+chart+'"]').forEach(function(c){
+            c.classList.toggle('on', town ? c.dataset.mhTown === town : c.dataset.mhTown === 'all');
+          });
+        });
+        mhRenderAll();
+      });
+
+      // Exposed for goto() hook
+      window.__mhRender = mhRenderAll;
+    })();
+})();
+
+// Block 4 (module)
+(async function() {
+      const northMeckCenter = L.latLng(35.48, -80.85);
+      let facilities = null;
+      let loadFailed = false;
+      let map = null;
+      let activeCenter = northMeckCenter;
+      let userMarker = null;
+      let radiusCircle = null;
+      let allMarkers = [];
+
+      function popupHtml(f) {
+        var hasPhone = f.phone && f.phone.trim().length > 0;
+        var hasWebsite = f.website && f.website.trim().length > 8;
+        return '<div style="min-width:190px;font-family:\'Hanken Grotesk\',sans-serif">'
+          + '<div style="font-weight:600;color:#1B4F72;font-size:13px;margin-bottom:4px">'+f.name+'</div>'
+          + '<div style="color:#555;font-size:11px;margin-bottom:3px">'+f.address+'</div>'
+          + (f.type ? '<div style="color:#888;font-size:11px;margin-bottom:6px">'+f.type+'</div>' : '')
+          + (hasPhone ? '<div style="font-size:11px;color:#555;margin-bottom:6px">'+f.phone+'</div>' : '')
+          + (hasWebsite ? '<a href="'+f.website+'" target="_blank" rel="noopener" style="display:block;text-align:center;background:#2E86AB;color:#fff;font-size:11px;padding:5px 10px;border-radius:4px;text-decoration:none;margin-top:4px">Visit website →</a>' : '')
+          + '</div>';
+      }
+
+      // Applies the currently-selected radius chip (defaults to "all" before any click)
+      function applyActiveRadiusFilter() {
+        var activeBtn = document.querySelector('[data-mh-radius].on');
+        var val = activeBtn ? (activeBtn.dataset.mhRadius === 'all' ? 'all' : Number(activeBtn.dataset.mhRadius)) : 'all';
+        updateRadiusCircle(activeCenter, val);
+        filterMarkers(val);
+      }
+
+      function addMarkers() {
+        if (!map || !facilities || allMarkers.length) return;
+        allMarkers = facilities.map(function(f){
+          const m = L.marker([f.lat, f.lng]).addTo(map).bindPopup(popupHtml(f));
+          return { marker: m, lat: f.lat, lng: f.lng, distance: activeCenter.distanceTo(L.latLng(f.lat, f.lng)) / 1609.34 };
+        });
+        applyActiveRadiusFilter();
+      }
+
+      // The map container sits in a hidden .tabpane (display:none) until the
+      // "Mental Health" tab is opened. Leaflet measures container size at
+      // L.map() init time, so creating it while hidden yields a 0×0 map and
+      // broken/offset tiles. Initialize lazily, once the pane is visible.
+      function initMap() {
+        if (map || loadFailed) return;
+        const el = document.getElementById('mh-facility-map');
+        if (!el) return;
+        map = L.map('mh-facility-map').setView([35.48, -80.85], 11);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        addMarkers();
+      }
+
+      function updateRadiusCircle(center, radiusMi) {
+        if (!map) return;
+        if (radiusCircle) { map.removeLayer(radiusCircle); radiusCircle = null; }
+        if (radiusMi === 'all') return;
+        radiusCircle = L.circle(center, {
+          radius: radiusMi * 1609.34,
+          color: '#2E86AB', fillColor: '#2E86AB', fillOpacity: 0.08, weight: 1.5
+        }).addTo(map);
+        map.fitBounds(radiusCircle.getBounds());
+      }
+
+      function filterMarkers(radiusMi) {
+        allMarkers.forEach(function(item){
+          if (radiusMi === 'all' || item.distance <= radiusMi) {
+            if (!map.hasLayer(item.marker)) item.marker.addTo(map);
+          } else {
+            if (map.hasLayer(item.marker)) map.removeLayer(item.marker);
+          }
+        });
+      }
+
+      document.addEventListener('tabChange', function(e){
+        if (e.detail.pane !== 'hc-mental') return;
+        setTimeout(function(){
+          initMap();
+          if (map) map.invalidateSize();
+        }, 60);
+      });
+
+      // Defensive: if this pane is somehow already active on load, init right away
+      var mentalPane = document.querySelector('.tabpane[data-pane="hc-mental"]');
+      if (mentalPane && mentalPane.classList.contains('active')) {
+        setTimeout(initMap, 60);
+      }
+
+      document.querySelectorAll('[data-mh-radius]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          if (!map) return;
+          document.querySelectorAll('[data-mh-radius]').forEach(function(b){ b.classList.remove('on'); });
+          this.classList.add('on');
+          const r = this.dataset.mhRadius;
+          const val = r === 'all' ? 'all' : Number(r);
+          updateRadiusCircle(activeCenter, val);
+          filterMarkers(val);
+        });
+      });
+
+      document.getElementById('mh-address-btn').addEventListener('click', function(){
+        if (!map) return;
+        const addr = document.getElementById('mh-address-input').value.trim();
+        if (!addr) return;
+        fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(addr))
+          .then(function(res){return res.json();})
+          .then(function(results){
+            if (!results.length) { alert('Address not found. Try again.'); return; }
+            const lat = parseFloat(results[0].lat);
+            const lng = parseFloat(results[0].lon);
+            const loc = L.latLng(lat, lng);
+            activeCenter = loc;
+            if (userMarker) map.removeLayer(userMarker);
+            userMarker = L.circleMarker(loc, {
+              radius: 10, color: '#2E86AB', fillColor: '#2E86AB', fillOpacity: 0.8
+            }).addTo(map).bindPopup('Your location');
+            allMarkers.forEach(function(item){
+              item.distance = loc.distanceTo(L.latLng(item.lat, item.lng)) / 1609.34;
+            });
+            map.setView(loc, 13);
+            applyActiveRadiusFilter();
+          });
+      });
+
+      try {
+        const rows = await window.loadData('mental-health-facilities');
+        facilities = rows.map(function(d){
+          return {
+            name: d.facility_name,
+            address: (d.street1||'') + (d.city ? ', '+d.city : ''),
+            lat: Number(d.latitude),
+            lng: Number(d.longitude),
+            type: d.types || '',
+            phone: d.phone || '',
+            website: d.website || ''
+          };
+        });
+        addMarkers();
+      } catch(e) {
+        console.error('Facility map data load failed:', e);
+        loadFailed = true;
+        window.mdShowError('mh-facility-map');
+      }
+})();
+
+// Block 5 (plain)
+(function() {
+    (function(){
+      var CD_BLUE  = '#2E86AB';
+      var CD_DARK  = '#1B4F72';
+      var CD_AMBER = '#E8A838';
+      var CD_TEXT  = '#444';
+      var TOWNS    = ['Cornelius','Davidson','Huntersville'];
+      var YEARS    = [2019,2021,2023];
+
+      var CD_DATA = {
+        diabetes: [
+          {town:'Cornelius',   year:2019, val:7.2, lo:6.9, hi:7.5},
+          {town:'Cornelius',   year:2021, val:7.7, lo:6.6, hi:8.9},
+          {town:'Cornelius',   year:2023, val:7.1, lo:6.0, hi:8.1},
+          {town:'Davidson',    year:2019, val:7.2, lo:6.8, hi:7.6},
+          {town:'Davidson',    year:2021, val:7.7, lo:6.7, hi:8.9},
+          {town:'Davidson',    year:2023, val:6.9, lo:5.9, hi:8.0},
+          {town:'Huntersville',year:2019, val:7.4, lo:7.2, hi:7.6},
+          {town:'Huntersville',year:2021, val:7.8, lo:6.8, hi:9.0},
+          {town:'Huntersville',year:2023, val:7.6, lo:6.5, hi:8.7}
+        ],
+        obesity: [
+          {town:'Cornelius',   year:2019, val:24.4, lo:23.8, hi:25.0},
+          {town:'Cornelius',   year:2021, val:29.5, lo:25.2, hi:34.2},
+          {town:'Cornelius',   year:2023, val:25.1, lo:20.6, hi:29.8},
+          {town:'Davidson',    year:2019, val:24.3, lo:23.5, hi:25.1},
+          {town:'Davidson',    year:2021, val:29.3, lo:25.2, hi:34.0},
+          {town:'Davidson',    year:2023, val:24.7, lo:20.2, hi:29.2},
+          {town:'Huntersville',year:2019, val:24.5, lo:24.1, hi:24.9},
+          {town:'Huntersville',year:2021, val:29.5, lo:25.2, hi:34.2},
+          {town:'Huntersville',year:2023, val:25.6, lo:21.1, hi:30.2}
+        ],
+        hbp: [
+          {town:'Cornelius',   year:2019, val:26.4, lo:25.9, hi:27.0},
+          {town:'Cornelius',   year:2021, val:25.7, lo:22.8, hi:28.8},
+          {town:'Cornelius',   year:2023, val:26.1, lo:22.9, hi:29.2},
+          {town:'Davidson',    year:2019, val:26.3, lo:25.6, hi:27.0},
+          {town:'Davidson',    year:2021, val:25.6, lo:22.8, hi:28.6},
+          {town:'Davidson',    year:2023, val:25.8, lo:22.7, hi:28.9},
+          {town:'Huntersville',year:2019, val:26.5, lo:26.2, hi:26.9},
+          {town:'Huntersville',year:2021, val:25.8, lo:22.9, hi:28.9},
+          {town:'Huntersville',year:2023, val:26.9, lo:23.7, hi:30.0}
+        ]
+      };
+
+      var CD_TT = document.createElement('div');
+      CD_TT.style.cssText = 'position:fixed;pointer-events:none;background:#1a1a2e;color:#fff;font:500 12px Hanken Grotesk,sans-serif;padding:7px 11px;border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.22);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:9999';
+      document.body.appendChild(CD_TT);
+      function ttShow(html,e){CD_TT.innerHTML=html;CD_TT.style.opacity='1';ttMove(e);}
+      function ttMove(e){CD_TT.style.left=(e.clientX+14)+'px';CD_TT.style.top=(e.clientY-36)+'px';}
+      function ttHide(){CD_TT.style.opacity='0';}
+
+      var colorByYear = d3.scaleOrdinal().domain(YEARS).range([CD_BLUE, CD_DARK, CD_AMBER]);
+      var colorByTown = d3.scaleOrdinal().domain(TOWNS).range([CD_BLUE, CD_DARK, CD_AMBER]);
+
+      var cdTown = window.__masterTown || 'All';
+
+      function renderCDChart(elId, data, yLabel) {
+        var el = document.getElementById(elId);
+        if (!el) return;
+        el.innerHTML = '';
+        var town = cdTown;
+        var W = el.offsetWidth || 420;
+        var M = {top:24, right:20, bottom:50, left:54};
+        var iw = W - M.left - M.right;
+        var ih = 200;
+        var H = ih + M.top + M.bottom;
+
+        var rows, x, y, colorFn, xDomain;
+
+        if (!town || town === 'All') {
+          // Grouped by year, towns within year
+          rows = data;
+          var yearGroups = YEARS;
+          x = d3.scaleBand().domain(yearGroups.map(String)).range([0,iw]).padding(0.25);
+          var x1 = d3.scaleBand().domain(TOWNS).range([0,x.bandwidth()]).padding(0.06);
+          var yMax = d3.max(rows,function(d){return d.hi;});
+          y = d3.scaleLinear().domain([0,yMax*1.18]).range([ih,0]);
+
+          var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+          var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
+          g.append('g').call(d3.axisLeft(y).tickSize(-iw).tickFormat('')).call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8');});
+
+          yearGroups.forEach(function(yr){
+            var grp = g.append('g').attr('transform','translate('+x(String(yr))+',0)');
+            data.filter(function(d){return d.year===yr;}).forEach(function(d){
+              var bx = x1(d.town); var bw = x1.bandwidth();
+              grp.append('rect').attr('x',bx).attr('y',y(d.val)).attr('width',bw).attr('height',ih-y(d.val))
+                .attr('fill',colorByTown(d.town)).attr('rx',2)
+                .on('mouseover',function(event){ttShow('<b>'+d.town+'</b> '+yr+': '+d.val+'%',event);})
+                .on('mousemove',ttMove).on('mouseout',ttHide);
+              grp.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y(d.lo)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+              grp.append('line').attr('x1',bx+bw/2-4).attr('x2',bx+bw/2+4).attr('y1',y(d.hi)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+              grp.append('line').attr('x1',bx+bw/2-4).attr('x2',bx+bw/2+4).attr('y1',y(d.lo)).attr('y2',y(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
+            });
+          });
+          g.append('g').attr('transform','translate(0,'+ih+')').call(d3.axisBottom(x)).call(function(ax){ax.select('.domain').remove();});
+          g.append('g').call(d3.axisLeft(y).tickFormat(function(d){return d+'%';}).ticks(5)).call(function(ax){ax.select('.domain').remove();});
+          svg.append('text').attr('x',M.left+iw/2).attr('y',H-8).attr('text-anchor','middle').attr('font-size',11).attr('fill',CD_TEXT).text('Year');
+
+          // legend
+          TOWNS.forEach(function(t,i){
+            svg.append('rect').attr('x',M.left+i*105).attr('y',H-13).attr('width',10).attr('height',10).attr('fill',colorByTown(t)).attr('rx',2);
+            svg.append('text').attr('x',M.left+i*105+13).attr('y',H-4).attr('font-size',11).attr('fill',CD_TEXT).text(t);
+          });
+        } else {
+          // Single town: bars by year, colored by year
+          rows = data.filter(function(d){return d.town===town;}).sort(function(a,b){return a.year-b.year;});
+          x = d3.scaleBand().domain(rows.map(function(d){return String(d.year);})).range([0,iw]).padding(0.4);
+          var yMax2 = d3.max(rows,function(d){return d.hi;});
+          y = d3.scaleLinear().domain([0,yMax2*1.2]).range([ih,0]);
+
+          var svg = d3.select(el).append('svg').attr('width',W).attr('height',H);
+          var g = svg.append('g').attr('transform','translate('+M.left+','+M.top+')');
+          g.append('g').call(d3.axisLeft(y).tickSize(-iw).tickFormat('')).call(function(ax){ax.select('.domain').remove();ax.selectAll('.tick line').attr('stroke','#e8e8e8').attr('stroke-dasharray','3,3');});
+
+          rows.forEach(function(d){
+            var bx = x(String(d.year)); var bw = x.bandwidth();
+            g.append('rect').attr('x',bx).attr('y',y(d.val)).attr('width',bw).attr('height',ih-y(d.val))
+              .attr('fill',colorByYear(d.year)).attr('rx',2)
+              .on('mouseover',function(event){ttShow('<b>'+d.year+'</b>: '+d.val+'% (CI: '+d.lo+'–'+d.hi+'%)',event);})
+              .on('mousemove',ttMove).on('mouseout',ttHide);
+            g.append('text').attr('x',bx+bw/2).attr('y',y(d.val)+ih/2.4).attr('text-anchor','middle')
+              .attr('font-size',13).attr('font-weight','500').attr('fill','#fff').text(d.val+'%');
+            g.append('line').attr('x1',bx+bw/2).attr('x2',bx+bw/2).attr('y1',y(d.lo)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+            g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y(d.hi)).attr('y2',y(d.hi)).attr('stroke','#333').attr('stroke-width',1.5);
+            g.append('line').attr('x1',bx+bw/2-5).attr('x2',bx+bw/2+5).attr('y1',y(d.lo)).attr('y2',y(d.lo)).attr('stroke','#333').attr('stroke-width',1.5);
+          });
+          g.append('g').attr('transform','translate(0,'+ih+')').call(d3.axisBottom(x)).call(function(ax){ax.select('.domain').remove();});
+          g.append('g').call(d3.axisLeft(y).tickFormat(function(d){return d+'%';}).ticks(5)).call(function(ax){ax.select('.domain').remove();});
+          svg.append('text').attr('x',M.left+iw/2).attr('y',H-8).attr('text-anchor','middle').attr('font-size',11).attr('fill',CD_TEXT).text('Year · '+town);
+        }
+      }
+
+      function cdRenderAll() {
+        renderCDChart('cd-diabetes-chart', CD_DATA.diabetes, 'Diabetes prevalence (%)');
+        renderCDChart('cd-obesity-chart',  CD_DATA.obesity,  'Obesity prevalence (%)');
+        renderCDChart('cd-hbp-chart',      CD_DATA.hbp,      'High blood pressure (%)');
+      }
+
+      ['cd-diabetes-chart','cd-obesity-chart','cd-hbp-chart'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (!el) return;
+        var ro = new ResizeObserver(function(entries){
+          if (entries[0].contentRect.width > 0) cdRenderAll();
+        });
+        ro.observe(el);
+        if (el.offsetWidth > 0) cdRenderAll();
+      });
+
+      document.addEventListener('masterTownChange', function(e){
+        cdTown = e.detail.town || 'All';
+        cdRenderAll();
+      });
+
+      window.__cdRender = cdRenderAll;
+    })();
+})();
+
+// Block 6 (plain) - Preventive Care & Screening Rates
+(function() {
+  var PC_BLUE  = '#2E86AB';
+  var PC_DARK  = '#1B4F72';
+  var PC_AMBER = '#E8A838';
+  var PC_TEXT  = '#444';
+  var TOWNS    = ['Cornelius', 'Davidson', 'Huntersville'];
+
+  // Each measure uses the most recent year all three towns reported a value.
+  // CDC PLACES releases different measures on different survey cycles, so the
+  // year genuinely varies by measure, not by a data gap.
+  var PC_DATA = [
+    { measure: 'Checkup',       year: 2023, town: 'Cornelius',    val: 79.9 },
+    { measure: 'Checkup',       year: 2023, town: 'Davidson',     val: 79.4 },
+    { measure: 'Checkup',       year: 2023, town: 'Huntersville', val: 78.4 },
+    { measure: 'Cholesterol',   year: 2023, town: 'Cornelius',    val: 90.7 },
+    { measure: 'Cholesterol',   year: 2023, town: 'Davidson',     val: 89.0 },
+    { measure: 'Cholesterol',   year: 2023, town: 'Huntersville', val: 89.7 },
+    { measure: 'Cervical',      year: 2020, town: 'Cornelius',    val: 88.5 },
+    { measure: 'Cervical',      year: 2020, town: 'Davidson',     val: 87.1 },
+    { measure: 'Cervical',      year: 2020, town: 'Huntersville', val: 89.1 },
+    { measure: 'Colon',         year: 2020, town: 'Cornelius',    val: 76.1 },
+    { measure: 'Colon',         year: 2020, town: 'Davidson',     val: 77.5 },
+    { measure: 'Colon',         year: 2020, town: 'Huntersville', val: 75.1 },
+    { measure: 'Mammogram',     year: 2020, town: 'Cornelius',    val: 80.7 },
+    { measure: 'Mammogram',     year: 2020, town: 'Davidson',     val: 80.6 },
+    { measure: 'Mammogram',     year: 2020, town: 'Huntersville', val: 81.0 },
+    { measure: 'Dental',        year: 2020, town: 'Cornelius',    val: 73.7 },
+    { measure: 'Dental',        year: 2020, town: 'Davidson',     val: 75.2 },
+    { measure: 'Dental',        year: 2020, town: 'Huntersville', val: 73.8 }
+  ];
+  var MEASURES = ['Checkup', 'Cholesterol', 'Cervical', 'Colon', 'Mammogram', 'Dental'];
+
+  var PC_TT = document.createElement('div');
+  PC_TT.style.cssText = 'position:fixed;pointer-events:none;background:#1a1a2e;color:#fff;font:500 12px Hanken Grotesk,sans-serif;padding:7px 11px;border-radius:7px;box-shadow:0 4px 16px rgba(0,0,0,.22);white-space:nowrap;opacity:0;transition:opacity .12s;z-index:9999';
+  document.body.appendChild(PC_TT);
+  function ttShow(html, e) { PC_TT.innerHTML = html; PC_TT.style.opacity = '1'; ttMove(e); }
+  function ttMove(e) { PC_TT.style.left = (e.clientX + 14) + 'px'; PC_TT.style.top = (e.clientY - 36) + 'px'; }
+  function ttHide() { PC_TT.style.opacity = '0'; }
+
+  var colorByTown = d3.scaleOrdinal().domain(TOWNS).range([PC_BLUE, PC_DARK, PC_AMBER]);
+  var pcTown = window.__masterTown || 'All';
+
+  function renderPreventiveCare() {
+    var el = document.getElementById('chart-preventive-care');
+    if (!el) return;
+    el.innerHTML = '';
+    var town = pcTown;
+    var W = el.offsetWidth || 640;
+    var M = { top: 24, right: 20, bottom: 58, left: 54 };
+    var iw = W - M.left - M.right;
+    var ih = 240;
+    var H = ih + M.top + M.bottom;
+
+    var svg = d3.select(el).append('svg').attr('width', W).attr('height', H);
+    var g = svg.append('g').attr('transform', 'translate(' + M.left + ',' + M.top + ')');
+
+    var x = d3.scaleBand().domain(MEASURES).range([0, iw]).padding(0.28);
+    var y = d3.scaleLinear().domain([0, 100]).range([ih, 0]);
+
+    g.append('g').call(d3.axisLeft(y).tickSize(-iw).tickFormat('')).call(function(ax) {
+      ax.select('.domain').remove();
+      ax.selectAll('.tick line').attr('stroke', '#e8e8e8');
+    });
+
+    if (!town || town === 'All') {
+      var x1 = d3.scaleBand().domain(TOWNS).range([0, x.bandwidth()]).padding(0.08);
+      MEASURES.forEach(function(m) {
+        var grp = g.append('g').attr('transform', 'translate(' + x(m) + ',0)');
+        PC_DATA.filter(function(d) { return d.measure === m; }).forEach(function(d) {
+          var bx = x1(d.town), bw = x1.bandwidth();
+          grp.append('rect').attr('x', bx).attr('y', y(d.val)).attr('width', bw).attr('height', ih - y(d.val))
+            .attr('fill', colorByTown(d.town)).attr('rx', 2)
+            .on('mouseover', function(event) { ttShow('<b>' + d.town + '</b> &middot; ' + d.measure + ' (' + d.year + '): ' + d.val + '%', event); })
+            .on('mousemove', ttMove).on('mouseout', ttHide);
+        });
+      });
+      TOWNS.forEach(function(t, i) {
+        svg.append('rect').attr('x', M.left + i * 105).attr('y', H - 13).attr('width', 10).attr('height', 10).attr('fill', colorByTown(t)).attr('rx', 2);
+        svg.append('text').attr('x', M.left + i * 105 + 13).attr('y', H - 4).attr('font-size', 11).attr('fill', PC_TEXT).text(t);
+      });
+    } else {
+      var rows = PC_DATA.filter(function(d) { return d.town === town; });
+      MEASURES.forEach(function(m) {
+        var d = rows.find(function(r) { return r.measure === m; });
+        if (!d) return;
+        var bx = x(m), bw = x.bandwidth();
+        g.append('rect').attr('x', bx).attr('y', y(d.val)).attr('width', bw).attr('height', ih - y(d.val))
+          .attr('fill', colorByTown(town)).attr('rx', 2)
+          .on('mouseover', function(event) { ttShow('<b>' + m + '</b> (' + d.year + '): ' + d.val + '%', event); })
+          .on('mousemove', ttMove).on('mouseout', ttHide);
+        g.append('text').attr('x', bx + bw / 2).attr('y', y(d.val) + 16).attr('text-anchor', 'middle')
+          .attr('font-size', 12).attr('font-weight', '500').attr('fill', '#fff').text(d.val + '%');
+      });
+      svg.append('text').attr('x', M.left + iw / 2).attr('y', H - 4).attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', PC_TEXT).text(town);
+    }
+
+    g.append('g').attr('transform', 'translate(0,' + ih + ')').call(d3.axisBottom(x)).call(function(ax) {
+      ax.select('.domain').remove();
+      ax.selectAll('text').attr('font-size', 11);
+    });
+    g.append('g').call(d3.axisLeft(y).tickFormat(function(d) { return d + '%'; }).ticks(5)).call(function(ax) {
+      ax.select('.domain').remove();
+    });
+  }
+
+  var pcEl = document.getElementById('chart-preventive-care');
+  if (pcEl) {
+    var ro = new ResizeObserver(function(entries) {
+      if (entries[0].contentRect.width > 0) renderPreventiveCare();
+    });
+    ro.observe(pcEl);
+    if (pcEl.offsetWidth > 0) renderPreventiveCare();
+  }
+
+  document.addEventListener('masterTownChange', function(e) {
+    pcTown = (e.detail && e.detail.town) || 'All';
+    renderPreventiveCare();
+  });
+})();
