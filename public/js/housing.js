@@ -319,20 +319,18 @@ window.Plot = Plot;
 (async function() {
 
         /* ── HOUSING WAGE CHART ── */
-        window.__housingWage = [
-          {occupation:"Housing Wage Needed",hourly_wage:35.08,category:"Benchmark"},
-          {occupation:"Fast Food/Counter Workers",hourly_wage:13.88,category:"Occupation"},
-          {occupation:"Cashiers",hourly_wage:13.77,category:"Occupation"},
-          {occupation:"Retail Salespersons",hourly_wage:16.49,category:"Occupation"},
-          {occupation:"Laborers & Freight/Stock Movers",hourly_wage:17.49,category:"Occupation"},
-          {occupation:"Stockers and Order Fillers",hourly_wage:17.46,category:"Occupation"},
-          {occupation:"Customer Service Representatives",hourly_wage:20.70,category:"Occupation"},
-          {occupation:"Heavy & Tractor-Trailer Truck Drivers",hourly_wage:26.54,category:"Occupation"},
-          {occupation:"Registered Nurses",hourly_wage:40.42,category:"Occupation"}
-        ];
-        (function(){
-          const data = window.__housingWage;
-          const benchmark = 35.08;
+        let housingWageData;
+        try {
+          housingWageData = await window.loadData('charlotte-housing-wage');
+        } catch(e) {
+          console.error("Failed to load charlotte-housing-wage:", e);
+          window.mdShowError('chart-housing-wage');
+          housingWageData = null;
+        }
+        if (housingWageData) (function(){
+          const data = housingWageData;
+          const benchmarkRow = data.find(d => d.category === "Benchmark");
+          const benchmark = benchmarkRow ? benchmarkRow.hourly_wage : 35.08;
           const occs = data.filter(d => d.category === "Occupation")
                            .sort((a,b) => b.hourly_wage - a.hourly_wage);
           const domain = occs.map(d => d.occupation);
@@ -368,25 +366,16 @@ window.Plot = Plot;
         })();
 
         /* ── FMR BY BEDROOM CHART ── */
-        window.__fmrBedroom = [
-          {region:"Charlotte",bedrooms:"Studio",fmr:1586},
-          {region:"Charlotte",bedrooms:"1-Bedroom",fmr:1647},
-          {region:"Charlotte",bedrooms:"2-Bedroom",fmr:1824},
-          {region:"Charlotte",bedrooms:"3-Bedroom",fmr:2250},
-          {region:"Charlotte",bedrooms:"4-Bedroom",fmr:2852},
-          {region:"Raleigh",bedrooms:"Studio",fmr:1533},
-          {region:"Raleigh",bedrooms:"1-Bedroom",fmr:1592},
-          {region:"Raleigh",bedrooms:"2-Bedroom",fmr:1763},
-          {region:"Raleigh",bedrooms:"3-Bedroom",fmr:2192},
-          {region:"Raleigh",bedrooms:"4-Bedroom",fmr:2961},
-          {region:"Atlanta",bedrooms:"Studio",fmr:1591},
-          {region:"Atlanta",bedrooms:"1-Bedroom",fmr:1653},
-          {region:"Atlanta",bedrooms:"2-Bedroom",fmr:1830},
-          {region:"Atlanta",bedrooms:"3-Bedroom",fmr:2205},
-          {region:"Atlanta",bedrooms:"4-Bedroom",fmr:2653}
-        ];
-        (function(){
-          const data = window.__fmrBedroom;
+        let fmrBedroomData;
+        try {
+          fmrBedroomData = await window.loadData('charlotte-fmr-bedroom');
+        } catch(e) {
+          console.error("Failed to load charlotte-fmr-bedroom:", e);
+          window.mdShowError('chart-fmr-bedroom');
+          fmrBedroomData = null;
+        }
+        if (fmrBedroomData) (function(){
+          const data = fmrBedroomData;
           const el = document.getElementById("chart-fmr-bedroom");
           if (!el) return;
           const bedroomOrder = ["Studio","1-Bedroom","2-Bedroom","3-Bedroom","4-Bedroom"];
@@ -423,30 +412,16 @@ window.Plot = Plot;
 
 // Block 5 (module)
 (async function() {
-        window.__amiGap = [
-          {bedrooms:"Studio",ami_level:"30% AMI",max_affordable_rent:590,fmr:1586},
-          {bedrooms:"Studio",ami_level:"50% AMI",max_affordable_rent:982,fmr:1586},
-          {bedrooms:"Studio",ami_level:"80% AMI",max_affordable_rent:1571,fmr:1586},
-          {bedrooms:"Studio",ami_level:"100% AMI",max_affordable_rent:1965,fmr:1586},
-          {bedrooms:"1-Bedroom",ami_level:"30% AMI",max_affordable_rent:674,fmr:1647},
-          {bedrooms:"1-Bedroom",ami_level:"50% AMI",max_affordable_rent:1122,fmr:1647},
-          {bedrooms:"1-Bedroom",ami_level:"80% AMI",max_affordable_rent:1795,fmr:1647},
-          {bedrooms:"1-Bedroom",ami_level:"100% AMI",max_affordable_rent:2245,fmr:1647},
-          {bedrooms:"2-Bedroom",ami_level:"30% AMI",max_affordable_rent:758,fmr:1824},
-          {bedrooms:"2-Bedroom",ami_level:"50% AMI",max_affordable_rent:1262,fmr:1824},
-          {bedrooms:"2-Bedroom",ami_level:"80% AMI",max_affordable_rent:2020,fmr:1824},
-          {bedrooms:"2-Bedroom",ami_level:"100% AMI",max_affordable_rent:2525,fmr:1824},
-          {bedrooms:"3-Bedroom",ami_level:"30% AMI",max_affordable_rent:841,fmr:2250},
-          {bedrooms:"3-Bedroom",ami_level:"50% AMI",max_affordable_rent:1402,fmr:2250},
-          {bedrooms:"3-Bedroom",ami_level:"80% AMI",max_affordable_rent:2244,fmr:2250},
-          {bedrooms:"3-Bedroom",ami_level:"100% AMI",max_affordable_rent:2805,fmr:2250},
-          {bedrooms:"4-Bedroom",ami_level:"30% AMI",max_affordable_rent:909,fmr:2852},
-          {bedrooms:"4-Bedroom",ami_level:"50% AMI",max_affordable_rent:1515,fmr:2852},
-          {bedrooms:"4-Bedroom",ami_level:"80% AMI",max_affordable_rent:2424,fmr:2852},
-          {bedrooms:"4-Bedroom",ami_level:"100% AMI",max_affordable_rent:3030,fmr:2852}
-        ];
-        (function(){
-          const data = window.__amiGap;
+        let amiGapData;
+        try {
+          amiGapData = await window.loadData('charlotte-ami-gap');
+        } catch(e) {
+          console.error("Failed to load charlotte-ami-gap:", e);
+          window.mdShowError('chart-ami-gap');
+          amiGapData = null;
+        }
+        if (amiGapData) (function(){
+          const data = amiGapData;
           const el = document.getElementById("chart-ami-gap");
           if (!el) return;
           const amiOrder = ["30% AMI","50% AMI","80% AMI","100% AMI"];
