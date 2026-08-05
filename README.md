@@ -1,6 +1,6 @@
 # North Meck Insights
 
-A public-data portal built by Davidson College's Community Research Fellows (CRF) program. It presents housing, education, and healthcare data for North Mecklenburg, NC (Davidson, Cornelius, Huntersville), plus profiles of five "United Neighborhoods." Bilingual (EN/ES) throughout.
+A public-data portal built by Davidson College's Community Research Fellows (CRF) program. It presents housing, education, and healthcare data for North Mecklenburg, NC (Davidson, Cornelius, Huntersville), plus profiles of five "United Neighborhoods."
 
 This README is for CRF student developers working on the codebase. If you just want to read the site, visit the live URL; you don't need anything in here.
 
@@ -31,13 +31,11 @@ The site is built with [Astro](https://astro.build) in static-output mode (no se
 - **`src/pages/*.astro`**: one file per page/route (`index`, `housing`, `education`, `healthcare`, `topics`, `data-library`, `sources`, `neighborhoods`, `nbhd-data`, `blog`, `about`, plus the dynamic `blog-[slug].astro` for individual posts). Astro compiles these to flat `.html` files (e.g. `src/pages/housing.astro` becomes `housing.html`), matching how the site's internal links are written.
 - **`src/layouts/BaseLayout.astro`** and **`src/components/*.astro`**: shared chrome (nav, footer, glossary modal, accessibility panel, floating action button, chart tooltip) that every page uses. Edit these once instead of copy-pasting across pages.
 - **`src/content/blog/*.md`**: blog posts as an Astro content collection. See [Adding blog content](#adding-blog-content) below.
-- **`public/js/main.js`**: shared across every page. Handles nav (including the search box), the EN/ES language toggle, the glossary modal, the accessibility panel, the homepage carousels, the data-download helper (`window.loadData`), and the Data Library's filter/download UI.
+- **`public/js/main.js`**: shared across every page. Handles nav (including the search box), the glossary modal, the accessibility panel, the homepage carousels, the data-download helper (`window.loadData`), and the Data Library's filter/download UI.
 - **`public/js/housing.js`, `healthcare.js`, `education.js`, `neighborhoods.js`**: one file per dashboard page. Each is self-contained: it renders that page's charts, wires up its tabs/filters, and is only loaded on its own page.
 - **`public/css/styles.css`**: the one stylesheet, using CSS custom properties (`--accent`, `--ink`, `--paper`, etc.) defined at the top. A lot of one-off styling also lives in inline `style="..."` attributes directly in the `.astro` files, so don't assume every visual rule is in the stylesheet.
 
 **Charts** are hand-rolled with [D3 v6](https://d3js.org) and [Observable Plot](https://observablehq.com/plot/) (both loaded from a CDN, not npm packages). There's no shared charting library or component. Look at an existing chart in `housing.js` for the pattern before writing a new one from scratch.
-
-**Bilingual copy:** any user-facing text that needs a Spanish translation gets a `data-es="..."` attribute next to the English text, e.g. `<h1 data-es="Elige un tema para comenzar">Pick a topic to dig into</h1>`. `main.js` swaps the visible text based on the language toggle. Always add the `data-es` attribute when you add new copy, rather than inventing a different translation mechanism.
 
 ## Adding data and visuals
 
