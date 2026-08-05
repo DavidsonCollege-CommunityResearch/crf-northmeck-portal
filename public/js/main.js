@@ -751,6 +751,34 @@ document.addEventListener('click', function(e){ var fab = document.getElementByI
       ],
       notes: 'ALICE stands for Asset Limited, Income Constrained, Employed. It captures households working but still unable to afford a basic survival budget, a group the Federal Poverty Level alone misses, which matters in a suburban area like North Meck where the poverty rate is low but the cost of living is high. This is a single-year (2024) snapshot, not a trend. Source: United Way of North Carolina ALICE Report.'
     },
+    'mh-distress': {
+      filename: 'nmidw_cdc_frequent_mental_distress_2019-2023',
+      source: 'Centers for Disease Control and Prevention (CDC), PLACES: Local Data for Better Health',
+      years: '2019, 2021, 2023',
+      jsonFile: 'mh-distress',
+      codebook: [
+        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
+        ['year','integer','PLACES survey cycle year'],
+        ['val','decimal','Age-adjusted prevalence (%) of adults reporting frequent mental distress (14+ days of poor mental health in the past 30 days)'],
+        ['lo','decimal','Lower bound of the 95% confidence interval'],
+        ['hi','decimal','Upper bound of the 95% confidence interval']
+      ],
+      notes: 'CDC PLACES estimates are model-based small-area estimates derived from BRFSS survey data, not a full census of residents. Confidence intervals widen for less populous towns like Davidson.'
+    },
+    'mh-depression': {
+      filename: 'nmidw_cdc_depression_prevalence_2019-2023',
+      source: 'Centers for Disease Control and Prevention (CDC), PLACES: Local Data for Better Health',
+      years: '2019, 2021, 2023',
+      jsonFile: 'mh-depression',
+      codebook: [
+        ['town','text','Municipality name (Cornelius, Davidson, or Huntersville)'],
+        ['year','integer','PLACES survey cycle year'],
+        ['val','decimal','Age-adjusted prevalence (%) of adults ever told by a health professional they have a depressive disorder'],
+        ['lo','decimal','Lower bound of the 95% confidence interval'],
+        ['hi','decimal','Upper bound of the 95% confidence interval']
+      ],
+      notes: 'CDC PLACES estimates are model-based small-area estimates derived from BRFSS survey data, not a full census of residents. Confidence intervals widen for less populous towns like Davidson.'
+    },
     'alice-county': {
       filename: 'nmidw_alice_households_mecklenburg_county_2010-2024',
       source: 'United Way of North Carolina, ALICE Economic Viability Dashboard',
@@ -1377,7 +1405,7 @@ var CHART_TO_DATASET = {
   'chart-grade-level-proficiency':'school-proficiency', 'chart-hs-ccr':'school-proficiency',
   'chart-school-academic-growth':'school-growth',
   'chart-four-year-graduation-rate':'school-graduation',
-  'chart-school-achievement-economic-gap':'school-economic-gap',
+  'chart-school-achievement-economic-gap':'school-economic-gap', 'chart-economic-gap':'school-economic-gap',
   'chart-hs-achievement-economic-gap':'school-hs-economic-gap',
   'chart-pop-vs-k12':'school-enrollment', 'chart-total-enrollment-trend':'school-enrollment',
   'chart-race-gap-avg':'school-race-gap', 'chart-race-gap-top':'school-race-gap',
@@ -1386,6 +1414,7 @@ var CHART_TO_DATASET = {
   'hc-ins-dot-wrap':'healthcare-insurance', 'hc-ins-heatmap-title':'healthcare-insurance',
   'hc-ins-heatmap-sub':'healthcare-insurance', 'hc-ins-heatmap':'healthcare-insurance',
   'mh-address-btn':'mhsu-facilities', 'mh-address-input':'mhsu-facilities', 'mh-facility-map':'mhsu-facilities',
+  'mh-distressbar-chart':'mh-distress', 'mh-depbar-chart':'mh-depression',
   // Neighborhoods (nbhd-data.astro)
   'nd-pop-chart':'nbhd-demographics', 'nd-hl-chart':'nbhd-demographics', 'nd-race-chart':'nbhd-demographics',
   'nd-income-dist-chart':'nbhd-economic', 'nd-income-trend-chart':'nbhd-economic',
