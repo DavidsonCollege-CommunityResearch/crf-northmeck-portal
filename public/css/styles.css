@@ -471,7 +471,7 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 .nbhd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .nbhd-prev{left:4px}
 .nbhd-next{right:4px}
-.nbhd-tcard{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:20px;cursor:pointer;display:flex;flex-direction:column;gap:7px;transition:transform .2s,box-shadow .2s,border-color .2s}
+.nbhd-tcard{border:1px solid var(--line);border-radius:var(--r);background:var(--paper-2);padding:20px;cursor:pointer;display:flex;flex-direction:column;gap:7px;transition:transform .2s,box-shadow .2s,border-color .2s}
 .nbhd-tcard:hover{transform:translateY(-4px);box-shadow:0 14px 36px oklch(0.27 0.012 60 / 0.09);border-color:var(--line-2)}
 .nbhd-tcard .town{font-size:11.5px;letter-spacing:0.05em;text-transform:uppercase;color:var(--accent);font-weight:600}
 .nbhd-tcard .nm{font-family:'Newsreader',serif;font-size:21px;line-height:1.1;display:flex;align-items:center;gap:8px}
