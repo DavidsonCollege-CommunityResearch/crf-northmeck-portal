@@ -1358,6 +1358,13 @@ var SPOT = [
   window.addEventListener('load',function(){ track.scrollLeft=0; });
 })();
 
+/* ── RESOURCES CAROUSEL ── */
+(function(){
+  var track=document.getElementById('resourcesTrack'); if(!track) return;
+  track.scrollLeft=0;
+  window.addEventListener('load',function(){ track.scrollLeft=0; });
+})();
+
 /* ── ROTATING STORY LINKS ── */
 (function(){
   var STORY = {
