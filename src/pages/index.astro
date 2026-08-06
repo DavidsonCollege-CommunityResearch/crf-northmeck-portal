@@ -158,8 +158,41 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
     </div>
   </section>
 
-  <!-- CBR / ABOUT -->
+  <!-- RESOURCES TEASER -->
   <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow" style="font-size:15px">Resources</span>
+        <h2 class="sec-h" style="font-size:32px">Where the data on this site actually comes from</h2>
+        <p class="lead">Every term defined, every dataset downloadable, and every source cited, in one place.</p>
+      </div>
+      <div class="topics-carousel">
+        <div class="topics" id="resourcesTrack">
+          <div class="tcard is-active" onclick="openGlossary()">
+            <div class="tc-icon"><i class="ti ti-book-2"></i></div>
+            <div class="tc-t">Glossary</div>
+            <div class="tc-b">Plain-language definitions for every technical term used across the site.</div>
+            <div class="tc-foot"><span class="badge b-live dot">22 terms</span><span class="tc-go">Open →</span></div>
+          </div>
+          <div class="tcard" onclick="window.location='data-library.html'">
+            <div class="tc-icon"><i class="ti ti-list-details"></i></div>
+            <div class="tc-t">Data Library</div>
+            <div class="tc-b">Every dataset behind the dashboards, filterable and downloadable as CSV, Excel, or a full codebook.</div>
+            <div class="tc-foot"><span class="badge b-live dot">29 datasets</span><span class="tc-go">Open →</span></div>
+          </div>
+          <div class="tcard" onclick="window.location='sources.html'">
+            <div class="tc-icon"><i class="ti ti-books"></i></div>
+            <div class="tc-t">Sources</div>
+            <div class="tc-b">The full bibliography behind every number on the site: government agencies, research groups, and data providers.</div>
+            <div class="tc-foot"><span class="badge b-live dot">12 sources</span><span class="tc-go">Open →</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CBR / ABOUT -->
+  <section class="section alt">
     <div class="wrap split" style="align-items:stretch">
       <div>
         <div class="sec-head" style="margin-bottom:18px">
