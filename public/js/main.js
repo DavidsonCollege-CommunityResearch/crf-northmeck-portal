@@ -1293,9 +1293,9 @@ var FACTS = [
 
 /* ── DATA SPOTLIGHT CAROUSEL ── */
 var SPOT = [
-  { topic:'housing',   label:'Explore Housing data',   icon:'ti-building-community', h:'The Housing Squeeze in North Meck',   lead:'Rising rents, home prices, and savings timelines show how far affordability has slipped across North Meck.' },
-  { topic:'education', label:'Explore Education data', icon:'ti-school',             h:'Proficiency Gaps in North Meck',      lead:'Proficiency gaps between student groups, and between schools, show where opportunity is most unequal across North Meck.' },
-  { topic:'healthcare', label:'Explore Healthcare data', icon:'ti-heartbeat',        h:'Healthcare Coverage Gaps in North Meck', lead:'Who is uninsured in North Meck, which age groups face the most risk, and how employment status shapes access to care.' },
+  { topic:'housing',   label:'Explore Housing data',   icon:'ti-building-community', h:'The Housing Squeeze in North Meck',   lead:'Rising rents, home prices, and savings timelines show how tough housing has gotten for people in North Meck.' },
+  { topic:'education', label:'Explore Education data', icon:'ti-school',             h:'School Proficiency in North Meck',      lead:'Proficiency gaps between student groups, and between schools, show where opportunity is most unequal across North Meck.' },
+  { topic:'healthcare', label:'Explore Healthcare data', icon:'ti-heartbeat',        h:'Healthcare Coverage in North Meck', lead:'Who is uninsured in North Meck, which age groups face the most risk, and how employment status shapes access to care.' },
 ];
 (function(){
   var track=document.getElementById('spotTrack'); if(!track) return;
