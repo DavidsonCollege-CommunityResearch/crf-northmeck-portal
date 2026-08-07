@@ -1453,6 +1453,7 @@ var CHART_TO_DATASET = {
   'hc-ins-heatmap-sub':'healthcare-insurance', 'hc-ins-heatmap':'healthcare-insurance',
   'mh-address-btn':'mhsu-facilities', 'mh-address-input':'mhsu-facilities', 'mh-facility-map':'mhsu-facilities',
   'chart-preventive-care':'cdc-preventive-care',
+  'chart-insurance-type-overview':'healthcare-insurance', 'chart-preventive-overview':'cdc-preventive-care',
   // Neighborhoods (nbhd-data.astro)
   'nd-pop-chart':'nbhd-demographics', 'nd-hl-chart':'nbhd-demographics', 'nd-race-chart':'nbhd-demographics',
   'nd-income-dist-chart':'nbhd-economic', 'nd-income-trend-chart':'nbhd-economic',
@@ -1536,6 +1537,7 @@ var CHART_TO_THEME = {
   'mh-depbar-chart':'demographics', 'mh-distressbar-chart':'demographics', 'mh-address-btn':'demographics',
   'mh-address-input':'demographics', 'mh-facility-map':'demographics', 'cd-diabetes-chart':'demographics',
   'cd-hbp-chart':'demographics', 'cd-obesity-chart':'demographics', 'chart-preventive-care':'demographics',
+  'chart-preventive-overview':'demographics', 'chart-insurance-type-overview':'affordability',
   // Neighborhoods dashboard — Affordability
   'nd-tenure-chart':'affordability', 'nd-rent-value-chart':'affordability', 'nd-burden-chart':'affordability',
   'nd-commute-mode-chart':'affordability', 'nd-commute-trend-chart':'affordability',
