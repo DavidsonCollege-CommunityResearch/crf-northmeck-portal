@@ -2161,3 +2161,99 @@ function renderOverviewAgeUnins() {
     renderPreventiveCare();
   });
 })();
+
+// Block 7 (module) - Overview: Insurance coverage by type
+// Uses window.stdPlot()/Observable Plot rather than this page's usual hand-rolled
+// D3, for the same reliability as the Education overview cards. window.Plot is
+// set explicitly here since this page doesn't otherwise assign it to window.
+(async function() {
+  if (!window.Plot) window.Plot = Plot;
+  let rows;
+  try {
+    rows = await window.loadData('healthcare-insurance');
+  } catch (e) {
+    console.error('healthcare-insurance (coverage type overview) load failed:', e);
+    window.mdShowError('chart-insurance-type-overview');
+    return;
+  }
+  const el = document.getElementById('chart-insurance-type-overview');
+  const TYPES = [
+    { key: 'emp_based_ins', label: 'Employer-based' },
+    { key: 'medicare_cov', label: 'Medicare' },
+    { key: 'dir_purchase_ins', label: 'Direct-purchase' },
+    { key: 'medicaid_cov', label: 'Medicaid' },
+    { key: 'other_cov_type', label: 'Other' },
+    { key: 'tricare_cov', label: 'TRICARE' },
+    { key: 'VA_cov', label: 'VA' }
+  ];
+  function render(town) {
+    // 2024 is the only year this dataset is registered/cited for, even
+    // though the file itself carries earlier years too, so this is pinned
+    // to 2024 rather than accidentally summing multiple years together.
+    const scoped = rows.filter(d => d.year === 2024 && (town === 'All' || d.Town === town));
+    const data = TYPES.map(t => ({
+      type: t.label,
+      count: scoped.reduce((sum, r) => sum + (r[t.key] || 0), 0)
+    })).sort((a, b) => b.count - a.count);
+    const w = el.clientWidth || 700;
+    el.innerHTML = '';
+    el.append(window.stdPlot({
+      width: w,
+      height: 90 + data.length * 30,
+      marginLeft: 130,
+      x: { label: "Insured residents", grid: true },
+      y: { label: null, domain: data.map(d => d.type) },
+      marks: [
+        Plot.barX(data, {
+          x: "count", y: "type", fill: "#2E86AB", rx: 3,
+          tip: true,
+          title: d => `${d.type}\n${d.count.toLocaleString()} residents (2024)`
+        }),
+        Plot.ruleX([0])
+      ]
+    }));
+  }
+  render(window.__masterTown || 'All');
+  document.addEventListener('masterTownChange', e => render(e.detail.town));
+})();
+
+// Block 8 (module) - Overview: Preventive care completion by measure
+(async function() {
+  if (!window.Plot) window.Plot = Plot;
+  let rows;
+  try {
+    rows = await window.loadData('cdc-preventive-care');
+  } catch (e) {
+    console.error('cdc-preventive-care (overview) load failed:', e);
+    window.mdShowError('chart-preventive-overview');
+    return;
+  }
+  const el = document.getElementById('chart-preventive-overview');
+  function render(town) {
+    const scoped = town === 'All' ? rows : rows.filter(d => d.town === town);
+    const measures = Array.from(new Set(scoped.map(d => d.measure)));
+    const data = measures.map(m => {
+      const vals = scoped.filter(d => d.measure === m).map(d => d.val);
+      return { measure: m, avg: vals.reduce((a, b) => a + b, 0) / vals.length };
+    }).sort((a, b) => b.avg - a.avg);
+    const w = el.clientWidth || 700;
+    el.innerHTML = '';
+    el.append(window.stdPlot({
+      width: w,
+      height: 90 + data.length * 30,
+      marginLeft: 110,
+      x: { label: "Completion rate (%)", domain: [0, 100], grid: true },
+      y: { label: null, domain: data.map(d => d.measure) },
+      marks: [
+        Plot.barX(data, {
+          x: "avg", y: "measure", fill: "#1B4F72", rx: 3,
+          tip: true,
+          title: d => `${d.measure}\n${d.avg.toFixed(1)}%${town === 'All' ? ' average across towns' : ' in ' + town}`
+        }),
+        Plot.ruleX([0])
+      ]
+    }));
+  }
+  render(window.__masterTown || 'All');
+  document.addEventListener('masterTownChange', e => render(e.detail.town));
+})();
