@@ -100,21 +100,31 @@ const SHOW_HC_MATERNAL = false;
         </div>
         -->
 
-        <!-- Stat 4: Chronic disease -->
+        <!-- Stat 4: Insurance coverage type -->
         <div class="stat-row">
           <div class="srow-fig">
-            <div class="stat-n warn">~11%</div>
-            <p class="stat-l">of Mecklenburg adults have diagnosed diabetes, with rates highest among lower-income and minority populations</p>
-            <span class="stat-src">CDC PLACES · data coming</span>
+            <div class="stat-n warn">~7 in 10</div>
+            <p class="stat-l">insured North Meck residents get their coverage through an employer, by far the most common source of coverage across all three towns</p>
+            <span class="stat-src">ACS 2024, Table B27010</span>
           </div>
-          <div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Chronic disease prevalence by town</div>
-            <div class="card-s">Diabetes, obesity, and hypertension rates · CDC PLACES census-tract estimates</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: CDC PLACES · Local-level health estimates, 2024 release</div>
-            </div>
+          <div class="card viz-host" style="margin-bottom:28px">
+            <div class="card-t">Health insurance coverage by type (2024)</div>
+            <div class="card-s">Number of insured residents by source of coverage: employer, Medicare, Medicaid, <span class="gloss-link" data-term="tricare" role="button" tabindex="0" onclick="glossTerm('tricare')">TRICARE</span>, and more</div>
+            <div id="chart-insurance-type-overview"></div>
+          </div>
+        </div>
+
+        <!-- Stat 5: Preventive care -->
+        <div class="stat-row">
+          <div class="srow-fig">
+            <div class="stat-n warn">~74%</div>
+            <p class="stat-l">of North Meck adults report visiting a dentist in the past year, the lowest completion rate of the six preventive care measures we track</p>
+            <span class="stat-src">CDC PLACES</span>
+          </div>
+          <div class="card viz-host" style="margin-bottom:28px">
+            <div class="card-t">Preventive care completion rates by measure</div>
+            <div class="card-s">Average share of adults completing each screening or checkup, across all three towns</div>
+            <div id="chart-preventive-overview"></div>
           </div>
         </div>
 
