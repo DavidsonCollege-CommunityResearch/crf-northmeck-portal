@@ -59,57 +59,45 @@ const SHOW_ED_RESOURCES = false;
           </div>
         </div>
 
-        <!-- Stat 2: Free & reduced lunch -->
+        <!-- Stat 2: Title I and proficiency -->
         <div class="stat-row">
           <div class="srow-fig">
-            <div class="stat-n warn">~1 in 4</div>
-            <p class="stat-l">students at some North Meck schools qualify for free or reduced-price lunch, a key indicator of economic disadvantage</p>
-            <span class="stat-src">NCES CCD · data coming</span>
+            <div class="stat-n warn">~1 in 3</div>
+            <p class="stat-l">North Meck schools are federally designated Title I, meaning a high share of students come from low-income families</p>
+            <span class="stat-src">NC DPI, 2024</span>
           </div>
-          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Free &amp; reduced lunch eligibility by school (2023)</div>
-            <div class="card-s">Share of students qualifying for federal lunch assistance</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD Lunch Program · free &amp; reduced eligibility</div>
-            </div>
+          <div class="card viz-host" style="margin-bottom:28px">
+            <div class="card-t">Grade-Level Proficiency by Title I status (2024)</div>
+            <div class="card-s">Percent of students proficient at grade level, Title I designated schools compared to others</div>
+            <div id="chart-title1-proficiency"></div>
           </div>
         </div>
 
-        <!-- Stat 3: Graduation rate -->
+        <!-- Stat 3: Academic growth -->
         <div class="stat-row">
           <div class="srow-fig">
-            <div class="stat-n">~90%</div>
-            <p class="stat-l">4-year cohort graduation rate at North Meck high schools, above the CMS district average but with variation between schools</p>
-            <span class="stat-src">NC DPI · data coming</span>
+            <div class="stat-n">~3 in 5</div>
+            <p class="stat-l">North Meck schools exceeded their expected academic growth target this year, a sign of strong year-over-year progress</p>
+            <span class="stat-src">NC DPI, EVAAS growth index, 2024</span>
           </div>
-          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">4-year graduation rate by high school (2018–2023)</div>
-            <div class="card-s">Hough High &amp; North Mecklenburg High · cohort graduation</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: NC Department of Public Instruction · Graduation &amp; Dropout reports</div>
-            </div>
+          <div class="card viz-host" style="margin-bottom:28px">
+            <div class="card-t">Academic growth status by school (2024)</div>
+            <div class="card-s">EVAAS growth index score, whether each school exceeded, met, or fell short of expected growth</div>
+            <div id="chart-growth-overview"></div>
           </div>
         </div>
 
-        <!-- Stat 4: Teacher-student ratio -->
+        <!-- Stat 4: Disability proficiency gap -->
         <div class="stat-row">
           <div class="srow-fig">
-            <div class="stat-n warn">16:1</div>
-            <p class="stat-l">average student-to-teacher ratio across North Meck schools, higher than recommended at rapidly growing campuses</p>
-            <span class="stat-src">NCES CCD · data coming</span>
+            <div class="stat-n warn">43.6 pts</div>
+            <p class="stat-l">average proficiency gap between students with and without disabilities across North Meck schools</p>
+            <span class="stat-src">NC DPI, 2024</span>
           </div>
-          <div class="card viz-host" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-            <div class="card-t" style="color:var(--ink-2)">Pupil-to-teacher ratio by school (2018–2023)</div>
-            <div class="card-s">Full-time equivalent teachers vs. total enrollment</div>
-            <div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-              <i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-              <div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-              <div style="font-size:12px;margin-top:4px">Data source: NCES CCD Staff Universe Survey · FTE teachers</div>
-            </div>
+          <div class="card viz-host" style="margin-bottom:28px">
+            <div class="card-t">Proficiency gap for students with disabilities, by school (2024)</div>
+            <div class="card-s">Percentage-point gap in grade-level proficiency, students with disabilities compared to students without</div>
+            <div id="chart-disability-gap-overview"></div>
           </div>
         </div>
 
