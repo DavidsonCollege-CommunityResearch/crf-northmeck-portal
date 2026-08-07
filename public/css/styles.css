@@ -156,6 +156,7 @@ em{font-style:italic}a{text-decoration:none;color:inherit}button{font-family:inh
 .ph span{font-family:ui-monospace,'SF Mono',monospace;font-size:10.5px;letter-spacing:0.02em}
 /* SPLIT / PROSE */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,72px)}
+.about-split{grid-template-columns:1fr 1.15fr}
 .prose p{color:var(--ink-2);margin-bottom:16px;max-width:38em}
 /* PRIOR ROWS */
 .prior-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 4px;border-bottom:1px solid var(--line);cursor:pointer;transition:padding-left .18s}
