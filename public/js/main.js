@@ -1369,7 +1369,7 @@ var SPOT = [
 (function(){
   var STORY = {
     housing: [
-      { t:'How Much You'd Need to Earn to Afford a One-Bedroom in North Meck' }
+      { t:'How Much You\'d Need to Earn to Afford a One-Bedroom in North Meck', go:'post-housing' }
     ],
   };
   var HOLD=4500, ANIM=430;
