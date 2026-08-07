@@ -1525,6 +1525,8 @@ var CHART_TO_THEME = {
   // Education — Demographics
   'chart-k12-trend':'demographics', 'chart-pop-vs-k12':'demographics', 'chart-total-enrollment-trend':'demographics',
   'chart-disability-gap':'demographics',
+  'chart-title1-proficiency':'economic-mobility', 'chart-growth-overview':'economic-mobility',
+  'chart-disability-gap-overview':'demographics',
   // Healthcare — Affordability
   'hc-ins-dot-wrap':'affordability', 'hc-ins-heatmap-title':'affordability', 'hc-ins-heatmap-sub':'affordability',
   'hc-ins-heatmap':'affordability', 'hc-ins-age':'affordability', 'hc-ins-age-trend':'affordability',
