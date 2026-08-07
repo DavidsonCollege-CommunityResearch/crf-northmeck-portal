@@ -805,3 +805,119 @@ window.Plot = Plot;
     ]
   }));
 })();
+
+// Block 18 (module) - Overview: Grade-Level Proficiency by Title I status
+(async function() {
+  let proficiency;
+  try {
+    proficiency = await window.loadData('grade-level-proficiency');
+  } catch (e) {
+    console.error('grade-level-proficiency (Title I overview) load failed:', e);
+    window.mdShowError('chart-title1-proficiency');
+    return;
+  }
+  const el = document.getElementById('chart-title1-proficiency');
+  function render(town) {
+    const filtered = town === 'All' ? proficiency : proficiency.filter(d => d.town === town);
+    const withRate = filtered.map(d => {
+      const status = d.is_title_1 ? 'Title I' : 'Not Title I';
+      if (d.glp != null) return { ...d, status };
+      const match = /^[<>]?\s*(\d+(\.\d+)?)/.exec(d.glp_raw || '');
+      return match ? { ...d, glp: parseFloat(match[1]), status } : { ...d, status };
+    });
+    const data = withRate.filter(d => d.glp != null).sort((a, b) => b.glp - a.glp);
+    const w = el.clientWidth || 700;
+    el.innerHTML = '';
+    el.append(window.stdPlot({
+      width: w,
+      height: 90 + data.length * 22,
+      marginLeft: 190,
+      x: { label: "Grade-Level Proficiency (%)", domain: [0, 100], grid: true },
+      y: { label: null, domain: data.map(d => d.school) },
+      color: {
+        legend: true,
+        domain: ["Title I", "Not Title I"],
+        range: ["#21908c", "#5ec962"]
+      },
+      marks: [
+        Plot.barX(data, {
+          x: "glp", y: "school", fill: "status", rx: 3,
+          tip: true,
+          title: d => `${d.school} (${d.grade_span})\n${d.status}\nGrade-Level Proficient: ${d.glp}%`
+        }),
+        Plot.ruleX([0])
+      ]
+    }));
+  }
+  render(window.__masterTown || 'All');
+  document.addEventListener('masterTownChange', e => render(e.detail.town));
+})();
+
+// Block 19 (module) - Overview: Academic growth status by school
+(async function() {
+  let growth;
+  try {
+    growth = await window.loadData('school-academic-growth');
+  } catch (e) {
+    console.error('school-academic-growth (overview) load failed:', e);
+    window.mdShowError('chart-growth-overview');
+    return;
+  }
+  const el = document.getElementById('chart-growth-overview');
+  function render(town) {
+    const filtered = town === 'All' ? growth : growth.filter(d => d.town === town);
+    const data = filtered.slice().sort((a, b) => b.index_score - a.index_score);
+    const w = el.clientWidth || 700;
+    el.innerHTML = '';
+    el.append(window.stdPlot({
+      width: w,
+      height: 90 + data.length * 22,
+      marginLeft: 190,
+      x: { label: "Growth Index Score (0 = met expected growth)", domain: [-8, 8], grid: true },
+      y: { label: null, domain: data.map(d => d.school) },
+      color: {
+        legend: true,
+        domain: ["Exceeded", "Met", "Not Met"],
+        range: ["#2ca02c", "#ff7f0e", "#d62728"]
+      },
+      marks: [
+        Plot.barX(data, {
+          x: "index_score", y: "school", fill: "status", rx: 3,
+          tip: true,
+          title: d => `${d.school} (${d.grade_span})\nStatus: ${d.status}\nGrowth Index: ${d.index_score}`
+        }),
+        Plot.ruleX([0])
+      ]
+    }));
+  }
+  render(window.__masterTown || 'All');
+  document.addEventListener('masterTownChange', e => render(e.detail.town));
+})();
+
+// Block 20 (module) - Overview: Disability proficiency gap by school
+// Note: school-disability-gap has no town field, so this renders once and
+// does not respond to the town filter, same as its detailed-tab counterpart.
+(async function() {
+  let rows;
+  try {
+    rows = await window.loadData('school-disability-gap');
+  } catch (e) {
+    console.error('school-disability-gap (overview) load failed:', e);
+    window.mdShowError('chart-disability-gap-overview');
+    return;
+  }
+  const el = document.getElementById('chart-disability-gap-overview');
+  const data = rows.filter(d => d.gap != null).slice().sort((a, b) => b.gap - a.gap);
+  const w = el.clientWidth || 700;
+  el.innerHTML = '';
+  el.append(window.stdPlot({
+    width: w, height: 90 + data.length * 22,
+    marginLeft: 190,
+    x: { label: "Proficiency gap (points)", grid: true },
+    y: { label: null, domain: data.map(d => d.school) },
+    marks: [
+      Plot.barX(data, { y: 'school', x: 'gap', fill: '#3b528b', rx: 3,
+        tip: true, title: d => `${d.school}\nWith disabilities: ${d.swd_pct}%\nWithout: ${d.nswd_pct}%\nGap: ${d.gap} pts` })
+    ]
+  }));
+})();
