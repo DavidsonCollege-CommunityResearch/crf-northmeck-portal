@@ -775,6 +775,9 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
   .spot-arrow{display:none}
   .spot-prev,.spot-next{display:flex;width:42px;height:42px;top:38%}
   .spot-prev{left:8px}
+  .nav-inner:has(.nav-search.expanded) .brand{display:none}
+  .nav-search.expanded{flex:1;min-width:0}
+  .nav-search.expanded input{width:auto;max-width:none;flex:1;min-width:0}
   .spot-next{right:8px}
   .tabs{position:sticky;top:66px;z-index:150;background:var(--paper)}
   .filterbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
