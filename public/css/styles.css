@@ -85,6 +85,7 @@ em{font-style:italic}a{text-decoration:none;color:inherit}button{font-family:inh
 .sec-head .lead{margin-top:2px}
 /* HERO */
 .hero{padding:clamp(28px,4vw,52px) 0 clamp(14px,2vw,24px)}
+.mobile-notice{display:none}
 .hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:clamp(32px,6vw,72px);align-items:center}
 .hero-eyebrow{display:block;margin-bottom:22px}
 .hero-h1{font-size:clamp(40px,6vw,64px);line-height:1.04;letter-spacing:-0.02em;margin-bottom:22px}
@@ -779,6 +780,11 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
   .nav-search.expanded{flex:1;min-width:0}
   .nav-search.expanded input{width:auto;max-width:none;flex:1;min-width:0}
   .nav-search-dd{position:fixed;left:12px;right:12px;top:66px;min-width:0}
+  .mobile-notice{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;background:oklch(0.52 0.066 252 / 0.1);border-bottom:1px solid var(--accent-line);padding:11px var(--gut)}
+  .mobile-notice-text{display:flex;align-items:flex-start;gap:8px;font-size:13px;line-height:1.45;color:var(--accent-deep)}
+  .mobile-notice-text i{flex:none;margin-top:2px;font-size:16px}
+  .mobile-notice-close{flex:none;background:none;border:0;color:var(--accent-deep);cursor:pointer;padding:4px;font-size:16px;border-radius:50%;line-height:1}
+  .mobile-notice-close:hover{background:oklch(0.52 0.066 252 / 0.14)}
   .spot-next{right:8px}
   .tabs{position:sticky;top:66px;z-index:150;background:var(--paper)}
   .filterbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
