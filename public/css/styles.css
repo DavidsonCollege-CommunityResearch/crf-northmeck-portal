@@ -207,7 +207,7 @@ em{font-style:italic}a{text-decoration:none;color:inherit}button{font-family:inh
 .bc-lbl{font-size:11px;color:var(--ink-3);text-align:center;margin-top:8px;line-height:1.35}
 .bc-lbl b{display:block;color:var(--ink);font-size:12px;font-weight:600}
 /* Minichart bars (84px) — scoped to avoid conflict */
-.minichart .bars{height:84px;gap:9px;margin-bottom:0}
+.minichart .bars{height:132px;gap:9px;margin-bottom:0}
 .minichart .bar{flex:1;max-width:none;background:var(--accent-line);border-radius:4px 4px 0 0;border-top:none;min-height:4px;position:relative}
 .minichart .bar .bv{position:absolute;top:-14px;left:0;right:0;text-align:center;font-size:9px;font-weight:600;color:var(--ink-2);white-space:nowrap}
 .minichart .bar.bar-now{background:var(--accent-soft);border-top:3px solid var(--accent)}
