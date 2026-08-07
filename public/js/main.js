@@ -1369,12 +1369,8 @@ var SPOT = [
 (function(){
   var STORY = {
     housing: [
-      { t:'Why it now takes $31 an hour to afford a one-bedroom', go:'post-housing' },
-      { t:'Black renters are twice as likely to be cost-burdened', go:'post-housing' },
       { t:'52,000 filings: what the eviction data really tells us', go:'post-housing' }
     ],
-    education: [{ t:'The racial makeup of North Meck schools, explained', go:'blog' }],
-    healthcare: [{ t:'Why young adults in North Meck are falling through the coverage gap', go:'blog' }],
   };
   var HOLD=4500, ANIM=430;
   window.storyGo=function(btn){ window.location = (btn._go === 'post-housing' ? 'blog' : (btn._go||'blog')) + '.html'; };
