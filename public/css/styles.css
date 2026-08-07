@@ -773,7 +773,7 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
   .topics-prev,.topics-next{display:none}
   .nbhd-grid{grid-template-columns:1fr}
   .spot-arrow{display:none}
-  .spot-prev,.spot-next{display:flex;width:42px;height:42px}
+  .spot-prev,.spot-next{display:flex;width:42px;height:42px;top:38%}
   .spot-prev{left:8px}
   .spot-next{right:8px}
   .partner{grid-template-columns:1fr;gap:28px;padding:40px 0}
