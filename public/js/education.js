@@ -670,7 +670,7 @@ window.Plot = Plot;
             el.innerHTML = '';
             el.append(window.stdPlot({
               width: w, height: 340,
-              x: {label: "Year", tickFormat: d => String(d), insetLeft: 12, insetRight: 12},
+              x: {label: "Year", tickFormat: d => String(d), ticks: [2018,2019,2020,2021,2022,2023,2024], insetLeft: 12, insetRight: 12},
               y: {label: "Total Enrollment", grid: true, interval: 1000, domain: [yMin, yMax]},
               color: {domain: Object.keys(TOWN_COLORS), range: Object.values(TOWN_COLORS), legend: town === 'All'},
               marks: [
