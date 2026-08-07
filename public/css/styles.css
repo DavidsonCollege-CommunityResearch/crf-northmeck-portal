@@ -776,6 +776,10 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
   .spot-prev,.spot-next{display:flex;width:42px;height:42px;top:38%}
   .spot-prev{left:8px}
   .spot-next{right:8px}
+  .tabs{position:sticky;top:66px;z-index:150;background:var(--paper)}
+  .filterbar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .filterbar::-webkit-scrollbar{display:none}
+  .filterbar .chip,.filterbar .lbl{flex-shrink:0}
   .partner{grid-template-columns:1fr;gap:28px;padding:40px 0}
   .nbhd-grid2{grid-template-columns:1fr;gap:30px}
   .loc{grid-template-columns:1fr}
