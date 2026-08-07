@@ -63,7 +63,7 @@ const SHOW_ED_RESOURCES = false;
         <div class="stat-row">
           <div class="srow-fig">
             <div class="stat-n warn">~1 in 3</div>
-            <p class="stat-l">North Meck schools are federally designated Title I, meaning a high share of students come from low-income families</p>
+            <p class="stat-l">North Meck schools are federally designated <span class="gloss-link" data-term="title-i" role="button" tabindex="0" onclick="glossTerm('title-i')">Title I</span>, meaning a high share of students come from low-income families</p>
             <span class="stat-src">NC DPI, 2024</span>
           </div>
           <div class="card viz-host" style="margin-bottom:28px">
@@ -82,7 +82,7 @@ const SHOW_ED_RESOURCES = false;
           </div>
           <div class="card viz-host" style="margin-bottom:28px">
             <div class="card-t">Academic growth status by school (2024)</div>
-            <div class="card-s">EVAAS growth index score, whether each school exceeded, met, or fell short of expected growth</div>
+            <div class="card-s"><span class="gloss-link" data-term="evaas" role="button" tabindex="0" onclick="glossTerm('evaas')">EVAAS growth index</span> score, whether each school exceeded, met, or fell short of expected growth</div>
             <div id="chart-growth-overview"></div>
           </div>
         </div>
@@ -214,7 +214,7 @@ const SHOW_ED_RESOURCES = false;
   <!-- TAB: academic performance -->
   <div class="tabpane" data-pane="ed-performance">
     <div class="wrap">
-      <div class="sec-head"><span class="eyebrow">Academic Performance</span><h2 class="sec-h">How are students performing, and which schools are improving?</h2><p class="lead">NC end-of-grade proficiency rates, school performance grades, and graduation rates paint a picture of academic outcomes across North Meck schools, and how they compare to the district and state.</p><p class="lead" style="margin-top:8px;font-size:14px;color:var(--ink-3)">A note on terminology: "proficient" (or GLP) means a student scored Level 3 or higher (of 5) on NC's state exams, a passing but not top-tier score. "College/Career Ready" (CCR) is the stricter Level 4 or 5 standard. See the <span style="text-decoration:underline;cursor:pointer" onclick="openGlossary()">glossary</span> for details.</p></div>
+      <div class="sec-head"><span class="eyebrow">Academic Performance</span><h2 class="sec-h">How are students performing, and which schools are improving?</h2><p class="lead">NC end-of-grade proficiency rates, school performance grades, and graduation rates paint a picture of academic outcomes across North Meck schools, and how they compare to the district and state.</p><p class="lead" style="margin-top:8px;font-size:14px;color:var(--ink-3)">A note on terminology: "proficient" (or <span class="gloss-link" data-term="glp" role="button" tabindex="0" onclick="glossTerm('glp')">GLP</span>) means a student scored Level 3 or higher (of 5) on NC's state exams, a passing but not top-tier score. "<span class="gloss-link" data-term="ccr" role="button" tabindex="0" onclick="glossTerm('ccr')">College/Career Ready</span>" (CCR) is the stricter Level 4 or 5 standard. "<span class="gloss-link" data-term="econ-disadv" role="button" tabindex="0" onclick="glossTerm('econ-disadv')">Economically disadvantaged</span>" and "<span class="gloss-link" data-term="title-i" role="button" tabindex="0" onclick="glossTerm('title-i')">Title I</span>" are related but distinct designations, and growth is measured by the <span class="gloss-link" data-term="evaas" role="button" tabindex="0" onclick="glossTerm('evaas')">EVAAS Growth Index</span> rather than a passing score. Graduation figures use the <span class="gloss-link" data-term="cohort-grad" role="button" tabindex="0" onclick="glossTerm('cohort-grad')">cohort graduation rate</span>. See the <span style="text-decoration:underline;cursor:pointer" onclick="openGlossary()">glossary</span> for details.</p></div>
 
         <!--Grade Level Proficiency-->
         <div class="card viz-host" style="margin-bottom:28px">
