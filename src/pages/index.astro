@@ -16,6 +16,11 @@ const homeStories = HOME_STORY_ORDER.map(id => bySlug[id]).filter(Boolean);
 
 <div class="page active" style="display:block">
 
+  <div class="mobile-notice" id="mobileNotice">
+    <span class="mobile-notice-text"><i class="ti ti-device-laptop"></i> This site is built to be viewed on a laptop or larger screen. You can still browse here, but charts and tables are easier to read on a bigger display.</span>
+    <button class="mobile-notice-close" onclick="document.getElementById('mobileNotice').style.display='none'" aria-label="Dismiss"><i class="ti ti-x"></i></button>
+  </div>
+
   <section class="hero">
     <div class="wrap hero-grid">
       <div class="hero-text">
