@@ -1445,6 +1445,9 @@ var CHART_TO_DATASET = {
   'chart-pop-vs-k12':'school-enrollment', 'chart-total-enrollment-trend':'school-enrollment',
   'chart-race-gap-avg':'school-race-gap', 'chart-race-gap-top':'school-race-gap',
   'chart-disability-gap':'school-disability-gap',
+  'chart-title1-proficiency':'school-proficiency',
+  'chart-growth-overview':'school-growth',
+  'chart-disability-gap-overview':'school-disability-gap',
   // Healthcare
   'hc-ins-dot-wrap':'healthcare-insurance', 'hc-ins-heatmap-title':'healthcare-insurance',
   'hc-ins-heatmap-sub':'healthcare-insurance', 'hc-ins-heatmap':'healthcare-insurance',
