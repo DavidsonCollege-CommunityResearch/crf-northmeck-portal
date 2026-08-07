@@ -807,7 +807,9 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
   .dlib-dl{flex:1;min-width:0;padding:14px 4px}
   .rs-rotator{max-width:58vw}
   .rs-text{overflow:hidden;text-overflow:ellipsis}
-  .fab{right:16px;bottom:50px}
+  .fab{right:16px;bottom:16px}
+  .a11y-btn{left:16px;bottom:16px}
+  .factsbar{display:none}
 }
 @media(max-width:720px){.factsbar-label,.factsbar-sep{display:none}.fact-dash{display:none}}
 @media(max-width:880px){.nbhd-grid2{grid-template-columns:1fr;gap:30px}}
