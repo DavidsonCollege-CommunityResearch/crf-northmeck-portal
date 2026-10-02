@@ -21,30 +21,30 @@ draft: false
 
 <h2>The number that started it</h2>
 
-<p>For a one-bedroom apartment at fair market rent in the Charlotte-Concord-Gastonia region, a full-time worker needs to earn <strong>$35.08 an hour</strong> to spend no more than 30% of their income on housing.</p>
+<p>For a one-bedroom apartment at fair market rent in the Charlotte-Concord-Gastonia region, a full-time worker needs to earn <strong>$31.67 an hour</strong> to spend no more than 30% of their income on housing.</p>
 
 <p>That's more than four times the federal minimum wage. Of the eight local occupations we tracked, only one clears that bar.</p>
 
 <figure class="post-figure">
   <div class="card">
     <div class="card-t">The wage you'd need vs. what local jobs pay</div>
-    <div class="card-s">Hourly wage to afford a 1-bed at fair market rent, vs. Charlotte-Concord-Gastonia occupational wages, 2025</div>
+    <div class="card-s">Hourly wage to afford a 1-bed at fair market rent, vs. Charlotte-Concord-Gastonia occupational wages</div>
     <div class="bars">
-      <div class="bc"><div class="bar hi" style="height:86.8%" data-val="$35.08/hr" data-label="Housing wage needed (1-bed)" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$35.08</b>1-bed need</div></div>
-      <div class="bc"><div class="bar" style="height:100%" data-val="$40.42/hr" data-label="Registered Nurses" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$40.42</b>Registered nurse</div></div>
-      <div class="bc"><div class="bar" style="height:65.7%" data-val="$26.54/hr" data-label="Heavy &amp; Tractor-Trailer Truck Drivers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$26.54</b>Truck driver</div></div>
-      <div class="bc"><div class="bar" style="height:51.2%" data-val="$20.70/hr" data-label="Customer Service Representatives" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$20.70</b>Customer service</div></div>
-      <div class="bc"><div class="bar" style="height:43.3%" data-val="$17.49/hr" data-label="Laborers &amp; Freight/Stock Movers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.49</b>Laborer / stock mover</div></div>
-      <div class="bc"><div class="bar" style="height:43.2%" data-val="$17.46/hr" data-label="Stockers and Order Fillers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.46</b>Stocker / order filler</div></div>
-      <div class="bc"><div class="bar" style="height:40.8%" data-val="$16.49/hr" data-label="Retail Salespersons" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$16.49</b>Retail sales</div></div>
-      <div class="bc"><div class="bar lo" style="height:34.3%" data-val="$13.88/hr" data-label="Fast Food/Counter Workers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.88</b>Fast food / counter</div></div>
-      <div class="bc"><div class="bar lo" style="height:34.1%" data-val="$13.77/hr" data-label="Cashiers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.77</b>Cashier</div></div>
+      <div class="bc"><div class="bar hi" style="height:78.4%" data-val="$31.67/hr" data-label="Housing wage needed (1-bed)" data-src="Derived from NLIHC Out of Reach 2024 1-bed fair market rent ($1,647)"></div><div class="bc-lbl"><b>$31.67</b>1-bed need</div></div>
+      <div class="bc"><div class="bar" style="height:100%" data-val="$40.42/hr" data-label="Registered Nurses" data-src="BLS OEWS, Charlotte-Concord-Gastonia MSA, 2023"></div><div class="bc-lbl"><b>$40.42</b>Registered nurse</div></div>
+      <div class="bc"><div class="bar" style="height:65.7%" data-val="$26.54/hr" data-label="Heavy &amp; Tractor-Trailer Truck Drivers" data-src="BLS OEWS, Charlotte-Concord-Gastonia MSA, 2023"></div><div class="bc-lbl"><b>$26.54</b>Truck driver</div></div>
+      <div class="bc"><div class="bar" style="height:51.2%" data-val="$20.70/hr" data-label="Customer Service Representatives" data-src="BLS OEWS, Charlotte-Concord-Gastonia MSA, 2023"></div><div class="bc-lbl"><b>$20.70</b>Customer service</div></div>
+      <div class="bc"><div class="bar" style="height:43.3%" data-val="$17.49/hr" data-label="Laborers &amp; Freight/Stock Movers" data-src="BLS OEWS, Charlotte-Concord-Gastonia MSA, 2023"></div><div class="bc-lbl"><b>$17.49</b>Laborer / stock mover</div></div>
+      <div class="bc"><div class="bar" style="height:43.2%" data-val="$17.46/hr" data-label="Stockers and Order Fillers" data-src="BLS OEWS, Charlotte-Concord-Gastonia MSA, 2023"></div><div class="bc-lbl"><b>$17.46</b>Stocker / order filler</div></div>
+      <div class="bc"><div class="bar" style="height:40.8%" data-val="$16.49/hr" data-label="Retail Salespersons" data-src="BLS OEWS, Charlotte-Concord-Gastonia MSA, 2023"></div><div class="bc-lbl"><b>$16.49</b>Retail sales</div></div>
+      <div class="bc"><div class="bar lo" style="height:34.3%" data-val="$13.88/hr" data-label="Fast Food/Counter Workers" data-src="BLS OEWS, Charlotte-Concord-Gastonia MSA, 2023"></div><div class="bc-lbl"><b>$13.88</b>Fast food / counter</div></div>
+      <div class="bc"><div class="bar lo" style="height:34.1%" data-val="$13.77/hr" data-label="Cashiers" data-src="BLS OEWS, Charlotte-Concord-Gastonia MSA, 2023"></div><div class="bc-lbl"><b>$13.77</b>Cashier</div></div>
     </div>
   </div>
-  <figcaption class="post-figcap">Source: North Meck Insights data warehouse, Charlotte Regional Housing Wage reference data, 2025.</figcaption>
+  <figcaption class="post-figcap">Source: BLS Occupational Employment &amp; Wage Statistics, Charlotte-Concord-Gastonia MSA, 2023. 1-bed housing wage derived from the NLIHC <em>Out of Reach</em> 2024 fair market rent.</figcaption>
 </figure>
 
-<blockquote class="post-quote">A minimum-wage worker would need close to 194 hours in a single week to match what a 1-bedroom-affording paycheck brings home in 40. A week only has 168 hours.</blockquote>
+<blockquote class="post-quote">A minimum-wage worker would need close to 175 hours in a single week to match what a 1-bedroom-affording paycheck brings home in 40. A week only has 168 hours.</blockquote>
 
 <h2>And locally, rent went up fast</h2>
 
@@ -98,7 +98,7 @@ draft: false
 
 <h2>What this means</h2>
 
-<p>The gap between rent and income is not abstract — it shows up in the rent-to-income ratios climbing in every one of our three towns, and in the growing share of neighbors who are cost-burdened. Understanding the size of the gap is the first step toward closing it, which is why every figure on this site links back to its public source.</p>
+<p>The gap between rent and income is not abstract — it shows up in the rent-to-income ratios climbing in Cornelius and Huntersville, and in the growing share of neighbors who are cost-burdened in all three towns. Understanding the size of the gap is the first step toward closing it, which is why every figure on this site links back to its public source.</p>
 
 <p>The full picture, town by town, lives in the Housing dashboard.</p>
 
@@ -106,6 +106,7 @@ draft: false
 
 <h2 class="post-sources-h">Sources</h2>
 <ul class="post-sources">
-  <li>North Meck Insights data warehouse — <code>agg_charlotte_occupation_housing_wage</code>, <code>agg_charlotte_ami_affordability_gap</code>, <code>agg_charlotte_fair_market_rent</code> (Charlotte Regional Housing Affordability reference data, 2025)</li>
-  <li>North Meck Insights data warehouse — <code>agg_town_housing_affordability</code>, <code>agg_town_housing_burden</code> (U.S. Census ACS, 2018–2024)</li>
+  <li>National Low Income Housing Coalition, <em>Out of Reach</em> 2024 — Charlotte-Concord-Gastonia fair market rents and affordability by income level (North Meck Insights datasets <code>charlotte-fmr-bedroom</code>, <code>charlotte-ami-gap</code>)</li>
+  <li>U.S. Bureau of Labor Statistics, Occupational Employment &amp; Wage Statistics, Charlotte-Concord-Gastonia MSA, 2023 (North Meck Insights dataset <code>charlotte-housing-wage</code>)</li>
+  <li>North Meck Insights data warehouse — <code>agg_town_economic_trends</code>, <code>agg_town_housing_burden</code> (U.S. Census ACS, 2018–2024)</li>
 </ul>
