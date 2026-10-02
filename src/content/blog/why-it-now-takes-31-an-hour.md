@@ -30,11 +30,11 @@ draft: false
     <div class="card-s">Hourly wage to afford a 1-bed at fair market rent, vs. typical Charlotte-metro pay, 2025</div>
     <div class="bars">
       <div class="bc"><div class="bar hi" style="height:100%" data-val="$31.67/hr" data-label="Housing wage needed" data-src="NLIHC Out of Reach 2025"></div><div class="bc-lbl"><b>$31.67</b>1-bed need</div></div>
-      <div class="bc"><div class="bar" style="height:72%" data-val="$27.85/hr" data-label="Teacher" data-src="BLS 2025"></div><div class="bc-lbl"><b>$27.85</b>Teacher</div></div>
-      <div class="bc"><div class="bar" style="height:70%" data-val="$26.94/hr" data-label="Electrician" data-src="BLS 2025"></div><div class="bc-lbl"><b>$26.94</b>Electrician</div></div>
-      <div class="bc"><div class="bar" style="height:54%" data-val="$21.34/hr" data-label="Firefighter" data-src="BLS 2025"></div><div class="bc-lbl"><b>$21.34</b>Firefighter</div></div>
-      <div class="bc"><div class="bar" style="height:46%" data-val="$18.33/hr" data-label="Nursing aide" data-src="BLS 2025"></div><div class="bc-lbl"><b>$18.33</b>Nursing aide</div></div>
-      <div class="bc"><div class="bar lo" style="height:18%" data-val="$7.25/hr" data-label="Minimum wage" data-src="Federal minimum wage"></div><div class="bc-lbl"><b>$7.25</b>Min. wage</div></div>
+      <div class="bc"><div class="bar" style="height:87.9%" data-val="$27.85/hr" data-label="Teacher" data-src="BLS 2025"></div><div class="bc-lbl"><b>$27.85</b>Teacher</div></div>
+      <div class="bc"><div class="bar" style="height:85.1%" data-val="$26.94/hr" data-label="Electrician" data-src="BLS 2025"></div><div class="bc-lbl"><b>$26.94</b>Electrician</div></div>
+      <div class="bc"><div class="bar" style="height:67.4%" data-val="$21.34/hr" data-label="Firefighter" data-src="BLS 2025"></div><div class="bc-lbl"><b>$21.34</b>Firefighter</div></div>
+      <div class="bc"><div class="bar" style="height:57.9%" data-val="$18.33/hr" data-label="Nursing aide" data-src="BLS 2025"></div><div class="bc-lbl"><b>$18.33</b>Nursing aide</div></div>
+      <div class="bc"><div class="bar lo" style="height:22.9%" data-val="$7.25/hr" data-label="Minimum wage" data-src="Federal minimum wage"></div><div class="bc-lbl"><b>$7.25</b>Min. wage</div></div>
     </div>
   </div>
   <figcaption class="post-figcap">Source: NLIHC Out of Reach 2025 · U.S. Bureau of Labor Statistics.</figcaption>
@@ -49,12 +49,7 @@ draft: false
     <div class="card-t">Rent rose 40% in a decade</div>
     <div class="card-s">Inflation-adjusted median monthly rent, Mecklenburg County, 2014–2024</div>
     <div class="bars">
-      <div class="bc"><div class="bar" style="height:33%" data-val="$1,262/mo" data-label="2014" data-src="ACS 2024"></div><div class="bc-lbl"><b>$1,262</b>2014</div></div>
-      <div class="bc"><div class="bar" style="height:43%"></div><div class="bc-lbl">2016</div></div>
-      <div class="bc"><div class="bar" style="height:52%"></div><div class="bc-lbl">2018</div></div>
-      <div class="bc"><div class="bar" style="height:67%"></div><div class="bc-lbl">2021</div></div>
-      <div class="bc"><div class="bar" style="height:79%"></div><div class="bc-lbl">2022</div></div>
-      <div class="bc"><div class="bar" style="height:88%"></div><div class="bc-lbl">2023</div></div>
+      <div class="bc"><div class="bar" style="height:71.6%" data-val="$1,262/mo" data-label="2014" data-src="ACS 2024"></div><div class="bc-lbl"><b>$1,262</b>2014</div></div>
       <div class="bc"><div class="bar hi" style="height:100%" data-val="$1,762/mo" data-label="2024" data-src="ACS 2024"></div><div class="bc-lbl"><b>$1,762</b>2024</div></div>
     </div>
   </div>

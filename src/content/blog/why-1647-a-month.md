@@ -30,14 +30,15 @@ draft: false
     <div class="card-t">The wage you'd need vs. what local jobs pay</div>
     <div class="card-s">Hourly wage to afford a 1-bed at fair market rent, vs. Charlotte-Concord-Gastonia occupational wages, 2025</div>
     <div class="bars">
-      <div class="bc"><div class="bar hi" style="height:96%" data-val="$40.42/hr" data-label="Registered Nurse" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$40.42</b>Registered Nurse</div></div>
-      <div class="bc"><div class="bar" style="height:63.03%" data-val="$26.54/hr" data-label="Truck Driver" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$26.54</b>Truck driver</div></div>
-      <div class="bc"><div class="bar" style="height:49.16%" data-val="$20.70/hr" data-label="Customer Service Representatives" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$20.70</b>Customer service</div></div>
-      <div class="bc"><div class="bar" style="height:41.54%" data-val="$17.49/hr" data-label="Laborer / Stock Mover" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.49</b>Laborer/ Stock Mover</div></div>
-      <div class="bc"><div class="bar" style="height:41.47%" data-val="$17.49/hr" data-label="Stockers and Order Fillers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.46</b>Stockers and Order Fillers</div></div>
-      <div class="bc"><div class="bar" style="height:39.16%" data-val="$16.49/hr" data-label="Retail Salesperson" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$16.49</b>Retail Salespersons</div></div>
-      <div class="bc"><div class="bar lo" style="height:32.70%" data-val="$13.88/hr" data-label="Fast Food/Counter Workers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.77</b>Counter Workers</div></div>
-      <div class="bc"><div class="bar lo" style="height:32.70%" data-val="$13.77/hr" data-label="Cashier" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.77</b>Cashier</div></div>
+      <div class="bc"><div class="bar hi" style="height:86.8%" data-val="$35.08/hr" data-label="Housing wage needed (1-bed)" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$35.08</b>1-bed need</div></div>
+      <div class="bc"><div class="bar" style="height:100%" data-val="$40.42/hr" data-label="Registered Nurses" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$40.42</b>Registered nurse</div></div>
+      <div class="bc"><div class="bar" style="height:65.7%" data-val="$26.54/hr" data-label="Heavy &amp; Tractor-Trailer Truck Drivers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$26.54</b>Truck driver</div></div>
+      <div class="bc"><div class="bar" style="height:51.2%" data-val="$20.70/hr" data-label="Customer Service Representatives" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$20.70</b>Customer service</div></div>
+      <div class="bc"><div class="bar" style="height:43.3%" data-val="$17.49/hr" data-label="Laborers &amp; Freight/Stock Movers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.49</b>Laborer / stock mover</div></div>
+      <div class="bc"><div class="bar" style="height:43.2%" data-val="$17.46/hr" data-label="Stockers and Order Fillers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$17.46</b>Stocker / order filler</div></div>
+      <div class="bc"><div class="bar" style="height:40.8%" data-val="$16.49/hr" data-label="Retail Salespersons" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$16.49</b>Retail sales</div></div>
+      <div class="bc"><div class="bar lo" style="height:34.3%" data-val="$13.88/hr" data-label="Fast Food/Counter Workers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.88</b>Fast food / counter</div></div>
+      <div class="bc"><div class="bar lo" style="height:34.1%" data-val="$13.77/hr" data-label="Cashiers" data-src="Charlotte Regional Housing Wage data"></div><div class="bc-lbl"><b>$13.77</b>Cashier</div></div>
     </div>
   </div>
   <figcaption class="post-figcap">Source: North Meck Insights data warehouse, Charlotte Regional Housing Wage reference data, 2025.</figcaption>
@@ -54,12 +55,12 @@ draft: false
     <div class="card-t">North Meck median rent rose 40% in six years</div>
     <div class="card-s">Average of Cornelius, Davidson, and Huntersville median gross rent, 2018–2024</div>
     <div class="bars">
-      <div class="bc"><div class="bar" style="height:35%" data-val="$1,241/mo" data-label="2018" data-src="ACS 2018-2024"></div><div class="bc-lbl"><b>$1,241</b>2018</div></div>
-      <div class="bc"><div class="bar" style="height:38%"></div><div class="bc-lbl">2019</div></div>
-      <div class="bc"><div class="bar" style="height:43%"></div><div class="bc-lbl">2020</div></div>
-      <div class="bc"><div class="bar" style="height:56%"></div><div class="bc-lbl">2021</div></div>
-      <div class="bc"><div class="bar" style="height:79%"></div><div class="bc-lbl">2022</div></div>
-      <div class="bc"><div class="bar" style="height:89%"></div><div class="bc-lbl">2023</div></div>
+      <div class="bc"><div class="bar" style="height:71.5%" data-val="$1,241/mo" data-label="2018" data-src="ACS 2018-2024"></div><div class="bc-lbl"><b>$1,241</b>2018</div></div>
+      <div class="bc"><div class="bar" style="height:72.7%" data-val="$1,263/mo" data-label="2019" data-src="ACS 2018-2024"></div><div class="bc-lbl"><b>$1,263</b>2019</div></div>
+      <div class="bc"><div class="bar" style="height:74.8%" data-val="$1,299/mo" data-label="2020" data-src="ACS 2018-2024"></div><div class="bc-lbl"><b>$1,299</b>2020</div></div>
+      <div class="bc"><div class="bar" style="height:80.7%" data-val="$1,401/mo" data-label="2021" data-src="ACS 2018-2024"></div><div class="bc-lbl"><b>$1,401</b>2021</div></div>
+      <div class="bc"><div class="bar" style="height:90.7%" data-val="$1,574/mo" data-label="2022" data-src="ACS 2018-2024"></div><div class="bc-lbl"><b>$1,574</b>2022</div></div>
+      <div class="bc"><div class="bar" style="height:95.0%" data-val="$1,650/mo" data-label="2023" data-src="ACS 2018-2024"></div><div class="bc-lbl"><b>$1,650</b>2023</div></div>
       <div class="bc"><div class="bar hi" style="height:100%" data-val="$1,736/mo" data-label="2024" data-src="ACS 2018-2024"></div><div class="bc-lbl"><b>$1,736</b>2024</div></div>
     </div>
   </div>
