@@ -1,0 +1,8 @@
+/* Neutralize the wrappers Quarto puts around code cells so charts sit in
+   cards exactly as the hand-written HTML did. */
+.cell, .cell-output, .cell-output-display { margin: 0; padding: 0; }
+.cell-output-display > div { width: 100%; }
+.cell-code, .cell-code.hidden, .hidden { display: none !important; }
+/* OJS input/output placeholders shouldn't add vertical rhythm of their own. */
+.observablehq { margin: 0; }
+.observablehq--error { color: var(--warn); font-size: 13px; }

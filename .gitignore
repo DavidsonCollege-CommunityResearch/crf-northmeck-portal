@@ -22,6 +22,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-/css/
-/js/
 /.migration-baseline/
+
+# Quarto
+/_site/
+/.quarto/
+**/*.quarto_ipynb
+/_freeze/

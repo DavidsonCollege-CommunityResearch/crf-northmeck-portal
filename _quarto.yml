@@ -1,0 +1,50 @@
+project:
+  type: website
+  output-dir: _site
+  # Only render site pages and posts (not README.md, CLAUDE.md, etc.).
+  render:
+    - "*.qmd"
+    - "posts/*.qmd"
+  # Static files copied into the site as-is, at the same URLs as before.
+  resources:
+    - css/
+    - js/
+    - images/
+    - data/
+    - maps/
+    - favicon.ico
+    - favicon.svg
+    - CNAME
+  # R chunks run from the repo root, so source("R/nm.R") and data/ paths work
+  # the same in posts/ as in top-level pages.
+  execute-dir: project
+
+website:
+  # No site-wide title: each page sets its full <title> via pagetitle,
+  # and a site title here would be appended to it a second time.
+  site-url: https://northmeckinsights.org
+  # Quarto's navbar and footer aren't used: the site's own nav, footer, and
+  # modals live in _partials/ and are injected into every page below.
+
+format:
+  html:
+    # A "$" in prose is a dollar sign, not the start of LaTeX math.
+    from: markdown-tex_math_dollars
+    # No Bootstrap or Quarto page chrome; css/styles.css styles everything.
+    theme: none
+    minimal: true
+    page-layout: custom
+    # Keep headings exactly where they're written (no <section> wrappers, no
+    # hover anchors), so raw HTML layouts aren't rearranged.
+    section-divs: false
+    anchor-sections: false
+    lang: en
+    include-in-header: _partials/head.html
+    include-before-body: _partials/nav.html
+    include-after-body: _partials/after-body.html
+    css: css/quarto-overrides.css
+
+execute:
+  echo: false
+  warning: false
+  message: false

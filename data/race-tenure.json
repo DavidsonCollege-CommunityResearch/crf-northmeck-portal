@@ -1,0 +1,191 @@
+[
+  {
+    "town": "Cornelius",
+    "race": "White alone",
+    "total": 12014,
+    "owner": 8802,
+    "renter": 3212,
+    "ownership_rate": 73.3,
+    "renter_rate": 26.7
+  },
+  {
+    "town": "Davidson",
+    "race": "White alone",
+    "total": 4809,
+    "owner": 3934,
+    "renter": 875,
+    "ownership_rate": 81.8,
+    "renter_rate": 18.2
+  },
+  {
+    "town": "Huntersville",
+    "race": "White alone",
+    "total": 18426,
+    "owner": 13928,
+    "renter": 4498,
+    "ownership_rate": 75.6,
+    "renter_rate": 24.4
+  },
+  {
+    "town": "Cornelius",
+    "race": "Black or African American",
+    "total": 511,
+    "owner": 148,
+    "renter": 363,
+    "ownership_rate": 29,
+    "renter_rate": 71
+  },
+  {
+    "town": "Davidson",
+    "race": "Black or African American",
+    "total": 392,
+    "owner": 245,
+    "renter": 147,
+    "ownership_rate": 62.5,
+    "renter_rate": 37.5
+  },
+  {
+    "town": "Huntersville",
+    "race": "Black or African American",
+    "total": 3544,
+    "owner": 1679,
+    "renter": 1865,
+    "ownership_rate": 47.4,
+    "renter_rate": 52.6
+  },
+  {
+    "town": "Cornelius",
+    "race": "American Indian/Alaska Native",
+    "total": 61,
+    "owner": 8,
+    "renter": 53,
+    "ownership_rate": 13.1,
+    "renter_rate": 86.9
+  },
+  {
+    "town": "Cornelius",
+    "race": "Asian",
+    "total": 325,
+    "owner": 166,
+    "renter": 159,
+    "ownership_rate": 51.1,
+    "renter_rate": 48.9
+  },
+  {
+    "town": "Davidson",
+    "race": "Asian",
+    "total": 120,
+    "owner": 120,
+    "renter": 0,
+    "ownership_rate": 100,
+    "renter_rate": 0
+  },
+  {
+    "town": "Huntersville",
+    "race": "Asian",
+    "total": 1206,
+    "owner": 1100,
+    "renter": 106,
+    "ownership_rate": 91.2,
+    "renter_rate": 8.8
+  },
+  {
+    "town": "Cornelius",
+    "race": "Some other race",
+    "total": 182,
+    "owner": 80,
+    "renter": 102,
+    "ownership_rate": 44,
+    "renter_rate": 56
+  },
+  {
+    "town": "Huntersville",
+    "race": "Some other race",
+    "total": 708,
+    "owner": 393,
+    "renter": 315,
+    "ownership_rate": 55.5,
+    "renter_rate": 44.5
+  },
+  {
+    "town": "Cornelius",
+    "race": "Two or more races",
+    "total": 791,
+    "owner": 446,
+    "renter": 345,
+    "ownership_rate": 56.4,
+    "renter_rate": 43.6
+  },
+  {
+    "town": "Davidson",
+    "race": "Two or more races",
+    "total": 237,
+    "owner": 143,
+    "renter": 94,
+    "ownership_rate": 60.3,
+    "renter_rate": 39.7
+  },
+  {
+    "town": "Huntersville",
+    "race": "Two or more races",
+    "total": 1150,
+    "owner": 850,
+    "renter": 300,
+    "ownership_rate": 73.9,
+    "renter_rate": 26.1
+  },
+  {
+    "town": "Cornelius",
+    "race": "White, not Hispanic",
+    "total": 11924,
+    "owner": 8754,
+    "renter": 3170,
+    "ownership_rate": 73.4,
+    "renter_rate": 26.6
+  },
+  {
+    "town": "Davidson",
+    "race": "White, not Hispanic",
+    "total": 4744,
+    "owner": 3882,
+    "renter": 862,
+    "ownership_rate": 81.8,
+    "renter_rate": 18.2
+  },
+  {
+    "town": "Huntersville",
+    "race": "White, not Hispanic",
+    "total": 18158,
+    "owner": 13763,
+    "renter": 4395,
+    "ownership_rate": 75.8,
+    "renter_rate": 24.2
+  },
+  {
+    "town": "Cornelius",
+    "race": "Hispanic or Latino",
+    "total": 578,
+    "owner": 310,
+    "renter": 268,
+    "ownership_rate": 53.6,
+    "renter_rate": 46.4
+  },
+  {
+    "town": "Davidson",
+    "race": "Hispanic or Latino",
+    "total": 165,
+    "owner": 78,
+    "renter": 87,
+    "ownership_rate": 47.3,
+    "renter_rate": 52.7
+  },
+  {
+    "town": "Huntersville",
+    "race": "Hispanic or Latino",
+    "total": 1621,
+    "owner": 963,
+    "renter": 658,
+    "ownership_rate": 59.4,
+    "renter_rate": 40.6
+  }
+]

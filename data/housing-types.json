@@ -1,0 +1,74 @@
+[
+  {
+    "town": "Cornelius",
+    "bucket": "Single-family",
+    "count": 10417,
+    "pct": 69.7
+  },
+  {
+    "town": "Cornelius",
+    "bucket": "Small multifamily (2-4 units)",
+    "count": 622,
+    "pct": 4.2
+  },
+  {
+    "town": "Cornelius",
+    "bucket": "Large multifamily (5+ units)",
+    "count": 3804,
+    "pct": 25.4
+  },
+  {
+    "town": "Cornelius",
+    "bucket": "Mobile / other",
+    "count": 113,
+    "pct": 0.8
+  },
+  {
+    "town": "Davidson",
+    "bucket": "Single-family",
+    "count": 5031,
+    "pct": 79.9
+  },
+  {
+    "town": "Davidson",
+    "bucket": "Small multifamily (2-4 units)",
+    "count": 78,
+    "pct": 1.2
+  },
+  {
+    "town": "Davidson",
+    "bucket": "Large multifamily (5+ units)",
+    "count": 1185,
+    "pct": 18.8
+  },
+  {
+    "town": "Davidson",
+    "bucket": "Mobile / other",
+    "count": 0,
+    "pct": 0
+  },
+  {
+    "town": "Huntersville",
+    "bucket": "Single-family",
+    "count": 20998,
+    "pct": 81
+  },
+  {
+    "town": "Huntersville",
+    "bucket": "Small multifamily (2-4 units)",
+    "count": 539,
+    "pct": 2.1
+  },
+  {
+    "town": "Huntersville",
+    "bucket": "Large multifamily (5+ units)",
+    "count": 4051,
+    "pct": 15.6
+  },
+  {
+    "town": "Huntersville",
+    "bucket": "Mobile / other",
+    "count": 325,
+    "pct": 1.3
+  }
+]
