@@ -100,9 +100,15 @@ race_table <- do.call(rbind, lapply(race_rows, function(r) {
 <h1 class="dash-h1">Can people afford to live in North Meck?</h1>
 <p class="lead dash-lead" style="margin-bottom:0">Rents have outpaced incomes in every North Meck town since 2018, and home values have climbed between `r fmt_pct(min(home_chg))` and `r fmt_pct(max(home_chg))`. This section follows the data to show who is affected, where the pressure is highest, and what it means for the communities that make North Meck work.</p>
 </div>
+
+```{=html}
 <img src="/images/housing-hero.jpg" alt="A North Meck neighborhood street with a For Rent sign" style="width:100%;max-height:320px;object-fit:cover;border-radius:var(--rl);display:block">
+```
+
 </div>
 </div>
+
+```{=html}
 <div class="tabs" id="housing-tabs">
 <span class="tab active" data-tab="overview" onclick="setTab(this)">Overview</span>
 <span class="tab" data-tab="affordability" onclick="setTab(this)">Affordability</span>
@@ -111,6 +117,8 @@ race_table <- do.call(rbind, lapply(race_rows, function(r) {
 <span class="tab" data-tab="homeownership" onclick="setTab(this)">Homeownership &amp; Equity</span>
 <span class="tab" data-tab="income" onclick="setTab(this)">Income &amp; Need</span>
 </div>
+```
+
 </div>
 <div class="wrap dash-filter">
 

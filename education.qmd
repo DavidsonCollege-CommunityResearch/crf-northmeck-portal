@@ -81,6 +81,8 @@ dav_grad_floor <- floor(dav_grad / 10000) * 10000
 </div>
 </div>
 </div>
+
+```{=html}
 <div class="tabs" id="education-tabs">
 <span class="tab active" data-tab="ed-overview" onclick="setTab(this)">Overview</span>
 <span class="tab" data-tab="ed-enrollment" onclick="setTab(this)">Enrollment &amp; Growth</span>
@@ -88,6 +90,8 @@ dav_grad_floor <- floor(dav_grad / 10000) * 10000
 <span class="tab" data-tab="ed-performance" onclick="setTab(this)">Academic Performance</span>
 <span class="tab" data-tab="ed-attainment" onclick="setTab(this)">Educational Attainment</span>
 </div>
+```
+
 </div>
 <div class="wrap dash-filter">
 

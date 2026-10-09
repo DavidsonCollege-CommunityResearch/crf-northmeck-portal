@@ -97,12 +97,16 @@ cd_years <- sort(unique(cd$year))
 </div>
 </div>
 </div>
+
+```{=html}
 <div class="tabs" id="healthcare-tabs">
 <span class="tab active" data-tab="hc-overview" onclick="setTab(this)">Overview</span>
 <span class="tab" data-tab="hc-insurance" onclick="setTab(this)">Health Insurance</span>
 <span class="tab" data-tab="hc-mental" onclick="setTab(this)">Mental Health</span>
 <span class="tab" data-tab="hc-chronic" onclick="setTab(this)">Chronic Disease</span>
 </div>
+```
+
 </div>
 <div class="wrap dash-filter">
 

@@ -13,7 +13,7 @@ var MD_DATA_BASE = (function(){
 })();
 
 // Shared town color palette — viridis-based (colorblind-safe), one definition
-// used by every chart script (housing.js, education.js, etc.) instead of each
+// used by the remaining plain-JS charts (e.g. js/healthcare-map.js) instead of each
 // one declaring its own colors. Change a town's color here and it updates
 // everywhere at once.
 // Shared chart defaults — one wrapper every Plot-based chart script uses

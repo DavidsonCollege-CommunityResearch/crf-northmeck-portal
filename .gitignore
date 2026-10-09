@@ -29,3 +29,6 @@ pnpm-debug.log*
 /.quarto/
 **/*.quarto_ipynb
 /_freeze/
+
+# Claude Code agent worktrees
+/.claude/worktrees/
