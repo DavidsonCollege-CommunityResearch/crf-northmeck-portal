@@ -6,3 +6,5 @@
 /* OJS input/output placeholders shouldn't add vertical rhythm of their own. */
 .observablehq { margin: 0; }
 .observablehq--error { color: var(--warn); font-size: 13px; }
+/* Quarto's listing script toggles Bootstrap's d-none class, which this site doesn't load. */
+.d-none { display: none !important; }

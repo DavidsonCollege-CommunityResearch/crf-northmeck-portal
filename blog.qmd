@@ -1,0 +1,25 @@
+---
+pagetitle: "Stories · North Meck Insights"
+listing:
+  id: stories
+  contents: posts
+  type: custom
+  template: _partials/blog-cards.ejs
+  sort: "date desc"
+  date-format: "MMMM YYYY"
+  fields: [title, image, categories, date, read-time, thumbnail-icon]
+  # Published posts with `unlisted: true` keep their page but stay off this list.
+  exclude:
+    unlisted: true
+---
+
+<div class="page active" style="display:block">
+<div class="wrap"><div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Stories</span></div></div>
+<section class="section"><div class="wrap">
+<div class="sec-head"><span class="eyebrow" style="font-size:15px">Stories</span><h2 class="sec-h" style="font-size:32px">Research in plain English</h2><p class="lead">Short posts for North Meck residents that are clear, brief, and jargon-free.</p></div>
+
+::: {#stories}
+:::
+
+</div></section>
+</div>

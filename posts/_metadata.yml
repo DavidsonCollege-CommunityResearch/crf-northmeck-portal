@@ -1,0 +1,8 @@
+# Settings shared by every blog post in this folder.
+date-format: "MMMM YYYY"
+filters:
+  - ../_extensions/post-layout.lua
+format:
+  html:
+    template-partials:
+      - ../_partials/post/title-block.html
