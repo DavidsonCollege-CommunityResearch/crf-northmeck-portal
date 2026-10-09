@@ -1,0 +1,218 @@
+[
+  {
+    "measure": "diabetes",
+    "town": "Cornelius",
+    "year": 2019,
+    "val": 7.2,
+    "lo": 6.9,
+    "hi": 7.5
+  },
+  {
+    "measure": "diabetes",
+    "town": "Cornelius",
+    "year": 2021,
+    "val": 7.7,
+    "lo": 6.6,
+    "hi": 8.9
+  },
+  {
+    "measure": "diabetes",
+    "town": "Cornelius",
+    "year": 2023,
+    "val": 7.1,
+    "lo": 6,
+    "hi": 8.1
+  },
+  {
+    "measure": "diabetes",
+    "town": "Davidson",
+    "year": 2019,
+    "val": 7.2,
+    "lo": 6.8,
+    "hi": 7.6
+  },
+  {
+    "measure": "diabetes",
+    "town": "Davidson",
+    "year": 2021,
+    "val": 7.7,
+    "lo": 6.7,
+    "hi": 8.9
+  },
+  {
+    "measure": "diabetes",
+    "town": "Davidson",
+    "year": 2023,
+    "val": 6.9,
+    "lo": 5.9,
+    "hi": 8
+  },
+  {
+    "measure": "diabetes",
+    "town": "Huntersville",
+    "year": 2019,
+    "val": 7.4,
+    "lo": 7.2,
+    "hi": 7.6
+  },
+  {
+    "measure": "diabetes",
+    "town": "Huntersville",
+    "year": 2021,
+    "val": 7.8,
+    "lo": 6.8,
+    "hi": 9
+  },
+  {
+    "measure": "diabetes",
+    "town": "Huntersville",
+    "year": 2023,
+    "val": 7.6,
+    "lo": 6.5,
+    "hi": 8.7
+  },
+  {
+    "measure": "obesity",
+    "town": "Cornelius",
+    "year": 2019,
+    "val": 24.4,
+    "lo": 23.8,
+    "hi": 25
+  },
+  {
+    "measure": "obesity",
+    "town": "Cornelius",
+    "year": 2021,
+    "val": 29.5,
+    "lo": 25.2,
+    "hi": 34.2
+  },
+  {
+    "measure": "obesity",
+    "town": "Cornelius",
+    "year": 2023,
+    "val": 25.1,
+    "lo": 20.6,
+    "hi": 29.8
+  },
+  {
+    "measure": "obesity",
+    "town": "Davidson",
+    "year": 2019,
+    "val": 24.3,
+    "lo": 23.5,
+    "hi": 25.1
+  },
+  {
+    "measure": "obesity",
+    "town": "Davidson",
+    "year": 2021,
+    "val": 29.3,
+    "lo": 25.2,
+    "hi": 34
+  },
+  {
+    "measure": "obesity",
+    "town": "Davidson",
+    "year": 2023,
+    "val": 24.7,
+    "lo": 20.2,
+    "hi": 29.2
+  },
+  {
+    "measure": "obesity",
+    "town": "Huntersville",
+    "year": 2019,
+    "val": 24.5,
+    "lo": 24.1,
+    "hi": 24.9
+  },
+  {
+    "measure": "obesity",
+    "town": "Huntersville",
+    "year": 2021,
+    "val": 29.5,
+    "lo": 25.2,
+    "hi": 34.2
+  },
+  {
+    "measure": "obesity",
+    "town": "Huntersville",
+    "year": 2023,
+    "val": 25.6,
+    "lo": 21.1,
+    "hi": 30.2
+  },
+  {
+    "measure": "hbp",
+    "town": "Cornelius",
+    "year": 2019,
+    "val": 26.4,
+    "lo": 25.9,
+    "hi": 27
+  },
+  {
+    "measure": "hbp",
+    "town": "Cornelius",
+    "year": 2021,
+    "val": 25.7,
+    "lo": 22.8,
+    "hi": 28.8
+  },
+  {
+    "measure": "hbp",
+    "town": "Cornelius",
+    "year": 2023,
+    "val": 26.1,
+    "lo": 22.9,
+    "hi": 29.2
+  },
+  {
+    "measure": "hbp",
+    "town": "Davidson",
+    "year": 2019,
+    "val": 26.3,
+    "lo": 25.6,
+    "hi": 27
+  },
+  {
+    "measure": "hbp",
+    "town": "Davidson",
+    "year": 2021,
+    "val": 25.6,
+    "lo": 22.8,
+    "hi": 28.6
+  },
+  {
+    "measure": "hbp",
+    "town": "Davidson",
+    "year": 2023,
+    "val": 25.8,
+    "lo": 22.7,
+    "hi": 28.9
+  },
+  {
+    "measure": "hbp",
+    "town": "Huntersville",
+    "year": 2019,
+    "val": 26.5,
+    "lo": 26.2,
+    "hi": 26.9
+  },
+  {
+    "measure": "hbp",
+    "town": "Huntersville",
+    "year": 2021,
+    "val": 25.8,
+    "lo": 22.9,
+    "hi": 28.9
+  },
+  {
+    "measure": "hbp",
+    "town": "Huntersville",
+    "year": 2023,
+    "val": 26.9,
+    "lo": 23.7,
+    "hi": 30
+  }
+]

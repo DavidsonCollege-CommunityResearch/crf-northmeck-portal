@@ -1,0 +1,897 @@
+---
+pagetitle: "Healthcare · North Meck Insights"
+---
+
+```{r}
+#| include: false
+source("R/nm.R")
+towns <- c("Cornelius", "Davidson", "Huntersville")
+
+# Health insurance (ACS, one row per town per year)
+ins <- nm_data("healthcare-insurance")
+ins_years <- sort(unique(ins$year))
+y_first <- min(ins_years); y_last <- max(ins_years)
+i24 <- ins[ins$year == 2024, ]
+i24 <- i24[match(towns, i24$Town), ]
+nm_claim(identical(i24$Town, towns), "insurance text quotes 2024 figures for all three towns")
+num_cols <- names(i24)[sapply(i24, is.numeric) & !names(i24) %in% c("year")]
+tot <- colSums(i24[num_cols])                       # North Meck totals, 2024
+rate <- function(u, i) tot[[u]] / (tot[[u]] + tot[[i]]) * 100   # uninsured share of a group
+
+# Overview stat 1: working-age adults (35-64) among the uninsured
+age_unins <- c("unins_U18", "unins_19_25", "unins_26_34", "unins_35_64", "unins_65_over")
+share_3564 <- setNames(i24$unins_35_64 / i24$all_unins * 100, towns)
+share_3564_all <- tot[["unins_35_64"]] / tot[["all_unins"]]
+nm_claim(all(apply(i24[age_unins], 1, which.max) == 4), "overview stat says 35–64 is the largest uninsured age group in every town")
+nm_claim(all(share_3564 >= 40 & share_3564 <= 60), "overview stat says about 1 in 2 uninsured residents in every town is 35–64")
+
+# Overview stat 2: employer coverage
+cov_types <- c("emp_based_ins", "dir_purchase_ins", "medicare_cov", "medicaid_cov", "tricare_cov", "VA_cov", "other_cov_type")
+emp_share <- tot[["emp_based_ins"]] / tot[["all_ins"]]
+nm_claim(all(apply(i24[cov_types], 1, which.max) == 1), "text says employer coverage is the most common source in all three towns")
+nm_claim(all(apply(i24[cov_types], 1, function(v) v[1] >= 2 * sort(v, decreasing = TRUE)[2])), "overview stat says employer coverage is 'by far' the most common source")
+
+# Overview stat 3: preventive care (CDC PLACES)
+pc <- nm_data("cdc-preventive-care")
+pc_avg <- tapply(pc$val, pc$measure, mean)
+nm_claim(names(which.min(pc_avg)) == "Dental", "preventive-care stat says dental visits are the lowest measure")
+
+# Dot chart callout: uninsured per 100 residents (same rounding as the chart)
+unins_rate <- setNames(i24$all_unins / (i24$all_ins + i24$all_unins) * 100, towns)
+nm_claim(names(which.min(unins_rate)) == "Davidson", "dot chart callout says Davidson has the lowest uninsured rate")
+nm_claim(round(unins_rate[["Cornelius"]]) == round(unins_rate[["Huntersville"]]), "dot chart callout says Cornelius and Huntersville sit at the same rate per 100")
+nm_claim(tot[["all_unins"]] >= 2000, "callouts say low uninsured rates still mean thousands of uninsured residents")
+
+# Coverage-type callout (% of total population, as in the heatmap)
+medicaid_pct <- setNames(i24$medicaid_cov / i24$Tot_pop * 100, towns)
+unins_pop_pct <- setNames(i24$all_unins / i24$Tot_pop * 100, towns)
+nm_claim(max(medicaid_pct) - min(medicaid_pct) < 2, "coverage-type callout says Medicaid enrollment is similar across towns")
+
+# Income and age callouts (North Meck totals, 2024)
+inc_low <- rate("no_ins_U25", "ins_U25")
+inc_high <- (tot[["no_ins_75_100"]] + tot[["no_ins_100_above"]]) /
+  (tot[["no_ins_75_100"]] + tot[["no_ins_100_above"]] + tot[["ins_75_100"]] + tot[["ins_100_above"]]) * 100
+inc_ratio <- inc_low / inc_high
+nm_claim(inc_ratio >= 2, "income callout says the under-$25k uninsured rate is several times the $75k+ rate")
+age_rate <- c("Under 19" = rate("unins_U18", "ins_U18"), "19–25" = rate("unins_19_25", "ins_19_25"),
+              "26–34" = rate("unins_26_34", "ins_26_34"), "35–64" = rate("unins_35_64", "ins_35_64"),
+              "65+" = rate("unins_65_over", "ins_65_over"))
+nm_claim(names(which.max(age_rate)) == "26–34", "age callout says 26–34 has the highest uninsured rate")
+nm_claim(all(names(sort(age_rate, decreasing = TRUE))[1:2] %in% c("26–34", "35–64")), "coverage-gap intro says adults 26–64 carry the highest uninsured rates")
+nm_claim(all(100 - age_rate[c("Under 19", "65+")] >= 95), "age callout says children and seniors have near-universal coverage")
+
+# Trend callout: coverage by year
+cov_by_year <- sapply(ins_years, function(y) { d <- ins[ins$year == y, ]; sum(d$all_ins) / sum(d$all_ins + d$all_unins) * 100 })
+town_cov <- function(t, y) { d <- ins[ins$Town == t & ins$year == y, ]; d$all_ins / (d$all_ins + d$all_unins) * 100 }
+nm_claim(all(sapply(ins_years, function(y) which.max(sapply(towns, town_cov, y = y)) == 2)), "trend callout says Davidson has led coverage every year")
+cov_gain <- sapply(towns, function(t) town_cov(t, y_last) - town_cov(t, y_first))
+nm_claim(cov_gain[["Huntersville"]] < cov_gain[["Cornelius"]], "trend callout says Huntersville improved more slowly than Cornelius")
+
+# Employment callout
+emp_cov <- 100 - rate("emp_uninsured", "emp_insured")
+unemp_cov <- 100 - rate("unemp_uninsured", "unemp_insured")
+nm_claim(100 - unemp_cov > max(inc_low, age_rate), "employment callout calls employment the strongest predictor: unemployed uninsured rate should top every income and age group")
+
+# Mental health (CDC PLACES) and facility map
+mh_dep <- nm_data("mh-depression")
+mh_years <- sort(unique(mh_dep$year))
+nm_claim(identical(mh_years, sort(unique(nm_data("mh-distress")$year))), "mental health cards list the same years for both charts")
+fac <- nm_data("mental-health-facilities")
+meck_cities <- c("Charlotte", "Cornelius", "Davidson", "Huntersville", "Matthews", "Mint Hill", "Pineville")
+nm_claim(any(!fac$city %in% meck_cities), "facility map text says it covers Mecklenburg and surrounding counties")
+
+# Chronic disease (CDC PLACES; static file, see data/cdc-chronic-disease.json)
+cd <- nm_data("cdc-chronic-disease")
+cd_years <- sort(unique(cd$year))
+```
+
+<div class="page active" style="display:block">
+<div class="wrap">
+<div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Healthcare</span></div>
+<div class="dash-hero" style="margin-bottom:56px">
+<div class="split" style="align-items:flex-start">
+<div>
+<span class="eyebrow" style="font-size:15px">Healthcare</span>
+<h1 class="dash-h1">Who can get care in North Meck, how far is it, and what does it cost them?</h1>
+<p class="lead dash-lead" style="margin-bottom:0">Insurance coverage, provider access, mental health, and chronic disease are all shaped by income and geography. This section follows the data to show where gaps are widest and who bears the highest burden.</p>
+</div>
+</div>
+</div>
+<div class="tabs" id="healthcare-tabs">
+<span class="tab active" data-tab="hc-overview" onclick="setTab(this)">Overview</span>
+<span class="tab" data-tab="hc-insurance" onclick="setTab(this)">Health Insurance</span>
+<span class="tab" data-tab="hc-mental" onclick="setTab(this)">Mental Health</span>
+<span class="tab" data-tab="hc-chronic" onclick="setTab(this)">Chronic Disease</span>
+</div>
+</div>
+<div class="wrap dash-filter">
+
+```{ojs}
+//| output: false
+import {Plot, stdPlot, chips, townChips, responsive, loadData, TOWNS, FONT} from "/js/nm-charts.js"
+
+insurance = loadData("healthcare-insurance")
+prevCare = loadData("cdc-preventive-care")
+mhDepression = loadData("mh-depression")
+mhDistress = loadData("mh-distress")
+chronic = loadData("cdc-chronic-disease")
+
+// This page's own palettes, carried over from the original charts.
+HC_TOWN_RANGE = ["#2E86AB", "#1B4F72", "#E8A838"]
+INS_RANGE = ["#2E86AB", "#E8A838"]   // Insured, Uninsured
+pctFmt = d => d + "%"
+
+// 2024 rows in town order, and "All North Meck" as the sum of the three towns.
+ins2024 = TOWNS.map(t => insurance.find(d => d.year === 2024 && d.Town === t))
+SUM_COLS = Object.keys(insurance[0]).filter(k => !["GEOID", "Town", "year"].includes(k))
+aggregate = rows => Object.fromEntries([["year", rows[0].year], ["Town", "All North Meck"], ...SUM_COLS.map(k => [k, d3.sum(rows, d => d[k] || 0)])])
+singleRow = town => town === "All" ? aggregate(ins2024) : ins2024.find(d => d.Town === town)
+trendRows = town => town === "All"
+  ? [...new Set(insurance.map(d => d.year))].sort().map(y => aggregate(insurance.filter(d => d.year === y)))
+  : insurance.filter(d => d.Town === town).sort((a, b) => a.year - b.year)
+
+// A small bold title above a chart, like the in-SVG titles the original D3 charts drew.
+withTitle = (text, node) => {
+  const div = document.createElement("div");
+  const t = document.createElement("div");
+  t.textContent = text;
+  t.style.cssText = "text-align:center;font:600 0.8rem 'Hanken Grotesk',sans-serif;color:#1B4F72;margin-bottom:6px";
+  div.append(t, node);
+  return div;
+}
+
+// Each age group's share of a town's uninsured residents (stacked to 100%).
+AGES = ["Under 18", "19-25", "26-34", "35-64", "65+"]
+AGE_COLS = ["unins_U18", "unins_19_25", "unins_26_34", "unins_35_64", "unins_65_over"]
+ageShareChart = (width, {compact = false} = {}) => {
+  const data = ins2024.flatMap(r => AGES.map((age, i) => ({town: r.Town, age, pct: r[AGE_COLS[i]] / r.all_unins * 100})));
+  return stdPlot({
+    width, height: compact ? 230 : 300, marginLeft: compact ? 78 : 100, marginBottom: compact ? 30 : 48,
+    style: {...FONT, fontSize: compact ? "11px" : "12px"},
+    x: {domain: [0, 100], ticks: [0, 25, 50, 75, 100], tickFormat: pctFmt, label: compact ? null : "Share of uninsured population (%)"},
+    y: {domain: TOWNS, label: compact ? null : "Town"},
+    color: {domain: AGES, range: ["#1A5276", "#2E86C1", "#85C1E9", "#F0A500", "#C0392B"], legend: true},
+    marks: [
+      Plot.barX(data, Plot.stackX({x: "pct", y: "town", fill: "age", order: AGES, tip: true,
+        title: d => `${d.age}: ${d.pct.toFixed(1)}% of uninsured population`})),
+      Plot.ruleX([0])
+    ]
+  });
+}
+
+// Insured vs. uninsured share for each group (one town or all of North Meck).
+pairedBars = (groups, width, marginLeft) => {
+  const data = groups.flatMap(g => [
+    {label: g.label, status: "Insured", pct: g.ins},
+    {label: g.label, status: "Uninsured", pct: 100 - g.ins}
+  ]);
+  return stdPlot({
+    width, height: 320, marginLeft, marginTop: 10, marginBottom: 40,
+    fy: {domain: groups.map(g => g.label), axis: "left", label: null, padding: 0.2, tickSize: 0},
+    y: {domain: ["Insured", "Uninsured"], axis: null},
+    x: {domain: [0, 100], ticks: 5, tickFormat: pctFmt, label: null},
+    color: {domain: ["Insured", "Uninsured"], range: INS_RANGE, legend: true},
+    marks: [
+      Plot.barX(data, {fy: "label", y: "status", x: "pct", fill: "status", rx: 2, tip: true,
+        title: d => `${d.label} · ${d.status}: ${d.pct.toFixed(1)}%`}),
+      Plot.text(data.filter(d => d.pct > 4), {fy: "label", y: "status", x: "pct", text: d => d.pct.toFixed(1) + "%",
+        dx: 3, textAnchor: "start", fontSize: 10, fill: "#555"})
+    ]
+  });
+}
+groupRate = (r, ins, unins) => ({ins: r[ins] / (r[ins] + r[unins]) * 100})
+
+// Uninsured rate by age group for one row of insurance data.
+trendRates = r => ({
+  year: r.year,
+  "Under 18": r.unins_U18 / (r.ins_U18 + r.unins_U18) * 100,
+  "19-64": (r.unins_19_25 + r.unins_26_34 + r.unins_35_64) / (r.ins_19_25 + r.ins_26_34 + r.ins_35_64 + r.unins_19_25 + r.unins_26_34 + r.unins_35_64) * 100,
+  "65+": r.unins_65_over / (r.ins_65_over + r.unins_65_over) * 100,
+  "Total population": r.all_unins / (r.all_ins + r.all_unins) * 100
+})
+
+// Grouped prevalence bars with confidence intervals (CDC PLACES), used by the
+// mental health and chronic disease charts. All towns: bars by year, one per
+// town. One town: one bar per year, colored by year, with the value inside.
+prevalenceChart = (rows, town, width, {yearColors, headroom = 1.18, labelDy = 80, xLabel = null}) => {
+  const height = 280, mL = 54, mR = 20;
+  const errorBars = (data, x, fx, capWidth) => [
+    Plot.ruleX(data, {x, fx, y1: "lo", y2: "hi", stroke: "#333", strokeWidth: 1.5}),
+    Plot.tickY(data, {x, fx, y: "hi", stroke: "#333", strokeWidth: 1.5, inset: capWidth}),
+    Plot.tickY(data, {x, fx, y: "lo", stroke: "#333", strokeWidth: 1.5, inset: capWidth})
+  ];
+  const band = (range, n, p) => range / (n + p) * (1 - p);
+  if (town === "All") {
+    const years = [...new Set(rows.map(d => d.year))].sort();
+    const bw = band(band(width - mL - mR, years.length, 0.25), TOWNS.length, 0.06);
+    return stdPlot({
+      width, height, marginLeft: mL, marginRight: mR, marginTop: 30, marginBottom: 40,
+      fx: {domain: years, label: xLabel, tickFormat: String, padding: 0.25, axis: "bottom", tickSize: 0},
+      x: {domain: TOWNS, axis: null, padding: 0.06},
+      y: {domain: [0, d3.max(rows, d => d.hi) * headroom], grid: true, ticks: 5, tickFormat: pctFmt, label: null},
+      color: {domain: TOWNS, range: HC_TOWN_RANGE, legend: true},
+      marks: [
+        Plot.barY(rows, {fx: "year", x: "town", y: "val", fill: "town", rx: 2, tip: true, title: d => `${d.town} ${d.year}: ${d.val}%`}),
+        ...errorBars(rows, "town", "year", Math.max(0, (bw - 8) / 2))
+      ]
+    });
+  }
+  const data = rows.filter(d => d.town === town).sort((a, b) => a.year - b.year);
+  const years = data.map(d => d.year);
+  const pad = 0.38;
+  const bw = band(width - mL - mR, years.length, pad);
+  return stdPlot({
+    width, height, marginLeft: mL, marginRight: mR, marginTop: 30, marginBottom: 40,
+    x: {domain: years, tickFormat: String, padding: pad, label: xLabel ? `${xLabel} · ${town}` : null, tickSize: 0},
+    y: {domain: [0, d3.max(data, d => d.hi) * headroom], grid: true, ticks: 5, tickFormat: pctFmt, label: null},
+    color: {domain: years, range: yearColors},
+    marks: [
+      Plot.barY(data, {x: "year", y: "val", fill: "year", rx: 2, tip: true, title: d => `${d.year}: ${d.val}% (CI: ${d.lo}–${d.hi}%)`}),
+      Plot.text(data, {x: "year", y: "val", text: d => d.val + "%", dy: labelDy, fill: "#fff", fontSize: 13, fontWeight: 500}),
+      ...errorBars(data, "year", undefined, Math.max(0, (bw - 10) / 2))
+    ]
+  });
+}
+```
+
+```{ojs}
+viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {label: "Area:", hint: "filters every chart"})
+```
+
+</div>
+
+<!-- TAB: overview -->
+<div class="tabpane active" data-pane="hc-overview">
+<div class="wrap">
+<div class="stat-rows" style="margin-bottom:48px">
+<!-- Stat 1: Uninsured rate -->
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">~1 in `r round(1 / share_3564_all)`</div>
+<p class="stat-l">uninsured residents in every North Meck town are working-age adults 35–64 which is the single largest age group without coverage</p>
+<span class="stat-src">ACS 2024 · Table B27001</span>
+</div>
+<div class="card viz-host">
+<div class="card-t">Uninsured rate by town &amp; age group</div>
+<div class="card-s">Share of uninsured population by age group · ACS 2024</div>
+
+<div id="hc-overview-age-uninsured">
+
+```{ojs}
+responsive(width => ageShareChart(width, {compact: true}), {invalidation})
+```
+
+</div>
+
+</div>
+</div>
+<!-- Stat 2: Mental health
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">1 in 5</div>
+<p class="stat-l">adults experiences a mental health condition each year, yet most do not receive treatment in communities with limited provider access</p>
+<span class="stat-src">SAMHSA · data coming</span>
+</div>
+<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+<div class="card-t" style="color:var(--ink-2)">Mental health provider availability by town</div>
+<div class="card-s">Psychiatrists, psychologists, and licensed counselors per 10,000 residents</div>
+<div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+<i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+<div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+<div style="font-size:12px;margin-top:4px">Data source: HRSA Health Workforce · SAMHSA behavioral health data</div>
+</div>
+</div>
+</div>
+-->
+<!-- Stat 3: Provider shortage
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">HPSA</div>
+<p class="stat-l">parts of North Meck fall within Health Professional Shortage Areas, meaning residents travel further or wait longer for primary care</p>
+<span class="stat-src">HRSA · data coming</span>
+</div>
+<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+<div class="card-t" style="color:var(--ink-2)">Primary care providers per 10,000 residents</div>
+<div class="card-s">Active primary care physicians by zip code · HRSA HPSA designations</div>
+<div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+<i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+<div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+<div style="font-size:12px;margin-top:4px">Data source: HRSA Data Warehouse · Health Professional Shortage Areas</div>
+</div>
+</div>
+</div>
+-->
+<!-- Stat 4: Insurance coverage type -->
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">~`r round(emp_share * 10)` in 10</div>
+<p class="stat-l">insured North Meck residents get their coverage through an employer, by far the most common source of coverage across all three towns</p>
+<span class="stat-src">ACS 2024, Table B27010</span>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Health insurance coverage by type (2024)</div>
+<div class="card-s">Number of insured residents by source of coverage: employer, Medicare, Medicaid, <span class="gloss-link" data-term="tricare" role="button" tabindex="0" onclick="glossTerm('tricare')">TRICARE</span>, and more</div>
+
+<div id="chart-insurance-type-overview">
+
+```{ojs}
+{
+  const TYPES = [
+    {key: "emp_based_ins", label: "Employer-based"}, {key: "medicare_cov", label: "Medicare"},
+    {key: "dir_purchase_ins", label: "Direct-purchase"}, {key: "medicaid_cov", label: "Medicaid"},
+    {key: "other_cov_type", label: "Other"}, {key: "tricare_cov", label: "TRICARE"}, {key: "VA_cov", label: "VA"}
+  ];
+  // 2024 only: the dataset carries earlier years too, which must not be summed together.
+  const scoped = ins2024.filter(d => masterTown === "All" || d.Town === masterTown);
+  const data = TYPES.map(t => ({type: t.label, count: d3.sum(scoped, r => r[t.key] || 0)})).sort((a, b) => b.count - a.count);
+  return responsive(width => stdPlot({
+    width, height: 90 + data.length * 30, marginLeft: 130,
+    x: {label: "Insured residents", grid: true},
+    y: {label: null, domain: data.map(d => d.type)},
+    marks: [
+      Plot.barX(data, {x: "count", y: "type", fill: "#2E86AB", rx: 3, tip: true, title: d => `${d.type}\n${d.count.toLocaleString()} residents (2024)`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+<!-- Stat 5: Preventive care -->
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">~`r fmt_pct(pc_avg[["Dental"]])`</div>
+<p class="stat-l">of North Meck adults report visiting a dentist in the past year, the lowest completion rate of the `r c("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")[length(pc_avg)]` preventive care measures we track</p>
+<span class="stat-src">CDC PLACES</span>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Preventive care completion rates by measure</div>
+<div class="card-s">Average share of adults completing each screening or checkup, across all three towns</div>
+
+<div id="chart-preventive-overview">
+
+```{ojs}
+{
+  const scoped = masterTown === "All" ? prevCare : prevCare.filter(d => d.town === masterTown);
+  const measures = [...new Set(scoped.map(d => d.measure))];
+  const data = measures.map(m => ({measure: m, avg: d3.mean(scoped.filter(d => d.measure === m), d => d.val)})).sort((a, b) => b.avg - a.avg);
+  return responsive(width => stdPlot({
+    width, height: 90 + data.length * 30, marginLeft: 110,
+    x: {label: "Completion rate (%)", domain: [0, 100], grid: true},
+    y: {label: null, domain: data.map(d => d.measure)},
+    marks: [
+      Plot.barX(data, {x: "avg", y: "measure", fill: "#1B4F72", rx: 3, tip: true,
+        title: d => `${d.measure}\n${d.avg.toFixed(1)}%${masterTown === "All" ? " average across towns" : " in " + masterTown}`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- TAB: health insurance -->
+<div class="tabpane" data-pane="hc-insurance">
+<div class="wrap">
+<div class="sec-head"><span class="eyebrow">Health Insurance</span><h2 class="sec-h">Who has coverage, and who is one medical bill away from a financial crisis?</h2><p class="lead">Insurance status is a primary driver of whether people seek preventive care or delay treatment until a condition becomes an emergency. In North Meck, income and employment type shape coverage more than geography alone.</p></div>
+<!-- Dot chart: always all three towns; hidden while the coverage-type chart below shows a single town -->
+<div id="hc-ins-dot-wrap" style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many residents are uninsured?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Each dot represents one person per 100 residents. Orange dots are uninsured.</p>
+<div class="card viz-host" style="padding:24px 20px 16px">
+<div class="card-t">Overall insurance coverage rate by town (2024)</div>
+<div class="card-s">ACS 2024 · 1 dot = 1 person per 100 residents · all three towns</div>
+
+<div id="hc-ins-dot" style="overflow-x:auto;margin-top:12px">
+
+```{ojs}
+responsive(width => {
+  const DOT_TITLE_COLORS = {Cornelius: "#3f4e75", Davidson: "#f0a500", Huntersville: "#e05c4b"};
+  const wrap = document.createElement("div");
+  const row = document.createElement("div");
+  row.style.cssText = "display:flex;justify-content:center;gap:" + Math.round(width * 0.05) + "px";
+  const colW = Math.min(220, Math.floor((width - 2 * Math.round(width * 0.05)) / 3));
+  const step = colW / 10;
+  for (const r of ins2024) {
+    const pct = r.all_unins / (r.all_ins + r.all_unins) * 100;
+    const n = Math.round(pct);
+    const dots = d3.range(100).map(i => ({col: i % 10, row: Math.floor(i / 10), status: i >= 100 - n ? "Uninsured" : "Insured"}));
+    const col = document.createElement("div");
+    col.style.cssText = "text-align:center;font-family:'Hanken Grotesk',sans-serif";
+    col.innerHTML = `<div style="font-size:13px;font-weight:600;color:${DOT_TITLE_COLORS[r.Town]}">${r.Town}</div>` +
+      `<div style="font-size:10px;color:#888">${n} of 100 uninsured</div>`;
+    col.append(Plot.plot({
+      width: colW, height: colW, margin: step / 2, style: FONT,
+      x: {domain: d3.range(10), axis: null, type: "point"}, y: {domain: d3.range(10), axis: null, type: "point"},
+      color: {domain: ["Insured", "Uninsured"], range: INS_RANGE},
+      marks: [Plot.dot(dots, {x: "col", y: "row", fill: "status", r: step * 0.35, tip: true,
+        title: d => `${r.Town} · ${d.status}${d.status === "Uninsured" ? ` · ${pct.toFixed(1)}% uninsured` : ""}`})]
+    }));
+    row.append(col);
+  }
+  const legend = Plot.legend({color: {domain: ["Insured", "Uninsured"], range: INS_RANGE}, style: {...FONT, fontSize: "11px"}});
+  legend.style.cssText += ";display:flex;justify-content:center;margin-top:10px";
+  wrap.append(row, legend);
+  return wrap;
+}, {invalidation})
+```
+
+</div>
+
+</div>
+<div class="nm-callout info" style="margin-top:16px"><div class="nm-callout-t">Davidson has the lowest uninsured rate in North Meck — roughly `r round(unins_rate[["Davidson"]])` in 100 residents lack coverage — while Cornelius and Huntersville each sit around `r round(unins_rate[["Cornelius"]])` in 100. Even these low rates represent thousands of residents without a safety net for medical emergencies.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
+</div>
+<!-- Coverage type: heatmap (all towns) or bar chart (single town) -->
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How do people get their insurance — employer, marketplace, Medicaid, or none?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Coverage type reveals economic vulnerability. Employer-sponsored insurance disappears with job loss. Medicaid enrollment signals low income. Marketplace coverage comes with cost and enrollment barriers.</p>
+<div class="card viz-host" style="padding:24px 20px 16px">
+<div class="card-t" id="hc-ins-heatmap-title">Insurance coverage type by town (2024)</div>
+<div class="card-s" id="hc-ins-heatmap-sub">ACS Table B27010 · % of total population · all three towns shown</div>
+
+```{ojs}
+viewof hcInsTown = townChips(masterTown, {label: ""})
+```
+
+```{ojs}
+//| output: false
+{
+  // A single town swaps the heatmap for that town's coverage mix and hides the dot chart above.
+  const all = hcInsTown === "All";
+  document.getElementById("hc-ins-dot-wrap").style.display = all ? "" : "none";
+  document.getElementById("hc-ins-heatmap-title").textContent = all ? "Insurance coverage type by town (2024)" : `Insurance coverage mix — ${hcInsTown} (2024)`;
+  document.getElementById("hc-ins-heatmap-sub").textContent = all
+    ? "ACS Table B27010 · % of total population · all three towns shown"
+    : "ACS Table B27010 · % of total population · select a different town above";
+}
+```
+
+<div id="hc-ins-heatmap" style="overflow-x:auto;margin-top:12px">
+
+```{ojs}
+{
+  const TYPES = [
+    {key: "emp_based_ins", label: "Employer-based", color: "#1B4F72"},
+    {key: "dir_purchase_ins", label: "Direct-purchase", color: "#2E86AB"},
+    {key: "medicare_cov", label: "Medicare", color: "#5DADE2"},
+    {key: "medicaid_cov", label: "Medicaid", color: "#90C7E3"},
+    {key: "tricare_cov", label: "Tricare", color: "#E8A838"},
+    {key: "VA_cov", label: "VA", color: "#D4AC0D"},
+    {key: "other_cov_type", label: "Other", color: "#A93226"},
+    {key: "all_unins", label: "Uninsured", color: "#7B7D7D"}
+  ];
+  const labels = TYPES.map(t => t.label);
+  if (hcInsTown === "All") {
+    const cells = ins2024.flatMap(r => TYPES.map(t => ({town: r.Town, type: t.label, val: r[t.key] / r.Tot_pop * 100})));
+    return responsive(width => {
+      const chart = stdPlot({
+        width, height: 290, marginLeft: 110, marginTop: 40, marginBottom: 10, marginRight: 10,
+        x: {domain: labels, axis: "top", label: null, tickSize: 0, padding: 0.12},
+        y: {domain: TOWNS, label: null, tickSize: 0, padding: 0.2},
+        color: {type: "linear", domain: [0, 65], scheme: "blues", legend: true, label: "% of total population", tickFormat: pctFmt, width: 240},
+        marks: [
+          Plot.cell(cells, {x: "type", y: "town", fill: "val", rx: 6, tip: true, title: d => `${d.town} · ${d.type}: ${d.val.toFixed(1)}%`}),
+          Plot.text(cells, {x: "type", y: "town", text: d => d.val.toFixed(1) + "%", fontSize: 12, fontWeight: 600, fill: d => d.val > 35 ? "#fff" : "#1B4F72"})
+        ]
+      });
+      chart.querySelectorAll('[aria-label="x-axis tick label"] text').forEach(el => { el.setAttribute("fill", "#1B4F72"); el.setAttribute("font-weight", "600"); el.setAttribute("font-size", "11"); });
+      return chart;
+    }, {invalidation});
+  }
+  const r = ins2024.find(d => d.Town === hcInsTown);
+  const bars = TYPES.map(t => ({label: t.label, value: r[t.key] / r.Tot_pop * 100}));
+  const yMax = d3.max(bars, b => b.value) * 1.2;
+  return responsive(width => stdPlot({
+    width, height: 312, marginLeft: 50, marginBottom: 80,
+    x: {domain: labels, label: "Type of insurance", labelOffset: 74, tickRotate: -30, tickSize: 0, padding: 0.3},
+    y: {domain: [0, yMax], label: "Percent covered (%)", grid: true, ticks: 5, tickFormat: pctFmt},
+    color: {domain: labels, range: TYPES.map(t => t.color)},
+    marks: [
+      Plot.barY(bars, {x: "label", y: "value", fill: "label", rx: 3, tip: true, title: d => `${d.label}: ${d.value.toFixed(1)}%`}),
+      Plot.text(bars.filter(b => b.value / yMax * 220 > 12), {x: "label", y: "value", text: d => d.value.toFixed(1) + "%", dy: -8, fontSize: 10, fill: "#555"}),
+      Plot.ruleY([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+<div class="nm-callout" style="margin-top:16px"><div class="nm-callout-t">Employer-based insurance dominates across all three towns, reflecting North Meck's relatively high employment rate. Medicaid enrollment is similar from town to town, ranging from `r fmt_pct(min(medicaid_pct), 1)` of residents in `r names(which.min(medicaid_pct))` to `r fmt_pct(max(medicaid_pct), 1)` in `r names(which.max(medicaid_pct))`. Uninsured rates remain low overall, but even a `r floor(min(unins_pop_pct))`–`r ceiling(max(unins_pop_pct))`% gap represents thousands of residents without coverage.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27010</div></div>
+</div>
+<!-- Income + Age side by side, each with own chips -->
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Who faces the greatest coverage gap?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Lower-income households and working-age adults aged 26–64 carry the highest uninsured rates.</p>
+<div class="g2">
+<div class="card viz-host" style="padding:20px 16px 12px">
+<div class="card-t">By income bracket (2024)</div>
+<div class="card-s">ACS B27016 · insured vs. uninsured rate</div>
+
+<div id="hc-ins-income">
+
+```{ojs}
+viewof incomeTown = townChips(masterTown, {all: "All", label: ""})
+{
+  const BRACKETS = [["Below $25k", "U25"], ["$25k-$50k", "25_50"], ["$50k-$75k", "50_75"], ["$75k-$100k", "75_100"], ["Above $100k", "100_above"]];
+  if (incomeTown !== "All") {
+    const r = singleRow(incomeTown);
+    const labels = ["Under $25k", "$25k–$50k", "$50k–$75k", "$75k–$100k", "Above $100k"];
+    const groups = BRACKETS.map(([, k], i) => ({label: labels[i], ...groupRate(r, "ins_" + k, "no_ins_" + k)}));
+    return responsive(width => pairedBars(groups, width, 105), {invalidation});
+  }
+  const brackets = BRACKETS.map(b => b[0]);
+  const data = ins2024.flatMap(r => BRACKETS.map(([b, k]) => ({town: r.Town, bracket: b, value: r["no_ins_" + k] / (r["ins_" + k] + r["no_ins_" + k]) * 100})));
+  const yMax = d3.max(data, d => d.value) * 1.2;
+  const zeros = data.filter(d => d.value === 0);
+  return responsive(width => withTitle("Uninsurance Rates by Income Bracket, North Mecklenburg 2024", stdPlot({
+    width, height: 330, marginLeft: 60, marginBottom: 55,
+    fx: {domain: brackets, label: "Income bracket", axis: "bottom", padding: 0.2, tickSize: 0},
+    x: {domain: TOWNS, axis: null, padding: 0.05},
+    y: {domain: [0, yMax], grid: true, label: "Uninsured rate (%)", tickFormat: pctFmt},
+    color: {domain: TOWNS, range: ["#1A5276", "#F0A500", "#C0392B"], legend: true},
+    marks: [
+      Plot.barY(data, {fx: "bracket", x: "town", y: "value", fill: "town", rx: 1, tip: true, title: d => `${d.town} (${d.bracket}): ${d.value.toFixed(1)}% uninsured`}),
+      // Point out bars that are zero-height, so a 0% reads as data rather than a gap.
+      Plot.arrow(zeros, {fx: "bracket", x1: "town", x2: "town", y1: yMax * 0.14, y2: yMax * 0.02, stroke: "#1B4F72", strokeWidth: 1.5, headLength: 6}),
+      Plot.text(zeros, {fx: "bracket", x: "town", y: yMax * 0.14, text: d => `0% (${d.town})`, dy: -7, fontSize: 11, fill: "#1B4F72"}),
+      Plot.ruleY([0])
+    ]
+  })), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout info" style="margin-top:16px"><div class="nm-callout-t">The coverage gap widens sharply at lower incomes — households earning under $25k are uninsured at about `r round(inc_ratio)`× the rate of those earning $75k or more, reflecting Medicaid eligibility gaps and the inability to afford marketplace premiums without employer contributions.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27016</div></div>
+</div>
+<div class="card viz-host" style="padding:20px 16px 12px">
+<div class="card-t">By age group (2024)</div>
+<div class="card-s">ACS B27001 · insured vs. uninsured rate</div>
+
+<div id="hc-ins-age">
+
+```{ojs}
+viewof ageTown = townChips(masterTown, {all: "All", label: ""})
+{
+  if (ageTown === "All") {
+    return responsive(width => withTitle("Uninsurance Rates by Age, North Mecklenburg 2024", ageShareChart(width)), {invalidation});
+  }
+  const r = singleRow(ageTown);
+  const groups = [["Under 19", "U18"], ["19–25", "19_25"], ["26–34", "26_34"], ["35–64", "35_64"], ["65+", "65_over"]]
+    .map(([label, k]) => ({label, ...groupRate(r, "ins_" + k, "unins_" + k)}));
+  return responsive(width => pairedBars(groups, width, 70), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout warn" style="margin-top:16px"><div class="nm-callout-t">Adults aged 26–34 carry the highest uninsured rate of any age group — they've aged off parental plans and often work gig or service jobs without employer coverage. Children under 19 and seniors 65+ show near-universal coverage through CHIP and Medicare respectively.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27001</div></div>
+</div>
+</div>
+</div>
+<!-- Age-group uninsurance trend across towns -->
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How has the uninsured rate by age shifted since `r y_first`?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Tracking each age group's uninsured rate year over year shows whether coverage gaps are closing or widening, and for whom.</p>
+<div class="card viz-host" style="padding:20px 16px 12px">
+<div class="card-t">Uninsurance by age over time</div>
+<div class="card-s">ACS `r y_first`–`r y_last` · uninsured rate by age group</div>
+
+<div id="hc-ins-age-trend">
+
+```{ojs}
+viewof ageTrendTown = townChips(masterTown, {label: ""})
+{
+  const years = [...new Set(insurance.map(d => d.year))].sort();
+  const panel = (title, data, colorDomain, colorRange, width, height, extra = {}) => stdPlot({
+    width, height, marginLeft: 56, marginTop: 16, marginBottom: 44, ...extra,
+    x: {type: "point", domain: years, padding: 0.5, label: "Year", labelOffset: 36, tickFormat: String},
+    y: {domain: [0, d3.max(data, d => d.value) * 1.2], grid: true, ticks: 5, tickFormat: pctFmt, label: "Uninsured rate (%)"},
+    color: {domain: colorDomain, range: colorRange},
+    marks: [
+      Plot.line(data, {x: "year", y: "value", stroke: "key", strokeWidth: 2.5}),
+      Plot.dot(data, {x: "year", y: "value", fill: "key", r: extra.dotR || 3.5, tip: true, title: d => `${d.key} · ${d.group} (${d.year}): ${d.value.toFixed(1)}%`}),
+      ...(extra.marks || [])
+    ]
+  });
+  if (ageTrendTown === "All") {
+    const GROUPS = ["Under 18", "19-64", "65+", "Total population"];
+    const PANEL_TITLES = ["Under 18", "19-64", "65+", "Total Population"];
+    const COLORS = ["#2a78d6", "#1baf7a", "#eda100"];
+    const rows = insurance.flatMap(r => { const t = trendRates(r); return GROUPS.map(g => ({key: r.Town, group: g, year: r.year, value: t[g]})); });
+    return responsive(width => {
+      const wrap = document.createElement("div");
+      const legend = Plot.legend({color: {domain: TOWNS, range: COLORS}, style: {...FONT, fontSize: "12px"}});
+      legend.style.cssText += ";display:flex;justify-content:center;margin-bottom:10px";
+      const grid = document.createElement("div");
+      grid.style.cssText = "display:grid;grid-template-columns:repeat(2,1fr);gap:16px";
+      const pw = Math.floor((width - 16) / 2);
+      GROUPS.forEach((g, i) => {
+        const cell = document.createElement("div");
+        const t = document.createElement("div");
+        t.textContent = PANEL_TITLES[i];
+        t.style.cssText = "text-align:center;font:600 0.85rem 'Hanken Grotesk',sans-serif;color:#1B4F72";
+        cell.append(t, panel(g, rows.filter(d => d.group === g), TOWNS, COLORS, pw, 230));
+        grid.append(cell);
+      });
+      wrap.append(legend, grid);
+      return wrap;
+    }, {invalidation});
+  }
+  const GROUPS = ["Under 18", "19-64", "65+", "Total population"];
+  const COLORS = ["#2E86AB", "#1B4F72", "#E8A838", "#7B7D7D"];
+  const rows = trendRows(ageTrendTown).flatMap(r => { const t = trendRates(r); return GROUPS.map(g => ({key: g, group: ageTrendTown, year: r.year, value: t[g]})); });
+  // Line-end labels, nudged apart so they don't overlap.
+  const height = 420, innerH = height - 40 - 50, yMax = d3.max(rows, d => d.value) * 1.2;
+  const ends = GROUPS.map(g => rows.filter(d => d.key === g).at(-1)).sort((a, b) => b.value - a.value);
+  const gap = 14 / innerH * yMax;
+  ends.forEach((d, i) => { d.labelY = i && ends[i - 1].labelY - d.value < gap ? ends[i - 1].labelY - gap : d.value; });
+  return responsive(width => panel(ageTrendTown, rows, GROUPS, COLORS, width, height, {
+    marginTop: 40, marginRight: 110, marginBottom: 50, dotR: 4,
+    marks: [Plot.text(ends, {x: "year", y: "labelY", text: "key", fill: "key", dx: 8, textAnchor: "start", fontSize: 12})]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+<!-- Trend + Employment side by side, each with own chips -->
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is coverage improving, and does employment predict it?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Coverage rates have remained relatively stable since `r y_first` — but small shifts matter for thousands of residents. Employment status is strongly predictive of whether someone has a plan at all.</p>
+<div class="g2">
+<div class="card viz-host" style="padding:20px 16px 12px">
+<div class="card-t">Insurance coverage trend (`r y_first`–`r y_last`)</div>
+<div class="card-s">ACS 5-year estimates · all years</div>
+
+<div id="hc-ins-trend">
+
+```{ojs}
+viewof trendTown = townChips(masterTown, {all: "All", label: ""})
+{
+  const data = trendRows(trendTown).flatMap(d => {
+    const tot = d.all_ins + d.all_unins || 1;
+    return [{year: d.year, key: "Insured", value: d.all_ins / tot * 100}, {year: d.year, key: "Uninsured", value: d.all_unins / tot * 100}];
+  });
+  return responsive(width => stdPlot({
+    width, height: 300, marginLeft: 52,
+    x: {type: "point", padding: 0.4, label: null, tickFormat: String},
+    y: {domain: [0, 100], ticks: 5, tickFormat: pctFmt, label: null},
+    color: {domain: ["Insured", "Uninsured"], range: INS_RANGE, legend: true},
+    marks: [
+      Plot.line(data, {x: "year", y: "value", stroke: "key", strokeWidth: 2.5}),
+      Plot.dot(data, {x: "year", y: "value", fill: "key", r: 5, tip: true, title: d => `${d.year} · ${d.key}: ${d.value.toFixed(1)}%`})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout" style="margin-top:16px"><div class="nm-callout-t">Overall coverage rates have held steady at `r fmt_pct(min(cov_by_year), 1)`–`r fmt_pct(max(cov_by_year), 1)` since `r y_first`, but the trend masks variation: Davidson has consistently led all three towns in coverage while Huntersville — despite rapid population growth — has gained just `r sprintf("%.1f", cov_gain[["Huntersville"]])` percentage points since `r y_first`, versus `r sprintf("%.1f", cov_gain[["Cornelius"]])` in Cornelius.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> `r y_first`–`r y_last`</div></div>
+</div>
+<div class="card viz-host" style="padding:20px 16px 12px">
+<div class="card-t">By employment status (2024)</div>
+<div class="card-s">ACS B27011 · employed vs. unemployed</div>
+
+<div id="hc-ins-emp">
+
+```{ojs}
+viewof empTown = townChips(masterTown, {all: "All", label: ""})
+{
+  const r = singleRow(empTown);
+  const data = [["Employed", "emp_insured", "emp_uninsured"], ["Unemployed", "unemp_insured", "unemp_uninsured"]].flatMap(([cat, i, u]) => [
+    {cat, status: "Insured", pct: r[i] / (r[i] + r[u]) * 100},
+    {cat, status: "Uninsured", pct: r[u] / (r[i] + r[u]) * 100}
+  ]);
+  return responsive(width => stdPlot({
+    width, height: 300, marginLeft: 48,
+    x: {domain: ["Employed", "Unemployed"], label: null, padding: 0.45, tickSize: 0},
+    y: {domain: [0, 100], ticks: 5, tickFormat: pctFmt, label: null},
+    color: {domain: ["Insured", "Uninsured"], range: INS_RANGE, legend: true},
+    marks: [
+      Plot.barY(data, Plot.stackY({x: "cat", y: "pct", fill: "status", rx: 2, tip: true, title: d => `${d.cat} · ${d.status}: ${d.pct.toFixed(1)}%`})),
+      Plot.text(data, Plot.stackY({x: "cat", y: "pct", z: "status", text: d => d.pct > 3 ? d.pct.toFixed(1) + "%" : "", fill: "#fff", fontSize: 11}))
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout warn" style="margin-top:16px"><div class="nm-callout-t">Employment is the single strongest predictor of coverage: employed residents are insured at ~`r fmt_pct(emp_cov)`, versus `r fmt_pct(unemp_cov)` for unemployed residents. Job loss without a safety net leaves families immediately exposed — and North Meck's service-sector workforce has the least cushion.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B27011</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!--
+Hidden for 2026 (no data sourced yet): the "Access to Care" and "Maternal & Child
+Health" tabs. In the Astro page they were behind SHOW_HC_ACCESS / SHOW_HC_MATERNAL
+flags set to false, so they never rendered. Their markup is in git history
+(src/pages/healthcare.astro); the Access tab's Preventive Care & Screening Rates
+chart (#chart-preventive-care, data/cdc-preventive-care.json) would need porting
+to an OJS cell when the tab is turned back on.
+-->
+
+<!-- TAB: mental health -->
+<div class="tabpane" data-pane="hc-mental">
+<div class="wrap">
+<div class="sec-head"><span class="eyebrow">Mental Health</span><h2 class="sec-h">Is mental healthcare reachable for North Meck residents who need it?</h2><p class="lead">Mental health conditions are common and treatable, but access to care is constrained by provider shortages, insurance limits, stigma, and cost. The gap between need and treatment is widest in communities with fewer resources.</p></div>
+<!-- Section 1: Depression & mental distress prevalence -->
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How prevalent are depression and mental distress in North Meck communities?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px"><span class="gloss-link" data-term="places" role="button" tabindex="0" onclick="glossTerm('places')">CDC PLACES</span> provides model estimates of depression and <span class="gloss-link" data-term="distress" role="button" tabindex="0" onclick="glossTerm('distress')">frequent mental distress</span> (14+ poor mental health days in the past 30) using behavioral surveillance data — allowing comparison across towns and years.</p>
+<div class="g2">
+<div class="card viz-host" id="mh-distressbar-host">
+<div class="card-t">Frequent Mental Distress by Year</div>
+<div class="card-s">`r paste(mh_years, collapse = ", ")` · Age-adjusted · CDC PLACES</div>
+
+<div id="mh-distressbar-chart" style="width:100%">
+
+```{ojs}
+viewof distressTown = townChips(masterTown, {all: "All", label: ""})
+responsive(width => prevalenceChart(mhDistress, distressTown, width, {yearColors: ["#C0392B", "#1A7A7A", "#E67E22"]}), {invalidation})
+```
+
+</div>
+
+</div>
+<div class="card viz-host" id="mh-depbar-host">
+<div class="card-t">Depression Prevalence by Year</div>
+<div class="card-s">`r paste(mh_years, collapse = ", ")` · Age-adjusted · CDC PLACES</div>
+
+<div id="mh-depbar-chart" style="width:100%">
+
+```{ojs}
+viewof depressionTown = townChips(masterTown, {all: "All", label: ""})
+responsive(width => prevalenceChart(mhDepression, depressionTown, width, {yearColors: ["#C0392B", "#1A7A7A", "#E67E22"]}), {invalidation})
+```
+
+</div>
+
+</div>
+</div>
+</div>
+<!-- Section 2: Facility map (Leaflet; js/healthcare-map.js) -->
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Where are mental health and substance use facilities located?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">DHHS-licensed mental health and substance use facilities in Mecklenburg County and surrounding counties. Search your address to find facilities within a given radius.</p>
+<div class="card" id="mh-map-card">
+<div class="card-t">Mental Health &amp; Substance Use Facility Locations</div>
+<div class="card-s">`r nrow(fac)` licensed facilities · Mecklenburg County and surrounding counties · NC DHHS</div>
+
+
+```{=html}
+<div style="display:flex;gap:8px;margin:14px 0 10px">
+<input id="mh-address-input" type="text" placeholder="Enter your address" style="flex:1;padding:8px 12px;border:1px solid var(--line-2);border-radius:8px;font-size:13px;font-family:'Hanken Grotesk',sans-serif;background:var(--paper);color:var(--ink);outline:none">
+<button id="mh-address-btn" style="padding:8px 18px;background:#2E86AB;color:#fff;border:none;border-radius:8px;font-size:13px;font-family:'Hanken Grotesk',sans-serif;cursor:pointer;font-weight:500">Search</button>
+</div>
+```
+
+
+<div id="mh-facility-map" style="height:420px;border-radius:8px;overflow:hidden;border:1px solid var(--line)"></div>
+<div class="filterbar" style="margin-top:12px;margin-bottom:0">
+<button class="chip on" data-mh-radius="all">All</button>
+<button class="chip" data-mh-radius="5">5 miles</button>
+<button class="chip" data-mh-radius="15">15 miles</button>
+<button class="chip" data-mh-radius="25">25 miles</button>
+</div>
+</div>
+</div>
+<!-- Section 3: Provider shortage coming soon
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does mental health burden vary by income and race?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Mental health outcomes are not evenly distributed. Lower-income residents and communities of color report higher rates of distress, yet face the greatest barriers to treatment access.</p>
+<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+<div class="card-t" style="color:var(--ink-2)">Mental distress rate by income bracket &amp; race</div>
+<div class="card-s">Cross-tabulated distress rates · BRFSS county-level data</div>
+<div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC BRFSS · Mecklenburg County module</div></div>
+</div>
+</div>
+-->
+</div>
+</div>
+
+<!-- TAB: chronic disease -->
+<div class="tabpane" data-pane="hc-chronic">
+<div class="wrap">
+<div class="sec-head"><span class="eyebrow">Chronic Disease &amp; Prevention</span><h2 class="sec-h">How much chronic disease burden does North Meck carry, and is it preventable?</h2><p class="lead">Diabetes, obesity, and hypertension are among the most prevalent and costly chronic conditions in the United States. Their rates are shaped by income, food access, housing stability, and stress — making them direct downstream indicators of the social determinants this portal tracks.</p></div>
+<!-- Section 1: Chronic disease metric charts -->
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How do diabetes, obesity, and hypertension rates compare across towns?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px"><span class="gloss-link" data-term="age-adjusted" role="button" tabindex="0" onclick="glossTerm('age-adjusted')">Age-adjusted</span> <span class="gloss-link" data-term="prevalence" role="button" tabindex="0" onclick="glossTerm('prevalence')">prevalence</span> estimates from <span class="gloss-link" data-term="places" role="button" tabindex="0" onclick="glossTerm('places')">CDC PLACES</span> (`r paste(cd_years, collapse = ", ")`), allowing trend comparison within and between towns.</p>
+
+```{ojs}
+//| output: false
+chronicChart = (measure, width) => prevalenceChart(chronic.filter(d => d.measure === measure), masterTown, width,
+  {yearColors: HC_TOWN_RANGE, headroom: masterTown === "All" ? 1.18 : 1.2, labelDy: 83, xLabel: "Year"})
+```
+
+<div class="g2" style="margin-bottom:20px">
+<div class="card viz-host" id="cd-diabetes-host">
+<div class="card-t">Age-adjusted Diabetes Prevalence</div>
+<div class="card-s">`r paste(cd_years, collapse = " · ")` · CDC PLACES</div>
+
+<div id="cd-diabetes-chart" style="width:100%">
+
+```{ojs}
+responsive(width => chronicChart("diabetes", width), {invalidation})
+```
+
+</div>
+
+</div>
+<div class="card viz-host" id="cd-obesity-host">
+<div class="card-t">Obesity Prevalence</div>
+<div class="card-s">`r paste(cd_years, collapse = " · ")` · CDC PLACES</div>
+
+<div id="cd-obesity-chart" style="width:100%">
+
+```{ojs}
+responsive(width => chronicChart("obesity", width), {invalidation})
+```
+
+</div>
+
+</div>
+</div>
+<div class="card viz-host" id="cd-hbp-host">
+<div class="card-t">High Blood Pressure Prevalence</div>
+<div class="card-s">`r paste(cd_years, collapse = " · ")` · CDC PLACES</div>
+
+<div id="cd-hbp-chart" style="width:100%">
+
+```{ojs}
+responsive(width => chronicChart("hbp", width), {invalidation})
+```
+
+</div>
+
+</div>
+</div>
+<!-- Section 2: Coming soon -->
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are high-chronic-disease areas the same as high-cost-burden areas?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Chronic disease and housing cost burden often overlap — residents under financial stress are less likely to maintain preventive care, take medications consistently, or avoid high-stress environments that worsen chronic conditions.</p>
+<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+<div class="card-t" style="color:var(--ink-2)">Chronic disease rate vs. housing cost burden — scatter by census tract</div>
+<div class="card-s">CDC PLACES disease rate × ACS cost burden rate · North Meck tracts</div>
+<div style="padding:32px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div><div style="font-size:12px;margin-top:4px">Data source: CDC PLACES · ACS Table B25070 · Gross rent as % of income</div></div>
+</div>
+</div>
+<div style="margin-bottom:36px">
+<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Are residents getting screened for the conditions most likely to affect them?</h3>
+<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Screening rates for colorectal cancer, cervical cancer, and cholesterol are lower among uninsured and lower-income populations — allowing preventable conditions to progress untreated.</p>
+<div class="g2">
+<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+<div class="card-t" style="color:var(--ink-2)">Cancer screening rates by town</div>
+<div class="card-s">Colorectal, cervical, breast cancer screening · CDC PLACES</div>
+<div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
+</div>
+<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+<div class="card-t" style="color:var(--ink-2)">Physical inactivity &amp; sleep deprivation rates</div>
+<div class="card-s">Behavioral risk factors linked to chronic disease · CDC PLACES</div>
+<div style="padding:28px 0;text-align:center;color:var(--ink-3)"><i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i><div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script type="module" src="/js/healthcare-map.js"></script>
