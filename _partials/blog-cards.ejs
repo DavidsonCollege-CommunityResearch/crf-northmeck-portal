@@ -1,4 +1,4 @@
-<!-- Story cards for the Stories page and home page (the .bcard markup from styles.css). -->
+<!-- Stories page card grid. Card markup matches _partials/home-stories.ejs; keep the two in sync. -->
 <div class="blog-grid">
 <% for (const item of items) { const tag = (item.categories || [])[0] || ''; const href = '/' + item.path.replace(/\\/g, '/').replace(/^\/+/, '').replace(/\.qmd$/, '.html'); %>
 <article class="bcard" <%= metadataAttrs(item) %> onclick="window.location='<%- href %>'">

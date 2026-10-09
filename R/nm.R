@@ -50,8 +50,9 @@ fmt_dollar <- function(x, digits = 0) {
 }
 fmt_num <- function(x, digits = 0) formatC(x, format = "f", digits = digits, big.mark = ",")
 fmt_pct <- function(x, digits = 0) paste0(formatC(x, format = "f", digits = digits), "%")
-# "$693k" style, for big dollar figures in stat tiles.
-fmt_k <- function(x, digits = 0) paste0("$", formatC(x / 1000, format = "f", digits = digits), "k")
+# "$693k" style, for big dollar figures in stat tiles. Use prefix = "" when
+# the "$" is styled separately (e.g. <span class="cur">$</span>).
+fmt_k <- function(x, digits = 0, prefix = "$") paste0(prefix, formatC(x / 1000, format = "f", digits = digits), "k")
 
 # "Cornelius, Davidson and Huntersville"
 fmt_list <- function(x) {

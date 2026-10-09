@@ -5,6 +5,8 @@ pagetitle: "Housing · North Meck Insights"
 ```{r}
 #| include: false
 source("R/nm.R")
+source("R/housing-headlines.R")  # Overview tiles, shared with the home page
+hh <- housing_headlines
 towns <- c("Cornelius", "Davidson", "Huntersville")
 
 # Rent, income, and home values (ACS 2018–2024)
@@ -25,10 +27,7 @@ nm_claim(all(names(sort(rent_chg_2020, decreasing = TRUE))[1:2] == c("Cornelius"
          "rent callout says rent rose fastest in Cornelius and Huntersville after 2020")
 nm_claim(names(which.min(rent_chg)) == "Davidson", "rent callout says Davidson rose most slowly")
 
-# U.S. comparison for the home-value stat. NOT from our data store: a fixed
-# reference value carried over from the original page. Replace with a sourced
-# figure (and cite it) before relying on it.
-US_MEDIAN_HOME <- 179400
+US_MEDIAN_HOME <- hh$us_median_home  # not from our data store; see R/housing-headlines.R
 
 ptr_b <- nm_data("dlib-ptr-by-bracket")
 ptr_20_35 <- ptr_b$ratio[ptr_b$income_bracket == "$20k-$34,999"]
@@ -159,8 +158,8 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 <div class="stat-rows" style="margin-bottom:48px" id="ov-fact-rows">
 <div class="stat-row">
 <div class="srow-fig">
-<div class="stat-n warn">`r fmt_pct(rent_chg[rent_top])`</div>
-<p class="stat-l">rent rise in `r rent_top` since 2018, from `r fmt_dollar(rent(rent_top, 2018))` to `r fmt_dollar(rent(rent_top, 2024))`/mo</p>
+<div class="stat-n warn">`r fmt_pct(hh$rent_top_rise)`</div>
+<p class="stat-l">rent rise in `r hh$rent_top_town` since 2018, from `r fmt_dollar(hh$rent_top_2018)` to `r fmt_dollar(hh$rent_top_2024)`/mo</p>
 <span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</span>
 </div>
 <div class="card viz-host">
@@ -189,7 +188,7 @@ responsive(width => stdPlot({
 </div>
 <div class="stat-row">
 <div class="srow-fig">
-<div class="stat-n warn">`r floor(min(ptr_20_35))`+ yrs</div>
+<div class="stat-n warn">`r floor(hh$ptr_20_35_min)`+ yrs</div>
 <p class="stat-l">of gross income to buy the median home, for a $20k–$35k household</p>
 <span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
 </div>
@@ -224,8 +223,8 @@ responsive(width => stdPlot({
 </div>
 <div class="stat-row">
 <div class="srow-fig">
-<div class="stat-n"><span class="cur">$</span>`r sub("^\\$", "", fmt_k(home(home_top, 2024)))`</div>
-<p class="stat-l">median home value in `r home_top`, `r round(home(home_top, 2024) / US_MEDIAN_HOME, 1)`× the U.S. national median</p>
+<div class="stat-n"><span class="cur">$</span>`r fmt_k(hh$home_top_value, prefix = "")`</div>
+<p class="stat-l">median home value in `r hh$home_top_town`, `r round(hh$home_top_value / hh$us_median_home, 1)`× the U.S. national median</p>
 <span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
 </div>
 <div class="card viz-host">
@@ -259,7 +258,7 @@ responsive(width => stdPlot({
 </div>
 <div class="stat-row">
 <div class="srow-fig">
-<div class="stat-n">~`r round(max(dp$years))` yrs</div>
+<div class="stat-n">~`r round(hh$down_payment_max_years)` yrs</div>
 <p class="stat-l">to save a 20% down payment at a 10% annual savings rate</p>
 <span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
 </div>

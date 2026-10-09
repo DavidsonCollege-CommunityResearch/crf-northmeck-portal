@@ -6,15 +6,17 @@ project:
     - "*.qmd"
     - "posts/*.qmd"
   # Static files copied into the site as-is, at the same URLs as before.
+  # The leading / anchors each pattern to the repo root (otherwise "data/"
+  # would also match node_modules/*/data/).
   resources:
-    - css/
-    - js/
-    - images/
-    - data/
-    - maps/
-    - favicon.ico
-    - favicon.svg
-    - CNAME
+    - /css/
+    - /js/
+    - /images/
+    - /data/
+    - /maps/
+    - /favicon.ico
+    - /favicon.svg
+    - /CNAME
   # R chunks run from the repo root, so source("R/nm.R") and data/ paths work
   # the same in posts/ as in top-level pages.
   execute-dir: project
@@ -28,8 +30,8 @@ website:
 
 format:
   html:
-    # A "$" in prose is a dollar sign, not the start of LaTeX math.
-    from: markdown-tex_math_dollars
+    # A "$" in prose is a dollar sign, not LaTeX math; quotes stay as typed.
+    from: markdown-tex_math_dollars-smart
     # No Bootstrap or Quarto page chrome; css/styles.css styles everything.
     theme: none
     minimal: true
