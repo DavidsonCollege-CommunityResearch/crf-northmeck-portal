@@ -1,0 +1,813 @@
+---
+pagetitle: "Education · North Meck Insights"
+---
+
+```{r}
+#| include: false
+source("R/nm.R")
+towns <- c("Cornelius", "Davidson", "Huntersville")
+
+# Residents enrolled in school and population age 3+ (ACS)
+pk <- nm_data("pop-growth-k12-enrollment")
+pk_y0 <- min(pk$year); pk_y1 <- max(pk$year)
+pkv <- function(col, t, y) nm_value(pk, col, town = t, year = y)
+pk_total <- function(col, y) sum(pk[[col]][pk$year == y])
+enroll_growth <- pct_change(pk_total("n_enrolled_total", pk_y0), pk_total("n_enrolled_total", pk_y1))
+nm_claim(enroll_growth > 0, "overview stat describes enrollment growth since 2018")
+
+k12_gain <- sapply(towns, function(t) pkv("n_enrolled_k12_total", t, pk_y1) - pkv("n_enrolled_k12_total", t, pk_y0))
+nm_claim(names(which.max(k12_gain)) == "Huntersville" && k12_gain["Huntersville"] > 0,
+         "K-12 callout says Huntersville added the most K-12 students since 2018")
+enroll_now <- sapply(towns, function(t) pkv("n_enrolled_total", t, pk_y1))
+enroll_rate <- sapply(towns, function(t) pkv("n_enrolled_total", t, pk_y1) / pkv("total_pop_3_plus", t, pk_y1) * 100)
+nm_claim(names(which.min(enroll_now)) == "Davidson", "K-12 callout says Davidson has the smallest total enrollment")
+nm_claim(names(which.max(enroll_rate)) == "Davidson", "K-12 callout says Davidson has the highest overall enrollment rate")
+
+k12_chg <- sapply(towns, function(t) pct_change(pkv("n_enrolled_k12_total", t, pk_y0), pkv("n_enrolled_k12_total", t, pk_y1)))
+pop_chg <- sapply(towns, function(t) pct_change(pkv("total_pop_3_plus", t, pk_y0), pkv("total_pop_3_plus", t, pk_y1)))
+nm_claim(max(k12_chg) < min(pop_chg), "pop-vs-K12 callout says K-12 counts rose 'only' while populations grew more")
+
+# Enrollment by grade band (static file, moved out of the old education.js)
+lv <- nm_data("k12-enrollment-by-level")
+lv_y0 <- min(lv$year); lv_y1 <- max(lv$year)
+lv_chg <- sapply(c("elem14", "elem58", "hs"), function(col) pct_change(sum(lv[[col]][lv$year == lv_y0]), sum(lv[[col]][lv$year == lv_y1])))
+nm_claim(abs(lv_chg["elem14"]) < 5, "grade-band callout says grades 1-4 held relatively steady")
+nm_claim(lv_chg["elem58"] > lv_chg["elem14"] && lv_chg["hs"] > lv_chg["elem14"] && lv_chg["hs"] > 0,
+         "grade-band callout says grades 5-8 and high school grew")
+
+# School report cards (NC DPI)
+gl <- nm_data("grade-level-proficiency")
+n_title1 <- sum(gl$is_title_1 %in% TRUE)
+title1_ratio <- round(nrow(gl) / n_title1)
+gr <- nm_data("school-academic-growth")
+growth_in5 <- round(sum(gr$status == "Exceeded") / nrow(gr) * 5)
+dg <- nm_data("school-disability-gap")
+dis_gap_avg <- mean(dg$gap, na.rm = TRUE)
+rg <- nm_data("school-race-gap")
+n_ai <- sum(rg$comparison_group == "American Indian" & !is.na(rg$gap))
+nm_claim(n_ai < 3, "race-gap callout says American Indian students are excluded (fewer than 3 schools)")
+hs_spans <- c("09-12", "09-11", "11-13", "0K-12")
+nm_claim(any(gl$grade_span == "0K-12" & !is.na(gl$ccr)), "CCR callout says K-12 comprehensive schools are included")
+
+# Adult attainment and earnings (static files, moved out of the old education.js)
+bt <- nm_data("bachelors-attainment-trend")
+corn <- bt[bt$town == "Cornelius", ]; corn <- corn[order(corn$year), ]
+corn_last <- tail(corn, 1)
+nm_claim(corn_last$bach_plus > corn$bach_plus[1] && corn_last$bach_plus < round(corn_last$bach_plus),
+         "bachelor's callout says Cornelius climbed to 'nearly' a round figure")
+dav_2023 <- nm_value(bt, "bach_plus", town = "Davidson", year = 2023)
+ab <- nm_data("attainment-breakdown-2022")
+ab_c <- ab[ab$town == "Cornelius", ]; ab_h <- ab[ab$town == "Huntersville", ]
+nm_claim(max(abs(ab_c$pct[order(ab_c$order)] - ab_h$pct[order(ab_h$order)])) < 5,
+         "attainment callout says Cornelius and Huntersville have similar profiles")
+ea <- nm_data("earnings-by-education")
+hs_towns <- unique(ea$town[ea$level == "HS Diploma"])
+nm_claim(identical(sort(hs_towns), c("Cornelius", "Huntersville")),
+         "earnings callout says only Cornelius and Huntersville have a high-school earnings figure")
+ba_premium <- sapply(hs_towns, function(t) nm_value(ea, "earnings", town = t, level = "Bachelor's") - nm_value(ea, "earnings", town = t, level = "HS Diploma"))
+dav_grad <- nm_value(ea, "earnings", town = "Davidson", level = "Graduate/Prof")
+dav_grad_floor <- floor(dav_grad / 10000) * 10000
+```
+
+<div class="page active" style="display:block">
+<div class="wrap">
+<div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Education</span></div>
+<div class="dash-hero" style="margin-bottom:56px">
+<div class="split" style="align-items:flex-start">
+<div>
+<span class="eyebrow" style="font-size:15px">Education</span>
+<h1 class="dash-h1">Are North Meck schools keeping pace with rapid growth?</h1>
+<p class="lead dash-lead" style="margin-bottom:0">Enrollment has surged as families move into Cornelius, Davidson, and Huntersville. However, school capacity, staffing, and resources haven't always kept up. This section follows the data on who is in the classroom, how schools are performing, and where gaps are widest.</p>
+</div>
+</div>
+</div>
+<div class="tabs" id="education-tabs">
+<span class="tab active" data-tab="ed-overview" onclick="setTab(this)">Overview</span>
+<span class="tab" data-tab="ed-enrollment" onclick="setTab(this)">Enrollment &amp; Growth</span>
+<span class="tab" data-tab="ed-demographics" onclick="setTab(this)">School Demographics</span>
+<span class="tab" data-tab="ed-performance" onclick="setTab(this)">Academic Performance</span>
+<span class="tab" data-tab="ed-attainment" onclick="setTab(this)">Educational Attainment</span>
+</div>
+</div>
+<div class="wrap dash-filter">
+
+```{ojs}
+//| output: false
+import {Plot, stdPlot, chips, townChips, responsive, loadData, TOWNS, townColor, FONT} from "/js/nm-charts.js"
+
+popK12 = loadData("pop-growth-k12-enrollment")
+k12ByLevel = loadData("k12-enrollment-by-level")
+bachTrend = loadData("bachelors-attainment-trend")
+attainment2022 = loadData("attainment-breakdown-2022")
+earningsByEd = loadData("earnings-by-education")
+proficiency = loadData("grade-level-proficiency")
+growth = loadData("school-academic-growth")
+graduation = loadData("four-year-school-graduation")
+econGap = loadData("school-achievement-and-economic-gap")
+hsEconGap = loadData("highschool-achievement-economic-gap")
+raceGap = loadData("school-race-gap")
+schoolEconGap = loadData("school-economic-gap")
+disabilityGap = loadData("school-disability-gap")
+
+// The original education charts used the 12px chart font.
+S = ({...FONT, fontSize: "12px"})
+byTown = (rows, town) => town === "All" ? rows : rows.filter(d => d.town === town)
+// Suppressed report-card values come through as text like ">95"; chart them at the bound.
+withParsed = (rows, key) => rows.map(d => {
+  if (d[key] != null) return d;
+  const m = /^[<>]?\s*(\d+(\.\d+)?)/.exec(d[key + "_raw"] || "");
+  return m ? {...d, [key]: parseFloat(m[1])} : d;
+})
+RACE_COLORS = ({"American Indian": "#440154", "Asian": "#3b528b", "Black": "#21908c", "Hispanic": "#5dc963", "Two or More Races": "#fde725"})
+GROWTH_COLOR = ({legend: true, domain: ["Exceeded", "Met", "Not Met"], range: ["#2ca02c", "#ff7f0e", "#d62728"]})
+ECON_COLOR = ({legend: true, domain: ["Economically Disadvantaged", "Not Economically Disadvantaged"], range: ["#d62728", "#4e79a7"]})
+```
+
+```{ojs}
+viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {label: "Area:", hint: "filters every chart"})
+```
+
+</div>
+
+<!-- TAB: overview -->
+<div class="tabpane active" data-pane="ed-overview">
+<div class="wrap">
+<div class="stat-rows" style="margin-bottom:48px">
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">+`r fmt_pct(enroll_growth)`</div>
+<p class="stat-l">growth in North Meck residents enrolled in school since `r pk_y0`, preschool through graduate school</p>
+<span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> `r pk_y0`–`r pk_y1`</span>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Total School Enrollment by Town (2018–2024)</div>
+<div class="card-s">All enrollment levels · preschool through graduate/professional</div>
+
+<div id="chart-total-enrollment-trend">
+
+```{ojs}
+{
+  const yMax = Math.ceil(Math.max(...popK12.map(d => d.n_enrolled_total)) / 1000) * 1000;
+  const data = byTown(popK12, masterTown).slice().sort((a, b) => a.year - b.year);
+  return responsive(width => stdPlot({
+    width, height: 340, style: S,
+    x: {label: "Year", tickFormat: d => String(d), ticks: [2018, 2019, 2020, 2021, 2022, 2023, 2024], insetLeft: 12, insetRight: 12},
+    y: {label: "Total Enrollment", grid: true, interval: 1000, domain: [0, yMax]},
+    color: townColor({legend: masterTown === "All"}),
+    marks: [
+      Plot.line(data, {x: "year", y: "n_enrolled_total", stroke: "town", strokeWidth: masterTown === "All" ? 2 : 3}),
+      Plot.dot(data, {x: "year", y: "n_enrolled_total", stroke: "town", fill: "white", strokeWidth: 1.5, r: 4,
+        tip: true, title: d => `${d.town}\n${d.year}: ${d.n_enrolled_total.toLocaleString()} enrolled`})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">~1 in `r title1_ratio`</div>
+<p class="stat-l">North Meck schools are federally designated <span class="gloss-link" data-term="title-i" role="button" tabindex="0" onclick="glossTerm('title-i')">Title I</span>, meaning a high share of students come from low-income families</p>
+<span class="stat-src">NC DPI, 2024</span>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Grade-Level Proficiency by Title I status (2024)</div>
+<div class="card-s">Percent of students proficient at grade level, Title I designated schools compared to others</div>
+
+<div id="chart-title1-proficiency">
+
+```{ojs}
+{
+  const data = withParsed(byTown(proficiency, masterTown), "glp")
+    .map(d => ({...d, status: d.is_title_1 ? "Title I" : "Not Title I"}))
+    .filter(d => d.glp != null).sort((a, b) => b.glp - a.glp);
+  return responsive(width => stdPlot({
+    width, height: 90 + data.length * 22, marginLeft: 190, style: S,
+    x: {label: "Grade-Level Proficiency (%)", domain: [0, 100], grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    color: {legend: true, domain: ["Title I", "Not Title I"], range: ["#21908c", "#5ec962"]},
+    marks: [
+      Plot.barX(data, {x: "glp", y: "school", fill: "status", rx: 3, tip: true,
+        title: d => `${d.school} (${d.grade_span})\n${d.status}\nGrade-Level Proficient: ${d.glp}%`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n">~`r growth_in5` in 5</div>
+<p class="stat-l">North Meck schools exceeded their expected academic growth target this year, a sign of strong year-over-year progress</p>
+<span class="stat-src">NC DPI, EVAAS growth index, 2024</span>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Academic growth status by school (2024)</div>
+<div class="card-s"><span class="gloss-link" data-term="evaas" role="button" tabindex="0" onclick="glossTerm('evaas')">EVAAS growth index</span> score, whether each school exceeded, met, or fell short of expected growth</div>
+
+<div id="chart-growth-overview">
+
+```{ojs}
+{
+  const data = byTown(growth, masterTown).slice().sort((a, b) => b.index_score - a.index_score);
+  return responsive(width => stdPlot({
+    width, height: 90 + data.length * 22, marginLeft: 190, style: S,
+    x: {label: "Growth Index Score (0 = met expected growth)", domain: [-8, 8], grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    color: GROWTH_COLOR,
+    marks: [
+      Plot.barX(data, {x: "index_score", y: "school", fill: "status", rx: 3, tip: true,
+        title: d => `${d.school} (${d.grade_span})\nStatus: ${d.status}\nGrowth Index: ${d.index_score}`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">`r fmt_num(dis_gap_avg, 1)` pts</div>
+<p class="stat-l">average proficiency gap between students with and without disabilities across North Meck schools</p>
+<span class="stat-src">NC DPI, 2024</span>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Proficiency gap for students with disabilities, by school (2024)</div>
+<div class="card-s">Percentage-point gap in grade-level proficiency, students with disabilities compared to students without</div>
+
+<div id="chart-disability-gap-overview">
+
+```{ojs}
+// school-disability-gap has no town field, so this chart doesn't follow the town filter.
+{
+  const data = disabilityGap.filter(d => d.gap != null).slice().sort((a, b) => b.gap - a.gap);
+  return responsive(width => stdPlot({
+    width, height: 90 + data.length * 22, marginLeft: 190, style: S,
+    x: {label: "Proficiency gap (points)", grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    marks: [
+      Plot.barX(data, {y: "school", x: "gap", fill: "#3b528b", rx: 3, tip: true,
+        title: d => `${d.school}\nWith disabilities: ${d.swd_pct}%\nWithout: ${d.nswd_pct}%\nGap: ${d.gap} pts`})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- TAB: enrollment & growth -->
+<div class="tabpane" data-pane="ed-enrollment">
+<div class="wrap">
+<div class="sec-head"><span class="eyebrow">Enrollment &amp; Growth</span><h2 class="sec-h">North Meck schools are growing faster than almost anywhere in the district.</h2><p class="lead">Population growth in Cornelius, Davidson, and Huntersville has sent school enrollment surging over the past decade. Understanding which schools are most stressed — and how growth has varied by school level — matters for planning, bonds, and staffing decisions.</p></div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">K–12 Enrollment Trend</div>
+<div class="card-s">Total residents enrolled in K–12 school · by town</div>
+
+<div id="chart-k12-trend">
+
+```{ojs}
+{
+  const data = byTown(popK12, masterTown);
+  return responsive(width => stdPlot({
+    width, height: 320, style: S,
+    x: {label: "Year", tickFormat: d => String(d)},
+    y: {label: "K–12 Enrollment", grid: true},
+    color: townColor({legend: masterTown === "All"}),
+    marks: [
+      Plot.line(data, {x: "year", y: "n_enrolled_k12_total", stroke: "town", strokeWidth: masterTown === "All" ? 2 : 3}),
+      Plot.dot(data, {x: "year", y: "n_enrolled_k12_total", stroke: "town", fill: "white", strokeWidth: 1.5, r: 4,
+        tip: true, title: d => `${d.town}\n${d.year}: ${d.n_enrolled_k12_total.toLocaleString()}`})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-t">Huntersville has added `r fmt_num(k12_gain["Huntersville"])` K–12 students since `r pk_y0` — the largest absolute gain. Davidson is the smallest in total enrollment but has the highest overall enrollment rate relative to its population size (`r fmt_pct(enroll_rate["Davidson"])` of residents age 3+ were enrolled in school in `r pk_y1`, including college).</div>
+<div class="nm-callout-s">Source: ACS `r pk_y0`–`r pk_y1` · Table B14001 · counts residents enrolled in school, not CMS school-level enrollment</div>
+</div>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Population growth vs. K-12 Enrollment</div>
+<div class="card-s">Indexed to 2018 = 100 · Population (age 3+) vs. K–12 enrollment · by town</div>
+
+<div id="chart-pop-vs-k12">
+
+```{ojs}
+{
+  const towns = masterTown === "All" ? TOWNS : [masterTown];
+  const enrollIndex = towns.flatMap(t => {
+    const rows = popK12.filter(d => d.town === t).sort((a, b) => a.year - b.year);
+    if (!rows.length) return [];
+    const base = rows[0];
+    return rows.flatMap(d => [
+      {town: t, year: d.year, series: "Total population (3+)", index: d.total_pop_3_plus / base.total_pop_3_plus * 100, raw: d.total_pop_3_plus},
+      {town: t, year: d.year, series: "K-12 enrollment", index: d.n_enrolled_k12_total / base.n_enrolled_k12_total * 100, raw: d.n_enrolled_k12_total}
+    ]);
+  });
+  const vals = enrollIndex.map(d => d.index);
+  const domain = [Math.floor(Math.min(...vals) / 5) * 5 - 5, Math.ceil(Math.max(...vals) / 5) * 5 + 5];
+  return responsive(width => stdPlot({
+    width, height: 300, marginRight: 20, style: S,
+    x: {label: "Year", tickFormat: "d", ticks: [2018, 2020, 2022, 2024]},
+    fx: {label: null},
+    y: {label: "Index (2018 = 100)", domain, grid: true},
+    color: {legend: true, domain: ["Total population (3+)", "K-12 enrollment"], range: ["#b5495b", "#3b6ea5"], label: null},
+    facet: {data: enrollIndex, x: "town"},
+    marks: [
+      Plot.ruleY([100], {stroke: "#ccc", strokeDasharray: "3,3"}),
+      Plot.line(enrollIndex, {x: "year", y: "index", stroke: "series", strokeWidth: 2.5}),
+      Plot.dot(enrollIndex, {x: "year", y: "index", fill: "series", r: 3}),
+      Plot.tip(enrollIndex, Plot.pointer({x: "year", y: "index", stroke: "series",
+        title: d => `${d.town}, ${d.year}\n${d.series}\n${d.raw.toLocaleString()} (${d.index.toFixed(1)} vs 2018)`}))
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-t">K-12 student counts rose only `r round(min(k12_chg))`–`r round(max(k12_chg))`% while town populations grew `r round(min(pop_chg))`–`r round(max(pop_chg))`% since `r pk_y0`.</div>
+<div class="nm-callout-s">Source: U.S. Census Bureau, ACS 5-Year Estimates, Tables B01003 and B14007. Population shown is age 3+, the universe for the ACS school enrollment question.</div>
+</div>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Enrollment by School Level</div>
+<div class="card-s">Residents enrolled by grade band · Grades 1–4, 5–8, and High School</div>
+
+<div id="chart-level-trend">
+
+```{ojs}
+{
+  const LEVEL_COLORS = {"Grades 1–4": "#aec6e8", "Grades 5–8": "#6baed6", "High School": "#2171b5"};
+  const LEVELS = Object.keys(LEVEL_COLORS);
+  const years = [...new Set(k12ByLevel.map(d => d.year))].sort((a, b) => a - b);
+  const rows = byTown(k12ByLevel, masterTown);
+  const sum = (yr, key) => rows.filter(r => r.year === yr).reduce((s, r) => s + r[key], 0);
+  const data = years.flatMap(yr => [
+    {year: yr, level: "Grades 1–4", count: sum(yr, "elem14")},
+    {year: yr, level: "Grades 5–8", count: sum(yr, "elem58")},
+    {year: yr, level: "High School", count: sum(yr, "hs")}
+  ]);
+  return responsive(width => stdPlot({
+    width, height: 340, style: S,
+    x: {label: "Year", tickFormat: d => String(d)},
+    y: {label: "Enrollment", grid: true},
+    color: {domain: LEVELS, range: LEVELS.map(l => LEVEL_COLORS[l]), legend: true},
+    marks: [
+      Plot.areaY(data, Plot.stackY({x: "year", y: "count", fill: "level", order: LEVELS, fillOpacity: 0.85})),
+      Plot.lineY(data, Plot.stackY({x: "year", y: "count", stroke: "level", strokeWidth: 1.5, order: LEVELS}))
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-t">Grades 1–4 enrollment has held relatively steady (`r sprintf("%+.0f%%", lv_chg["elem14"])` since `r lv_y0`), while grades 5–8 (`r sprintf("%+.0f%%", lv_chg["elem58"])`) and high school (`r sprintf("%+.0f%%", lv_chg["hs"])`) enrollment have grown as the wave of students who moved in during 2015–2020 ages through the system.</div>
+<div class="nm-callout-s">Source: ACS `r lv_y0`–`r lv_y1` · Table B14001</div>
+</div>
+</div>
+<div class="card viz-host">
+<div class="card-t">School Academic Growth Across North Mecklenburg (2024-25)</div>
+<div class="card-s">Growth index score by school · 0 = met expected growth</div>
+
+<div id="chart-school-academic-growth">
+
+```{ojs}
+viewof growthTown = townChips(masterTown)
+{
+  const data = byTown(growth, growthTown).slice().sort((a, b) => b.index_score - a.index_score);
+  return responsive(width => stdPlot({
+    width, height: 100 + data.length * 22, style: S,
+    x: {label: "Growth Index Score (0 = met expected growth)", domain: [-8, 8], grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    color: GROWTH_COLOR,
+    marks: [
+      Plot.barX(data, {x: "index_score", y: "school", fill: "status", tip: true,
+        title: d => `${d.school} (${d.grade_span})\nStatus: ${d.status}\nGrowth Index: ${d.index_score}`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- TAB: school demographics -->
+<div class="tabpane" data-pane="ed-demographics">
+<div class="wrap">
+<div class="sec-head"><span class="eyebrow">School Demographics</span><h2 class="sec-h">Who is in the classroom, and how has that changed?</h2><p class="lead">The racial, ethnic, and economic composition of North Meck schools reflects, and sometimes diverges from, the communities they serve. Tracking these patterns over time reveals how growth, attendance zones, and school choice interact with equity.</p><p class="lead" style="margin-top:8px;font-size:14px;color:var(--ink-3)">A note on terminology: "proficient" means a student scored Level 3 or higher (of 5) on NC's state exams, a passing but not top-tier score. See the <span style="text-decoration:underline;cursor:pointer" onclick="openGlossary()">glossary</span> for details.</p></div>
+<div class="grid-2" style="margin-bottom:28px">
+<div class="card viz-host" id="race-gap-avg-host">
+<div class="card-t">Proficiency Gap by Race, Average Across Schools</div>
+<div class="card-s">Percentage-point gap vs. white students' proficiency rate · North Meck schools</div>
+
+<div id="chart-race-gap-avg">
+
+```{ojs}
+{
+  const byGroup = {};
+  raceGap.forEach(d => { if (d.gap != null) (byGroup[d.comparison_group] = byGroup[d.comparison_group] || []).push(d.gap); });
+  const avgData = Object.keys(byGroup).filter(g => byGroup[g].length >= 3).map(g => ({
+    comparison_group: g,
+    avg_gap: byGroup[g].reduce((a, b) => a + b, 0) / byGroup[g].length,
+    n: byGroup[g].length
+  })).sort((a, b) => b.avg_gap - a.avg_gap);
+  return responsive(width => stdPlot({
+    width, height: 260, marginLeft: 150, style: S,
+    x: {label: "Avg. proficiency point gap", grid: true},
+    y: {label: null, domain: avgData.map(d => d.comparison_group)},
+    marks: [
+      Plot.barX(avgData, {y: "comparison_group", x: "avg_gap", fill: d => RACE_COLORS[d.comparison_group], rx: 3}),
+      Plot.text(avgData, {y: "comparison_group", x: "avg_gap", text: d => d.avg_gap.toFixed(1) + " pts (" + d.n + " schools)", dx: 24, fontSize: 12})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-t">This shows an achievement gap, not enrollment composition: a 20-point gap means that group's proficiency rate is 20 points below white students' rate at the same schools, not that the group makes up 20% of enrollment. American Indian students are excluded from this average — only `r n_ai` school`r if (n_ai == 1) "" else "s"` reported a value, too few to average meaningfully.</div>
+<div class="nm-callout-s">Source: NC School Report Cards, NC DPI</div>
+</div>
+</div>
+<div class="card viz-host" id="race-gap-top-host">
+<div class="card-t">Schools With the Largest Race-Based Proficiency Gap</div>
+<div class="card-s">Largest reported gap per school, top 12 · colored by comparison group</div>
+
+<div id="chart-race-gap-top">
+
+```{ojs}
+{
+  const bySchool = {};
+  raceGap.forEach(d => {
+    if (d.gap == null) return;
+    if (!bySchool[d.school] || d.gap > bySchool[d.school].gap) bySchool[d.school] = d;
+  });
+  const top = Object.values(bySchool).sort((a, b) => b.gap - a.gap).slice(0, 12);
+  return responsive(width => stdPlot({
+    width, height: 420, marginLeft: 190, style: S,
+    x: {label: "Largest reported gap (points)", grid: true},
+    y: {label: null, domain: top.map(d => d.school)},
+    color: {domain: Object.keys(RACE_COLORS), range: Object.values(RACE_COLORS), legend: true},
+    marks: [
+      Plot.barX(top, {y: "school", x: "gap", fill: "comparison_group", rx: 3, tip: true,
+        title: d => `${d.school}\n${d.comparison_group}: ${d.gap} point gap`})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-s">Source: NC School Report Cards, NC DPI</div>
+</div>
+</div>
+</div>
+<div class="grid-2" style="margin-bottom:28px">
+<div class="card viz-host" id="economic-gap-host">
+<div class="card-t">Economic Disadvantage: Proficiency Gap by School</div>
+<div class="card-s">Economically disadvantaged students' proficiency rate vs. their peers, by school</div>
+
+<div id="chart-economic-gap">
+
+```{ojs}
+{
+  const data = schoolEconGap.filter(d => d.gap != null).slice().sort((a, b) => b.gap - a.gap);
+  return responsive(width => stdPlot({
+    width, height: 480, marginLeft: 190, style: S,
+    x: {label: "Proficiency gap (points)", grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    marks: [
+      Plot.barX(data, {y: "school", x: "gap", fill: "#21908c", rx: 3, tip: true,
+        title: d => `${d.school}\nEcon. disadvantaged: ${d.econ_disadv}%\nNot disadvantaged: ${d.not_disadv}%\nGap: ${d.gap} pts`})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-s">Source: NC School Report Cards, NC DPI</div>
+</div>
+</div>
+<div class="card viz-host" id="disability-gap-host">
+<div class="card-t">Students With Disabilities: Proficiency Gap by School</div>
+<div class="card-s">Students with disabilities' proficiency rate vs. their peers, by school</div>
+
+<div id="chart-disability-gap">
+
+```{ojs}
+{
+  const data = disabilityGap.filter(d => d.gap != null).slice().sort((a, b) => b.gap - a.gap);
+  return responsive(width => stdPlot({
+    width, height: 480, marginLeft: 190, style: S,
+    x: {label: "Proficiency gap (points)", grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    marks: [
+      Plot.barX(data, {y: "school", x: "gap", fill: "#3b528b", rx: 3, tip: true,
+        title: d => `${d.school}\nWith disabilities: ${d.swd_pct}%\nWithout: ${d.nswd_pct}%\nGap: ${d.gap} pts`})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-s">Source: NC School Report Cards, NC DPI</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- TAB: academic performance -->
+<div class="tabpane" data-pane="ed-performance">
+<div class="wrap">
+<div class="sec-head"><span class="eyebrow">Academic Performance</span><h2 class="sec-h">How are students performing, and which schools are improving?</h2><p class="lead">NC end-of-grade proficiency rates, school performance grades, and graduation rates paint a picture of academic outcomes across North Meck schools, and how they compare to the district and state.</p><p class="lead" style="margin-top:8px;font-size:14px;color:var(--ink-3)">A note on terminology: "proficient" (or <span class="gloss-link" data-term="glp" role="button" tabindex="0" onclick="glossTerm('glp')">GLP</span>) means a student scored Level 3 or higher (of 5) on NC's state exams, a passing but not top-tier score. "<span class="gloss-link" data-term="ccr" role="button" tabindex="0" onclick="glossTerm('ccr')">College/Career Ready</span>" (CCR) is the stricter Level 4 or 5 standard. "<span class="gloss-link" data-term="econ-disadv" role="button" tabindex="0" onclick="glossTerm('econ-disadv')">Economically disadvantaged</span>" and "<span class="gloss-link" data-term="title-i" role="button" tabindex="0" onclick="glossTerm('title-i')">Title I</span>" are related but distinct designations, and growth is measured by the <span class="gloss-link" data-term="evaas" role="button" tabindex="0" onclick="glossTerm('evaas')">EVAAS Growth Index</span> rather than a passing score. Graduation figures use the <span class="gloss-link" data-term="cohort-grad" role="button" tabindex="0" onclick="glossTerm('cohort-grad')">cohort graduation rate</span>. See the <span style="text-decoration:underline;cursor:pointer" onclick="openGlossary()">glossary</span> for details.</p></div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Grade Level proficiency rate by school (2024-2025)</div>
+<div class="card-s">% students at or above grade level</div>
+
+<div id="chart-grade-level-proficiency">
+
+```{ojs}
+viewof glpTown = townChips(masterTown)
+{
+  const data = withParsed(byTown(proficiency, glpTown), "glp").filter(d => d.glp != null).sort((a, b) => b.glp - a.glp);
+  return responsive(width => stdPlot({
+    width, height: 100 + data.length * 22, style: S,
+    x: {label: "Grade-Level Proficiency (%)", domain: [0, 100], grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    marks: [
+      Plot.barX(data, {x: "glp", y: "school", fill: "#4e79a7", tip: true,
+        title: d => `${d.school} (${d.grade_span})\nGrade-Level Proficient: ${d.glp}%\nCollege/Career Ready: ${d.ccr}%`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">4-year graduation rate — North Meck High Schools</div>
+<div class="card-s">Cohort graduation rate · Hough High &amp; North Mecklenburg High</div>
+
+<div id="chart-four-year-graduation-rate">
+
+```{ojs}
+viewof gradTown = townChips(masterTown)
+{
+  const data = withParsed(byTown(graduation, gradTown), "grad_4yr").filter(d => d.grad_4yr != null).sort((a, b) => b.grad_4yr - a.grad_4yr);
+  return responsive(width => stdPlot({
+    width, height: 100 + data.length * 22, style: S,
+    x: {label: "Four-Year Cohort Graduation Rate (%)", domain: [0, 100], grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    color: {legend: true, domain: ["90%+", "80–90%", "Below 80%"], range: ["#2ca02c", "#ff7f0e", "#d62728"]},
+    marks: [
+      Plot.barX(data, {x: "grad_4yr", y: "school", fill: d => d.grad_4yr >= 90 ? "90%+" : d.grad_4yr >= 80 ? "80–90%" : "Below 80%", tip: true,
+        title: d => `${d.school}\n4-Year Grad Rate: ${d.grad_4yr_raw}`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">School Achievement Gap By Economic Status in North Meck Schools (2024-25)</div>
+<div class="card-s">Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students</div>
+
+<div id="chart-school-achievement-economic-gap">
+
+```{ojs}
+viewof econGapTown = townChips(masterTown)
+{
+  const data = byTown(econGap, econGapTown).slice().sort((a, b) => b.gap - a.gap);
+  return responsive(width => stdPlot({
+    width, height: 100 + data.length * 22, style: S,
+    x: {label: "Grade-Level Proficient (%)", domain: [0, 100], grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    color: ECON_COLOR,
+    marks: [
+      Plot.link(data, {x1: "econ_disadv", x2: "not_disadv", y: "school", stroke: "#cccccc", strokeWidth: 2}),
+      Plot.dot(data, {x: "econ_disadv", y: "school", fill: "#d62728", r: 5, tip: true,
+        title: d => `${d.school}\nEconomically Disadvantaged: ${d.econ_disadv}%\nNot Disadvantaged: ${d.not_disadv}%\nGap: ${d.gap} points`}),
+      Plot.dot(data, {x: "not_disadv", y: "school", fill: "#4e79a7", r: 5})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">High School College &amp; Career Readiness: North Meck (2024-25)</div>
+<div class="card-s">Grade-Level Proficient vs. College/Career Ready · Grades 9–12</div>
+
+<div id="chart-hs-ccr">
+
+```{ojs}
+viewof ccrTown = townChips(masterTown)
+{
+  const HS_SPANS = ["09-12", "09-11", "11-13", "0K-12"];
+  const METRICS = ["Grade-Level Proficient", "College/Career Ready"];
+  const data = withParsed(byTown(proficiency, ccrTown), "glp")
+    .filter(d => HS_SPANS.includes(d.grade_span) && d.ccr != null)
+    .sort((a, b) => b.ccr - a.ccr);
+  const long = data.flatMap(d => [
+    {school: d.school, metric: METRICS[0], value: d.glp},
+    {school: d.school, metric: METRICS[1], value: d.ccr}
+  ]).filter(d => d.value != null);
+  return responsive(width => stdPlot({
+    width, height: 60 + data.length * 46, style: S,
+    x: {label: "Percent of students (%)", domain: [0, 100], grid: true},
+    y: {axis: null, domain: METRICS},
+    fy: {label: null, domain: data.map(d => d.school)},
+    color: {legend: true, domain: METRICS, range: ["#a0cbe8", "#4e79a7"]},
+    marks: [
+      Plot.barX(long, {x: "value", y: "metric", fy: "school", fill: "metric", tip: true, title: d => `${d.school}\n${d.metric}: ${d.value}%`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout info" style="margin-top:16px">
+<div class="nm-callout-t">Includes K–12 comprehensive schools (grade span 0K–12), whose Grade-Level Proficient and College/Career Ready rates reflect their entire student body, not high schoolers alone — treat these figures as directional rather than high-school-specific.</div>
+</div>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Achievement Gap in North Meck High Schools by Economic status (2024-25)</div>
+<div class="card-s">Grades 9–12 grade-level proficiency: economically disadvantaged vs. not</div>
+
+<div id="chart-hs-achievement-economic-gap">
+
+```{ojs}
+viewof hsGapTown = townChips(masterTown)
+{
+  const data = byTown(hsEconGap, hsGapTown)
+    .filter(d => d.econ_disadv != null && d.not_disadv != null && d.gap != null)
+    .sort((a, b) => b.gap - a.gap);
+  return responsive(width => stdPlot({
+    width, height: 100 + data.length * 22, style: S,
+    x: {label: "Grade-Level Proficient (%)", domain: [0, 100], grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    color: ECON_COLOR,
+    marks: [
+      Plot.link(data, {x1: "econ_disadv", x2: "not_disadv", y: "school", stroke: "#cccccc", strokeWidth: 2}),
+      Plot.dot(data, {x: "econ_disadv", y: "school", fill: "#d62728", r: 5, tip: true,
+        title: d => `${d.school}\nEconomically Disadvantaged: ${d.econ_disadv}%\nNot Disadvantaged: ${d.not_disadv}%\nGap: ${d.gap} points`}),
+      Plot.dot(data, {x: "not_disadv", y: "school", fill: "#4e79a7", r: 5})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- Resources & Staffing tab: hidden for 2026 (no data sourced yet). The
+original page kept its placeholder markup behind SHOW_ED_RESOURCES = false;
+restore it from src/pages/education.astro when data exists. -->
+
+<!-- TAB: educational attainment -->
+<div class="tabpane" data-pane="ed-attainment">
+<div class="wrap">
+<div class="sec-head"><span class="eyebrow">Educational Attainment</span><h2 class="sec-h">What is the education level of the adults who live here?</h2><p class="lead">Resident educational attainment shapes the workforce, economic mobility, and civic life of a community. In North Meck, attainment varies meaningfully across the three towns — and has shifted as the population has grown.</p></div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Bachelor's+ Rate Trend</div>
+<div class="card-s">% adults 25+ with a bachelor's degree or higher · 2018–2023</div>
+
+<div id="chart-bach-trend">
+
+```{ojs}
+{
+  const data = byTown(bachTrend, masterTown);
+  return responsive(width => stdPlot({
+    width, height: 320, style: S,
+    x: {label: "Year", tickFormat: d => String(d)},
+    y: {label: "Bachelor's+ (%)", grid: true, domain: [20, 85]},
+    color: townColor({legend: masterTown === "All"}),
+    marks: [
+      Plot.line(data, {x: "year", y: "bach_plus", stroke: "town", strokeWidth: masterTown === "All" ? 2 : 3}),
+      Plot.dot(data, {x: "year", y: "bach_plus", stroke: "town", fill: "white", strokeWidth: 1.5, r: 4,
+        tip: true, title: d => `${d.town}\n${d.year}: ${d.bach_plus.toFixed(1)}%`})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-t">Davidson's highly educated population (home to Davidson College) keeps its attainment rate among the highest in the region. Cornelius has climbed steadily to nearly `r fmt_pct(round(corn_last$bach_plus))` bachelor's or higher by `r corn_last$year`.</div>
+<div class="nm-callout-s">Source: ACS 2018–2023 · Table B15003 · adults 25+ · Note: Davidson figures show year-to-year variation typical of small-population ACS estimates · Huntersville 2023 excluded (data anomaly)</div>
+</div>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Attainment Breakdown, 2022</div>
+<div class="card-s">Distribution of educational attainment for adults 25+ · by town</div>
+
+<div id="chart-attainment-breakdown">
+
+```{ojs}
+{
+  const LEVEL_COLORS = {"Less than HS": "#d73027", "HS/GED": "#fc8d59", "Some College": "#fee090", "Associate's": "#e0f3f8", "Bachelor's": "#74add1", "Graduate/Prof": "#4575b4"};
+  const LEVELS = Object.keys(LEVEL_COLORS);
+  const data = byTown(attainment2022, masterTown);
+  const towns = [...new Set(data.map(d => d.town))];
+  return responsive(width => stdPlot({
+    width, height: 60 + towns.length * 60, style: S,
+    x: {label: "Share (%)", tickFormat: d => d + "%", grid: true},
+    // An explicit domain lets stdPlot size the left margin (the original clipped "Huntersville").
+    y: {label: null, domain: towns},
+    color: {domain: LEVELS, range: LEVELS.map(l => LEVEL_COLORS[l]), legend: true},
+    marks: [
+      Plot.barX(data, Plot.stackX({x: "pct", y: "town", fill: "level", order: LEVELS, tip: true, title: d => `${d.level}: ${d.pct.toFixed(1)}%`})),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-t">Cornelius and Huntersville show similar attainment profiles. Davidson's 2022 snapshot reflects ACS sample variability — its 2023 figure (`r fmt_pct(dav_2023, 1)` bachelor's or higher) better reflects the long-run pattern.</div>
+<div class="nm-callout-s">Source: ACS 2022 · Table B15003 · 2022 used for consistent cross-town comparison · Note: Davidson 2022 shows ACS sampling artifact; 2023 value is `r fmt_pct(dav_2023, 1)`</div>
+</div>
+</div>
+<div class="card viz-host" style="margin-bottom:28px">
+<div class="card-t">Median Earnings by Education Level, 2024</div>
+<div class="card-s">Annual median earnings for full-time year-round workers 25+ · by education level and town</div>
+
+<div id="chart-earnings">
+
+```{ojs}
+{
+  const LEVEL_ORDER = ["Less than HS", "HS Diploma", "Some College", "Bachelor's", "Graduate/Prof"];
+  const data = byTown(earningsByEd, masterTown);
+  return responsive(width => stdPlot({
+    width, height: 360, style: S,
+    x: {label: "Education Level", domain: LEVEL_ORDER},
+    y: {label: "Median Earnings", grid: true, tickFormat: d => "$" + Math.round(d / 1000) + "k"},
+    color: townColor({legend: true}),
+    marks: [
+      Plot.dot(data, {x: "level", y: "earnings", stroke: "town", fill: "town", r: 7, fillOpacity: 0.85, tip: true,
+        title: d => `${d.town}\n${d.level}\n$${d.earnings.toLocaleString()}`}),
+      Plot.ruleY([0], {strokeOpacity: 0})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+
+<div class="nm-callout">
+<div class="nm-callout-t">In `r fmt_list(names(ba_premium))`, a bachelor's degree is worth about `r fmt_dollar(min(ba_premium))`–`r fmt_dollar(max(ba_premium))` more per year than a high school diploma (Davidson's high-school figure is suppressed). Davidson's graduate-degree earners have median earnings over `r fmt_k(dav_grad_floor)` a year — among the highest in the Charlotte metro.</div>
+<div class="nm-callout-s">Source: ACS 2024 · Table S1501 · median earnings for full-time year-round workers 25+ · Davidson HS-diploma figure suppressed by Census (small sample)</div>
+</div>
+</div>
+</div>
+</div>
+</div>
