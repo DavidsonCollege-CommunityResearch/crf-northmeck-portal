@@ -10,6 +10,10 @@ on:
     workflows: ["Refresh MotherDuck data snapshot"]
     types: [completed]
     branches: [main]
+  # Build (but don't publish) pull requests, so a broken render or a failing
+  # nm_claim() shows up before it reaches main.
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -30,7 +34,7 @@ jobs:
         with:
           # On workflow_run, build main as it is now (including the data
           # commit the refresh just pushed), not the commit that started it.
-          ref: main
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || '' }}
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -59,6 +63,7 @@ jobs:
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
