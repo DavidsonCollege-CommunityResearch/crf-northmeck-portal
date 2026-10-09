@@ -1,0 +1,255 @@
+---
+pagetitle: "United Neighborhoods · North Meck Insights"
+---
+
+```{r}
+#| include: false
+source("R/nm.R")
+
+# Block-group population per neighborhood (ACS 5-year), the source for the
+# mini bar charts and every population figure quoted on this page.
+demo <- nm_data("nbhd-demographics")
+MINI_FROM <- 2020
+pop_series <- function(name) {
+  rows <- demo[demo$neighborhood_name == name & demo$year >= MINI_FROM, ]
+  rows <- rows[order(rows$year), ]
+  if (nrow(rows) == 0) stop("No nbhd-demographics rows for ", name, call. = FALSE)
+  setNames(rows$total_population, rows$year)
+}
+pop <- function(name, year) nm_value(demo, "total_population", neighborhood_name = name, year = year)
+last_year <- max(demo$year)
+fmt_kpop <- function(x) paste0(formatC(x / 1000, format = "f", digits = 1), "k")
+round_h <- function(x) round(x, -2)
+
+# Mini bar chart markup: same .minichart / .bars / .bars-x structure the site
+# CSS styles. Heights are value / max * 100 from a zero baseline; the last
+# (most recent) bar gets .bar-now.
+minichart <- function(name, cap) {
+  s <- pop_series(name)
+  h <- round(s / max(s) * 100)
+  cls <- ifelse(seq_along(s) == length(s), "bar bar-now", "bar")
+  bars <- paste0('<div class="', cls, '" style="height:', h, '%"><span class="bv">', fmt_kpop(s), '</span></div>', collapse = "")
+  xs <- paste0("<span>", names(s), "</span>", collapse = "")
+  cat(paste0(
+    '<div class="minichart" data-dlib="nbhd-demographics" data-theme="demographics"><div class="minichart-h">', name,
+    ' block-group population, ', names(s)[1], '–', names(s)[length(s)], '</div>\n',
+    '<div class="bars">', bars, '</div>\n',
+    '<div class="bars-x">', xs, '</div>\n',
+    '<div class="minichart-cap">', cap, ' Source: ACS 5-year.</div>\n',
+    '</div>\n'))
+}
+
+# Pottstown
+pt <- pop_series("Pottstown")
+pt_growth <- pct_change(pt[1], pt[length(pt)])
+nm_claim(pt_growth > 0, "Pottstown caption says its population grew")
+
+# West Davidson
+wd <- pop_series("West Davidson")
+wd_peak_year <- names(which.max(wd))
+nm_claim(wd_peak_year != names(wd)[length(wd)] && wd[length(wd)] < max(wd) && wd[length(wd)] > 0.8 * max(wd),
+         "West Davidson caption says population peaked before the latest year and has since modestly declined")
+
+# Smithville
+sv <- pop_series("Smithville")
+nm_claim((max(sv) - min(sv)) / max(sv) < 0.10, "Smithville caption says population has held relatively steady (within 10%)")
+
+# Huntington Green
+hg <- pop_series("Huntington Green")
+hg_first <- round_h(hg[1])
+hg_now <- round_h(hg[length(hg)])
+nm_claim(hg_now > hg_first, "Huntington Green caption says population grew since 2020")
+nm_claim(all(abs(hg[-1] - hg_now) <= 100), "Huntington Green caption says population has held at about its current level since the first year")
+
+# East Catawba
+ec <- pop_series("East Catawba")
+ec_growth <- pct_change(ec[1], ec[length(ec)])
+nm_claim(ec_growth > 0, "East Catawba caption says its population grew")
+```
+
+<div class="page active" style="display:block">
+<div class="wrap"><div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Focused Neighborhoods</span></div></div>
+<section class="section"><div class="wrap">
+<div class="sec-head" style="max-width:720px">
+<span class="eyebrow" style="font-size:15px">United Neighborhoods</span>
+<h2 class="sec-h" style="font-size:32px">The neighborhoods that built North Meck</h2>
+<p class="lead">Davidson, Cornelius, and Huntersville each hold neighborhoods with deep roots, several founded by Black families in the generations after Emancipation. Their histories are rich, and at risk of being lost. This is where we gather their stories, the data, and the record, so that North Meck remembers and its residents stay informed.</p>
+</div>
+<div class="nbhd-disclaimer" style="margin-top:26px">
+<i class="ti ti-info-circle"></i>
+<div><strong>Data note:</strong> Neighborhood boundaries don't align perfectly with U.S. Census geography. The data shown here is from the <strong>ACS block group</strong> that best approximates each neighborhood which is the smallest geographic unit the Census publishes. This means the numbers may include some residents just outside the neighborhood boundary. All data comes from the American Community Survey 5-year estimates.</div>
+</div>
+<div style="width:100%;border-radius:var(--rl);border:1px solid var(--line);overflow:hidden">
+<iframe src="/maps/neighborhoods-map.html" title="Interactive map of North Meck towns and United Neighborhoods boundaries" loading="lazy" style="display:block;width:100%;height:560px;border:0"></iframe>
+</div>
+<p class="meta" style="margin-top:10px;font-size:13px;color:var(--ink-3)">Census data (ACS 5-year 2024, 2020 Decennial) via tidycensus. Neighborhood boundaries shown at block-group level (dashed) and block level (solid).</p>
+<div style="margin-top:44px">
+<span class="eyebrow" style="display:block;font-size:15px">Where they are</span>
+<h3 class="sec-h" style="font-size:24px;margin-top:10px"></h3>
+<div class="loc">
+<div class="loc-town"><div class="loc-town-h"><i class="ti ti-map-pin"></i> Davidson</div><div class="loc-town-sub">Northern Mecklenburg</div><div class="loc-pills"><span class="loc-pill" onclick="scrollToNbhd('nbhd-westdavidson')">West Davidson</span></div></div>
+<div class="loc-town"><div class="loc-town-h"><i class="ti ti-map-pin"></i> Cornelius</div><div class="loc-town-sub">Northern Mecklenburg</div><div class="loc-pills"><span class="loc-pill" onclick="scrollToNbhd('nbhd-smithville')">Smithville</span><span class="loc-pill" onclick="scrollToNbhd('nbhd-eastcatawba')">East Catawba</span></div></div>
+<div class="loc-town"><div class="loc-town-h"><i class="ti ti-map-pin"></i> Huntersville</div><div class="loc-town-sub">Northern Mecklenburg</div><div class="loc-pills"><span class="loc-pill" onclick="scrollToNbhd('nbhd-pottstown')">Pottstown</span><span class="loc-pill" onclick="scrollToNbhd('nbhd-huntingtongreen')">Huntington Green</span></div></div>
+</div>
+<p class="meta" style="margin-top:12px;font-size:13px;color:var(--ink-3)">Pottstown, West Davidson, and Smithville are historic communities founded in the generations after Emancipation; Huntington Green is a modern subdivision shown for contrast.</p>
+</div>
+<div class="nbhd-list">
+<!-- POTTSTOWN -->
+<div class="nbhd" id="nbhd-pottstown">
+<div class="nbhd-top"><span class="nbhd-name">Pottstown</span><span class="nbhd-town-badge">HUNTERSVILLE</span></div>
+<div class="nbhd-kicker">Huntersville's oldest Black community · established 1909</div>
+<div class="nbhd-grid2">
+<div class="nbhd-prose">
+<p>Pottstown is the oldest African American community in Huntersville, established in 1909 by formerly enslaved people and free Black families in the decades after the Civil War. It is named for Ortho Potts, a farmer and sought-after brick mason who settled here from the Asheville area; the families who followed built their own homes, churches, and schools on land they owned themselves.</p>
+<p>At its heart stands the Torrence-Lytle School, opened in 1937 and, until it closed in 1966, the only high school for Black children in northern Mecklenburg County. Much of Pottstown's land is still held by descendants of those original families. As Huntersville's growth closes in, residents have organized through the Pottstown Heritage Group and the Huntersville Community Development Association to resist displacement; in 2022 they persuaded Mecklenburg County to buy the bordering 30-acre Valea Village tract for parkland, and a Pottstown Preservation Plan went before the town in 2025.</p>
+<p class="meta">Demographics: a small, close-knit historically African American neighborhood of roughly 150 homes, many owned by the descendants of the formerly enslaved families who founded it. Four historic Black churches anchor its streets.</p>
+<div class="reports"><div class="reports-h">Articles &amp; reports</div>
+<div class="report-item" onclick="window.open('https://www.pridemagazineonline.com/keeping-history-alive-in-pottstown-a-huntersville-treasure/','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Keeping History Alive in Pottstown: a Huntersville Treasure</div><div class="report-m"><span class="report-kind">Article</span> Pride Magazine · 2024</div></div></div>
+<div class="report-item" onclick="window.open('https://www.wcnc.com/article/news/local/pottstown-preservation-huntersville-nc-10-9-2025/275-37a7e517-043e-4cc3-b681-a05e57b2b662','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Pottstown residents fight to save historic Black neighborhood</div><div class="report-m"><span class="report-kind">Report</span> WCNC Charlotte · 2025</div></div></div>
+</div>
+</div>
+<div>
+<div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+<div class="nstats">
+<div class="nstat"><div class="nstat-n">1909</div><div class="nstat-l">Established by formerly enslaved &amp; free Black families</div></div>
+<div class="nstat"><div class="nstat-n">~150</div><div class="nstat-l">Homes in the historic community</div></div>
+<div class="nstat"><div class="nstat-n">$1.72M</div><div class="nstat-l">County purchase of the 30-acre Valea Village tract, 2022</div></div>
+<div class="nstat"><div class="nstat-n">1937</div><div class="nstat-l">Torrence-Lytle School built; closed 1966</div></div>
+</div>
+
+```{r}
+#| output: asis
+minichart("Pottstown", sprintf("Pottstown's block-group population grew %s from %s to %s as development surrounds it.",
+                               fmt_pct(pt_growth), names(pt)[1], names(pt)[length(pt)]))
+```
+
+</div>
+</div>
+</div>
+<!-- WEST DAVIDSON -->
+<div class="nbhd" id="nbhd-westdavidson">
+<div class="nbhd-top"><span class="nbhd-name">West Davidson</span><span class="nbhd-town-badge"><i class="ti ti-map-pin"></i> Davidson</span></div>
+<div class="nbhd-kicker">Davidson's historically Black enclave · west of the railroad</div>
+<div class="nbhd-grid2">
+<div class="nbhd-prose">
+<p>West Davidson is the town's historically African American neighborhood, which took shape in the early twentieth century on a small area west of the railroad, near the cotton mills, lumberyard, and the other industries where many residents worked. By the mid-1920s its streets were lined with one-story frame bungalows and shotgun houses, a Black Baptist church, and a community meeting hall.</p>
+<p>Its anchor is the old Davidson Colored School, built in 1937 to serve as both classroom and gathering place for the community, today restored as the Ada Jenkins Center, a nonprofit serving families across North Meck. The neighborhood lies within the Davidson Historic District, listed on the National Register in 2009, even as new commercial construction along Griffith Street presses against its edges.</p>
+<p class="meta">Demographics: a long-standing African American community woven into Davidson's mill-town past, its modest cottages and churches still intact within the town's protected historic core.</p>
+<div class="reports"><div class="reports-h">Articles &amp; reports</div>
+<div class="report-item" onclick="window.open('https://files.nc.gov/ncdcr/nr/MK2442.pdf','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Davidson Historic District: National Register Nomination</div><div class="report-m"><span class="report-kind">Report</span> NC Historic Preservation Office</div></div></div>
+</div>
+</div>
+<div>
+<div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+<div class="nstats">
+<div class="nstat"><div class="nstat-n">1920s</div><div class="nstat-l">Neighborhood established west of the railroad</div></div>
+<div class="nstat"><div class="nstat-n">1937</div><div class="nstat-l">Davidson Colored School built, now the Ada Jenkins Center</div></div>
+<div class="nstat"><div class="nstat-n">2009</div><div class="nstat-l">Listed within the Davidson Historic District</div></div>
+<div class="nstat"><div class="nstat-n">398</div><div class="nstat-l">Contributing historic resources in the district</div></div>
+</div>
+
+```{r}
+#| output: asis
+minichart("West Davidson", sprintf("West Davidson's block-group population peaked at %s in %s and has since modestly declined.",
+                                   fmt_num(max(wd)), wd_peak_year))
+```
+
+</div>
+</div>
+</div>
+<!-- SMITHVILLE -->
+<div class="nbhd" id="nbhd-smithville">
+<div class="nbhd-top"><span class="nbhd-name">Smithville</span><span class="nbhd-town-badge"><i class="ti ti-map-pin"></i> Cornelius</span></div>
+<div class="nbhd-kicker">The largest intact Black community in Mecklenburg County</div>
+<div class="nbhd-grid2">
+<div class="nbhd-prose">
+<p>Smithville is the freedmen's community of Cornelius and the largest intact historically African American community in Mecklenburg County. Its roots reach to the 1860s, but it took its name and shape in 1908, when landowner Jacob L. Smith began parceling out his land to Black families, selling to those who could pay and giving it freely to those who could not, so families of formerly enslaved sharecroppers could own homes and stay together.</p>
+<p>For generations Smithville sustained itself through its churches, its Rosenwald school, and tight-knit civic life; resident Nannie Potts went on to become Cornelius's first Black and first female mayor. Denied town services for decades, Smithville was finally annexed by Cornelius in the 1970s. Today, hemmed in by lakefront wealth, the Smithville Community Coalition is leading a resident-authored revitalization plan to add affordable housing without displacing anyone.</p>
+<p class="meta">Demographics: a predominantly Black neighborhood east of I-77, long redlined and underserved, with many aging residents who are direct descendants of the families Jacob Smith first sold land to in 1908.</p>
+<div class="reports"><div class="reports-h">Articles &amp; reports</div>
+<div class="report-item" onclick="window.open('https://www.wfae.org/local-news/2019-02-24/finding-home-the-fight-to-save-smithville','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Finding Home: The Fight to Save Smithville</div><div class="report-m"><span class="report-kind">Report</span> WFAE 90.7 · 2019</div></div></div>
+<div class="report-item" onclick="window.open('https://smithvillecommunitycoalition.org/history-smithville','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Smithville History &amp; Revitalization Plan</div><div class="report-m"><span class="report-kind">Resource</span> Smithville Community Coalition</div></div></div>
+</div>
+</div>
+<div>
+<div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+<div class="nstats">
+<div class="nstat"><div class="nstat-n">1908</div><div class="nstat-l">Jacob L. Smith parcels land to Black families</div></div>
+<div class="nstat"><div class="nstat-n">#1</div><div class="nstat-l">Largest intact Black community in Mecklenburg County</div></div>
+<div class="nstat"><div class="nstat-n">205</div><div class="nstat-l">New homes &amp; apartments in the revitalization plan</div></div>
+<div class="nstat"><div class="nstat-n">$500K</div><div class="nstat-l">State preservation funding secured, 2022</div></div>
+</div>
+
+```{r}
+#| output: asis
+minichart("Smithville", "Smithville's block-group population has held relatively steady, reflecting community resilience amid development pressure.")
+```
+
+</div>
+</div>
+</div>
+<!-- HUNTINGTON GREEN -->
+<div class="nbhd" id="nbhd-huntingtongreen">
+<div class="nbhd-top"><span class="nbhd-name">Huntington Green</span><span class="nbhd-town-badge"><i class="ti ti-map-pin"></i> Huntersville</span></div>
+<div class="nbhd-kicker">A modern residential neighborhood in Huntersville</div>
+<div class="nbhd-grid2">
+<div class="nbhd-prose">
+<p>Huntington Green is a residential subdivision in Huntersville, set between Old Huntersville and Cedarfield. Unlike Pottstown, Smithville, and West Davidson, whose roots run back to the generations just after Emancipation, Huntington Green is a product of the modern suburban growth that has reshaped northern Mecklenburg since the 1990s, when Lake Norman and Interstate 77 turned former farmland into family neighborhoods.</p>
+<p>Today it's a small, walkable community of well-kept homes organized around a neighborhood pool and playground, the kind of place residents describe as quiet, friendly, and close to schools and shopping. Its story is less about preservation than about the rapid new development that the area's historic neighborhoods are now working to hold at bay.</p>
+<p class="meta">Demographics: a family-oriented subdivision of roughly `r fmt_num(round_h(pop("Huntington Green", last_year)))` residents (ACS block-group); one of the many master-planned neighborhoods built during Huntersville's post-1990 boom.</p>
+<div class="reports"><div class="reports-h">Articles &amp; reports</div>
+<div class="report-item" onclick="window.open('https://lkn-law.com/2025/09/23/the-history-of-huntersville-north-carolina/','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Huntersville, NC: A Journey Through Time and Growth</div><div class="report-m"><span class="report-kind">Article</span> LKN Law · 2025</div></div></div>
+</div>
+</div>
+<div>
+<div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+<div class="nstats">
+<div class="nstat"><div class="nstat-n">~`r fmt_num(round_h(pop("Huntington Green", last_year)))`</div><div class="nstat-l">Residents (ACS 5-year block-group estimate)</div></div>
+<div class="nstat"><div class="nstat-n">post-1990</div><div class="nstat-l">Built during Huntersville's suburban boom</div></div>
+<div class="nstat"><div class="nstat-n">Pool</div><div class="nstat-l">Community pool &amp; playground at its center</div></div>
+<div class="nstat"><div class="nstat-n">Walkable</div><div class="nstat-l">Close to schools, shopping, and amenities</div></div>
+</div>
+
+```{r}
+#| output: asis
+minichart("Huntington Green", sprintf("Huntington Green's block-group population grew from about %s in %s to about %s in recent years.",
+                                      fmt_num(hg_first), names(hg)[1], fmt_num(hg_now)))
+```
+
+</div>
+</div>
+</div>
+<!-- EAST CATAWBA -->
+<div class="nbhd" id="nbhd-eastcatawba">
+<div class="nbhd-top"><span class="nbhd-name">East Catawba</span><span class="nbhd-town-badge"><i class="ti ti-map-pin"></i> Cornelius</span></div>
+<div class="nbhd-kicker">Newly added · history, town, and data to be verified by the team</div>
+<div class="nbhd-grid2">
+<div class="nbhd-prose">
+<p class="nph">East Catawba joins the project as the fifth United Neighborhood. Its founding story, families, and landmarks have not yet been documented here. This section is a scaffold for the research team to complete with verified history.</p>
+<p class="nph">Add the neighborhood's origins, the institutions that anchor it (churches, schools, civic groups), and the pressures it faces today, each with a public source.</p>
+<p class="meta nph">Demographics: to be confirmed.</p>
+<div class="reports"><div class="reports-h">Articles &amp; reports</div>
+<div class="report-item" style="cursor:default"><i class="ti ti-file-plus"></i><div class="report-tx"><div class="report-t nph">Add verified articles &amp; reports for East Catawba</div><div class="report-m"><span class="report-kind">Placeholder</span> source to be added</div></div></div>
+</div>
+</div>
+<div>
+<div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
+<div class="nstats">
+<div class="nstat"><div class="nstat-n">~`r fmt_num(round_h(pop("East Catawba", last_year)))`</div><div class="nstat-l">Residents (`r last_year` ACS 5-year block-group estimate)</div></div>
+<div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">Year established, to be verified</div></div>
+<div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">Key landmark or institution, to be verified</div></div>
+<div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">A defining statistic, to be verified</div></div>
+</div>
+
+```{r}
+#| output: asis
+minichart("East Catawba", sprintf("East Catawba's block-group population grew %s from %s to %s, reaching %s.",
+                                  fmt_pct(ec_growth), names(ec)[1], names(ec)[length(ec)], fmt_num(round_h(ec[length(ec)]))))
+```
+
+</div>
+</div>
+</div>
+</div>
+</div></section>
+</div>
