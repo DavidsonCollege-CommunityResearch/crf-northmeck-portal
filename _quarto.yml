@@ -28,6 +28,10 @@ website:
   # Quarto's navbar and footer aren't used: the site's own nav, footer, and
   # modals live in _partials/ and are injected into every page below.
 
+# Markdown components (.note, .chart-card, .question, ...): see _extensions/components.lua.
+filters:
+  - _extensions/components.lua
+
 format:
   html:
     # A "$" in prose is a dollar sign, not LaTeX math; quotes stay as typed.

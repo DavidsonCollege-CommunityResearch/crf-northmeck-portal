@@ -33,18 +33,65 @@ rent <- nm_data("housing-rent-income")
 - Use root-absolute URLs (`/images/x.jpg`, `/housing.html`) so links work from
   `posts/` too.
 
-## HTML inside .qmd: three rules
+## Page building blocks
 
-Pages are mostly hand-written HTML. Pandoc parses it as Markdown, so:
+Write pages in Markdown. A filter (`_extensions/components.lua`) turns these
+blocks into the site's exact HTML, so you never hand-write the markup:
 
-1. **Don't indent HTML.** Four or more leading spaces turn a line into a code
-   block. Keep every HTML line flush left.
-2. **Put a blank line before and after every code cell** (```` ```{ojs} ````,
-   ```` ```{r} ````), and don't leave blank lines between ordinary HTML lines
-   (a blank line can wrap the next line in a `<p>`).
-3. **Use `nm-callout`, never `callout`.** Quarto turns any `class="callout"` into
-   its own callout component. The site's classes are `nm-callout`,
-   `nm-callout-t`, `nm-callout-s` (with `warn` / `info` modifiers).
+````markdown
+::: {.section-head eyebrow="Affordability"}
+## How much does it actually cost to live here?
+:::
+
+::: {.question}
+### How have rents changed across the three towns?
+
+Median rent by town, 2018–2024.
+:::
+
+::: {.chart-card #rent-chart-host chart="rent-chart" title="Median Rent by Town" subtitle="Cornelius, Davidson, Huntersville"}
+
+```{ojs}
+...chart code...
+```
+
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+Median rent in Huntersville rose `r fmt_pct(chg)` since 2018.
+:::
+
+:::
+
+::: {.fact value="`r fmt_pct(chg)`" tone="warn" source="[ACS]{.gloss} 2018–2024"}
+rent rise in Huntersville since 2018
+:::
+````
+
+| Block | Makes | Options |
+|---|---|---|
+| `[ACS]{.gloss}` | clickable glossary term | `term=alice` when the term differs from the text |
+| `::: {.note}` | callout box | `.warn` / `.info` color; `source="..."` (adds "Source:"); `caption="..."` for any other footer |
+| `::: {.chart-card}` | chart card | `#host-id`; `chart="chart-id"` wraps the chart cells; `title`, `subtitle`; notes after the chart sit under it |
+| `::: {.question}` | question heading + intro | starts with a `###` heading and a paragraph; `.small` for the smaller heading |
+| `::: {.section-head}` | a tab's section header | `eyebrow="..."`, a `##` heading, optional lead paragraph |
+| `::: {.fact}` | Overview stat tile | `value`, `tone="warn"`, `source` |
+
+Every block takes `style="..."` for one-off spacing. Attribute values are
+Markdown, so `[ACS]{.gloss}`, `*italics*`, and inline `r` code work inside
+them. Plain layout wrappers are ordinary fenced divs: `::: {.wrap}`,
+`::: {.g2}`, `::: {.tabpane data-pane="supply"}`.
+
+One-off layouts (a page's hero and tab bar, the home page) stay as HTML in a
+raw block, which Pandoc passes through untouched:
+
+````markdown
+```{=html}
+<div class="dash-hero">...</div>
+```
+````
+
+If you write HTML outside a raw block: keep it flush left (4+ leading spaces
+make a code block), put blank lines around code cells and fenced divs, and
+use `nm-callout`, never `callout` (Quarto reserves that class).
 
 ## Numbers in text come from R
 
@@ -85,11 +132,11 @@ byTown = (rows, town) => town === "All" ? rows : rows.filter(d => d.town === tow
 ```
 ````
 
-Each chart is one cell, wrapped in a `<div>` carrying the chart's id (main.js
-uses those ids for theme tags, search anchors, and Data Library links):
+Each chart lives in a `.chart-card` whose `chart="..."` id main.js uses for
+theme tags, search anchors, and Data Library links (keep ids stable):
 
 ````markdown
-<div id="rent-chart">
+::: {.chart-card #rent-chart-host chart="rent-chart" title="Median Rent by Town"}
 
 ```{ojs}
 viewof rentTown = townChips(masterTown)
@@ -105,7 +152,7 @@ viewof rentTown = townChips(masterTown)
 }
 ```
 
-</div>
+:::
 ````
 
 - `responsive(render, {invalidation})` redraws at the container's width on

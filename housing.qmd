@@ -90,7 +90,9 @@ race_table <- do.call(rbind, lapply(race_rows, function(r) {
 }))
 ```
 
-<div class="page active" style="display:block">
+::: {.page .active style="display:block"}
+
+```{=html}
 <div class="wrap">
 <div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Housing</span></div>
 <div class="dash-hero" style="margin-bottom:56px">
@@ -100,15 +102,9 @@ race_table <- do.call(rbind, lapply(race_rows, function(r) {
 <h1 class="dash-h1">Can people afford to live in North Meck?</h1>
 <p class="lead dash-lead" style="margin-bottom:0">Rents have outpaced incomes in every North Meck town since 2018, and home values have climbed between `r fmt_pct(min(home_chg))` and `r fmt_pct(max(home_chg))`. This section follows the data to show who is affected, where the pressure is highest, and what it means for the communities that make North Meck work.</p>
 </div>
-
-```{=html}
 <img src="/images/housing-hero.jpg" alt="A North Meck neighborhood street with a For Rent sign" style="width:100%;max-height:320px;object-fit:cover;border-radius:var(--rl);display:block">
-```
-
 </div>
 </div>
-
-```{=html}
 <div class="tabs" id="housing-tabs">
 <span class="tab active" data-tab="overview" onclick="setTab(this)">Overview</span>
 <span class="tab" data-tab="affordability" onclick="setTab(this)">Affordability</span>
@@ -117,10 +113,10 @@ race_table <- do.call(rbind, lapply(race_rows, function(r) {
 <span class="tab" data-tab="homeownership" onclick="setTab(this)">Homeownership &amp; Equity</span>
 <span class="tab" data-tab="income" onclick="setTab(this)">Income &amp; Need</span>
 </div>
+</div>
 ```
 
-</div>
-<div class="wrap dash-filter">
+::: {.wrap .dash-filter}
 
 ```{ojs}
 //| output: false
@@ -158,23 +154,23 @@ byTown = (rows, town) => town === "All" ? rows : rows.filter(d => d.town === tow
 viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {label: "Area:", hint: "filters every chart"})
 ```
 
-</div>
+:::
 
 <!-- TAB: overview -->
-<div class="tabpane active" data-pane="overview">
-<div class="wrap">
-<div class="stat-rows" style="margin-bottom:48px" id="ov-fact-rows">
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n warn">`r fmt_pct(hh$rent_top_rise)`</div>
-<p class="stat-l">rent rise in `r hh$rent_top_town` since 2018, from `r fmt_dollar(hh$rent_top_2018)` to `r fmt_dollar(hh$rent_top_2024)`/mo</p>
-<span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</span>
-</div>
-<div class="card viz-host">
-<div class="card-t">Median Rent by Town (2018–2024)</div>
-<div class="card-s"></div>
 
-<div id="ovf-rent">
+::: {.tabpane .active data-pane="overview"}
+
+::: {.wrap}
+
+::: {#ov-fact-rows .stat-rows style="margin-bottom:48px"}
+
+::: {.stat-row}
+
+::: {.fact value="`r fmt_pct(hh$rent_top_rise)`" tone="warn" source="[ACS]{.gloss} 2018–2024"}
+rent rise in `r hh$rent_top_town` since 2018, from `r fmt_dollar(hh$rent_top_2018)` to `r fmt_dollar(hh$rent_top_2024)`/mo
+:::
+
+::: {.chart-card title="Median Rent by Town (2018–2024)" subtitle="" chart="ovf-rent"}
 
 ```{ojs}
 responsive(width => stdPlot({
@@ -190,21 +186,17 @@ responsive(width => stdPlot({
 }), {invalidation})
 ```
 
-</div>
+:::
 
-</div>
-</div>
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n warn">`r floor(hh$ptr_20_35_min)`+ yrs</div>
-<p class="stat-l">of gross income to buy the median home, for a $20k–$35k household</p>
-<span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
-</div>
-<div class="card viz-host">
-<div class="card-t">Years of Income to Buy the Median Home, by Bracket (2024)</div>
-<div class="card-s"></div>
+:::
 
-<div id="ovf-ptr">
+::: {.stat-row}
+
+::: {.fact value="`r floor(hh$ptr_20_35_min)`+ yrs" tone="warn" source="[ACS]{.gloss} 2024"}
+of gross income to buy the median home, for a $20k–$35k household
+:::
+
+::: {.chart-card title="Years of Income to Buy the Median Home, by Bracket (2024)" subtitle="" chart="ovf-ptr"}
 
 ```{ojs}
 {
@@ -225,21 +217,17 @@ responsive(width => stdPlot({
 }
 ```
 
-</div>
+:::
 
-</div>
-</div>
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n"><span class="cur">$</span>`r fmt_k(hh$home_top_value, prefix = "")`</div>
-<p class="stat-l">median home value in `r hh$home_top_town`, `r round(hh$home_top_value / hh$us_median_home, 1)`× the U.S. national median</p>
-<span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
-</div>
-<div class="card viz-host">
-<div class="card-t">Median Home Value by Town vs. U.S. Median (2024)</div>
-<div class="card-s">U.S. median ~`r fmt_k(US_MEDIAN_HOME)`</div>
+:::
 
-<div id="ovf-home">
+::: {.stat-row}
+
+::: {.fact value="[$]{.cur}`r fmt_k(hh$home_top_value, prefix = "")`" source="[ACS]{.gloss} 2024"}
+median home value in `r hh$home_top_town`, `r round(hh$home_top_value / hh$us_median_home, 1)`× the U.S. national median
+:::
+
+::: {.chart-card title="Median Home Value by Town vs. U.S. Median (2024)" subtitle="U.S. median ~`r fmt_k(US_MEDIAN_HOME)`" chart="ovf-home"}
 
 ```{ojs}
 {
@@ -260,21 +248,17 @@ responsive(width => stdPlot({
 }
 ```
 
-</div>
+:::
 
-</div>
-</div>
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n">~`r round(hh$down_payment_max_years)` yrs</div>
-<p class="stat-l">to save a 20% down payment at a 10% annual savings rate</p>
-<span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span>
-</div>
-<div class="card viz-host">
-<div class="card-t">Years to Save a 20% Down Payment, by Town (2024)</div>
-<div class="card-s">Assumes 10% annual savings rate on median household income</div>
+:::
 
-<div id="ovf-dp">
+::: {.stat-row}
+
+::: {.fact value="~`r round(hh$down_payment_max_years)` yrs" source="[ACS]{.gloss} 2024"}
+to save a 20% down payment at a 10% annual savings rate
+:::
+
+::: {.chart-card title="Years to Save a 20% Down Payment, by Town (2024)" subtitle="Assumes 10% annual savings rate on median household income" chart="ovf-dp"}
 
 ```{ojs}
 responsive(width => stdPlot({
@@ -289,26 +273,32 @@ responsive(width => stdPlot({
 }), {invalidation})
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
 
 <!-- TAB: affordability -->
-<div class="tabpane" data-pane="affordability">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">Affordability</span><h2 class="sec-h">How much does it actually cost to live here, and who can afford it?</h2></div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How have rents changed across Davidson, Cornelius, and Huntersville?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Median rent by town, 2018–2024. Each line tracks what renters paid in that year's ACS survey.</p>
-<div class="card viz-host" id="rent-chart-host">
-<div class="card-t">Median Rent by Town (2018–2024)</div>
-<div class="card-s">Cornelius, Davidson, Huntersville</div>
 
-<div id="rent-chart">
+::: {.tabpane data-pane="affordability"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="Affordability"}
+## How much does it actually cost to live here, and who can afford it?
+:::
+
+::: {.question}
+### How have rents changed across Davidson, Cornelius, and Huntersville?
+
+Median rent by town, 2018–2024. Each line tracks what renters paid in that year's ACS survey.
+
+::: {.chart-card #rent-chart-host title="Median Rent by Town (2018–2024)" subtitle="Cornelius, Davidson, Huntersville" chart="rent-chart"}
 
 ```{ojs}
 viewof rentTown = townChips(masterTown)
@@ -328,20 +318,22 @@ viewof rentTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+Median rent in `r rent_top` rose from `r fmt_dollar(rent(rent_top, 2018))` in 2018 to `r fmt_dollar(rent(rent_top, 2024))` in 2024, a `r fmt_pct(rent_chg[rent_top])` increase. Rent rose fastest in Cornelius and Huntersville after 2020, while Davidson saw the slowest growth (`r fmt_pct(rent_chg["Davidson"])` since 2018).
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">Median rent in `r rent_top` rose from `r fmt_dollar(rent(rent_top, 2018))` in 2018 to `r fmt_dollar(rent(rent_top, 2024))` in 2024, a `r fmt_pct(rent_chg[rent_top])` increase. Rent rose fastest in Cornelius and Huntersville after 2020, while Davidson saw the slowest growth (`r fmt_pct(rent_chg["Davidson"])` since 2018).</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How have home prices changed, and is buying becoming out of reach?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Home values indexed to 2018 alongside median income, showing how ownership affordability has shifted.</p>
-</div>
-<div class="card viz-host" id="home-value-chart-host" style="margin-top:22px">
-<div class="card-t">Home Value vs. Income Growth, Indexed to 2018</div>
-<div class="card-s">Home values have risen far faster than incomes, making ownership increasingly out of reach</div>
+:::
 
-<div id="home-value-chart">
+:::
+
+::: {.question}
+### How have home prices changed, and is buying becoming out of reach?
+
+Home values indexed to 2018 alongside median income, showing how ownership affordability has shifted.
+
+:::
+
+::: {.chart-card #home-value-chart-host title="Home Value vs. Income Growth, Indexed to 2018" subtitle="Home values have risen far faster than incomes, making ownership increasingly out of reach" chart="home-value-chart" style="margin-top:22px"}
 
 ```{ojs}
 viewof hvTown = townChips(masterTown)
@@ -373,15 +365,13 @@ viewof hvTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+In Cornelius, home values rose `r fmt_pct(home_chg["Cornelius"])` between 2018 and 2024. Median incomes rose just `r fmt_pct(inc_chg["Cornelius"])` over the same period.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">In Cornelius, home values rose `r fmt_pct(home_chg["Cornelius"])` between 2018 and 2024. Median incomes rose just `r fmt_pct(inc_chg["Cornelius"])` over the same period.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-<div class="card viz-host" id="income-rent-chart-host" style="margin-top:22px">
-<div class="card-t">Rent vs. Income Growth, Indexed to 2018</div>
-<div class="card-s">When the rent line rises above the income line, affordability is eroding · North Mecklenburg</div>
+:::
 
-<div id="income-rent-chart">
+::: {.chart-card #income-rent-chart-host title="Rent vs. Income Growth, Indexed to 2018" subtitle="When the rent line rises above the income line, affordability is eroding · North Mecklenburg" chart="income-rent-chart" style="margin-top:22px"}
 
 ```{ojs}
 viewof irTown = townChips(masterTown)
@@ -412,18 +402,18 @@ viewof irTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note .warn source="[ACS]{.gloss} 2018–2024 · index set to 100 in 2018 so towns can be compared on the same scale regardless of starting dollar values"}
+In `r gap_top`, rents rose `r fmt_pct(rent_chg[gap_top])` between 2018 and 2024 while incomes rose `r fmt_pct(inc_chg[gap_top])`. The gap is widest there, but every town shows the same divergence.
+:::
 
-<div class="nm-callout warn"><div class="nm-callout-t">In `r gap_top`, rents rose `r fmt_pct(rent_chg[gap_top])` between 2018 and 2024 while incomes rose `r fmt_pct(inc_chg[gap_top])`. The gap is widest there, but every town shows the same divergence.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024 · index set to 100 in 2018 so towns can be compared on the same scale regardless of starting dollar values</div></div>
-</div>
-<div style="margin-top:36px;margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How much does someone need to earn per hour to afford rent without being cost-burdened?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The "housing wage" is the hourly pay a full-time worker needs so rent does not exceed 30% of income. Only one common local occupation reaches it.</p>
-<div class="card viz-host" style="margin-bottom:20px">
-<div class="card-t">Housing Wage vs. Most Common Local Occupations</div>
-<div class="card-s">Hourly wages for Charlotte-area occupations vs. the housing wage needed to afford a 2-bedroom without being cost-burdened</div>
+:::
 
-<div id="chart-housing-wage">
+::: {.question style="margin-top:36px;margin-bottom:36px"}
+### How much does someone need to earn per hour to afford rent without being cost-burdened?
+
+The "housing wage" is the hourly pay a full-time worker needs so rent does not exceed 30% of income. Only one common local occupation reaches it.
+
+::: {.chart-card title="Housing Wage vs. Most Common Local Occupations" subtitle="Hourly wages for Charlotte-area occupations vs. the housing wage needed to afford a 2-bedroom without being cost-burdened" chart="chart-housing-wage" style="margin-bottom:20px"}
 
 ```{ojs}
 {
@@ -444,15 +434,13 @@ viewof irTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="NLIHC *Out of Reach* 2024 · BLS Occupational Employment & Wages, Charlotte-Concord-Gastonia MSA 2023"}
+At `r fmt_dollar(housing_wage, 2)`/hr, the housing wage is out of reach for nearly every common occupation in the Charlotte area. Only registered nurses (`r fmt_dollar(occ$hourly_wage[occ$occupation == "Registered Nurses"], 2)`/hr) earn enough — most workers in retail, food service, and logistics earn less than half the housing wage.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">At `r fmt_dollar(housing_wage, 2)`/hr, the housing wage is out of reach for nearly every common occupation in the Charlotte area. Only registered nurses (`r fmt_dollar(occ$hourly_wage[occ$occupation == "Registered Nurses"], 2)`/hr) earn enough — most workers in retail, food service, and logistics earn less than half the housing wage.</div><div class="nm-callout-s">Source: NLIHC <em>Out of Reach</em> 2024 · BLS Occupational Employment &amp; Wages, Charlotte-Concord-Gastonia MSA 2023</div></div>
-</div>
-<div class="card viz-host">
-<div class="card-t">Fair Market Rent by Bedroom Size (2025)</div>
-<div class="card-s">HUD Fair Market Rents for Charlotte vs. Raleigh and Atlanta — how local rents compare across metro peers</div>
+:::
 
-<div id="chart-fmr-bedroom">
+::: {.chart-card title="Fair Market Rent by Bedroom Size (2025)" subtitle="HUD Fair Market Rents for Charlotte vs. Raleigh and Atlanta — how local rents compare across metro peers" chart="chart-fmr-bedroom"}
 
 ```{ojs}
 {
@@ -472,19 +460,20 @@ viewof irTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="HUD FY2025 Fair Market Rents"}
+Charlotte's Fair Market Rents track Atlanta's closely and run slightly above Raleigh's for studios through 3-bedroom units. At 4 bedrooms the order flips: Charlotte runs `r fmt_dollar(fmr_v("Charlotte", "4-Bedroom"))`/month, `r fmt_dollar(fmr_v("Charlotte", "4-Bedroom") - fmr_v("Atlanta", "4-Bedroom"))` above Atlanta but `r fmt_dollar(fmr_v("Raleigh", "4-Bedroom") - fmr_v("Charlotte", "4-Bedroom"))` below Raleigh.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">Charlotte's Fair Market Rents track Atlanta's closely and run slightly above Raleigh's for studios through 3-bedroom units. At 4 bedrooms the order flips: Charlotte runs `r fmt_dollar(fmr_v("Charlotte", "4-Bedroom"))`/month, `r fmt_dollar(fmr_v("Charlotte", "4-Bedroom") - fmr_v("Atlanta", "4-Bedroom"))` above Atlanta but `r fmt_dollar(fmr_v("Raleigh", "4-Bedroom") - fmr_v("Charlotte", "4-Bedroom"))` below Raleigh.</div><div class="nm-callout-s">Source: HUD FY2025 Fair Market Rents</div></div>
-</div>
-</div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Who can afford to live in North Meck at different income levels?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Income limits and maximum affordable rent at each AMI bracket compared to fair market rent, showing the monthly gap households face at each income tier.</p>
-<div class="card viz-host">
-<div class="card-t">Affordable Rent vs. Fair Market Rent by AMI Bracket</div>
-<div class="card-s">Max affordable rent (30% of income rule) vs. HUD Fair Market Rent across bedroom sizes — Charlotte-Mecklenburg metro, FY2025</div>
+:::
 
-<div id="chart-ami-gap">
+:::
+
+::: {.question}
+### Who can afford to live in North Meck at different income levels?
+
+Income limits and maximum affordable rent at each AMI bracket compared to fair market rent, showing the monthly gap households face at each income tier.
+
+::: {.chart-card title="Affordable Rent vs. Fair Market Rent by AMI Bracket" subtitle="Max affordable rent (30% of income rule) vs. HUD Fair Market Rent across bedroom sizes — Charlotte-Mecklenburg metro, FY2025" chart="chart-ami-gap"}
 
 ```{ojs}
 {
@@ -514,20 +503,22 @@ viewof irTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="HUD FY2025 Income Limits & Fair Market Rents · Charlotte-Concord-Gastonia HUD Metro FMR Area"}
+Households earning 30% or 50% of AMI face a severe monthly shortfall — they can afford far less than market rents require. Even at 80% AMI, most bedroom sizes remain out of reach. Only households at 100% AMI can afford the fair market rent for all unit sizes.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">Households earning 30% or 50% of AMI face a severe monthly shortfall — they can afford far less than market rents require. Even at 80% AMI, most bedroom sizes remain out of reach. Only households at 100% AMI can afford the fair market rent for all unit sizes.</div><div class="nm-callout-s">Source: HUD FY2025 Income Limits &amp; Fair Market Rents · Charlotte-Concord-Gastonia HUD Metro FMR Area</div></div>
-</div>
-</div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does rent — and homeownership — compare to what residents actually earn?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Rent-to-income ratio measures what share of median household income goes to rent. A home price-to-income ratio above 4× is considered unaffordable for first-time buyers without significant savings. Both ratios have climbed since 2018.</p>
-<div class="g2" style="margin-bottom:16px">
-<div class="card viz-host" id="rti-chart-host">
-<div class="card-t">Rent-to-Income Ratio by Town (2018–2024)</div>
-<div class="card-s">Median rent ÷ median household income · 30% HUD threshold shown</div>
+:::
 
-<div id="rti-chart">
+:::
+
+::: {.question}
+### How does rent — and homeownership — compare to what residents actually earn?
+
+Rent-to-income ratio measures what share of median household income goes to rent. A home price-to-income ratio above 4× is considered unaffordable for first-time buyers without significant savings. Both ratios have climbed since 2018.
+
+::: {.g2 style="margin-bottom:16px"}
+
+::: {.chart-card #rti-chart-host title="Rent-to-Income Ratio by Town (2018–2024)" subtitle="Median rent ÷ median household income · 30% HUD threshold shown" chart="rti-chart"}
 
 ```{ojs}
 viewof rtiTown = townChips(masterTown)
@@ -547,15 +538,13 @@ viewof rtiTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024 · ratio = (median annual rent) ÷ (median household income)"}
+In all three towns, rent now consumes a larger share of household income than it did in 2018. The dashed line marks the 30% cost-burden threshold — once crossed, households have less to spend on food, healthcare, and savings.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">In all three towns, rent now consumes a larger share of household income than it did in 2018. The dashed line marks the 30% cost-burden threshold — once crossed, households have less to spend on food, healthcare, and savings.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024 · ratio = (median annual rent) ÷ (median household income)</div></div>
-</div>
-<div class="card viz-host" id="hpti-chart-host">
-<div class="card-t">Home Price-to-Income Ratio by Town (2018–2024)</div>
-<div class="card-s">Median home value ÷ median household income · 4× threshold shown</div>
+:::
 
-<div id="hpti-chart">
+::: {.chart-card #hpti-chart-host title="Home Price-to-Income Ratio by Town (2018–2024)" subtitle="Median home value ÷ median household income · 4× threshold shown" chart="hpti-chart"}
 
 ```{ojs}
 viewof hptiTown = townChips(masterTown)
@@ -575,27 +564,36 @@ viewof hptiTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024 · ratio = median home value ÷ median household income"}
+`r if (length(over_4x) == 3) "All three towns have" else paste(fmt_list(over_4x), if (length(over_4x) == 1) "has" else "have")` crossed the 4× home price-to-income threshold`r if (length(over_4x) < 3) paste0(", and ", fmt_list(setdiff(towns, over_4x)), " is close behind at ", sprintf("%.2f", hpti_2024[setdiff(towns, over_4x)][1]), "×") else ""`. A median-priced home there now costs more than four years of median household income — well above the historical affordability benchmark for first-time buyers.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">`r if (length(over_4x) == 3) "All three towns have" else paste(fmt_list(over_4x), if (length(over_4x) == 1) "has" else "have")` crossed the 4× home price-to-income threshold`r if (length(over_4x) < 3) paste0(", and ", fmt_list(setdiff(towns, over_4x)), " is close behind at ", sprintf("%.2f", hpti_2024[setdiff(towns, over_4x)][1]), "×") else ""`. A median-priced home there now costs more than four years of median household income — well above the historical affordability benchmark for first-time buyers.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024 · ratio = median home value ÷ median household income</div></div>
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
+
+:::
 
 <!-- TAB: supply -->
-<div class="tabpane" data-pane="supply">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">Supply</span><h2 class="sec-h">Is there enough housing in North Meck, and is it the right kind?</h2></div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How fast is North Meck growing, and is housing supply keeping up with population?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Total population by town, 2018–2024. Rapid growth increases demand for all housing types, particularly affordable rentals.</p>
-<div class="card viz-host" id="population-chart-host">
-<div class="card-t">Population Growth by Town (2018–2024)</div>
-<div class="card-s">Cornelius, Davidson, Huntersville</div>
 
-<div id="population-chart">
+::: {.tabpane data-pane="supply"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="Supply"}
+## Is there enough housing in North Meck, and is it the right kind?
+:::
+
+::: {.question}
+### How fast is North Meck growing, and is housing supply keeping up with population?
+
+Total population by town, 2018–2024. Rapid growth increases demand for all housing types, particularly affordable rentals.
+
+::: {.chart-card #population-chart-host title="Population Growth by Town (2018–2024)" subtitle="Cornelius, Davidson, Huntersville" chart="population-chart"}
 
 ```{ojs}
 viewof popTown = townChips(masterTown)
@@ -615,19 +613,20 @@ viewof popTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+`r pop_top` added the most residents: its population grew by `r fmt_num(pop_gain[pop_top])` between 2018 and 2024. That kind of growth without matching affordable supply is a core driver of the cost pressure seen in the Affordability tab.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">`r pop_top` added the most residents: its population grew by `r fmt_num(pop_gain[pop_top])` between 2018 and 2024. That kind of growth without matching affordable supply is a core driver of the cost pressure seen in the Affordability tab.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
-<div style="margin-bottom:28px">
-<div style="margin-bottom:0">
-<h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">How many households are in each town, and how has that changed?</h3>
-<div class="card viz-host" id="tenure-chart-host">
-<div class="card-t">Total Households by Town (2018–2024)</div>
-<div class="card-s"></div>
+:::
 
-<div id="tenure-chart">
+:::
+
+::: {style="margin-bottom:28px"}
+
+::: {.question .small style="margin-bottom:0"}
+### How many households are in each town, and how has that changed?
+
+::: {.chart-card #tenure-chart-host title="Total Households by Town (2018–2024)" subtitle="" chart="tenure-chart"}
 
 ```{ojs}
 viewof hhTown = townChips(masterTown)
@@ -647,19 +646,20 @@ viewof hhTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+Owner-occupied households dominate all three towns (70–80% of households), but Huntersville has added the most renter households in absolute terms since 2018, reflecting its rapid growth.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">Owner-occupied households dominate all three towns (70–80% of households), but Huntersville has added the most renter households in absolute terms since 2018, reflecting its rapid growth.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
-</div>
-<div style="margin-bottom:28px">
-<h3 style="font-family:'Newsreader',serif;font-size:20px;font-weight:400;margin-bottom:10px;color:var(--ink)">What is the mix of single-family, multifamily, duplex, manufactured, and condo units?</h3>
-<div class="card viz-host" id="housing-types-host">
-<div class="card-t">Housing Types by Town (2024)</div>
-<div class="card-s">Share of housing units by structure type</div>
+:::
 
-<div id="housing-types-chart">
+:::
+
+:::
+
+::: {.question .small style="margin-bottom:28px"}
+### What is the mix of single-family, multifamily, duplex, manufactured, and condo units?
+
+::: {.chart-card #housing-types-host title="Housing Types by Town (2024)" subtitle="Share of housing units by structure type" chart="housing-types-chart"}
 
 ```{ojs}
 {
@@ -678,27 +678,36 @@ viewof hhTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2024 · Table B25024"}
+All three towns are majority single-family, but Cornelius has the highest share of large multifamily (25%), reflecting its denser, more transit-accessible development pattern.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">All three towns are majority single-family, but Cornelius has the highest share of large multifamily (25%), reflecting its denser, more transit-accessible development pattern.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Table B25024</div></div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
 
 <!-- TAB: displacement risk -->
-<div class="tabpane" data-pane="displacement">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">Displacement Risk</span><h2 class="sec-h">Who is at risk of losing their housing, and where is the pressure greatest?</h2></div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What share of renters in each town spend more than 30% of income on housing?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Cost burden broken down by income bracket and tenure. Davidson has the highest severe burden rate (27%) despite its highest median income, likely driven by a small renter population that skews low-income.</p>
-</div>
-<div class="card viz-host" id="burden-chart-host" style="margin-top:22px">
-<div class="card-t">Cost Burden by Income Bracket</div>
-<div class="card-s">Households by housing cost burden level · North Mecklenburg</div>
 
-<div id="burden-chart">
+::: {.tabpane data-pane="displacement"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="Displacement Risk"}
+## Who is at risk of losing their housing, and where is the pressure greatest?
+:::
+
+::: {.question}
+### What share of renters in each town spend more than 30% of income on housing?
+
+Cost burden broken down by income bracket and tenure. Davidson has the highest severe burden rate (27%) despite its highest median income, likely driven by a small renter population that skews low-income.
+
+:::
+
+::: {.chart-card #burden-chart-host title="Cost Burden by Income Bracket" subtitle="Households by housing cost burden level · North Mecklenburg" chart="burden-chart" style="margin-top:22px"}
 
 ```{ojs}
 viewof burdenTown = townChips(masterTown, {includeAll: false})
@@ -720,15 +729,13 @@ viewof burdenTenure = chips(["Renter", "Owner"], {label: "Tenure:", style: "marg
 }
 ```
 
-</div>
+::: {.note .warn source="[ACS]{.gloss} 2024 · CHAS via HUD"}
+Nearly all renters earning under $20k are severely cost-burdened, spending more than half their income on housing.
+:::
 
-<div class="nm-callout warn"><div class="nm-callout-t">Nearly all renters earning under $20k are severely cost-burdened, spending more than half their income on housing.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · CHAS via HUD</div></div>
-</div>
-<div class="card viz-host" id="burden-trend-host" style="margin-top:22px">
-<div class="card-t">Renter Cost Burden Rate Over Time</div>
-<div class="card-s">Share of renter households spending 30%+ of income on housing · 2018–2024 · North Mecklenburg</div>
+:::
 
-<div id="burden-trend-chart">
+::: {.chart-card #burden-trend-host title="Renter Cost Burden Rate Over Time" subtitle="Share of renter households spending 30%+ of income on housing · 2018–2024 · North Mecklenburg" chart="burden-trend-chart" style="margin-top:22px"}
 
 ```{ojs}
 viewof burdenMetric = chips([
@@ -755,22 +762,25 @@ viewof burdenMetric = chips([
 }
 ```
 
-</div>
+::: {.note .warn source="[ACS]{.gloss} 2018–2024"}
+In Cornelius, the share of cost-burdened renters rose from `r fmt_pct(corn_burden_2018)` in 2018 to `r fmt_pct(corn_burden_2024)` in 2024, a jump of `r round(corn_burden_2024 - corn_burden_2018)` percentage points in six years.
+:::
 
-<div class="nm-callout warn"><div class="nm-callout-t">In Cornelius, the share of cost-burdened renters rose from `r fmt_pct(corn_burden_2018)` in 2018 to `r fmt_pct(corn_burden_2024)` in 2024, a jump of `r round(corn_burden_2024 - corn_burden_2018)` percentage points in six years.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-<div style="margin-top:36px;margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is cost burden getting better or worse over time?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Trend in burden rate, household count, and severe burden since 2018. 2020–2021 marked the COVID-era eviction moratorium period.</p>
-</div>
-<div style="margin-top:36px;margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many renter households are at high displacement risk?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Severely cost-burdened households (50%+ of income on rent) have less than half their income left after housing. They are one unexpected expense away from eviction.</p>
-<div class="card viz-host" id="severely-burdened-host">
-<div class="card-t">Severely Cost-Burdened Households by Town (2018–2024)</div>
-<div class="card-s">Households spending 50%+ of income on housing</div>
+:::
 
-<div id="severely-burdened-chart">
+::: {.question style="margin-top:36px;margin-bottom:36px"}
+### Is cost burden getting better or worse over time?
+
+Trend in burden rate, household count, and severe burden since 2018. 2020–2021 marked the COVID-era eviction moratorium period.
+
+:::
+
+::: {.question style="margin-top:36px;margin-bottom:36px"}
+### How many renter households are at high displacement risk?
+
+Severely cost-burdened households (50%+ of income on rent) have less than half their income left after housing. They are one unexpected expense away from eviction.
+
+::: {.chart-card #severely-burdened-host title="Severely Cost-Burdened Households by Town (2018–2024)" subtitle="Households spending 50%+ of income on housing" chart="severely-burdened-chart"}
 
 ```{ojs}
 viewof sevTown = townChips(masterTown)
@@ -790,20 +800,24 @@ viewof sevTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note .warn source="[ACS]{.gloss} 2018–2024"}
+Severely cost-burdened households have less than half their income left for food, healthcare, transportation, and emergencies, just one unexpected expense away from eviction.
+:::
 
-<div class="nm-callout warn"><div class="nm-callout-t">Severely cost-burdened households have less than half their income left for food, healthcare, transportation, and emergencies, just one unexpected expense away from eviction.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
-<div style="margin-top:36px;margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many North Meck households are financially vulnerable but invisible to traditional poverty measures?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The Federal Poverty Level (FPL) was designed in the 1960s and does not account for regional cost differences. In North Meck, where costs are high, the FPL misses a large share of struggling households. The ALICE framework (Asset Limited, Income Constrained, Employed) fills this gap.</p>
-<div class="nm-callout info" style="margin-bottom:16px"><div class="nm-callout-t"><strong>"Standard poverty data makes it look like North Meck doesn't need services. ALICE shows the real picture."</strong></div><div class="nm-callout-s">— Diane Means, Ada Jenkins Center · Davidson West</div></div>
-<div class="card viz-host" id="alice-county-composition-host">
-<div class="card-t">ALICE Households and the Hidden Gap</div>
-<div class="card-s">Below FPL / ALICE / financially stable, most recent year · Mecklenburg County</div>
+:::
 
-<div id="alice-county-composition-chart">
+:::
+
+::: {.question style="margin-top:36px;margin-bottom:36px"}
+### How many North Meck households are financially vulnerable but invisible to traditional poverty measures?
+
+The Federal Poverty Level (FPL) was designed in the 1960s and does not account for regional cost differences. In North Meck, where costs are high, the FPL misses a large share of struggling households. The ALICE framework (Asset Limited, Income Constrained, Employed) fills this gap.
+
+::: {.note .info caption="— Diane Means, Ada Jenkins Center · Davidson West" style="margin-bottom:16px"}
+**"Standard poverty data makes it look like North Meck doesn't need services. ALICE shows the real picture."**
+:::
+
+::: {.chart-card #alice-county-composition-host title="ALICE Households and the Hidden Gap" subtitle="Below FPL / ALICE / financially stable, most recent year · Mecklenburg County" chart="alice-county-composition-chart"}
 
 ```{ojs}
 SEGMENTS = ["Below FPL", "ALICE", "Above ALICE threshold"]
@@ -830,28 +844,33 @@ segmentRows = (d, label) => [
 }
 ```
 
-</div>
+::: {.note source="United Way NC ALICE Report, Mecklenburg County · [unitedforalice.org](https://www.unitedforalice.org){target=_blank rel=noopener}"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: United Way NC ALICE Report, Mecklenburg County · <a href="https://www.unitedforalice.org" target="_blank" rel="noopener">unitedforalice.org</a></div>
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
 
 <!-- TAB: homeownership & equity -->
-<div class="tabpane" data-pane="homeownership">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">Homeownership &amp; Equity</span><h2 class="sec-h">Who gets to build wealth through homeownership, and who is locked out?</h2></div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Is there a racial gap in homeownership, and has it widened or narrowed?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Nationally, the Black-white homeownership gap is larger today than it was before the Fair Housing Act. North Meck's own numbers tell a local version of that story.</p>
-<div class="card viz-host" id="race-chart-host" style="margin-bottom:24px">
-<div class="card-t">Homeownership Rate by Race &amp; Ethnicity</div>
-<div class="card-s">Owner-occupied households as share of all households by group · North Mecklenburg</div>
 
-<div id="race-chart">
+::: {.tabpane data-pane="homeownership"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="Homeownership & Equity"}
+## Who gets to build wealth through homeownership, and who is locked out?
+:::
+
+::: {.question}
+### Is there a racial gap in homeownership, and has it widened or narrowed?
+
+Nationally, the Black-white homeownership gap is larger today than it was before the Fair Housing Act. North Meck's own numbers tell a local version of that story.
+
+::: {.chart-card #race-chart-host title="Homeownership Rate by Race & Ethnicity" subtitle="Owner-occupied households as share of all households by group · North Mecklenburg" chart="race-chart" style="margin-bottom:24px"}
 
 ```{ojs}
 viewof raceView = chips([{label: "Ownership rate", value: "ownership"}, {label: "Raw counts", value: "counts"}], {label: "View:", style: "margin-bottom:6px"})
@@ -890,11 +909,13 @@ viewof raceTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2024 · Census tenure by race"}
+White residents own at `r fmt_pct(min(race_tenure$ownership_rate[race_tenure$race == "White, not Hispanic"]))`–`r fmt_pct(max(race_tenure$ownership_rate[race_tenure$race == "White, not Hispanic"]))` across the three towns. Black residents own at `r fmt_pct(min(race_tenure$ownership_rate[race_tenure$race == "Black or African American"]))`–`r fmt_pct(max(race_tenure$ownership_rate[race_tenure$race == "Black or African American"]))`, a gap that reflects decades of structural barriers to wealth-building.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">White residents own at `r fmt_pct(min(race_tenure$ownership_rate[race_tenure$race == "White, not Hispanic"]))`–`r fmt_pct(max(race_tenure$ownership_rate[race_tenure$race == "White, not Hispanic"]))` across the three towns. Black residents own at `r fmt_pct(min(race_tenure$ownership_rate[race_tenure$race == "Black or African American"]))`–`r fmt_pct(max(race_tenure$ownership_rate[race_tenure$race == "Black or African American"]))`, a gap that reflects decades of structural barriers to wealth-building.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · Census tenure by race</div></div>
-</div>
-<div id="race-summary-table-wrap" style="margin-top:32px">
+:::
+
+::: {#race-summary-table-wrap style="margin-top:32px"}
 
 ```{r}
 #| output: asis
@@ -909,17 +930,20 @@ cat('</tbody></table>\n')
 cat('<p style="font-size:12px;color:var(--ink-3);margin-top:8px;font-family:\'Hanken Grotesk\',sans-serif">Population totals: ACS 2024 · Tenure rates: ACS 2024 Census tenure by race</p>\n')
 ```
 
-</div>
-<div class="nm-callout" style="margin-top:24px;max-width:760px"><div class="nm-callout-t">53% of Black renter households are cost-burdened, compared with 37% of White renter households. One in ten Hispanic households lives in overcrowded conditions.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
-</div>
-<div style="margin-top:36px;margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What is the racial makeup of each town today?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">2024 population share by race/ethnicity across the three North Meck towns.</p>
-<div class="card viz-host" id="race-comp-host">
-<div class="card-t">Population Share by Race (2024)</div>
-<div class="card-s">Share of total population by race/ethnicity</div>
+:::
 
-<div id="race-comp-chart">
+::: {.note source="[ACS]{.gloss} 2024" style="margin-top:24px;max-width:760px"}
+53% of Black renter households are cost-burdened, compared with 37% of White renter households. One in ten Hispanic households lives in overcrowded conditions.
+:::
+
+:::
+
+::: {.question style="margin-top:36px;margin-bottom:36px"}
+### What is the racial makeup of each town today?
+
+2024 population share by race/ethnicity across the three North Meck towns.
+
+::: {.chart-card #race-comp-host title="Population Share by Race (2024)" subtitle="Share of total population by race/ethnicity" chart="race-comp-chart"}
 
 ```{ojs}
 viewof raceCompTown = townChips(masterTown)
@@ -946,19 +970,20 @@ viewof raceCompTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2024"}
+Huntersville is the most diverse town, with Black residents at `r fmt_pct(share("Huntersville", "black"), 1)` and Asian residents at `r fmt_pct(share("Huntersville", "asian"), 1)`. Cornelius and Davidson both remain over 80% white.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">Huntersville is the most diverse town, with Black residents at `r fmt_pct(share("Huntersville", "black"), 1)` and Asian residents at `r fmt_pct(share("Huntersville", "asian"), 1)`. Cornelius and Davidson both remain over 80% white.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
-</div>
-</div>
-<div style="margin-top:36px;margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How has the racial composition of each town changed since 2018?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Demographic change shapes who can access homeownership and who gets displaced. Rising prices pull in higher-income, whiter households while pushing out lower-income residents of color.</p>
-<div class="card viz-host" id="race-trend-chart-host">
-<div class="card-t">Racial Composition by Town (2018–2024)</div>
-<div class="card-s">Share of total population by race/ethnicity</div>
+:::
 
-<div id="race-trend-chart">
+:::
+
+::: {.question style="margin-top:36px;margin-bottom:36px"}
+### How has the racial composition of each town changed since 2018?
+
+Demographic change shapes who can access homeownership and who gets displaced. Rising prices pull in higher-income, whiter households while pushing out lower-income residents of color.
+
+::: {.chart-card #race-trend-chart-host title="Racial Composition by Town (2018–2024)" subtitle="Share of total population by race/ethnicity" chart="race-trend-chart"}
 
 ```{ojs}
 viewof raceTrendTown = townChips(masterTown, {includeAll: false})
@@ -991,16 +1016,15 @@ viewof raceTrendRaces = chips(["White", "Black", "Hispanic", "Asian", "Other"], 
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+North Meck's towns are becoming more diverse, but at very different rates. Huntersville's Black population has grown significantly since 2018, while Davidson remains predominantly white. Tracking these shifts matters for equity in housing access.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">North Meck's towns are becoming more diverse, but at very different rates. Huntersville's Black population has grown significantly since 2018, while Davidson remains predominantly white. Tracking these shifts matters for equity in housing access.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
-<div class="card viz-host" id="down-payment-chart-host" style="margin-bottom:32px">
-<div class="card-t">Years to Save for a 20% Down Payment, by Town</div>
-<div class="card-s">Assumes 10% annual savings rate on median household income</div>
+:::
 
-<div id="down-payment-chart">
+:::
+
+::: {.chart-card #down-payment-chart-host title="Years to Save for a 20% Down Payment, by Town" subtitle="Assumes 10% annual savings rate on median household income" chart="down-payment-chart" style="margin-bottom:32px"}
 
 ```{ojs}
 {
@@ -1019,19 +1043,20 @@ viewof raceTrendRaces = chips(["White", "Black", "Hispanic", "Asian", "Other"], 
 }
 ```
 
-</div>
+::: {.note .warn source="[ACS]{.gloss} 2024 · formula: (median home value × 20%) ÷ (median income × 10%)"}
+At current prices, a household earning the median income would need up to `r sprintf("%.1f", max(dp$years))` years just to save for a down payment, assuming they save 10% of gross income every year with no competing savings goals.
+:::
 
-<div class="nm-callout warn"><div class="nm-callout-t">At current prices, a household earning the median income would need up to `r sprintf("%.1f", max(dp$years))` years just to save for a down payment, assuming they save 10% of gross income every year with no competing savings goals.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · formula: (median home value × 20%) ÷ (median income × 10%)</div></div>
-</div>
-<div style="margin-top:36px;margin-bottom:6px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What does it take to buy a home at different income levels?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Years of gross income needed to buy the median home, by income bracket and town. The lower-income brackets reveal the true scale of exclusion: a household earning $20k–$35k would need over `r floor(min(ptr_20_35))` years with nothing spent on anything else.</p>
-</div>
-<div class="card viz-host" id="ptr-chart-host" style="margin-bottom:32px">
-<div class="card-t">Years of Income to Buy a Home, by Income Bracket</div>
-<div class="card-s">Median home value ÷ income bracket midpoint, showing how many years of gross income to buy</div>
+:::
 
-<div id="ptr-chart">
+::: {.question style="margin-top:36px;margin-bottom:6px"}
+### What does it take to buy a home at different income levels?
+
+Years of gross income needed to buy the median home, by income bracket and town. The lower-income brackets reveal the true scale of exclusion: a household earning $20k–$35k would need over `r floor(min(ptr_20_35))` years with nothing spent on anything else.
+
+:::
+
+::: {.chart-card #ptr-chart-host title="Years of Income to Buy a Home, by Income Bracket" subtitle="Median home value ÷ income bracket midpoint, showing how many years of gross income to buy" chart="ptr-chart" style="margin-bottom:32px"}
 
 ```{ojs}
 viewof ptrTown = townChips(masterTown)
@@ -1065,26 +1090,38 @@ viewof ptrTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note .warn source="[ACS]{.gloss} 2024"}
+A household earning $20k–$35k would need over `r floor(min(ptr_20_35))` years of gross income to buy a median home in any North Meck town, with no money spent on anything else.
+:::
 
-<div class="nm-callout warn"><div class="nm-callout-t">A household earning $20k–$35k would need over `r floor(min(ptr_20_35))` years of gross income to buy a median home in any North Meck town, with no money spent on anything else.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</div></div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
 
 <!-- TAB: income & need -->
-<div class="tabpane" data-pane="income">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">Income &amp; Need</span><h2 class="sec-h">What do residents earn, and does it reflect true financial vulnerability in North Meck?</h2><p class="lead">Standard poverty measures miss a significant share of struggling households here. This tab explains why, and shows what the data actually reveals.</p></div>
-<div class="nm-callout info" style="margin-bottom:36px"><div class="nm-callout-t"><strong>Why we show ALICE alongside traditional poverty data:</strong> The Federal Poverty Level (FPL) was calculated in the 1960s based on food costs and hasn't kept pace with housing, childcare, or healthcare. In wealthy suburbs like North Meck, it makes need nearly invisible. ALICE (Asset Limited, Income Constrained, Employed) measures households that earn above the FPL but still can't cover basic costs — the households who need services at places like the Ada Jenkins Center in Davidson West.</div><div class="nm-callout-s">This is a methodological transparency note, not a political statement. Every data choice on this portal is documented.</div></div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">What is the income distribution across North Meck's three towns?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Median household income by town over time. The high medians conceal wide variation: income inequality within each town is substantial.</p>
-<div class="card viz-host" id="median-income-chart-host">
-<div class="card-t">Median Household Income by Town (2018–2024)</div>
-<div class="card-s">Cornelius, Davidson, Huntersville</div>
 
-<div id="median-income-chart">
+::: {.tabpane data-pane="income"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="Income & Need"}
+## What do residents earn, and does it reflect true financial vulnerability in North Meck?
+
+Standard poverty measures miss a significant share of struggling households here. This tab explains why, and shows what the data actually reveals.
+:::
+
+::: {.note .info caption="This is a methodological transparency note, not a political statement. Every data choice on this portal is documented." style="margin-bottom:36px"}
+**Why we show ALICE alongside traditional poverty data:** The Federal Poverty Level (FPL) was calculated in the 1960s based on food costs and hasn't kept pace with housing, childcare, or healthcare. In wealthy suburbs like North Meck, it makes need nearly invisible. ALICE (Asset Limited, Income Constrained, Employed) measures households that earn above the FPL but still can't cover basic costs — the households who need services at places like the Ada Jenkins Center in Davidson West.
+:::
+
+::: {.question}
+### What is the income distribution across North Meck's three towns?
+
+Median household income by town over time. The high medians conceal wide variation: income inequality within each town is substantial.
+
+::: {.chart-card #median-income-chart-host title="Median Household Income by Town (2018–2024)" subtitle="Cornelius, Davidson, Huntersville" chart="median-income-chart"}
 
 ```{ojs}
 viewof incomeTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10px 0 4px"})
@@ -1104,19 +1141,20 @@ viewof incomeTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+Davidson's median household income rose from `r fmt_k(nm_value(mi, "income", town = "Davidson", year = 2018))` in 2018 to `r fmt_k(nm_value(mi, "income", town = "Davidson", year = 2024))` in 2024, but the high median conceals a wide gap: the Gini data shows income inequality within Davidson is growing alongside that headline number.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">Davidson's median household income rose from `r fmt_k(nm_value(mi, "income", town = "Davidson", year = 2018))` in 2018 to `r fmt_k(nm_value(mi, "income", town = "Davidson", year = 2024))` in 2024, but the high median conceals a wide gap: the Gini data shows income inequality within Davidson is growing alongside that headline number.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How unequal is income distribution within each town?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The Gini coefficient measures income inequality: 0 = perfect equality, 1 = maximum inequality. Cornelius (`r sprintf("%.2f", gpv("gini", "Cornelius", 2024))`) has significantly higher inequality than the national average (~0.40), meaning the gap between its wealthiest and most financially vulnerable residents is unusually wide.</p>
-<div class="card viz-host" id="ptr-trend-host" style="margin-bottom:22px">
-<div class="card-t">Home Price-to-Income Ratio Over Time</div>
-<div class="card-s">Median home value ÷ median household income, years of income to buy</div>
+:::
 
-<div id="ptr-trend-chart">
+:::
+
+::: {.question}
+### How unequal is income distribution within each town?
+
+The Gini coefficient measures income inequality: 0 = perfect equality, 1 = maximum inequality. Cornelius (`r sprintf("%.2f", gpv("gini", "Cornelius", 2024))`) has significantly higher inequality than the national average (~0.40), meaning the gap between its wealthiest and most financially vulnerable residents is unusually wide.
+
+::: {.chart-card #ptr-trend-host title="Home Price-to-Income Ratio Over Time" subtitle="Median home value ÷ median household income, years of income to buy" chart="ptr-trend-chart" style="margin-bottom:22px"}
 
 ```{ojs}
 viewof ptrTrendTown = townChips(masterTown)
@@ -1137,15 +1175,13 @@ viewof ptrTrendTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note .warn source="[ACS]{.gloss} 2018–2024"}
+Davidson's PTR jumped from `r sprintf("%.1f", gpv("ptr", "Davidson", 2018))`× in 2018 to `r sprintf("%.1f", gpv("ptr", "Davidson", 2024))`× in 2024. A ratio above 3× is widely considered unaffordable for first-time buyers. Cornelius went from `r sprintf("%.1f", gpv("ptr", "Cornelius", 2018))`× to `r sprintf("%.1f", gpv("ptr", "Cornelius", 2024))`×, the steepest rise in North Meck.
+:::
 
-<div class="nm-callout warn"><div class="nm-callout-t">Davidson's PTR jumped from `r sprintf("%.1f", gpv("ptr", "Davidson", 2018))`× in 2018 to `r sprintf("%.1f", gpv("ptr", "Davidson", 2024))`× in 2024. A ratio above 3× is widely considered unaffordable for first-time buyers. Cornelius went from `r sprintf("%.1f", gpv("ptr", "Cornelius", 2018))`× to `r sprintf("%.1f", gpv("ptr", "Cornelius", 2024))`×, the steepest rise in North Meck.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-<div class="card viz-host" id="gini-chart-host" style="margin-bottom:22px">
-<div class="card-t">Income Inequality Over Time (Gini Coefficient)</div>
-<div class="card-s">0 = perfect equality · 1 = maximum inequality</div>
+:::
 
-<div id="gini-chart">
+::: {.chart-card #gini-chart-host title="Income Inequality Over Time (Gini Coefficient)" subtitle="0 = perfect equality · 1 = maximum inequality" chart="gini-chart" style="margin-bottom:22px"}
 
 ```{ojs}
 viewof giniTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10px 0 4px"})
@@ -1166,20 +1202,22 @@ viewof giniTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10
 }
 ```
 
-</div>
+::: {.note .warn source="[ACS]{.gloss} 2018–2024"}
+Cornelius has seen the sharpest rise in inequality: its Gini coefficient climbed from `r sprintf("%.2f", gpv("gini", "Cornelius", 2018))` in 2018 to `r sprintf("%.2f", gpv("gini", "Cornelius", 2023))` in 2023 before easing to `r sprintf("%.2f", gpv("gini", "Cornelius", 2024))` in 2024, approaching levels seen in major cities. Inequality in Cornelius now far exceeds the national average (~0.40).
+:::
 
-<div class="nm-callout warn"><div class="nm-callout-t">Cornelius has seen the sharpest rise in inequality: its Gini coefficient climbed from `r sprintf("%.2f", gpv("gini", "Cornelius", 2018))` in 2018 to `r sprintf("%.2f", gpv("gini", "Cornelius", 2023))` in 2023 before easing to `r sprintf("%.2f", gpv("gini", "Cornelius", 2024))` in 2024, approaching levels seen in major cities. Inequality in Cornelius now far exceeds the national average (~0.40).</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How many North Meck households are financially vulnerable but above the federal poverty line?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">The ALICE gap is the share of households earning above the FPL but below the ALICE Threshold — the minimum cost of living for housing, food, childcare, transportation, healthcare, and technology. In North Meck, the FPL alone drastically undercounts who is struggling.</p>
-<div class="g2" style="margin-bottom:22px">
-<div class="card viz-host" id="alice-bar-host">
-<div class="card-t">Household financial stability by town (latest year)</div>
-<div class="card-s">Below FPL · ALICE · Above ALICE threshold</div>
+:::
 
-<div id="alice-bar-chart">
+:::
+
+::: {.question}
+### How many North Meck households are financially vulnerable but above the federal poverty line?
+
+The ALICE gap is the share of households earning above the FPL but below the ALICE Threshold — the minimum cost of living for housing, food, childcare, transportation, healthcare, and technology. In North Meck, the FPL alone drastically undercounts who is struggling.
+
+::: {.g2 style="margin-bottom:22px"}
+
+::: {.chart-card #alice-bar-host title="Household financial stability by town (latest year)" subtitle="Below FPL · ALICE · Above ALICE threshold" chart="alice-bar-chart"}
 
 ```{ojs}
 viewof aliceBarTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10px 0 4px"})
@@ -1200,15 +1238,13 @@ viewof aliceBarTown = chips(["All", ...TOWNS], {value: masterTown, style: "margi
 }
 ```
 
-</div>
+::: {.note .warn source="[ALICE]{.gloss} Report · United Way" style="margin-top:16px"}
+The FPL was designed in the 1960s and does not account for the true cost of living in high-cost suburbs. ALICE households earn above poverty but still can't cover basics — making them invisible in traditional need measures.
+:::
 
-<div class="nm-callout warn" style="margin-top:16px"><div class="nm-callout-t">The FPL was designed in the 1960s and does not account for the true cost of living in high-cost suburbs. ALICE households earn above poverty but still can't cover basics — making them invisible in traditional need measures.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="alice" role="button" tabindex="0" onclick="glossTerm('alice')">ALICE</span> Report · United Way</div></div>
-</div>
-<div class="card viz-host" id="alice-county-host">
-<div class="card-t">North Meck vs Mecklenburg County (latest year)</div>
-<div class="card-s">Share below ALICE threshold · towns vs county benchmark</div>
+:::
 
-<div id="alice-county-chart">
+::: {.chart-card #alice-county-host title="North Meck vs Mecklenburg County (latest year)" subtitle="Share below ALICE threshold · towns vs county benchmark" chart="alice-county-chart"}
 
 ```{ojs}
 {
@@ -1231,16 +1267,15 @@ viewof aliceBarTown = chips(["All", ...TOWNS], {value: masterTown, style: "margi
 }
 ```
 
-</div>
+::: {.note .info source="[ALICE]{.gloss} Report · United Way" style="margin-top:16px"}
+Comparing North Meck towns to Mecklenburg County as a whole reveals whether suburban wealth conceals vulnerability relative to the broader county population.
+:::
 
-<div class="nm-callout info" style="margin-top:16px"><div class="nm-callout-t">Comparing North Meck towns to Mecklenburg County as a whole reveals whether suburban wealth conceals vulnerability relative to the broader county population.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="alice" role="button" tabindex="0" onclick="glossTerm('alice')">ALICE</span> Report · United Way</div></div>
-</div>
-</div>
-<div class="card viz-host">
-<div class="card-t">Combined share below ALICE threshold by town</div>
-<div class="card-s">Poverty + ALICE households as % of all households · latest available year</div>
+:::
 
-<div id="alice-trend-chart">
+:::
+
+::: {.chart-card title="Combined share below ALICE threshold by town" subtitle="Poverty + ALICE households as % of all households · latest available year" chart="alice-trend-chart"}
 
 ```{ojs}
 {
@@ -1262,19 +1297,20 @@ viewof aliceBarTown = chips(["All", ...TOWNS], {value: masterTown, style: "margi
 }
 ```
 
-</div>
+::: {.note source="[ALICE]{.gloss} Report · United Way" style="margin-top:16px"}
+Between `r fmt_pct(min(alice_share))` (`r names(which.min(alice_share))`) and `r fmt_pct(max(alice_share))` (`r names(which.max(alice_share))`) of households in each North Meck town earn above the federal poverty line but still cannot cover basic costs — making them financially invisible in most need measures. Multi-year trend data will be added when available.
+:::
 
-<div class="nm-callout" style="margin-top:16px"><div class="nm-callout-t">Between `r fmt_pct(min(alice_share))` (`r names(which.min(alice_share))`) and `r fmt_pct(max(alice_share))` (`r names(which.max(alice_share))`) of households in each North Meck town earn above the federal poverty line but still cannot cover basic costs — making them financially invisible in most need measures. Multi-year trend data will be added when available.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="alice" role="button" tabindex="0" onclick="glossTerm('alice')">ALICE</span> Report · United Way</div></div>
-</div>
-</div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">Who lacks access to cars, internet, and health insurance?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">Select a metric below to see how it varies across towns over time. Renters are consistently more likely than owners to lack a vehicle — a significant barrier in a car-dependent suburb.</p>
-<div class="card viz-host" id="infra-chart-host">
-<div class="card-t">Access Gaps by Town (2018–2024)</div>
-<div class="card-s">One metric at a time</div>
+:::
 
-<div id="infra-chart">
+:::
+
+::: {.question}
+### Who lacks access to cars, internet, and health insurance?
+
+Select a metric below to see how it varies across towns over time. Renters are consistently more likely than owners to lack a vehicle — a significant barrier in a car-dependent suburb.
+
+::: {.chart-card #infra-chart-host title="Access Gaps by Town (2018–2024)" subtitle="One metric at a time" chart="infra-chart"}
 
 ```{ojs}
 viewof infraMetric = chips([
@@ -1299,19 +1335,20 @@ viewof infraMetric = chips([
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+Households without broadband face higher barriers to remote work, telehealth, and benefit enrollment. Renters — who are also more likely to lack a car — face a compounding access gap that standard poverty measures don't capture.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">Households without broadband face higher barriers to remote work, telehealth, and benefit enrollment. Renters — who are also more likely to lack a car — face a compounding access gap that standard poverty measures don't capture.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
-<div style="margin-bottom:36px">
-<h3 style="font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)">How does educational attainment relate to poverty and employment across towns?</h3>
-<p style="color:var(--ink-2);font-size:15px;margin-bottom:16px">High average attainment conceals real pockets of poverty and unemployment. Select a metric to see how each town compares.</p>
-<div class="card viz-host" id="mobility-chart-host">
-<div class="card-t">Education &amp; Economic Mobility by Town (2018–2024)</div>
-<div class="card-s">One metric at a time</div>
+:::
 
-<div id="mobility-chart">
+:::
+
+::: {.question}
+### How does educational attainment relate to poverty and employment across towns?
+
+High average attainment conceals real pockets of poverty and unemployment. Select a metric to see how each town compares.
+
+::: {.chart-card #mobility-chart-host title="Education & Economic Mobility by Town (2018–2024)" subtitle="One metric at a time" chart="mobility-chart"}
 
 ```{ojs}
 viewof mobMetric = chips([
@@ -1334,15 +1371,24 @@ viewof mobMetric = chips([
 }
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+High average education attainment across North Meck coexists with meaningful poverty and unemployment pockets — a reminder that townwide statistics can mask significant variation within each community.
+:::
 
-<div class="nm-callout"><div class="nm-callout-t">High average education attainment across North Meck coexists with meaningful poverty and unemployment pockets — a reminder that townwide statistics can mask significant variation within each community.</div><div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</div></div>
-</div>
-</div>
+:::
+
+:::
+
+```{=html}
 <div class="dlstrip" style="margin-top:48px">
 <div><div class="dlstrip-t">Take the data with you</div><div class="dlstrip-s">Every chart is available as CSV. Full methodology in the 2026 report.</div></div>
 <div class="dl-btns"><button class="btn-ghost"><i class="ti ti-download"></i> Download CSV</button><button class="btn-ghost"><i class="ti ti-file-text"></i> Methodology PDF</button><button class="btn-ghost">2025 housing report <i class="ti ti-external-link"></i></button></div>
 </div>
-</div>
-</div>
-</div>
+```
+
+:::
+
+:::
+
+:::
+

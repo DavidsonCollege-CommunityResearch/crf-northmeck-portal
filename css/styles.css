@@ -912,3 +912,10 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
   70%{box-shadow:0 0 0 3px var(--accent);}
   100%{box-shadow:0 0 0 0 transparent;}
 }
+
+/* Dashboard question blocks (the .question component in _extensions/components.lua):
+   a question heading, a short intro paragraph, then that question's charts. */
+.q-block{margin-bottom:36px}
+.q-h{font-family:'Newsreader',serif;font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink)}
+.q-h.sm{font-size:20px;margin-bottom:10px}
+.q-lead{color:var(--ink-2);font-size:15px;margin-bottom:16px}
