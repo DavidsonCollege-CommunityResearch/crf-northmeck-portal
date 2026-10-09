@@ -31,14 +31,14 @@ jobs:
           MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
         run: node scripts/refresh-data.mjs
 
-      # Commits any changed public/data/*.json files back to main. Pushing to
-      # main is what triggers deploy.yml to rebuild and redeploy with the
-      # fresh data - this workflow deliberately doesn't build or deploy itself.
+      # Commits any changed data/*.json files back to main. This workflow
+      # doesn't build or deploy itself: deploy.yml runs when it finishes
+      # (a push made with GITHUB_TOKEN wouldn't trigger deploy.yml on its own).
       - name: Commit updated data snapshot
         if: always()
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore: refresh MotherDuck data snapshot'
-          file_pattern: 'public/data/*.json'
+          file_pattern: 'data/*.json'
           commit_user_name: 'github-actions[bot]'
           commit_user_email: 'github-actions[bot]@users.noreply.github.com'

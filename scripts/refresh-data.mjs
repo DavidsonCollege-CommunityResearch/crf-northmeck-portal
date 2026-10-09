@@ -1,4 +1,4 @@
-// Snapshots MotherDuck data into public/data/*.json so the site never has to
+// Snapshots MotherDuck data into data/*.json so the site never has to
 // ship a MotherDuck token or run live queries in the browser. Run by
 // .github/workflows/refresh-data.yml on a schedule, or locally by anyone
 // with a MOTHERDUCK_TOKEN of their own (no token is ever committed).
@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUT_DIR = path.resolve(__dirname, '../public/data');
+const OUT_DIR = path.resolve(__dirname, '../data');
 const TOWNS = "('Cornelius','Davidson','Huntersville')";
 
 const TOKEN = process.env.MOTHERDUCK_TOKEN;
