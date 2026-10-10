@@ -213,15 +213,33 @@ showTown(masterTown)
 
 ::: {.wrap}
 
-::: {.stat-rows style="margin-bottom:48px"}
+<!-- Overview: headline figures in one row, then their charts in the same order.
+     Clicking a figure scrolls to its chart (target="#card-id"). Cards in a row are
+     drawn to the same height; .wide cards span the full row. -->
 
-::: {.stat-row}
+::: {.fact-band}
 
-::: {.fact value="+`r by_town(fmt_pct(enroll_growth), function(t) fmt_pct(enroll_growth_town[[t]]))`" tone="warn" source="[ACS]{.gloss} `r pk_y0`–`r pk_y1`"}
+::: {.fact target="#ed-ov1-host" value="+`r by_town(fmt_pct(enroll_growth), function(t) fmt_pct(enroll_growth_town[[t]]))`" tone="warn" source="[ACS]{.gloss} `r pk_y0`–`r pk_y1`"}
 growth in `r by_town("North Meck", identity)` residents enrolled in school since `r pk_y0`, preschool through graduate school
 :::
 
-::: {.chart-card title="Total School Enrollment by Town (2018–2024)" subtitle="All enrollment levels · preschool through graduate/professional" chart="chart-total-enrollment-trend" style="margin-bottom:28px"}
+::: {.fact target="#ed-ov2-host" value="`r by_town(paste0("~1 in ", title1_ratio), function(t) paste(gl_title1(t), "of", gl_n(t)))`" tone="warn" source="NC DPI, 2024"}
+`r by_town("North Meck", identity)` schools are federally designated [Title I]{.gloss term=title-i}, meaning a high share of students come from low-income families
+:::
+
+::: {.fact target="#ed-ov4-host" value="`r fmt_num(dis_gap_avg, 1)` pts" tone="warn" source="NC DPI, 2024"}
+average proficiency gap between students with and without disabilities across North Meck schools
+:::
+
+::: {.fact target="#ed-ov3-host" value="`r by_town(paste0("~", growth_in5, " in 5"), function(t) paste(gr_exceeded(t), "of", gr_n(t)))`" source="NC DPI, EVAAS growth index, 2024"}
+`r by_town("North Meck schools exceeded their expected academic growth target this year, a sign of strong year-over-year progress", function(t) paste(t, "schools exceeded their expected academic growth target this year"))`
+:::
+
+:::
+
+::: {.chart-grid style="margin-bottom:48px"}
+
+::: {.chart-card .wide #ed-ov1-host title="Total School Enrollment by Town (2018–2024)" subtitle="All enrollment levels · preschool through graduate/professional" chart="chart-total-enrollment-trend" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -243,15 +261,7 @@ growth in `r by_town("North Meck", identity)` residents enrolled in school since
 
 :::
 
-:::
-
-::: {.stat-row}
-
-::: {.fact value="`r by_town(paste0("~1 in ", title1_ratio), function(t) paste(gl_title1(t), "of", gl_n(t)))`" tone="warn" source="NC DPI, 2024"}
-`r by_town("North Meck", identity)` schools are federally designated [Title I]{.gloss term=title-i}, meaning a high share of students come from low-income families
-:::
-
-::: {.chart-card title="Grade-Level Proficiency by Title I status (2024)" subtitle="Percent of students proficient at grade level, Title I designated schools compared to others" chart="chart-title1-proficiency" style="margin-bottom:28px"}
+::: {.chart-card #ed-ov2-host title="Grade-Level Proficiency by Title I status (2024)" subtitle="Percent of students proficient at grade level, Title I designated schools compared to others" chart="chart-title1-proficiency" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -274,44 +284,7 @@ growth in `r by_town("North Meck", identity)` residents enrolled in school since
 
 :::
 
-:::
-
-::: {.stat-row}
-
-::: {.fact value="`r by_town(paste0("~", growth_in5, " in 5"), function(t) paste(gr_exceeded(t), "of", gr_n(t)))`" source="NC DPI, EVAAS growth index, 2024"}
-`r by_town("North Meck schools exceeded their expected academic growth target this year, a sign of strong year-over-year progress", function(t) paste(t, "schools exceeded their expected academic growth target this year"))`
-:::
-
-::: {.chart-card title="Academic growth status by school (2024)" subtitle="[EVAAS growth index]{.gloss term=evaas} score, whether each school exceeded, met, or fell short of expected growth" chart="chart-growth-overview" style="margin-bottom:28px"}
-
-```{ojs}
-{
-  const data = byTown(growth, masterTown).slice().sort((a, b) => b.index_score - a.index_score);
-  return responsive(width => stdPlot({
-    width, height: 90 + data.length * 22, marginLeft: 190, style: S,
-    x: {label: "Growth Index Score (0 = met expected growth)", domain: [-8, 8], grid: true},
-    y: {label: null, domain: data.map(d => d.school)},
-    color: GROWTH_COLOR,
-    marks: [
-      Plot.barX(data, {x: "index_score", y: "school", fill: "status", rx: 3, tip: true,
-        title: d => `${d.school} (${d.grade_span})\nStatus: ${d.status}\nGrowth Index: ${d.index_score}`}),
-      Plot.ruleX([0])
-    ]
-  }), {invalidation});
-}
-```
-
-:::
-
-:::
-
-::: {.stat-row}
-
-::: {.fact value="`r fmt_num(dis_gap_avg, 1)` pts" tone="warn" source="NC DPI, 2024"}
-average proficiency gap between students with and without disabilities across North Meck schools
-:::
-
-::: {.chart-card title="Proficiency gap for students with disabilities, by school (2024)" subtitle="Percentage-point gap in grade-level proficiency, students with disabilities compared to students without" chart="chart-disability-gap-overview" style="margin-bottom:28px"}
+::: {.chart-card #ed-ov4-host title="Proficiency gap for students with disabilities, by school (2024)" subtitle="Percentage-point gap in grade-level proficiency, students with disabilities compared to students without" chart="chart-disability-gap-overview" style="margin-bottom:28px"}
 
 ```{ojs}
 // school-disability-gap has no town field, so this chart doesn't follow the town filter.
@@ -330,6 +303,25 @@ average proficiency gap between students with and without disabilities across No
 ```
 
 :::
+
+::: {.chart-card .wide #ed-ov3-host title="Academic growth status by school (2024)" subtitle="[EVAAS growth index]{.gloss term=evaas} score, whether each school exceeded, met, or fell short of expected growth" chart="chart-growth-overview" style="margin-bottom:28px"}
+
+```{ojs}
+{
+  const data = byTown(growth, masterTown).slice().sort((a, b) => b.index_score - a.index_score);
+  return responsive(width => stdPlot({
+    width, height: 90 + data.length * 22, marginLeft: 190, style: S,
+    x: {label: "Growth Index Score (0 = met expected growth)", domain: [-8, 8], grid: true},
+    y: {label: null, domain: data.map(d => d.school)},
+    color: GROWTH_COLOR,
+    marks: [
+      Plot.barX(data, {x: "index_score", y: "school", fill: "status", rx: 3, tip: true,
+        title: d => `${d.school} (${d.grade_span})\nStatus: ${d.status}\nGrowth Index: ${d.index_score}`}),
+      Plot.ruleX([0])
+    ]
+  }), {invalidation});
+}
+```
 
 :::
 

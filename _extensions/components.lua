@@ -129,7 +129,12 @@ local function chart_card(div)
     for _, b in ipairs(chart) do table.insert(out, b) end
   end
   for _, b in ipairs(after) do table.insert(out, b) end
-  return pandoc.Div(out, attr(div.identifier, { "card", "viz-host" }, div))
+  -- Extra classes on the component (e.g. .wide in a .chart-grid) carry over.
+  local classes = { "card", "viz-host" }
+  for _, c in ipairs(div.classes) do
+    if c ~= "chart-card" then table.insert(classes, c) end
+  end
+  return pandoc.Div(out, attr(div.identifier, classes, div))
 end
 
 local function question(div)
@@ -202,7 +207,8 @@ local function fact(div)
     result.attributes["role"] = "button"
     result.attributes["tabindex"] = "0"
     result.attributes["data-target"] = a.target
-    result.attributes["onclick"] = "nmFocusCard(this.dataset.target)"
+    -- A glossary term or link inside the figure keeps its own click.
+    result.attributes["onclick"] = "if(!event.target.closest('.gloss-link,a'))nmFocusCard(this.dataset.target)"
     result.attributes["onkeydown"] = "if(event.key==='Enter'||event.key===' '){event.preventDefault();nmFocusCard(this.dataset.target)}"
   end
   return result

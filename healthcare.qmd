@@ -301,16 +301,29 @@ showTown(masterTown)
 
 ::: {.wrap}
 
-::: {.stat-rows style="margin-bottom:48px"}
-<!-- Stat 1: Uninsured rate -->
+<!-- Overview: headline figures in one row, then their charts in the same order.
+     Clicking a figure scrolls to its chart (target="#card-id"). Cards in a row are
+     drawn to the same height; .wide cards span the full row. -->
 
-::: {.stat-row}
+::: {.fact-band}
 
-::: {.fact value="`r by_town(paste0("~1 in ", round(1 / share_3564_all)), function(t) fmt_pct(share_3564[[t]]))`" tone="warn" source="ACS 2024 · Table B27001"}
+::: {.fact target="#he-ov1-host" value="`r by_town(paste0("~1 in ", round(1 / share_3564_all)), function(t) fmt_pct(share_3564[[t]]))`" tone="warn" source="ACS 2024 · Table B27001"}
 `r by_town("uninsured residents in every North Meck town are working-age adults 35–64 which is the single largest age group without coverage", function(t) paste0("of uninsured residents in ", t, " are working-age adults 35–64, the single largest age group without coverage"))`
 :::
 
-::: {.chart-card title="Uninsured rate by town & age group" subtitle="Share of uninsured population by age group · ACS 2024" chart="hc-overview-age-uninsured"}
+::: {.fact target="#he-ov2-host" value="`r by_town(paste0("~", round(emp_share * 10), " in 10"), function(t) fmt_pct(emp_share_town[[t]]))`" tone="warn" source="ACS 2024, Table B27010"}
+`r by_town("insured North Meck residents get their coverage through an employer, by far the most common source of coverage across all three towns", function(t) paste0("of insured ", t, " residents get their coverage through an employer, by far the most common source of coverage in the town"))`
+:::
+
+::: {.fact target="#he-ov3-host" value="~`r by_town(fmt_pct(pc_avg[["Dental"]]), function(t) fmt_pct(pc_town[t, "Dental"]))`" tone="warn" source="CDC PLACES"}
+of `r by_town("North Meck", identity)` adults report visiting a dentist in the past year, the lowest completion rate of the `r c("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")[length(pc_avg)]` preventive care measures we track
+:::
+
+:::
+
+::: {.chart-grid style="margin-bottom:48px"}
+
+::: {.chart-card #he-ov1-host title="Uninsured rate by town & age group" subtitle="Share of uninsured population by age group · ACS 2024" chart="hc-overview-age-uninsured"}
 
 ```{ojs}
 responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {invalidation})
@@ -318,53 +331,7 @@ responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {in
 
 :::
 
-:::
-
-<!-- Stat 2: Mental health
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n warn">1 in 5</div>
-<p class="stat-l">adults experiences a mental health condition each year, yet most do not receive treatment in communities with limited provider access</p>
-<span class="stat-src">SAMHSA · data coming</span>
-</div>
-<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-<div class="card-t" style="color:var(--ink-2)">Mental health provider availability by town</div>
-<div class="card-s">Psychiatrists, psychologists, and licensed counselors per 10,000 residents</div>
-<div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-<i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-<div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-<div style="font-size:12px;margin-top:4px">Data source: HRSA Health Workforce · SAMHSA behavioral health data</div>
-</div>
-</div>
-</div>
--->
-<!-- Stat 3: Provider shortage
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n warn">HPSA</div>
-<p class="stat-l">parts of North Meck fall within Health Professional Shortage Areas, meaning residents travel further or wait longer for primary care</p>
-<span class="stat-src">HRSA · data coming</span>
-</div>
-<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
-<div class="card-t" style="color:var(--ink-2)">Primary care providers per 10,000 residents</div>
-<div class="card-s">Active primary care physicians by zip code · HRSA HPSA designations</div>
-<div style="padding:32px 0;text-align:center;color:var(--ink-3)">
-<i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
-<div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
-<div style="font-size:12px;margin-top:4px">Data source: HRSA Data Warehouse · Health Professional Shortage Areas</div>
-</div>
-</div>
-</div>
--->
-<!-- Stat 4: Insurance coverage type -->
-
-::: {.stat-row}
-
-::: {.fact value="`r by_town(paste0("~", round(emp_share * 10), " in 10"), function(t) fmt_pct(emp_share_town[[t]]))`" tone="warn" source="ACS 2024, Table B27010"}
-`r by_town("insured North Meck residents get their coverage through an employer, by far the most common source of coverage across all three towns", function(t) paste0("of insured ", t, " residents get their coverage through an employer, by far the most common source of coverage in the town"))`
-:::
-
-::: {.chart-card title="Health insurance coverage by type (2024)" subtitle="Number of insured residents by source of coverage: employer, Medicare, Medicaid, [TRICARE]{.gloss}, and more" chart="chart-insurance-type-overview" style="margin-bottom:28px"}
+::: {.chart-card #he-ov2-host title="Health insurance coverage by type (2024)" subtitle="Number of insured residents by source of coverage: employer, Medicare, Medicaid, [TRICARE]{.gloss}, and more" chart="chart-insurance-type-overview" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -390,17 +357,7 @@ responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {in
 
 :::
 
-:::
-
-<!-- Stat 5: Preventive care -->
-
-::: {.stat-row}
-
-::: {.fact value="~`r by_town(fmt_pct(pc_avg[["Dental"]]), function(t) fmt_pct(pc_town[t, "Dental"]))`" tone="warn" source="CDC PLACES"}
-of `r by_town("North Meck", identity)` adults report visiting a dentist in the past year, the lowest completion rate of the `r c("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")[length(pc_avg)]` preventive care measures we track
-:::
-
-::: {.chart-card title="Preventive care completion rates by measure" subtitle="Average share of adults completing each screening or checkup, across all three towns" chart="chart-preventive-overview" style="margin-bottom:28px"}
+::: {.chart-card .wide #he-ov3-host title="Preventive care completion rates by measure" subtitle="Average share of adults completing each screening or checkup, across all three towns" chart="chart-preventive-overview" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -424,7 +381,43 @@ of `r by_town("North Meck", identity)` adults report visiting a dentist in the p
 
 :::
 
-:::
+<!-- Stat 2: Mental health
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">1 in 5</div>
+<p class="stat-l">adults experiences a mental health condition each year, yet most do not receive treatment in communities with limited provider access</p>
+<span class="stat-src">SAMHSA · data coming</span>
+</div>
+<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+<div class="card-t" style="color:var(--ink-2)">Mental health provider availability by town</div>
+<div class="card-s">Psychiatrists, psychologists, and licensed counselors per 10,000 residents</div>
+<div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+<i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+<div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+<div style="font-size:12px;margin-top:4px">Data source: HRSA Health Workforce · SAMHSA behavioral health data</div>
+</div>
+</div>
+</div>
+-->
+
+<!-- Stat 3: Provider shortage
+<div class="stat-row">
+<div class="srow-fig">
+<div class="stat-n warn">HPSA</div>
+<p class="stat-l">parts of North Meck fall within Health Professional Shortage Areas, meaning residents travel further or wait longer for primary care</p>
+<span class="stat-src">HRSA · data coming</span>
+</div>
+<div class="card" style="border:1px dashed var(--line-2);background:var(--paper-2)">
+<div class="card-t" style="color:var(--ink-2)">Primary care providers per 10,000 residents</div>
+<div class="card-s">Active primary care physicians by zip code · HRSA HPSA designations</div>
+<div style="padding:32px 0;text-align:center;color:var(--ink-3)">
+<i class="ti ti-clock" style="font-size:22px;display:block;margin-bottom:8px"></i>
+<div style="font-size:14px;font-weight:500;color:var(--ink-2)">Coming soon</div>
+<div style="font-size:12px;margin-top:4px">Data source: HRSA Data Warehouse · Health Professional Shortage Areas</div>
+</div>
+</div>
+</div>
+-->
 
 :::
 
