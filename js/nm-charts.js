@@ -62,7 +62,7 @@ function labelOverflow(chart, width) {
     const box = svg.getBoundingClientRect();
     const texts = [...svg.querySelectorAll("text")].filter(t => t.textContent.trim());
     const role = t => (t.closest("[aria-label]") || {getAttribute: () => ""}).getAttribute("aria-label") || "";
-    const need = {left: 0, right: 0, top: 0, bottom: 0, xTitle: 0, xTitleAxis: "x", yTitle: 0};
+    const need = {left: 0, right: 0, top: 0, bottom: 0, xTitle: 0, xTitleAxis: "x", yTitle: 0, crowdedTicks: null};
     for (const t of texts) {
       const r = t.getBoundingClientRect();
       need.left = Math.max(need.left, box.left - r.left);
@@ -82,6 +82,13 @@ function labelOverflow(chart, width) {
       for (const title of titles) for (const tick of ticks) {
         const h = overlapHeight(title, tick);
         if (h > need.xTitle) { need.xTitle = h; need.xTitleAxis = axis; }
+      }
+    }
+    // Neighboring x tick labels that run into each other (narrow charts).
+    for (const axis of ["x", "fx"]) {
+      const ticks = texts.filter(t => role(t) === `${axis}-axis tick label`);
+      for (let i = 1; i < ticks.length; i++) {
+        if (overlapHeight(ticks[i - 1], ticks[i]) > 0) { need.crowdedTicks = axis; break; }
       }
     }
     for (const title of texts.filter(t => role(t) === "y-axis label")) {
@@ -123,7 +130,7 @@ export function stdPlot(opts) {
   let chart = Plot.plot(merged);
   if (!merged.width || typeof document === "undefined") return chart;
   const PAD = 2;
-  for (let pass = 0; pass < 3; pass++) {
+  for (let pass = 0; pass < 6; pass++) {
     const need = labelOverflow(chart, merged.width);
     let changed = false;
     for (const [side, key] of [["left", "marginLeft"], ["right", "marginRight"], ["top", "marginTop"], ["bottom", "marginBottom"]]) {
@@ -135,6 +142,14 @@ export function stdPlot(opts) {
       const axis = merged[need.xTitleAxis] || {};
       if (axis.labelOffset != null) merged[need.xTitleAxis] = {...axis, labelOffset: axis.labelOffset + extra};
       merged.marginBottom += extra;
+      changed = true;
+    }
+    const crowded = need.crowdedTicks && merged[need.crowdedTicks];
+    if (crowded && (crowded.tickRotate == null || crowded.tickRotate > -90)) {
+      // Tick labels collide: tilt them (-30°, then steeper up to -90°); the
+      // next pass makes room for them below the chart.
+      const tickRotate = crowded.tickRotate == null ? -30 : Math.max(-90, crowded.tickRotate - 30);
+      merged[need.crowdedTicks] = {...crowded, tickRotate};
       changed = true;
     }
     if (need.yTitle > 0.5) {

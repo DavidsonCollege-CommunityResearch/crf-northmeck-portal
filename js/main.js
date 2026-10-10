@@ -1637,3 +1637,14 @@ window.handleHelpSubmit = handleHelpSubmit;
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeHelpForm();
 });
+
+
+/* ── OVERVIEW FIGURES → CHARTS ── */
+// A headline figure with target="#card-id" (the .fact component) scrolls to
+// its chart card and briefly highlights it.
+window.nmFocusCard = function(sel){
+  var card = document.querySelector(sel); if(!card) return;
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.classList.remove('card-flash'); void card.offsetWidth; card.classList.add('card-flash');
+  setTimeout(function(){ card.classList.remove('card-flash'); }, 1800);
+};

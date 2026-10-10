@@ -29,8 +29,9 @@ Registered for every page in _quarto.yml. See docs/quarto-pages.md for usage.
   :::                                                smaller notes)
 
   ::: {.fact value="42%" tone="warn" source="[ACS]{.gloss} 2018–2024"}
-  rent rise in Huntersville since 2018              Overview stat tile
-  :::
+  rent rise in Huntersville since 2018              Overview stat tile;
+  :::                                                target="#card-id" makes
+                                                     it scroll to its chart
 
   ::: {.nbhd-section}                               neighborhood dashboard
   #### Population & Ethnicity                       subsection: heading, lead
@@ -193,7 +194,18 @@ local function fact(div)
   if a.source then
     table.insert(out, raw('<span class="stat-src">' .. html_inlines(md(a.source)) .. '</span>'))
   end
-  return pandoc.Div(out, attr("", { "srow-fig" }, div))
+  local result = pandoc.Div(out, attr("", { "srow-fig" }, div))
+  -- target="#card-id": clicking the figure scrolls to its chart and
+  -- highlights it (nmFocusCard in js/main.js); Enter/Space work too.
+  if a.target then
+    result.classes:insert("fact-link")
+    result.attributes["role"] = "button"
+    result.attributes["tabindex"] = "0"
+    result.attributes["data-target"] = a.target
+    result.attributes["onclick"] = "nmFocusCard(this.dataset.target)"
+    result.attributes["onkeydown"] = "if(event.key==='Enter'||event.key===' '){event.preventDefault();nmFocusCard(this.dataset.target)}"
+  end
+  return result
 end
 
 local COMPONENTS = {

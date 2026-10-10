@@ -206,15 +206,32 @@ showTown(masterTown)
 
 ::: {.wrap}
 
-::: {#ov-fact-rows .stat-rows style="margin-bottom:48px"}
+<!-- Overview: headline figures in one row, then their charts in the same order.
+     Clicking a figure scrolls to its chart (target="#card-id"). -->
 
-::: {.stat-row}
+::: {#ov-fact-band .fact-band}
 
-::: {.fact value="`r by_town(fmt_pct(hh$rent_top_rise), function(t) fmt_pct(rent_chg[[t]]))`" tone="warn" source="[ACS]{.gloss} 2018–2024"}
+::: {.fact target="#ovf-rent-host" value="`r by_town(fmt_pct(hh$rent_top_rise), function(t) fmt_pct(rent_chg[[t]]))`" tone="warn" source="[ACS]{.gloss} 2018–2024"}
 rent rise in `r by_town(paste0(hh$rent_top_town, " since 2018, from ", fmt_dollar(hh$rent_top_2018), " to ", fmt_dollar(hh$rent_top_2024)), function(t) paste0(t, " since 2018, from ", fmt_dollar(rent(t, 2018)), " to ", fmt_dollar(rent(t, 2024))))`/mo
 :::
 
-::: {.chart-card title="Median Rent by Town (2018–2024)" subtitle="" chart="ovf-rent"}
+::: {.fact target="#ovf-ptr-host" value="`r by_town(paste0(floor(hh$ptr_20_35_min), "+ yrs"), function(t) sprintf("%.0f yrs", ptr_20_35_town[[t]]))`" tone="warn" source="[ACS]{.gloss} 2024"}
+of gross income to buy the median home, for a $20k–$35k household`r by_town("", function(t) paste(" in", t))`
+:::
+
+::: {.fact target="#ovf-home-host" value="[$]{.cur}`r by_town(fmt_k(hh$home_top_value, prefix = ""), function(t) fmt_k(home(t, 2024), prefix = ""))`" source="[ACS]{.gloss} 2024"}
+median home value in `r by_town(paste0(hh$home_top_town, ", ", round(hh$home_top_value / hh$us_median_home, 1)), function(t) paste0(t, ", ", round(home(t, 2024) / hh$us_median_home, 1)))`× the U.S. national median
+:::
+
+::: {.fact target="#ovf-dp-host" value="`r by_town(paste0("~", round(hh$down_payment_max_years), " yrs"), function(t) sprintf("%.1f yrs", dp_years[[t]]))`" source="[ACS]{.gloss} 2024"}
+to save a 20% down payment at a 10% annual savings rate`r by_town("", function(t) paste(" in", t))`
+:::
+
+:::
+
+::: {.chart-grid style="margin-bottom:48px"}
+
+::: {.chart-card #ovf-rent-host title="Median Rent by Town (2018–2024)" subtitle="" chart="ovf-rent"}
 
 ```{ojs}
 responsive(width => stdPlot({
@@ -232,15 +249,7 @@ responsive(width => stdPlot({
 
 :::
 
-:::
-
-::: {.stat-row}
-
-::: {.fact value="`r by_town(paste0(floor(hh$ptr_20_35_min), "+ yrs"), function(t) sprintf("%.0f yrs", ptr_20_35_town[[t]]))`" tone="warn" source="[ACS]{.gloss} 2024"}
-of gross income to buy the median home, for a $20k–$35k household`r by_town("", function(t) paste(" in", t))`
-:::
-
-::: {.chart-card title="Years of Income to Buy the Median Home, by Bracket (2024)" subtitle="" chart="ovf-ptr"}
+::: {.chart-card #ovf-ptr-host title="Years of Income to Buy the Median Home, by Bracket (2024)" subtitle="" chart="ovf-ptr"}
 
 ```{ojs}
 {
@@ -263,15 +272,7 @@ of gross income to buy the median home, for a $20k–$35k household`r by_town(""
 
 :::
 
-:::
-
-::: {.stat-row}
-
-::: {.fact value="[$]{.cur}`r by_town(fmt_k(hh$home_top_value, prefix = ""), function(t) fmt_k(home(t, 2024), prefix = ""))`" source="[ACS]{.gloss} 2024"}
-median home value in `r by_town(paste0(hh$home_top_town, ", ", round(hh$home_top_value / hh$us_median_home, 1)), function(t) paste0(t, ", ", round(home(t, 2024) / hh$us_median_home, 1)))`× the U.S. national median
-:::
-
-::: {.chart-card title="Median Home Value by Town vs. U.S. Median (2024)" subtitle="U.S. median ~`r fmt_k(US_MEDIAN_HOME)`" chart="ovf-home"}
+::: {.chart-card #ovf-home-host title="Median Home Value by Town vs. U.S. Median (2024)" subtitle="U.S. median ~`r fmt_k(US_MEDIAN_HOME)`" chart="ovf-home"}
 
 ```{ojs}
 {
@@ -294,15 +295,7 @@ median home value in `r by_town(paste0(hh$home_top_town, ", ", round(hh$home_top
 
 :::
 
-:::
-
-::: {.stat-row}
-
-::: {.fact value="`r by_town(paste0("~", round(hh$down_payment_max_years), " yrs"), function(t) sprintf("%.1f yrs", dp_years[[t]]))`" source="[ACS]{.gloss} 2024"}
-to save a 20% down payment at a 10% annual savings rate`r by_town("", function(t) paste(" in", t))`
-:::
-
-::: {.chart-card title="Years to Save a 20% Down Payment, by Town (2024)" subtitle="Assumes 10% annual savings rate on median household income" chart="ovf-dp"}
+::: {.chart-card #ovf-dp-host title="Years to Save a 20% Down Payment, by Town (2024)" subtitle="Assumes 10% annual savings rate on median household income" chart="ovf-dp"}
 
 ```{ojs}
 responsive(width => stdPlot({
@@ -316,8 +309,6 @@ responsive(width => stdPlot({
   ]
 }), {invalidation})
 ```
-
-:::
 
 :::
 
