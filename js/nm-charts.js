@@ -25,6 +25,11 @@ export const fmtDollar = d => "$" + Math.round(d).toLocaleString();
 export const fmtK = d => "$" + (d / 1000).toFixed(0) + "k";
 export const fmtPct = (d, digits = 0) => d.toFixed(digits) + "%";
 export const fmtInt = d => Math.round(d).toLocaleString();
+// Short income-bracket labels for tight axes: "$10k-$19,999" -> "$10–20k",
+// "$75k-$100k" -> "$75–100k". Anything else is returned unchanged.
+export const shortBracket = d => String(d)
+  .replace(/^\$(\d+)k-\$(\d+),999$/, (_, a, b) => `$${a}–${+b + 1}k`)
+  .replace(/^\$(\d+)k-\$(\d+)k$/, "$$$1–$2k");
 
 // x axis for the 2018–2024 annual series used across the dashboards.
 export function yearAxis(opts = {}) {
@@ -42,9 +47,61 @@ export function niceDomain(values, step, {zero = false, pad = 0} = {}) {
 
 const MARGINS = {marginLeft: 64, marginRight: 40, marginTop: 24, marginBottom: 48};
 
+// Render a chart offscreen at its real width and report how far its labels
+// spill past each edge (where the SVG clips them), and how far x-axis tick
+// labels run into the x-axis title or y-axis tick labels into the y title.
+function labelOverflow(chart, width) {
+  const probe = document.createElement("div");
+  probe.style.cssText = `position:absolute;left:-10000px;top:0;width:${width}px;visibility:hidden`;
+  probe.append(chart);
+  document.body.append(probe);
+  try {
+    // With a legend, Plot returns a <figure>; the chart is its largest SVG.
+    const svgs = chart.tagName.toLowerCase() === "svg" ? [chart] : [...chart.querySelectorAll("svg")];
+    const svg = svgs.reduce((a, b) => (b.getBoundingClientRect().height > a.getBoundingClientRect().height ? b : a));
+    const box = svg.getBoundingClientRect();
+    const texts = [...svg.querySelectorAll("text")].filter(t => t.textContent.trim());
+    const role = t => (t.closest("[aria-label]") || {getAttribute: () => ""}).getAttribute("aria-label") || "";
+    const need = {left: 0, right: 0, top: 0, bottom: 0, xTitle: 0, xTitleAxis: "x", yTitle: 0};
+    for (const t of texts) {
+      const r = t.getBoundingClientRect();
+      need.left = Math.max(need.left, box.left - r.left);
+      need.right = Math.max(need.right, r.right - box.right);
+      need.top = Math.max(need.top, box.top - r.top);
+      need.bottom = Math.max(need.bottom, r.bottom - box.bottom);
+    }
+    const overlapHeight = (a, b) => {
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      const w = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+      const h = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+      return w > 0 && h > 0 ? h : 0;
+    };
+    for (const axis of ["x", "fx"]) {
+      const titles = texts.filter(t => role(t) === `${axis}-axis label`);
+      const ticks = texts.filter(t => /^f?x-axis tick label$/.test(role(t)));
+      for (const title of titles) for (const tick of ticks) {
+        const h = overlapHeight(title, tick);
+        if (h > need.xTitle) { need.xTitle = h; need.xTitleAxis = axis; }
+      }
+    }
+    for (const title of texts.filter(t => role(t) === "y-axis label")) {
+      for (const tick of texts.filter(t => role(t) === "y-axis tick label")) {
+        need.yTitle = Math.max(need.yTitle, overlapHeight(title, tick));
+      }
+    }
+    return need;
+  } finally {
+    probe.remove();
+  }
+}
+
 // Plot.plot with the site's defaults: margins, font, a left margin wide enough
 // for categorical y labels, y starting at zero unless a domain is given, and
 // arrows on axis labels (↑ y, x →).
+//
+// Charts are also fitted to their box: if any label would be clipped at an
+// edge, or an axis title would run into tick labels, the matching margin
+// grows and the chart is redrawn. Charts that already fit are unchanged.
 export function stdPlot(opts) {
   const merged = {...MARGINS, style: FONT, ...opts};
   if (merged.y && Array.isArray(merged.y.domain) && merged.y.domain.length &&
@@ -63,7 +120,32 @@ export function stdPlot(opts) {
   if (merged.x && typeof merged.x.label === "string" && merged.x.label && !merged.x.label.endsWith("→")) {
     merged.x = {...merged.x, label: merged.x.label + " →"};
   }
-  return Plot.plot(merged);
+  let chart = Plot.plot(merged);
+  if (!merged.width || typeof document === "undefined") return chart;
+  const PAD = 2;
+  for (let pass = 0; pass < 3; pass++) {
+    const need = labelOverflow(chart, merged.width);
+    let changed = false;
+    for (const [side, key] of [["left", "marginLeft"], ["right", "marginRight"], ["top", "marginTop"], ["bottom", "marginBottom"]]) {
+      if (need[side] > 0.5) { merged[key] += Math.ceil(need[side]) + PAD; changed = true; }
+    }
+    if (need.xTitle > 0.5) {
+      // Push the x-axis title below the tick labels it collides with.
+      const extra = Math.ceil(need.xTitle) + PAD;
+      const axis = merged[need.xTitleAxis] || {};
+      if (axis.labelOffset != null) merged[need.xTitleAxis] = {...axis, labelOffset: axis.labelOffset + extra};
+      merged.marginBottom += extra;
+      changed = true;
+    }
+    if (need.yTitle > 0.5) {
+      // The "↑" y title sits above the plot; more top margin moves the ticks down.
+      merged.marginTop += Math.ceil(need.yTitle) + PAD;
+      changed = true;
+    }
+    if (!changed) break;
+    chart = Plot.plot(merged);
+  }
+  return chart;
 }
 
 // Fetch /data/<name>.json, the same snapshot R reads at build time.
@@ -106,6 +188,11 @@ export function responsive(render, {invalidation, minWidth = 50} = {}) {
     frame = requestAnimationFrame(() => draw(width));
   });
   ro.observe(host);
+  // Charts are fitted to their labels' measured size, so redraw once the web
+  // fonts have loaded (a first draw may have measured a fallback font).
+  if (document.fonts && document.fonts.status !== "loaded") {
+    document.fonts.ready.then(() => { if (last && host.isConnected) draw(last); });
+  }
   if (invalidation) invalidation.then(() => { ro.disconnect(); cancelAnimationFrame(frame); });
   return host;
 }

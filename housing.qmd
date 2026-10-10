@@ -158,7 +158,7 @@ race_table_for <- function(area) {
 
 ```{ojs}
 //| output: false
-import {Plot, stdPlot, chips, townChips, responsive, loadData, showTown, TOWNS, TOWN_COLORS, townColor, yearAxis, niceDomain, fmtDollar, fmtK, FONT} from "/js/nm-charts.js"
+import {Plot, stdPlot, chips, townChips, responsive, loadData, showTown, shortBracket, TOWNS, TOWN_COLORS, townColor, yearAxis, niceDomain, fmtDollar, fmtK, FONT} from "/js/nm-charts.js"
 
 rentIncome = loadData("housing-rent-income")
 valueIncome = loadData("housing-value-income")
@@ -248,7 +248,7 @@ of gross income to buy the median home, for a $20k–$35k household`r by_town(""
   const data = byTown(ptrBrackets, masterTown).filter(d => brackets.includes(d.income_bracket));
   return responsive(width => stdPlot({
     width, height: 300, style: {...FONT, fontSize: "12px"},
-    fx: {domain: brackets, axis: "bottom", label: "Income bracket", tickRotate: -30, padding: 0.12},
+    fx: {domain: brackets, axis: "bottom", label: "Income bracket", tickFormat: shortBracket, padding: 0.12},
     x: {axis: null},
     y: {label: "Years", labelOffset: 44, grid: true},
     color: townColor({legend: masterTown === "All"}),
@@ -496,7 +496,8 @@ At `r fmt_dollar(housing_wage, 2)`/hr, the housing wage is out of reach for near
   return responsive(width => stdPlot({
     width, marginLeft: 50, marginBottom: 60,
     fx: {domain: bedroomOrder, label: null, tickSize: 0, padding: 0.12},
-    x: {domain: regionOrder, label: null, tickSize: 0, tickFormat: d => d},
+    // Regions are named in the color legend; per-bar labels collide on narrow screens.
+    x: {domain: regionOrder, axis: null},
     y: {label: "Monthly Rent ($)", grid: true, tickFormat: fmtDollar, domain: [0, 3200]},
     color: {domain: regionOrder, range: ["#2a6041", "#e07b39", "#3f6ba3"], legend: true},
     marks: [

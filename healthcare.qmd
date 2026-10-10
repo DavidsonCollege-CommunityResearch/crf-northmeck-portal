@@ -546,7 +546,7 @@ viewof hcInsTown = townChips(masterTown, {label: ""})
         width, height: 290, marginLeft: 110, marginTop: 40, marginBottom: 10, marginRight: 10,
         x: {domain: labels, axis: "top", label: null, tickSize: 0, padding: 0.12},
         y: {domain: TOWNS, label: null, tickSize: 0, padding: 0.2},
-        color: {type: "linear", domain: [0, 65], scheme: "blues", legend: true, label: "% of total population", tickFormat: pctFmt, width: 240},
+        color: {type: "linear", domain: [0, 65], scheme: "blues", legend: true, label: "% of total population", tickFormat: pctFmt, width: 240, marginLeft: 12},
         marks: [
           Plot.cell(cells, {x: "type", y: "town", fill: "val", rx: 6, tip: true, title: d => `${d.town} · ${d.type}: ${d.val.toFixed(1)}%`}),
           Plot.text(cells, {x: "type", y: "town", text: d => d.val.toFixed(1) + "%", fontSize: 12, fontWeight: 600, fill: d => d.val > 35 ? "#fff" : "#1B4F72"})
@@ -598,7 +598,8 @@ Lower-income households and working-age adults aged 26–64 carry the highest un
 viewof incomeTown = townChips(masterTown, {all: "All", label: ""})
 {
   showTown(incomeTown, "#hc-ins-income-host");
-  const BRACKETS = [["Below $25k", "U25"], ["$25k-$50k", "25_50"], ["$50k-$75k", "50_75"], ["$75k-$100k", "75_100"], ["Above $100k", "100_above"]];
+  // Short labels so five brackets fit side by side on narrow screens.
+  const BRACKETS = [["Under $25k", "U25"], ["$25–50k", "25_50"], ["$50–75k", "50_75"], ["$75–100k", "75_100"], ["$100k+", "100_above"]];
   if (incomeTown !== "All") {
     const r = singleRow(incomeTown);
     const labels = ["Under $25k", "$25k–$50k", "$50k–$75k", "$75k–$100k", "Above $100k"];
