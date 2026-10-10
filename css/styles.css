@@ -925,7 +925,7 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
    in a two-column grid (.chart-grid), in the same order. */
 .fact-band{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:32px}
 .fact-band .srow-fig{padding:22px 22px 20px;border-left:1px solid var(--line)}
-.fact-band .srow-fig:first-child{border-left:none;padding-left:0}
+.fact-band .srow-fig:first-child{border-left:none}
 .fact-band .stat-n{font-size:clamp(34px,3.6vw,44px);margin-bottom:12px}
 .fact-band .stat-l{font-size:15px;max-width:none;margin-bottom:12px}
 .fact-link{cursor:pointer;border-radius:var(--r);transition:background .15s}
@@ -937,7 +937,7 @@ html.a11y-noimages .bcard-thumb+*{margin-top:0}
 @keyframes cardFlash{0%,30%{box-shadow:0 0 0 3px var(--accent)}100%{box-shadow:0 0 0 3px transparent}}
 @media (max-width:760px){
   .fact-band{grid-template-columns:1fr 1fr}
-  .fact-band .srow-fig:nth-child(odd){border-left:none;padding-left:0}
+  .fact-band .srow-fig:nth-child(odd){border-left:none}
   .fact-band .srow-fig:nth-child(n+3){border-top:1px solid var(--line)}
   .chart-grid{grid-template-columns:1fr}
 }
