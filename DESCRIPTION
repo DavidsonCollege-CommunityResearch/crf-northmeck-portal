@@ -7,4 +7,6 @@ Description: Not an R package. Lists the R packages the Quarto site needs to
 Imports:
     jsonlite,
     knitr,
-    rmarkdown
+    rmarkdown,
+    yaml,
+    htmltools
