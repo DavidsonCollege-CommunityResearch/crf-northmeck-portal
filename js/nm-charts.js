@@ -127,8 +127,21 @@ export function stdPlot(opts) {
   if (merged.x && typeof merged.x.label === "string" && merged.x.label && !merged.x.label.endsWith("→")) {
     merged.x = {...merged.x, label: merged.x.label + " →"};
   }
+  if (!merged.width || typeof document === "undefined") return Plot.plot(merged);
+  let chart = fitLabels(merged);
+  // In a .chart-grid row, grow to match the tallest card (see equalizeRow).
+  const extra = takeExtraHeight();
+  if (extra > 0) {
+    merged.height = (merged.height ?? chartHeight(chart, merged.width)) + extra;
+    chart = fitLabels(merged);
+  }
+  return chart;
+}
+
+// Draw a chart, then grow margins / tilt ticks until no label is clipped or
+// colliding (see labelOverflow). Mutates and returns the plot for `merged`.
+function fitLabels(merged) {
   let chart = Plot.plot(merged);
-  if (!merged.width || typeof document === "undefined") return chart;
   const PAD = 2;
   for (let pass = 0; pass < 6; pass++) {
     const need = labelOverflow(chart, merged.width);
@@ -179,6 +192,60 @@ function errorBox() {
   return div;
 }
 
+// Height of a chart's main SVG at a given width (rendered offscreen).
+function chartHeight(chart, width) {
+  const probe = document.createElement("div");
+  probe.style.cssText = `position:absolute;left:-10000px;top:0;width:${width}px;visibility:hidden`;
+  probe.append(chart);
+  document.body.append(probe);
+  const svgs = chart.tagName.toLowerCase() === "svg" ? [chart] : [...chart.querySelectorAll("svg")];
+  const h = Math.max(...svgs.map(svg => svg.getBoundingClientRect().height));
+  probe.remove();
+  return Math.round(h);
+}
+
+// Extra height requested for the chart responsive() is drawing right now.
+// Only the first stdPlot() in a draw uses it.
+let pendingExtraHeight = 0;
+function takeExtraHeight() {
+  const extra = pendingExtraHeight;
+  pendingExtraHeight = 0;
+  return extra;
+}
+
+// Charts in the same row of a .chart-grid are drawn to the same height: each
+// card's chart grows by the difference between the row's tallest card and its
+// own natural height. Runs whenever a card's size changes (charts drawing, a
+// hidden tab opening, the window resizing). Single-column grids (phones) have
+// one card per row, so nothing grows.
+function equalizeRow(grid) {
+  const cards = [...grid.children].filter(c => c.offsetParent && c.querySelector(".nm-responsive"));
+  const rows = new Map();
+  for (const card of cards) {
+    const top = Math.round(card.getBoundingClientRect().top);
+    rows.set(top, [...(rows.get(top) || []), card]);
+  }
+  for (const row of rows.values()) {
+    const sized = row.map(card => {
+      const host = card.querySelector(".nm-responsive");
+      const applied = +host.dataset.extraHeight || 0;
+      return {host, applied, natural: card.getBoundingClientRect().height - applied};
+    });
+    const tallest = Math.max(...sized.map(c => c.natural));
+    for (const {host, applied, natural} of sized) {
+      const want = row.length > 1 ? Math.round(tallest - natural) : 0;
+      if (Math.abs(want - applied) > 1) { host.dataset.extraHeight = want; host.nmRedraw?.(); }
+    }
+  }
+}
+function watchGrid(grid) {
+  let frame = 0;
+  const ro = new ResizeObserver(() => { cancelAnimationFrame(frame); frame = requestAnimationFrame(() => equalizeRow(grid)); });
+  ro.observe(grid);
+  for (const card of grid.children) ro.observe(card);
+}
+if (typeof document !== "undefined") document.querySelectorAll(".chart-grid").forEach(watchGrid);
+
 // A container that redraws its chart whenever its own width changes: on page
 // load, when a hidden tab becomes visible, when the card is expanded into the
 // full-screen viewer, and on window resize. render(width) returns a node.
@@ -189,12 +256,18 @@ function errorBox() {
 // cell re-runs (e.g. after a chip changes).
 export function responsive(render, {invalidation, minWidth = 50} = {}) {
   const host = document.createElement("div");
+  host.className = "nm-responsive";
   host.style.width = "100%";
   let last = 0, frame = 0;
   const draw = width => {
+    // Extra height only applies while the card sits in a .chart-grid (not,
+    // e.g., when it's moved into the expanded-chart viewer).
+    pendingExtraHeight = host.closest(".chart-grid") ? (+host.dataset.extraHeight || 0) : 0;
     try { host.replaceChildren(render(width)); }
     catch (err) { console.error(err); host.replaceChildren(errorBox()); }
+    finally { pendingExtraHeight = 0; }
   };
+  host.nmRedraw = () => { if (last) draw(last); };
   const ro = new ResizeObserver(entries => {
     const width = Math.floor(entries[0].contentRect.width);
     if (width < minWidth || width === last) return;
