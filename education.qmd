@@ -67,6 +67,67 @@ nm_claim(identical(sort(hs_towns), c("Cornelius", "Huntersville")),
 ba_premium <- sapply(hs_towns, function(t) nm_value(ea, "earnings", town = t, level = "Bachelor's") - nm_value(ea, "earnings", town = t, level = "HS Diploma"))
 dav_grad <- nm_value(ea, "earnings", town = "Davidson", level = "Graduate/Prof")
 dav_grad_floor <- floor(dav_grad / 10000) * 10000
+
+# Per-town figures for text that follows the Area filter (by_town() in R/nm.R).
+enroll_growth_town <- sapply(towns, function(t) pct_change(pkv("n_enrolled_total", t, pk_y0), pkv("n_enrolled_total", t, pk_y1)))
+nm_claim(all(enroll_growth_town > 0), "enrollment stat tile shows '+' growth for each town")
+nm_claim(all(k12_gain > 0), "K-12 callout says each town 'added' K-12 students")
+nm_claim(all(k12_chg > 0) && all(k12_chg < pop_chg), "pop-vs-K12 callout says each town's K-12 count rose 'only' while its population grew more")
+lv_chg_town <- function(t, col) pct_change(nm_value(lv, col, town = t, year = lv_y0), nm_value(lv, col, town = t, year = lv_y1))
+fmt_signed <- function(x) sprintf("%+.0f%%", x)
+gl_n <- function(t) sum(gl$town == t)
+gl_title1 <- function(t) sum(gl$town == t & gl$is_title_1 %in% TRUE)
+gr_n <- function(t) sum(gr$town == t)
+gr_exceeded <- function(t) sum(gr$town == t & gr$status == "Exceeded")
+# CCR chart: K-12 comprehensive schools with a CCR value, by town
+k12_ccr_schools <- function(t) gl$school[gl$town == t & gl$grade_span == "0K-12" & !is.na(gl$ccr)]
+ccr_town_text <- function(t) {
+  s <- k12_ccr_schools(t)
+  if (length(s) == 0) {
+    hs <- gl$school[gl$town == t & gl$grade_span %in% hs_spans & !is.na(gl$ccr)]
+    if (length(hs) == 1) paste0(hs, ", the only ", t, " school in this chart, is a high school, so these rates reflect high schoolers only.")
+    else paste0("Every ", t, " school in this chart is a high school, so these rates reflect high schoolers only.")
+  } else {
+    paste0("Includes ", fmt_list(s), ", ", if (length(s) == 1) "a K–12 comprehensive school" else "K–12 comprehensive schools",
+           " (grade span 0K–12), whose Grade-Level Proficient and College/Career Ready rates reflect ",
+           if (length(s) == 1) "its" else "their", " entire student body, not high schoolers alone — treat these figures as directional rather than high-school-specific.")
+  }
+}
+# Bachelor's trend: each town's first and latest year in the data
+bach_trend_text <- function(t) {
+  d <- bt[bt$town == t, ]; d <- d[order(d$year), ]
+  first <- d[1, ]; last <- d[nrow(d), ]
+  if (t == "Davidson") {
+    return(paste0("In Davidson (home to Davidson College), ", fmt_pct(last$bach_plus, 1), " of adults 25+ held a bachelor's degree or higher in ", last$year,
+                  ". Its yearly estimates swing between ", fmt_pct(min(d$bach_plus)), " and ", fmt_pct(max(d$bach_plus)), " because of the town's small ACS sample."))
+  }
+  diff <- last$bach_plus - first$bach_plus
+  paste0("In ", t, ", ", fmt_pct(last$bach_plus, 1), " of adults 25+ held a bachelor's degree or higher in ", last$year, ", ",
+         if (abs(diff) < 1) "roughly level with " else if (diff > 0) "up from " else "down from ", fmt_pct(first$bach_plus, 1), " in ", first$year, ".")
+}
+dav_bt <- bt$bach_plus[bt$town == "Davidson"]
+nm_claim(max(dav_bt) - min(dav_bt) > 20, "Davidson bachelor's callout says its estimates swing year to year")
+ab_pct <- function(t, level) nm_value(ab, "pct", town = t, level = level)
+nm_claim(dav_2023 - nm_value(bt, "bach_plus", town = "Davidson", year = 2022) > 20,
+         "attainment callout says Davidson's 2022 snapshot is a sampling artifact and 2023 better reflects the pattern")
+attain_town_text <- function(t) {
+  if (t == "Davidson") {
+    return(paste0("Davidson's 2022 snapshot reflects ACS sample variability — its 2023 figure (", fmt_pct(dav_2023, 1), " bachelor's or higher) better reflects the long-run pattern."))
+  }
+  paste0("In ", t, ", ", fmt_pct(ab_pct(t, "Bachelor's"), 1), " of adults 25+ hold a bachelor's degree and ", fmt_pct(ab_pct(t, "Graduate/Prof"), 1),
+         " a graduate or professional degree; ", fmt_pct(ab_pct(t, "Less than HS"), 1), " did not finish high school.")
+}
+earn <- function(t, level) nm_value(ea, "earnings", town = t, level = level)
+earn_town_text <- function(t) {
+  if (t %in% hs_towns) {
+    paste0("In ", t, ", a bachelor's degree is worth about ", fmt_dollar(ba_premium[[t]]), " more per year than a high school diploma (",
+           fmt_dollar(earn(t, "Bachelor's")), " vs. ", fmt_dollar(earn(t, "HS Diploma")), "). Graduate-degree earners have median earnings of ",
+           fmt_dollar(earn(t, "Graduate/Prof")), " a year.")
+  } else {
+    paste0("In ", t, ", workers with a bachelor's degree have median earnings of ", fmt_dollar(earn(t, "Bachelor's")),
+           " a year, and graduate-degree earners ", fmt_dollar(earn(t, "Graduate/Prof")), " (", t, "'s high-school figure is suppressed).")
+  }
+}
 ```
 
 ::: {.page .active style="display:block"}
@@ -104,7 +165,7 @@ dav_grad_floor <- floor(dav_grad / 10000) * 10000
 
 ```{ojs}
 //| output: false
-import {Plot, stdPlot, chips, townChips, responsive, loadData, TOWNS, townColor, FONT} from "/js/nm-charts.js"
+import {Plot, stdPlot, chips, townChips, responsive, loadData, showTown, TOWNS, townColor, FONT} from "/js/nm-charts.js"
 
 popK12 = loadData("pop-growth-k12-enrollment")
 k12ByLevel = loadData("k12-enrollment-by-level")
@@ -138,6 +199,12 @@ ECON_COLOR = ({legend: true, domain: ["Economically Disadvantaged", "Not Economi
 viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {label: "Area:", hint: "filters every chart"})
 ```
 
+```{ojs}
+//| output: false
+// Show the town version of every callout and stat tile written with by_town().
+showTown(masterTown)
+```
+
 :::
 
 <!-- TAB: overview -->
@@ -150,8 +217,8 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 
 ::: {.stat-row}
 
-::: {.fact value="+`r fmt_pct(enroll_growth)`" tone="warn" source="[ACS]{.gloss} `r pk_y0`–`r pk_y1`"}
-growth in North Meck residents enrolled in school since `r pk_y0`, preschool through graduate school
+::: {.fact value="+`r by_town(fmt_pct(enroll_growth), function(t) fmt_pct(enroll_growth_town[[t]]))`" tone="warn" source="[ACS]{.gloss} `r pk_y0`–`r pk_y1`"}
+growth in `r by_town("North Meck", identity)` residents enrolled in school since `r pk_y0`, preschool through graduate school
 :::
 
 ::: {.chart-card title="Total School Enrollment by Town (2018–2024)" subtitle="All enrollment levels · preschool through graduate/professional" chart="chart-total-enrollment-trend" style="margin-bottom:28px"}
@@ -180,8 +247,8 @@ growth in North Meck residents enrolled in school since `r pk_y0`, preschool thr
 
 ::: {.stat-row}
 
-::: {.fact value="~1 in `r title1_ratio`" tone="warn" source="NC DPI, 2024"}
-North Meck schools are federally designated [Title I]{.gloss term=title-i}, meaning a high share of students come from low-income families
+::: {.fact value="`r by_town(paste0("~1 in ", title1_ratio), function(t) paste(gl_title1(t), "of", gl_n(t)))`" tone="warn" source="NC DPI, 2024"}
+`r by_town("North Meck", identity)` schools are federally designated [Title I]{.gloss term=title-i}, meaning a high share of students come from low-income families
 :::
 
 ::: {.chart-card title="Grade-Level Proficiency by Title I status (2024)" subtitle="Percent of students proficient at grade level, Title I designated schools compared to others" chart="chart-title1-proficiency" style="margin-bottom:28px"}
@@ -211,8 +278,8 @@ North Meck schools are federally designated [Title I]{.gloss term=title-i}, mean
 
 ::: {.stat-row}
 
-::: {.fact value="~`r growth_in5` in 5" source="NC DPI, EVAAS growth index, 2024"}
-North Meck schools exceeded their expected academic growth target this year, a sign of strong year-over-year progress
+::: {.fact value="`r by_town(paste0("~", growth_in5, " in 5"), function(t) paste(gr_exceeded(t), "of", gr_n(t)))`" source="NC DPI, EVAAS growth index, 2024"}
+`r by_town("North Meck schools exceeded their expected academic growth target this year, a sign of strong year-over-year progress", function(t) paste(t, "schools exceeded their expected academic growth target this year"))`
 :::
 
 ::: {.chart-card title="Academic growth status by school (2024)" subtitle="[EVAAS growth index]{.gloss term=evaas} score, whether each school exceeded, met, or fell short of expected growth" chart="chart-growth-overview" style="margin-bottom:28px"}
@@ -304,7 +371,7 @@ Population growth in Cornelius, Davidson, and Huntersville has sent school enrol
 ```
 
 ::: {.note source="ACS `r pk_y0`–`r pk_y1` · Table B14001 · counts residents enrolled in school, not CMS school-level enrollment"}
-Huntersville has added `r fmt_num(k12_gain["Huntersville"])` K–12 students since `r pk_y0` — the largest absolute gain. Davidson is the smallest in total enrollment but has the highest overall enrollment rate relative to its population size (`r fmt_pct(enroll_rate["Davidson"])` of residents age 3+ were enrolled in school in `r pk_y1`, including college).
+`r by_town(paste0("Huntersville has added ", fmt_num(k12_gain["Huntersville"]), " K–12 students since ", pk_y0, " — the largest absolute gain. Davidson is the smallest in total enrollment but has the highest overall enrollment rate relative to its population size (", fmt_pct(enroll_rate["Davidson"]), " of residents age 3+ were enrolled in school in ", pk_y1, ", including college)."), function(t) paste0(t, " has added ", fmt_num(k12_gain[[t]]), " K–12 students since ", pk_y0, ". In ", pk_y1, ", ", fmt_num(enroll_now[[t]]), " residents were enrolled in school, ", fmt_pct(enroll_rate[[t]]), " of residents age 3+ (including college)."))`
 :::
 
 :::
@@ -344,7 +411,7 @@ Huntersville has added `r fmt_num(k12_gain["Huntersville"])` K–12 students sin
 ```
 
 ::: {.note source="U.S. Census Bureau, ACS 5-Year Estimates, Tables B01003 and B14007. Population shown is age 3+, the universe for the ACS school enrollment question."}
-K-12 student counts rose only `r round(min(k12_chg))`–`r round(max(k12_chg))`% while town populations grew `r round(min(pop_chg))`–`r round(max(pop_chg))`% since `r pk_y0`.
+`r by_town(paste0("K-12 student counts rose only ", round(min(k12_chg)), "–", round(max(k12_chg)), "% while town populations grew ", round(min(pop_chg)), "–", round(max(pop_chg)), "% since ", pk_y0, "."), function(t) paste0("In ", t, ", K-12 student counts rose only ", round(k12_chg[[t]]), "% while the population grew ", round(pop_chg[[t]]), "% since ", pk_y0, "."))`
 :::
 
 :::
@@ -377,7 +444,7 @@ K-12 student counts rose only `r round(min(k12_chg))`–`r round(max(k12_chg))`%
 ```
 
 ::: {.note source="ACS `r lv_y0`–`r lv_y1` · Table B14001"}
-Grades 1–4 enrollment has held relatively steady (`r sprintf("%+.0f%%", lv_chg["elem14"])` since `r lv_y0`), while grades 5–8 (`r sprintf("%+.0f%%", lv_chg["elem58"])`) and high school (`r sprintf("%+.0f%%", lv_chg["hs"])`) enrollment have grown as the wave of students who moved in during 2015–2020 ages through the system.
+`r by_town(paste0("Grades 1–4 enrollment has held relatively steady (", sprintf("%+.0f%%", lv_chg["elem14"]), " since ", lv_y0, "), while grades 5–8 (", sprintf("%+.0f%%", lv_chg["elem58"]), ") and high school (", sprintf("%+.0f%%", lv_chg["hs"]), ") enrollment have grown as the wave of students who moved in during 2015–2020 ages through the system."), function(t) paste0("In ", t, ", enrollment has changed ", fmt_signed(lv_chg_town(t, "elem14")), " in grades 1–4 since ", lv_y0, ", ", fmt_signed(lv_chg_town(t, "elem58")), " in grades 5–8, and ", fmt_signed(lv_chg_town(t, "hs")), " in high school."))`
 :::
 
 :::
@@ -615,11 +682,12 @@ viewof econGapTown = townChips(masterTown)
 
 :::
 
-::: {.chart-card title="High School College & Career Readiness: North Meck (2024-25)" subtitle="Grade-Level Proficient vs. College/Career Ready · Grades 9–12" chart="chart-hs-ccr" style="margin-bottom:28px"}
+::: {.chart-card #hs-ccr-host title="High School College & Career Readiness: North Meck (2024-25)" subtitle="Grade-Level Proficient vs. College/Career Ready · Grades 9–12" chart="chart-hs-ccr" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof ccrTown = townChips(masterTown)
 {
+  showTown(ccrTown, "#hs-ccr-host");
   const HS_SPANS = ["09-12", "09-11", "11-13", "0K-12"];
   const METRICS = ["Grade-Level Proficient", "College/Career Ready"];
   const data = withParsed(byTown(proficiency, ccrTown), "glp")
@@ -644,7 +712,7 @@ viewof ccrTown = townChips(masterTown)
 ```
 
 ::: {.note .info style="margin-top:16px"}
-Includes K–12 comprehensive schools (grade span 0K–12), whose Grade-Level Proficient and College/Career Ready rates reflect their entire student body, not high schoolers alone — treat these figures as directional rather than high-school-specific.
+`r by_town("Includes K–12 comprehensive schools (grade span 0K–12), whose Grade-Level Proficient and College/Career Ready rates reflect their entire student body, not high schoolers alone — treat these figures as directional rather than high-school-specific.", ccr_town_text)`
 :::
 
 :::
@@ -714,7 +782,7 @@ Resident educational attainment shapes the workforce, economic mobility, and civ
 ```
 
 ::: {.note source="ACS 2018–2023 · Table B15003 · adults 25+ · Note: Davidson figures show year-to-year variation typical of small-population ACS estimates · Huntersville 2023 excluded (data anomaly)"}
-Davidson's highly educated population (home to Davidson College) keeps its attainment rate among the highest in the region. Cornelius has climbed steadily to nearly `r fmt_pct(round(corn_last$bach_plus))` bachelor's or higher by `r corn_last$year`.
+`r by_town(paste0("Davidson's highly educated population (home to Davidson College) keeps its attainment rate among the highest in the region. Cornelius has climbed steadily to nearly ", fmt_pct(round(corn_last$bach_plus)), " bachelor's or higher by ", corn_last$year, "."), bach_trend_text)`
 :::
 
 :::
@@ -742,7 +810,7 @@ Davidson's highly educated population (home to Davidson College) keeps its attai
 ```
 
 ::: {.note source="ACS 2022 · Table B15003 · 2022 used for consistent cross-town comparison · Note: Davidson 2022 shows ACS sampling artifact; 2023 value is `r fmt_pct(dav_2023, 1)`"}
-Cornelius and Huntersville show similar attainment profiles. Davidson's 2022 snapshot reflects ACS sample variability — its 2023 figure (`r fmt_pct(dav_2023, 1)` bachelor's or higher) better reflects the long-run pattern.
+`r by_town(paste0("Cornelius and Huntersville show similar attainment profiles. Davidson's 2022 snapshot reflects ACS sample variability — its 2023 figure (", fmt_pct(dav_2023, 1), " bachelor's or higher) better reflects the long-run pattern."), attain_town_text)`
 :::
 
 :::
@@ -768,7 +836,7 @@ Cornelius and Huntersville show similar attainment profiles. Davidson's 2022 sna
 ```
 
 ::: {.note source="ACS 2024 · Table S1501 · median earnings for full-time year-round workers 25+ · Davidson HS-diploma figure suppressed by Census (small sample)"}
-In `r fmt_list(names(ba_premium))`, a bachelor's degree is worth about `r fmt_dollar(min(ba_premium))`–`r fmt_dollar(max(ba_premium))` more per year than a high school diploma (Davidson's high-school figure is suppressed). Davidson's graduate-degree earners have median earnings over `r fmt_k(dav_grad_floor)` a year — among the highest in the Charlotte metro.
+`r by_town(paste0("In ", fmt_list(names(ba_premium)), ", a bachelor's degree is worth about ", fmt_dollar(min(ba_premium)), "–", fmt_dollar(max(ba_premium)), " more per year than a high school diploma (Davidson's high-school figure is suppressed). Davidson's graduate-degree earners have median earnings over ", fmt_k(dav_grad_floor), " a year — among the highest in the Charlotte metro."), earn_town_text)`
 :::
 
 :::
