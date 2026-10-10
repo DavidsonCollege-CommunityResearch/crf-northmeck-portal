@@ -120,6 +120,33 @@ Text that can't be checked against our data (a quote, a national figure, a
 statistic from a report we don't hold) stays as written; note where it came
 from in the source line.
 
+### Text that follows the Area filter
+
+On dashboards, a stat tile or callout about one town should change when the
+reader picks a town. Write the "All North Meck" version and a function that
+writes any one town's version; `by_town()` puts every version in the page and
+the filter shows the right one:
+
+```r
+# setup chunk
+rent_all_text <- paste0("Rents rose fastest in ", rent_top, " (", fmt_pct(rent_chg[[rent_top]]), ").")
+```
+
+```markdown
+::: {.note source="[ACS]{.gloss} 2018–2024"}
+`r by_town(rent_all_text, function(t) paste0("Rents in ", t, " rose ", fmt_pct(rent_chg[[t]]), " since 2018."))`
+:::
+```
+
+- Long "All" sentences read best as a named string in the setup chunk.
+- The page needs `showTown(masterTown)` in an OJS cell after the Area filter.
+  A callout inside a chart card with its own town chips follows those chips
+  instead: put `showTown(rentTown, "#rent-chart-host");` first in the
+  chart's cell.
+- Guard per-town wording with `nm_claim()` too ("rose", "highest").
+- Text that isn't about a single town (definitions, regional data) doesn't
+  need `by_town()`.
+
 ## Charts are Observable JS
 
 One hidden setup cell per page imports the shared helpers and loads data:
