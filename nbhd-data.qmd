@@ -23,16 +23,20 @@ first_years <- unlist(lapply(nbhd_files, function(f) {
 since_year <- max(first_years)
 ```
 
-<div class="page active" style="display:block">
-<div class="wrap">
+::: {.page .active style="display:block"}
+
+::: {.wrap}
 <div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><a onclick="window.location='/neighborhoods.html'">United Neighborhoods</a><i class="ti ti-chevron-right"></i><span id="nbhd-data-crumb">Pottstown</span></div>
-<div class="dash-hero" style="margin-bottom:36px">
-<div>
+
+::: {.dash-hero style="margin-bottom:36px"}
+
+::: {}
 <span class="eyebrow" style="font-size:15px">United Neighborhoods · Data Dashboard</span>
 <h1 class="dash-h1" id="nbhd-data-title">Pottstown</h1>
 <p class="lead dash-lead" style="margin-bottom:0" id="nbhd-data-subtitle">Block-group level ACS data for the Pottstown area in Huntersville.</p>
-</div>
-</div>
+:::
+
+:::
 
 ```{ojs}
 //| output: false
@@ -140,10 +144,12 @@ viewof nbhd = {
 ```
 
 <!-- Block-group disclaimer -->
-<div class="nbhd-disclaimer">
+
+::: {.nbhd-disclaimer}
 <i class="ti ti-info-circle"></i>
 <div id="nbhd-disclaimer-text"><strong>Data note:</strong> Neighborhood boundaries don't align perfectly with U.S. Census geography. The data shown here is from the <strong>ACS block group</strong> that best approximates each neighborhood — the smallest geographic unit the Census publishes. This means the numbers may include some residents just outside the neighborhood boundary. All data comes from the American Community Survey 5-year estimates.</div>
-</div>
+:::
+
 <!-- Sub-topic tabs (raw HTML so Pandoc doesn't wrap the spans in a <p>) -->
 
 ```{=html}
@@ -157,31 +163,41 @@ viewof nbhd = {
 </div>
 ```
 
-</div>
+:::
+
 <!-- ── EAST CATAWBA: no data ── -->
-<div id="nbhd-panel-eastcatawba" class="nbhd-panel">
-<div class="wrap">
-<div class="nbhd-no-data" style="margin-top:48px">
+
+::: {#nbhd-panel-eastcatawba .nbhd-panel}
+
+::: {.wrap}
+
+::: {.nbhd-no-data style="margin-top:48px"}
 <i class="ti ti-database-off"></i>
 <div class="nbhd-no-data-h">Data not yet available for East Catawba</div>
 <p class="nbhd-no-data-p">East Catawba is the fifth United Neighborhood. We are still collecting and verifying block-group data for this area. Check back as the research progresses, or explore the neighborhood's history in the <a onclick="window.location='/neighborhoods.html#nbhd-eastcatawba'" style="color:var(--accent);cursor:pointer">neighborhood overview</a>.</p>
-</div>
-</div>
-</div>
-<!-- ── DATA PANELS (shared for all 4 data neighborhoods) ── -->
-<div id="nbhd-panel-data" class="nbhd-panel active">
-<!-- TAB: Demographics -->
-<div class="tabpane active" data-pane="nd-demographics">
-<div class="wrap">
-<div class="nbhd-sub-section" style="margin-top:40px">
-<div class="nbhd-sub-h">Population &amp; Ethnicity</div>
-<p class="nbhd-sub-lead">Total population and Hispanic or Latino population share of the block groups approximating this neighborhood, from ACS 5-year estimates.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Total Population</div>
-<div class="card-s">Summed across all block groups that approximate this neighborhood</div>
+:::
 
-<div id="nd-pop-chart">
+:::
+
+:::
+
+<!-- ── DATA PANELS (shared for all 4 data neighborhoods) ── -->
+
+::: {#nbhd-panel-data .nbhd-panel .active}
+<!-- TAB: Demographics -->
+
+::: {.tabpane .active data-pane="nd-demographics"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Population & Ethnicity
+
+Total population and Hispanic or Latino population share of the block groups approximating this neighborhood, from ACS 5-year estimates.
+
+::: {.g2}
+
+::: {.chart-card title="Total Population" subtitle="Summed across all block groups that approximate this neighborhood" chart="nd-pop-chart"}
 
 ```{ojs}
 ndChart(DEMO, nbhd, (rows, w) => {
@@ -200,14 +216,9 @@ ndChart(DEMO, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+:::
 
-</div>
-<div class="card viz-host">
-<div class="card-t">Hispanic or Latino Population Rate</div>
-<div class="card-s">% of residents identifying as Hispanic or Latino</div>
-
-<div id="nd-hl-chart">
+::: {.chart-card title="Hispanic or Latino Population Rate" subtitle="% of residents identifying as Hispanic or Latino" chart="nd-hl-chart"}
 
 ```{ojs}
 ndChart(DEMO, nbhd, (rows, w) => stdPlot({
@@ -224,19 +235,18 @@ ndChart(DEMO, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
-<div class="nbhd-sub-section">
-<div class="nbhd-sub-h">Race</div>
-<p class="nbhd-sub-lead">Share of the population by race, most recent ACS year.</p>
-<div class="card viz-host">
-<div class="card-t">Racial &amp; Ethnic Composition</div>
-<div class="card-s">Share of population by race/ethnicity, most recent ACS year</div>
+:::
 
-<div id="nd-race-chart">
+:::
+
+::: {.nbhd-section}
+#### Race
+
+Share of the population by race, most recent ACS year.
+
+::: {.chart-card title="Racial & Ethnic Composition" subtitle="Share of population by race/ethnicity, most recent ACS year" chart="nd-race-chart"}
 
 ```{ojs}
 ndChart(DEMO, nbhd, (rows, w) => {
@@ -267,24 +277,28 @@ ndChart(DEMO, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
 <!-- TAB: Economic Profile -->
-<div class="tabpane" data-pane="nd-economic">
-<div class="wrap">
-<div class="nbhd-sub-section" style="margin-top:40px">
-<div class="nbhd-sub-h">Income</div>
-<p class="nbhd-sub-lead">Household income distribution and median household income for residents in this block group.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Household Income Distribution</div>
-<div class="card-s">Share of households in each income bracket, most recent ACS year</div>
 
-<div id="nd-income-dist-chart">
+::: {.tabpane data-pane="nd-economic"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Income
+
+Household income distribution and median household income for residents in this block group.
+
+::: {.g2}
+
+::: {.chart-card title="Household Income Distribution" subtitle="Share of households in each income bracket, most recent ACS year" chart="nd-income-dist-chart"}
 
 ```{ojs}
 ndChart(ECON, nbhd, (rows, w) => {
@@ -310,14 +324,9 @@ ndChart(ECON, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+:::
 
-</div>
-<div class="card viz-host">
-<div class="card-t">Median Household Income</div>
-<div class="card-s">Median household income in dollars</div>
-
-<div id="nd-income-trend-chart">
+::: {.chart-card title="Median Household Income" subtitle="Median household income in dollars" chart="nd-income-trend-chart"}
 
 ```{ojs}
 ndChart(ECON, nbhd, (rows, w) => stdPlot({
@@ -333,20 +342,20 @@ ndChart(ECON, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
-<div class="nbhd-sub-section">
-<div class="nbhd-sub-h">Income Over Time</div>
-<p class="nbhd-sub-lead">How the income bracket mix has shifted since `r since_year`, and how the number of households has grown alongside it.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Household Income Distribution Over Time</div>
-<div class="card-s">Share of households in each income bracket, by year</div>
+:::
 
-<div id="nd-income-dist-trend-chart">
+:::
+
+::: {.nbhd-section}
+#### Income Over Time
+
+How the income bracket mix has shifted since `r since_year`, and how the number of households has grown alongside it.
+
+::: {.g2}
+
+::: {.chart-card title="Household Income Distribution Over Time" subtitle="Share of households in each income bracket, by year" chart="nd-income-dist-trend-chart"}
 
 ```{ojs}
 ndChart(ECON, nbhd, (rows, w) => {
@@ -376,17 +385,12 @@ ndChart(ECON, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-<div class="card viz-host">
-<div class="card-t">Total Households Over Time</div>
-<div class="card-s">Number of households, by year</div>
+:::
 
-<div id="nd-total-households-chart">
+::: {.chart-card title="Total Households Over Time" subtitle="Number of households, by year" chart="nd-total-households-chart"}
 
 ```{ojs}
 ndChart(ECON, nbhd, (rows, w) => stdPlot({
@@ -401,28 +405,33 @@ ndChart(ECON, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
 <!-- TAB: Housing -->
-<div class="tabpane" data-pane="nd-housing">
-<div class="wrap">
-<div class="nbhd-sub-section" style="margin-top:40px">
-<div class="nbhd-sub-h">Tenure &amp; Home Values</div>
-<p class="nbhd-sub-lead">Who owns versus rents in this neighborhood, and how home values and rents compare.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Owner vs. Renter Occupied</div>
-<div class="card-s">Share of occupied housing units by tenure, most recent ACS year</div>
 
-<div id="nd-tenure-chart">
+::: {.tabpane data-pane="nd-housing"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Tenure & Home Values
+
+Who owns versus rents in this neighborhood, and how home values and rents compare.
+
+::: {.g2}
+
+::: {.chart-card title="Owner vs. Renter Occupied" subtitle="Share of occupied housing units by tenure, most recent ACS year" chart="nd-tenure-chart"}
 
 ```{ojs}
 ndChart(HOUS, nbhd, (rows, w) => {
@@ -445,14 +454,9 @@ ndChart(HOUS, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+:::
 
-</div>
-<div class="card viz-host">
-<div class="card-t">Median Gross Rent &amp; Home Value</div>
-<div class="card-s">Most recent ACS estimate</div>
-
-<div id="nd-rent-value-chart">
+::: {.chart-card title="Median Gross Rent & Home Value" subtitle="Most recent ACS estimate" chart="nd-rent-value-chart"}
 
 ```{ojs}
 ndChart(HOUS, nbhd, (rows, w) => {
@@ -475,19 +479,18 @@ ndChart(HOUS, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
-<div class="nbhd-sub-section">
-<div class="nbhd-sub-h">Cost Burden</div>
-<p class="nbhd-sub-lead">Share of renter households spending 30%+ of income on rent — the standard definition of cost-burdened.</p>
-<div class="card viz-host">
-<div class="card-t">Housing Cost Burden Rate</div>
-<div class="card-s">% of renter households paying ≥30% of income on rent</div>
+:::
 
-<div id="nd-burden-chart">
+:::
+
+::: {.nbhd-section}
+#### Cost Burden
+
+Share of renter households spending 30%+ of income on rent — the standard definition of cost-burdened.
+
+::: {.chart-card title="Housing Cost Burden Rate" subtitle="% of renter households paying ≥30% of income on rent" chart="nd-burden-chart"}
 
 ```{ojs}
 ndChart(HOUS, nbhd, (rows, w) => stdPlot({
@@ -504,24 +507,28 @@ ndChart(HOUS, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
 <!-- TAB: Education -->
-<div class="tabpane" data-pane="nd-education">
-<div class="wrap">
-<div class="nbhd-sub-section" style="margin-top:40px">
-<div class="nbhd-sub-h">Educational Attainment</div>
-<p class="nbhd-sub-lead">Highest level of education completed by residents 25 and older in this neighborhood, and how that mix has shifted since `r since_year`.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Educational Attainment Composition Over Time</div>
-<div class="card-s">Share of adults 25+ by highest level completed, by year</div>
 
-<div id="nd-attainment-composition-chart">
+::: {.tabpane data-pane="nd-education"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Educational Attainment
+
+Highest level of education completed by residents 25 and older in this neighborhood, and how that mix has shifted since `r since_year`.
+
+::: {.g2}
+
+::: {.chart-card title="Educational Attainment Composition Over Time" subtitle="Share of adults 25+ by highest level completed, by year" chart="nd-attainment-composition-chart"}
 
 ```{ojs}
 ndChart(EDUC, nbhd, (rows, w) => {
@@ -552,17 +559,12 @@ ndChart(EDUC, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-<div class="card viz-host">
-<div class="card-t">Bachelor's Degree or Higher Rate</div>
-<div class="card-s">% of adults 25+ with a bachelor's degree or above</div>
+:::
 
-<div id="nd-bachelors-chart">
+::: {.chart-card title="Bachelor's Degree or Higher Rate" subtitle="% of adults 25+ with a bachelor's degree or above" chart="nd-bachelors-chart"}
 
 ```{ojs}
 ndChart(EDUC, nbhd, (rows, w) => stdPlot({
@@ -579,23 +581,23 @@ ndChart(EDUC, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-</div>
-</div>
-<div class="nbhd-sub-section">
-<div class="nbhd-sub-h">Attainment Trends</div>
-<p class="nbhd-sub-lead">Two ends of the same scale: how many adults live here, and whether the share without a high school diploma is growing or shrinking.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Population 25+ Over Time</div>
-<div class="card-s">Number of residents age 25 and older, by year</div>
+:::
 
-<div id="nd-pop25-chart">
+:::
+
+:::
+
+::: {.nbhd-section}
+#### Attainment Trends
+
+Two ends of the same scale: how many adults live here, and whether the share without a high school diploma is growing or shrinking.
+
+::: {.g2}
+
+::: {.chart-card title="Population 25+ Over Time" subtitle="Number of residents age 25 and older, by year" chart="nd-pop25-chart"}
 
 ```{ojs}
 ndChart(EDUC, nbhd, (rows, w) => stdPlot({
@@ -610,17 +612,12 @@ ndChart(EDUC, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-<div class="card viz-host">
-<div class="card-t">Less Than High School Rate Over Time</div>
-<div class="card-s">% of adults 25+ without a high school diploma or equivalent</div>
+:::
 
-<div id="nd-less-hs-chart">
+::: {.chart-card title="Less Than High School Rate Over Time" subtitle="% of adults 25+ without a high school diploma or equivalent" chart="nd-less-hs-chart"}
 
 ```{ojs}
 ndChart(EDUC, nbhd, (rows, w) => stdPlot({
@@ -638,28 +635,33 @@ ndChart(EDUC, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
 <!-- TAB: Transportation -->
-<div class="tabpane" data-pane="nd-transportation">
-<div class="wrap">
-<div class="nbhd-sub-section" style="margin-top:40px">
-<div class="nbhd-sub-h">Commute Mode</div>
-<p class="nbhd-sub-lead">How residents get to work: driving alone, transit, walking, cycling, or working from home, and how that mix has shifted since `r since_year`.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Commute Mode Share</div>
-<div class="card-s">% of workers by primary mode of transportation, most recent <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> year</div>
 
-<div id="nd-commute-mode-chart">
+::: {.tabpane data-pane="nd-transportation"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Commute Mode
+
+How residents get to work: driving alone, transit, walking, cycling, or working from home, and how that mix has shifted since `r since_year`.
+
+::: {.g2}
+
+::: {.chart-card title="Commute Mode Share" subtitle="% of workers by primary mode of transportation, most recent [ACS]{.gloss} year" chart="nd-commute-mode-chart"}
 
 ```{ojs}
 ndChart(TRAN, nbhd, (rows, w) => {
@@ -685,14 +687,9 @@ ndChart(TRAN, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+:::
 
-</div>
-<div class="card viz-host">
-<div class="card-t">Commute Mode Over Time</div>
-<div class="card-s">Share of workers driving alone, using public transit, or working from home, by year</div>
-
-<div id="nd-commute-trend-chart">
+::: {.chart-card title="Commute Mode Over Time" subtitle="Share of workers driving alone, using public transit, or working from home, by year" chart="nd-commute-trend-chart"}
 
 ```{ojs}
 ndChart(TRAN, nbhd, (rows, w) => {
@@ -718,23 +715,23 @@ ndChart(TRAN, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-</div>
-</div>
-<div class="nbhd-sub-section">
-<div class="nbhd-sub-h">Remote Work &amp; Workforce</div>
-<p class="nbhd-sub-lead">Remote work reshaped commuting patterns nationally after 2020. Tracking it locally shows how much of that shift reached this neighborhood, and how its working-age population has grown alongside it.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Remote Work Adoption Over Time</div>
-<div class="card-s">% of workers working from home, by year</div>
+:::
 
-<div id="nd-remote-work-chart">
+:::
+
+:::
+
+::: {.nbhd-section}
+#### Remote Work & Workforce
+
+Remote work reshaped commuting patterns nationally after 2020. Tracking it locally shows how much of that shift reached this neighborhood, and how its working-age population has grown alongside it.
+
+::: {.g2}
+
+::: {.chart-card title="Remote Work Adoption Over Time" subtitle="% of workers working from home, by year" chart="nd-remote-work-chart"}
 
 ```{ojs}
 ndChart(TRAN, nbhd, (rows, w) => stdPlot({
@@ -751,17 +748,12 @@ ndChart(TRAN, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-<div class="card viz-host">
-<div class="card-t">Total Workers Over Time</div>
-<div class="card-s">Number of employed residents age 16 and over, by year</div>
+:::
 
-<div id="nd-total-workers-chart">
+::: {.chart-card title="Total Workers Over Time" subtitle="Number of employed residents age 16 and over, by year" chart="nd-total-workers-chart"}
 
 ```{ojs}
 ndChart(TRAN, nbhd, (rows, w) => stdPlot({
@@ -776,28 +768,33 @@ ndChart(TRAN, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
 <!-- TAB: Childcare -->
-<div class="tabpane" data-pane="nd-childcare">
-<div class="wrap">
-<div class="nbhd-sub-section" style="margin-top:40px">
-<div class="nbhd-sub-h">Childcare Need</div>
-<p class="nbhd-sub-lead">Estimated share of young children whose parents are in the labor force — a proxy for households that likely need childcare.</p>
-<div class="g2">
-<div class="card viz-host">
-<div class="card-t">Under-6 Children Likely Needing Childcare</div>
-<div class="card-s">% of children under 6 where all available parents work</div>
 
-<div id="nd-under6-chart">
+::: {.tabpane data-pane="nd-childcare"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Childcare Need
+
+Estimated share of young children whose parents are in the labor force — a proxy for households that likely need childcare.
+
+::: {.g2}
+
+::: {.chart-card title="Under-6 Children Likely Needing Childcare" subtitle="% of children under 6 where all available parents work" chart="nd-under6-chart"}
 
 ```{ojs}
 ndChart(CHLD, nbhd, (rows, w) => stdPlot({
@@ -814,14 +811,9 @@ ndChart(CHLD, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+:::
 
-</div>
-<div class="card viz-host">
-<div class="card-t">Ages 6–17 Likely Needing After-School Care</div>
-<div class="card-s">% of children 6–17 where all available parents work</div>
-
-<div id="nd-afterschool-chart">
+::: {.chart-card title="Ages 6–17 Likely Needing After-School Care" subtitle="% of children 6–17 where all available parents work" chart="nd-afterschool-chart"}
 
 ```{ojs}
 ndChart(CHLD, nbhd, (rows, w) => stdPlot({
@@ -838,19 +830,18 @@ ndChart(CHLD, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
-<div class="nbhd-sub-section">
-<div class="nbhd-sub-h">Children Under 18</div>
-<p class="nbhd-sub-lead">Total number of children under 18 living in this neighborhood, and how that's changed since `r since_year`.</p>
-<div class="card viz-host">
-<div class="card-t">Total Children Under 18 Over Time</div>
-<div class="card-s">Number of residents under age 18, by year</div>
+:::
 
-<div id="nd-total-under18-chart">
+:::
+
+::: {.nbhd-section}
+#### Children Under 18
+
+Total number of children under 18 living in this neighborhood, and how that's changed since `r since_year`.
+
+::: {.chart-card title="Total Children Under 18 Over Time" subtitle="Number of residents under age 18, by year" chart="nd-total-under18-chart"}
 
 ```{ojs}
 ndChart(CHLD, nbhd, (rows, w) => stdPlot({
@@ -865,14 +856,18 @@ ndChart(CHLD, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
-</div>
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: <span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 5-Year Estimates</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div><!-- /nbhd-panel-data -->
-</div>
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+

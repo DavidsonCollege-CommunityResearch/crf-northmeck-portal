@@ -69,18 +69,24 @@ dav_grad <- nm_value(ea, "earnings", town = "Davidson", level = "Graduate/Prof")
 dav_grad_floor <- floor(dav_grad / 10000) * 10000
 ```
 
-<div class="page active" style="display:block">
-<div class="wrap">
+::: {.page .active style="display:block"}
+
+::: {.wrap}
 <div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Education</span></div>
-<div class="dash-hero" style="margin-bottom:56px">
-<div class="split" style="align-items:flex-start">
-<div>
+
+::: {.dash-hero style="margin-bottom:56px"}
+
+::: {.split style="align-items:flex-start"}
+
+::: {}
 <span class="eyebrow" style="font-size:15px">Education</span>
 <h1 class="dash-h1">Are North Meck schools keeping pace with rapid growth?</h1>
 <p class="lead dash-lead" style="margin-bottom:0">Enrollment has surged as families move into Cornelius, Davidson, and Huntersville. However, school capacity, staffing, and resources haven't always kept up. This section follows the data on who is in the classroom, how schools are performing, and where gaps are widest.</p>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
 
 ```{=html}
 <div class="tabs" id="education-tabs">
@@ -92,8 +98,9 @@ dav_grad_floor <- floor(dav_grad / 10000) * 10000
 </div>
 ```
 
-</div>
-<div class="wrap dash-filter">
+:::
+
+::: {.wrap .dash-filter}
 
 ```{ojs}
 //| output: false
@@ -131,23 +138,23 @@ ECON_COLOR = ({legend: true, domain: ["Economically Disadvantaged", "Not Economi
 viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {label: "Area:", hint: "filters every chart"})
 ```
 
-</div>
+:::
 
 <!-- TAB: overview -->
-<div class="tabpane active" data-pane="ed-overview">
-<div class="wrap">
-<div class="stat-rows" style="margin-bottom:48px">
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n warn">+`r fmt_pct(enroll_growth)`</div>
-<p class="stat-l">growth in North Meck residents enrolled in school since `r pk_y0`, preschool through graduate school</p>
-<span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> `r pk_y0`–`r pk_y1`</span>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Total School Enrollment by Town (2018–2024)</div>
-<div class="card-s">All enrollment levels · preschool through graduate/professional</div>
 
-<div id="chart-total-enrollment-trend">
+::: {.tabpane .active data-pane="ed-overview"}
+
+::: {.wrap}
+
+::: {.stat-rows style="margin-bottom:48px"}
+
+::: {.stat-row}
+
+::: {.fact value="+`r fmt_pct(enroll_growth)`" tone="warn" source="[ACS]{.gloss} `r pk_y0`–`r pk_y1`"}
+growth in North Meck residents enrolled in school since `r pk_y0`, preschool through graduate school
+:::
+
+::: {.chart-card title="Total School Enrollment by Town (2018–2024)" subtitle="All enrollment levels · preschool through graduate/professional" chart="chart-total-enrollment-trend" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -167,21 +174,17 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 }
 ```
 
-</div>
+:::
 
-</div>
-</div>
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n warn">~1 in `r title1_ratio`</div>
-<p class="stat-l">North Meck schools are federally designated <span class="gloss-link" data-term="title-i" role="button" tabindex="0" onclick="glossTerm('title-i')">Title I</span>, meaning a high share of students come from low-income families</p>
-<span class="stat-src">NC DPI, 2024</span>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Grade-Level Proficiency by Title I status (2024)</div>
-<div class="card-s">Percent of students proficient at grade level, Title I designated schools compared to others</div>
+:::
 
-<div id="chart-title1-proficiency">
+::: {.stat-row}
+
+::: {.fact value="~1 in `r title1_ratio`" tone="warn" source="NC DPI, 2024"}
+North Meck schools are federally designated [Title I]{.gloss term=title-i}, meaning a high share of students come from low-income families
+:::
+
+::: {.chart-card title="Grade-Level Proficiency by Title I status (2024)" subtitle="Percent of students proficient at grade level, Title I designated schools compared to others" chart="chart-title1-proficiency" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -202,21 +205,17 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 }
 ```
 
-</div>
+:::
 
-</div>
-</div>
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n">~`r growth_in5` in 5</div>
-<p class="stat-l">North Meck schools exceeded their expected academic growth target this year, a sign of strong year-over-year progress</p>
-<span class="stat-src">NC DPI, EVAAS growth index, 2024</span>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Academic growth status by school (2024)</div>
-<div class="card-s"><span class="gloss-link" data-term="evaas" role="button" tabindex="0" onclick="glossTerm('evaas')">EVAAS growth index</span> score, whether each school exceeded, met, or fell short of expected growth</div>
+:::
 
-<div id="chart-growth-overview">
+::: {.stat-row}
+
+::: {.fact value="~`r growth_in5` in 5" source="NC DPI, EVAAS growth index, 2024"}
+North Meck schools exceeded their expected academic growth target this year, a sign of strong year-over-year progress
+:::
+
+::: {.chart-card title="Academic growth status by school (2024)" subtitle="[EVAAS growth index]{.gloss term=evaas} score, whether each school exceeded, met, or fell short of expected growth" chart="chart-growth-overview" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -235,21 +234,17 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 }
 ```
 
-</div>
+:::
 
-</div>
-</div>
-<div class="stat-row">
-<div class="srow-fig">
-<div class="stat-n warn">`r fmt_num(dis_gap_avg, 1)` pts</div>
-<p class="stat-l">average proficiency gap between students with and without disabilities across North Meck schools</p>
-<span class="stat-src">NC DPI, 2024</span>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Proficiency gap for students with disabilities, by school (2024)</div>
-<div class="card-s">Percentage-point gap in grade-level proficiency, students with disabilities compared to students without</div>
+:::
 
-<div id="chart-disability-gap-overview">
+::: {.stat-row}
+
+::: {.fact value="`r fmt_num(dis_gap_avg, 1)` pts" tone="warn" source="NC DPI, 2024"}
+average proficiency gap between students with and without disabilities across North Meck schools
+:::
+
+::: {.chart-card title="Proficiency gap for students with disabilities, by school (2024)" subtitle="Percentage-point gap in grade-level proficiency, students with disabilities compared to students without" chart="chart-disability-gap-overview" style="margin-bottom:28px"}
 
 ```{ojs}
 // school-disability-gap has no town field, so this chart doesn't follow the town filter.
@@ -267,23 +262,29 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 }
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
 
 <!-- TAB: enrollment & growth -->
-<div class="tabpane" data-pane="ed-enrollment">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">Enrollment &amp; Growth</span><h2 class="sec-h">North Meck schools are growing faster than almost anywhere in the district.</h2><p class="lead">Population growth in Cornelius, Davidson, and Huntersville has sent school enrollment surging over the past decade. Understanding which schools are most stressed — and how growth has varied by school level — matters for planning, bonds, and staffing decisions.</p></div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">K–12 Enrollment Trend</div>
-<div class="card-s">Total residents enrolled in K–12 school · by town</div>
 
-<div id="chart-k12-trend">
+::: {.tabpane data-pane="ed-enrollment"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="Enrollment & Growth"}
+## North Meck schools are growing faster than almost anywhere in the district.
+
+Population growth in Cornelius, Davidson, and Huntersville has sent school enrollment surging over the past decade. Understanding which schools are most stressed — and how growth has varied by school level — matters for planning, bonds, and staffing decisions.
+:::
+
+::: {.chart-card title="K–12 Enrollment Trend" subtitle="Total residents enrolled in K–12 school · by town" chart="chart-k12-trend" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -302,18 +303,13 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 }
 ```
 
-</div>
+::: {.note source="ACS `r pk_y0`–`r pk_y1` · Table B14001 · counts residents enrolled in school, not CMS school-level enrollment"}
+Huntersville has added `r fmt_num(k12_gain["Huntersville"])` K–12 students since `r pk_y0` — the largest absolute gain. Davidson is the smallest in total enrollment but has the highest overall enrollment rate relative to its population size (`r fmt_pct(enroll_rate["Davidson"])` of residents age 3+ were enrolled in school in `r pk_y1`, including college).
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-t">Huntersville has added `r fmt_num(k12_gain["Huntersville"])` K–12 students since `r pk_y0` — the largest absolute gain. Davidson is the smallest in total enrollment but has the highest overall enrollment rate relative to its population size (`r fmt_pct(enroll_rate["Davidson"])` of residents age 3+ were enrolled in school in `r pk_y1`, including college).</div>
-<div class="nm-callout-s">Source: ACS `r pk_y0`–`r pk_y1` · Table B14001 · counts residents enrolled in school, not CMS school-level enrollment</div>
-</div>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Population growth vs. K-12 Enrollment</div>
-<div class="card-s">Indexed to 2018 = 100 · Population (age 3+) vs. K–12 enrollment · by town</div>
+:::
 
-<div id="chart-pop-vs-k12">
+::: {.chart-card title="Population growth vs. K-12 Enrollment" subtitle="Indexed to 2018 = 100 · Population (age 3+) vs. K–12 enrollment · by town" chart="chart-pop-vs-k12" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -347,18 +343,13 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 }
 ```
 
-</div>
+::: {.note source="U.S. Census Bureau, ACS 5-Year Estimates, Tables B01003 and B14007. Population shown is age 3+, the universe for the ACS school enrollment question."}
+K-12 student counts rose only `r round(min(k12_chg))`–`r round(max(k12_chg))`% while town populations grew `r round(min(pop_chg))`–`r round(max(pop_chg))`% since `r pk_y0`.
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-t">K-12 student counts rose only `r round(min(k12_chg))`–`r round(max(k12_chg))`% while town populations grew `r round(min(pop_chg))`–`r round(max(pop_chg))`% since `r pk_y0`.</div>
-<div class="nm-callout-s">Source: U.S. Census Bureau, ACS 5-Year Estimates, Tables B01003 and B14007. Population shown is age 3+, the universe for the ACS school enrollment question.</div>
-</div>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Enrollment by School Level</div>
-<div class="card-s">Residents enrolled by grade band · Grades 1–4, 5–8, and High School</div>
+:::
 
-<div id="chart-level-trend">
+::: {.chart-card title="Enrollment by School Level" subtitle="Residents enrolled by grade band · Grades 1–4, 5–8, and High School" chart="chart-level-trend" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -385,18 +376,13 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 }
 ```
 
-</div>
+::: {.note source="ACS `r lv_y0`–`r lv_y1` · Table B14001"}
+Grades 1–4 enrollment has held relatively steady (`r sprintf("%+.0f%%", lv_chg["elem14"])` since `r lv_y0`), while grades 5–8 (`r sprintf("%+.0f%%", lv_chg["elem58"])`) and high school (`r sprintf("%+.0f%%", lv_chg["hs"])`) enrollment have grown as the wave of students who moved in during 2015–2020 ages through the system.
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-t">Grades 1–4 enrollment has held relatively steady (`r sprintf("%+.0f%%", lv_chg["elem14"])` since `r lv_y0`), while grades 5–8 (`r sprintf("%+.0f%%", lv_chg["elem58"])`) and high school (`r sprintf("%+.0f%%", lv_chg["hs"])`) enrollment have grown as the wave of students who moved in during 2015–2020 ages through the system.</div>
-<div class="nm-callout-s">Source: ACS `r lv_y0`–`r lv_y1` · Table B14001</div>
-</div>
-</div>
-<div class="card viz-host">
-<div class="card-t">School Academic Growth Across North Mecklenburg (2024-25)</div>
-<div class="card-s">Growth index score by school · 0 = met expected growth</div>
+:::
 
-<div id="chart-school-academic-growth">
+::: {.chart-card title="School Academic Growth Across North Mecklenburg (2024-25)" subtitle="Growth index score by school · 0 = met expected growth" chart="chart-school-academic-growth"}
 
 ```{ojs}
 viewof growthTown = townChips(masterTown)
@@ -416,22 +402,29 @@ viewof growthTown = townChips(masterTown)
 }
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
+:::
+
+:::
 
 <!-- TAB: school demographics -->
-<div class="tabpane" data-pane="ed-demographics">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">School Demographics</span><h2 class="sec-h">Who is in the classroom, and how has that changed?</h2><p class="lead">The racial, ethnic, and economic composition of North Meck schools reflects, and sometimes diverges from, the communities they serve. Tracking these patterns over time reveals how growth, attendance zones, and school choice interact with equity.</p><p class="lead" style="margin-top:8px;font-size:14px;color:var(--ink-3)">A note on terminology: "proficient" means a student scored Level 3 or higher (of 5) on NC's state exams, a passing but not top-tier score. See the <span style="text-decoration:underline;cursor:pointer" onclick="openGlossary()">glossary</span> for details.</p></div>
-<div class="grid-2" style="margin-bottom:28px">
-<div class="card viz-host" id="race-gap-avg-host">
-<div class="card-t">Proficiency Gap by Race, Average Across Schools</div>
-<div class="card-s">Percentage-point gap vs. white students' proficiency rate · North Meck schools</div>
 
-<div id="chart-race-gap-avg">
+::: {.tabpane data-pane="ed-demographics"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="School Demographics"}
+## Who is in the classroom, and how has that changed?
+
+The racial, ethnic, and economic composition of North Meck schools reflects, and sometimes diverges from, the communities they serve. Tracking these patterns over time reveals how growth, attendance zones, and school choice interact with equity.
+
+A note on terminology: "proficient" means a student scored Level 3 or higher (of 5) on NC's state exams, a passing but not top-tier score. See the <span style="text-decoration:underline;cursor:pointer" onclick="openGlossary()">glossary</span> for details.
+:::
+
+::: {.grid-2 style="margin-bottom:28px"}
+
+::: {.chart-card #race-gap-avg-host title="Proficiency Gap by Race, Average Across Schools" subtitle="Percentage-point gap vs. white students' proficiency rate · North Meck schools" chart="chart-race-gap-avg"}
 
 ```{ojs}
 {
@@ -454,18 +447,13 @@ viewof growthTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="NC School Report Cards, NC DPI"}
+This shows an achievement gap, not enrollment composition: a 20-point gap means that group's proficiency rate is 20 points below white students' rate at the same schools, not that the group makes up 20% of enrollment. American Indian students are excluded from this average — only `r n_ai` school`r if (n_ai == 1) "" else "s"` reported a value, too few to average meaningfully.
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-t">This shows an achievement gap, not enrollment composition: a 20-point gap means that group's proficiency rate is 20 points below white students' rate at the same schools, not that the group makes up 20% of enrollment. American Indian students are excluded from this average — only `r n_ai` school`r if (n_ai == 1) "" else "s"` reported a value, too few to average meaningfully.</div>
-<div class="nm-callout-s">Source: NC School Report Cards, NC DPI</div>
-</div>
-</div>
-<div class="card viz-host" id="race-gap-top-host">
-<div class="card-t">Schools With the Largest Race-Based Proficiency Gap</div>
-<div class="card-s">Largest reported gap per school, top 12 · colored by comparison group</div>
+:::
 
-<div id="chart-race-gap-top">
+::: {.chart-card #race-gap-top-host title="Schools With the Largest Race-Based Proficiency Gap" subtitle="Largest reported gap per school, top 12 · colored by comparison group" chart="chart-race-gap-top"}
 
 ```{ojs}
 {
@@ -488,19 +476,16 @@ viewof growthTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="NC School Report Cards, NC DPI"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: NC School Report Cards, NC DPI</div>
-</div>
-</div>
-</div>
-<div class="grid-2" style="margin-bottom:28px">
-<div class="card viz-host" id="economic-gap-host">
-<div class="card-t">Economic Disadvantage: Proficiency Gap by School</div>
-<div class="card-s">Economically disadvantaged students' proficiency rate vs. their peers, by school</div>
+:::
 
-<div id="chart-economic-gap">
+:::
+
+::: {.grid-2 style="margin-bottom:28px"}
+
+::: {.chart-card #economic-gap-host title="Economic Disadvantage: Proficiency Gap by School" subtitle="Economically disadvantaged students' proficiency rate vs. their peers, by school" chart="chart-economic-gap"}
 
 ```{ojs}
 {
@@ -517,17 +502,12 @@ viewof growthTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="NC School Report Cards, NC DPI"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: NC School Report Cards, NC DPI</div>
-</div>
-</div>
-<div class="card viz-host" id="disability-gap-host">
-<div class="card-t">Students With Disabilities: Proficiency Gap by School</div>
-<div class="card-s">Students with disabilities' proficiency rate vs. their peers, by school</div>
+:::
 
-<div id="chart-disability-gap">
+::: {.chart-card #disability-gap-host title="Students With Disabilities: Proficiency Gap by School" subtitle="Students with disabilities' proficiency rate vs. their peers, by school" chart="chart-disability-gap"}
 
 ```{ojs}
 {
@@ -544,25 +524,32 @@ viewof growthTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note source="NC School Report Cards, NC DPI"}
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-s">Source: NC School Report Cards, NC DPI</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
 
 <!-- TAB: academic performance -->
-<div class="tabpane" data-pane="ed-performance">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">Academic Performance</span><h2 class="sec-h">How are students performing, and which schools are improving?</h2><p class="lead">NC end-of-grade proficiency rates, school performance grades, and graduation rates paint a picture of academic outcomes across North Meck schools, and how they compare to the district and state.</p><p class="lead" style="margin-top:8px;font-size:14px;color:var(--ink-3)">A note on terminology: "proficient" (or <span class="gloss-link" data-term="glp" role="button" tabindex="0" onclick="glossTerm('glp')">GLP</span>) means a student scored Level 3 or higher (of 5) on NC's state exams, a passing but not top-tier score. "<span class="gloss-link" data-term="ccr" role="button" tabindex="0" onclick="glossTerm('ccr')">College/Career Ready</span>" (CCR) is the stricter Level 4 or 5 standard. "<span class="gloss-link" data-term="econ-disadv" role="button" tabindex="0" onclick="glossTerm('econ-disadv')">Economically disadvantaged</span>" and "<span class="gloss-link" data-term="title-i" role="button" tabindex="0" onclick="glossTerm('title-i')">Title I</span>" are related but distinct designations, and growth is measured by the <span class="gloss-link" data-term="evaas" role="button" tabindex="0" onclick="glossTerm('evaas')">EVAAS Growth Index</span> rather than a passing score. Graduation figures use the <span class="gloss-link" data-term="cohort-grad" role="button" tabindex="0" onclick="glossTerm('cohort-grad')">cohort graduation rate</span>. See the <span style="text-decoration:underline;cursor:pointer" onclick="openGlossary()">glossary</span> for details.</p></div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Grade Level proficiency rate by school (2024-2025)</div>
-<div class="card-s">% students at or above grade level</div>
 
-<div id="chart-grade-level-proficiency">
+::: {.tabpane data-pane="ed-performance"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="Academic Performance"}
+## How are students performing, and which schools are improving?
+
+NC end-of-grade proficiency rates, school performance grades, and graduation rates paint a picture of academic outcomes across North Meck schools, and how they compare to the district and state.
+
+A note on terminology: "proficient" (or [GLP]{.gloss}) means a student scored Level 3 or higher (of 5) on NC's state exams, a passing but not top-tier score. "[College/Career Ready]{.gloss term=ccr}" (CCR) is the stricter Level 4 or 5 standard. "[Economically disadvantaged]{.gloss term=econ-disadv}" and "[Title I]{.gloss term=title-i}" are related but distinct designations, and growth is measured by the [EVAAS Growth Index]{.gloss term=evaas} rather than a passing score. Graduation figures use the [cohort graduation rate]{.gloss term=cohort-grad}. See the <span style="text-decoration:underline;cursor:pointer" onclick="openGlossary()">glossary</span> for details.
+:::
+
+::: {.chart-card title="Grade Level proficiency rate by school (2024-2025)" subtitle="% students at or above grade level" chart="chart-grade-level-proficiency" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof glpTown = townChips(masterTown)
@@ -581,14 +568,9 @@ viewof glpTown = townChips(masterTown)
 }
 ```
 
-</div>
+:::
 
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">4-year graduation rate — North Meck High Schools</div>
-<div class="card-s">Cohort graduation rate · Hough High &amp; North Mecklenburg High</div>
-
-<div id="chart-four-year-graduation-rate">
+::: {.chart-card title="4-year graduation rate — North Meck High Schools" subtitle="Cohort graduation rate · Hough High & North Mecklenburg High" chart="chart-four-year-graduation-rate" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof gradTown = townChips(masterTown)
@@ -608,14 +590,9 @@ viewof gradTown = townChips(masterTown)
 }
 ```
 
-</div>
+:::
 
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">School Achievement Gap By Economic Status in North Meck Schools (2024-25)</div>
-<div class="card-s">Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students</div>
-
-<div id="chart-school-achievement-economic-gap">
+::: {.chart-card title="School Achievement Gap By Economic Status in North Meck Schools (2024-25)" subtitle="Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students" chart="chart-school-achievement-economic-gap" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof econGapTown = townChips(masterTown)
@@ -636,14 +613,9 @@ viewof econGapTown = townChips(masterTown)
 }
 ```
 
-</div>
+:::
 
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">High School College &amp; Career Readiness: North Meck (2024-25)</div>
-<div class="card-s">Grade-Level Proficient vs. College/Career Ready · Grades 9–12</div>
-
-<div id="chart-hs-ccr">
+::: {.chart-card title="High School College & Career Readiness: North Meck (2024-25)" subtitle="Grade-Level Proficient vs. College/Career Ready · Grades 9–12" chart="chart-hs-ccr" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof ccrTown = townChips(masterTown)
@@ -671,17 +643,13 @@ viewof ccrTown = townChips(masterTown)
 }
 ```
 
-</div>
+::: {.note .info style="margin-top:16px"}
+Includes K–12 comprehensive schools (grade span 0K–12), whose Grade-Level Proficient and College/Career Ready rates reflect their entire student body, not high schoolers alone — treat these figures as directional rather than high-school-specific.
+:::
 
-<div class="nm-callout info" style="margin-top:16px">
-<div class="nm-callout-t">Includes K–12 comprehensive schools (grade span 0K–12), whose Grade-Level Proficient and College/Career Ready rates reflect their entire student body, not high schoolers alone — treat these figures as directional rather than high-school-specific.</div>
-</div>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Achievement Gap in North Meck High Schools by Economic status (2024-25)</div>
-<div class="card-s">Grades 9–12 grade-level proficiency: economically disadvantaged vs. not</div>
+:::
 
-<div id="chart-hs-achievement-economic-gap">
+::: {.chart-card title="Achievement Gap in North Meck High Schools by Economic status (2024-25)" subtitle="Grades 9–12 grade-level proficiency: economically disadvantaged vs. not" chart="chart-hs-achievement-economic-gap" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof hsGapTown = townChips(masterTown)
@@ -704,25 +672,29 @@ viewof hsGapTown = townChips(masterTown)
 }
 ```
 
-</div>
+:::
 
-</div>
-</div>
-</div>
+:::
+
+:::
 
 <!-- Resources & Staffing tab: hidden for 2026 (no data sourced yet). The
 original page kept its placeholder markup behind SHOW_ED_RESOURCES = false;
 restore it from src/pages/education.astro when data exists. -->
 
 <!-- TAB: educational attainment -->
-<div class="tabpane" data-pane="ed-attainment">
-<div class="wrap">
-<div class="sec-head"><span class="eyebrow">Educational Attainment</span><h2 class="sec-h">What is the education level of the adults who live here?</h2><p class="lead">Resident educational attainment shapes the workforce, economic mobility, and civic life of a community. In North Meck, attainment varies meaningfully across the three towns — and has shifted as the population has grown.</p></div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Bachelor's+ Rate Trend</div>
-<div class="card-s">% adults 25+ with a bachelor's degree or higher · 2018–2023</div>
 
-<div id="chart-bach-trend">
+::: {.tabpane data-pane="ed-attainment"}
+
+::: {.wrap}
+
+::: {.section-head eyebrow="Educational Attainment"}
+## What is the education level of the adults who live here?
+
+Resident educational attainment shapes the workforce, economic mobility, and civic life of a community. In North Meck, attainment varies meaningfully across the three towns — and has shifted as the population has grown.
+:::
+
+::: {.chart-card title="Bachelor's+ Rate Trend" subtitle="% adults 25+ with a bachelor's degree or higher · 2018–2023" chart="chart-bach-trend" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -741,18 +713,13 @@ restore it from src/pages/education.astro when data exists. -->
 }
 ```
 
-</div>
+::: {.note source="ACS 2018–2023 · Table B15003 · adults 25+ · Note: Davidson figures show year-to-year variation typical of small-population ACS estimates · Huntersville 2023 excluded (data anomaly)"}
+Davidson's highly educated population (home to Davidson College) keeps its attainment rate among the highest in the region. Cornelius has climbed steadily to nearly `r fmt_pct(round(corn_last$bach_plus))` bachelor's or higher by `r corn_last$year`.
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-t">Davidson's highly educated population (home to Davidson College) keeps its attainment rate among the highest in the region. Cornelius has climbed steadily to nearly `r fmt_pct(round(corn_last$bach_plus))` bachelor's or higher by `r corn_last$year`.</div>
-<div class="nm-callout-s">Source: ACS 2018–2023 · Table B15003 · adults 25+ · Note: Davidson figures show year-to-year variation typical of small-population ACS estimates · Huntersville 2023 excluded (data anomaly)</div>
-</div>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Attainment Breakdown, 2022</div>
-<div class="card-s">Distribution of educational attainment for adults 25+ · by town</div>
+:::
 
-<div id="chart-attainment-breakdown">
+::: {.chart-card title="Attainment Breakdown, 2022" subtitle="Distribution of educational attainment for adults 25+ · by town" chart="chart-attainment-breakdown" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -774,18 +741,13 @@ restore it from src/pages/education.astro when data exists. -->
 }
 ```
 
-</div>
+::: {.note source="ACS 2022 · Table B15003 · 2022 used for consistent cross-town comparison · Note: Davidson 2022 shows ACS sampling artifact; 2023 value is `r fmt_pct(dav_2023, 1)`"}
+Cornelius and Huntersville show similar attainment profiles. Davidson's 2022 snapshot reflects ACS sample variability — its 2023 figure (`r fmt_pct(dav_2023, 1)` bachelor's or higher) better reflects the long-run pattern.
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-t">Cornelius and Huntersville show similar attainment profiles. Davidson's 2022 snapshot reflects ACS sample variability — its 2023 figure (`r fmt_pct(dav_2023, 1)` bachelor's or higher) better reflects the long-run pattern.</div>
-<div class="nm-callout-s">Source: ACS 2022 · Table B15003 · 2022 used for consistent cross-town comparison · Note: Davidson 2022 shows ACS sampling artifact; 2023 value is `r fmt_pct(dav_2023, 1)`</div>
-</div>
-</div>
-<div class="card viz-host" style="margin-bottom:28px">
-<div class="card-t">Median Earnings by Education Level, 2024</div>
-<div class="card-s">Annual median earnings for full-time year-round workers 25+ · by education level and town</div>
+:::
 
-<div id="chart-earnings">
+::: {.chart-card title="Median Earnings by Education Level, 2024" subtitle="Annual median earnings for full-time year-round workers 25+ · by education level and town" chart="chart-earnings" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -805,13 +767,15 @@ restore it from src/pages/education.astro when data exists. -->
 }
 ```
 
-</div>
+::: {.note source="ACS 2024 · Table S1501 · median earnings for full-time year-round workers 25+ · Davidson HS-diploma figure suppressed by Census (small sample)"}
+In `r fmt_list(names(ba_premium))`, a bachelor's degree is worth about `r fmt_dollar(min(ba_premium))`–`r fmt_dollar(max(ba_premium))` more per year than a high school diploma (Davidson's high-school figure is suppressed). Davidson's graduate-degree earners have median earnings over `r fmt_k(dav_grad_floor)` a year — among the highest in the Charlotte metro.
+:::
 
-<div class="nm-callout">
-<div class="nm-callout-t">In `r fmt_list(names(ba_premium))`, a bachelor's degree is worth about `r fmt_dollar(min(ba_premium))`–`r fmt_dollar(max(ba_premium))` more per year than a high school diploma (Davidson's high-school figure is suppressed). Davidson's graduate-degree earners have median earnings over `r fmt_k(dav_grad_floor)` a year — among the highest in the Charlotte metro.</div>
-<div class="nm-callout-s">Source: ACS 2024 · Table S1501 · median earnings for full-time year-round workers 25+ · Davidson HS-diploma figure suppressed by Census (small sample)</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+:::
+
+:::
+
+:::
+
+:::
+

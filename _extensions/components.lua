@@ -25,18 +25,26 @@ Registered for every page in _quarto.yml. See docs/quarto-pages.md for usage.
 
   ::: {.section-head eyebrow="Affordability"}       tab section header
   ## How much does it cost to live here?
-  Optional lead paragraph.
-  :::
+  Optional lead paragraph.                          (further paragraphs are
+  :::                                                smaller notes)
 
   ::: {.fact value="42%" tone="warn" source="[ACS]{.gloss} 2018–2024"}
   rent rise in Huntersville since 2018              Overview stat tile
+  :::
+
+  ::: {.nbhd-section}                               neighborhood dashboard
+  #### Population & Ethnicity                       subsection: heading, lead
+  Lead paragraph.                                   paragraph, then its charts
+  ...charts...
   :::
 
 Every component also accepts style="..." for one-off spacing, which is added
 to the outer element exactly as written.
 ]]
 
-local MD = "markdown-tex_math_dollars-smart"
+-- Attribute text is a fragment, not a document: a leading "%" is a percent
+-- sign, not a Pandoc title block.
+local MD = "markdown-tex_math_dollars-smart-pandoc_title_block-yaml_metadata_block"
 
 local function has(el, class) return el.classes and el.classes:includes(class) end
 
@@ -140,17 +148,38 @@ local function question(div)
 end
 
 local function section_head(div)
+  local seen_lead = false
   local out = { raw('<span class="eyebrow">' .. html_inlines(md(div.attributes.eyebrow)) .. '</span>') }
   for _, b in ipairs(div.content) do
     if b.t == "Header" then
       table.insert(out, raw('<h2 class="sec-h">' .. html_inlines(b.content) .. '</h2>'))
     elseif b.t == "Para" then
-      table.insert(out, raw('<p class="lead">' .. html_inlines(b.content) .. '</p>'))
+      -- First paragraph is the lead; any after it are smaller notes.
+      local cls = seen_lead and "lead lead-note" or "lead"
+      seen_lead = true
+      table.insert(out, raw('<p class="' .. cls .. '">' .. html_inlines(b.content) .. '</p>'))
     else
       table.insert(out, b)
     end
   end
   return pandoc.Div(out, attr("", { "sec-head" }, div))
+end
+
+-- Neighborhood dashboard subsection: a #### heading and lead paragraph, then
+-- the subsection's charts.
+local function nbhd_section(div)
+  local out, lead_done = {}, false
+  for _, b in ipairs(div.content) do
+    if b.t == "Header" and #out == 0 then
+      table.insert(out, raw('<div class="nbhd-sub-h">' .. html_inlines(b.content) .. '</div>'))
+    elseif b.t == "Para" and not lead_done then
+      lead_done = true
+      table.insert(out, raw('<p class="nbhd-sub-lead">' .. html_inlines(b.content) .. '</p>'))
+    else
+      table.insert(out, b)
+    end
+  end
+  return pandoc.Div(out, attr(div.identifier, { "nbhd-sub-section" }, div))
 end
 
 local function fact(div)
@@ -173,6 +202,7 @@ local COMPONENTS = {
   { "question", question },
   { "section-head", section_head },
   { "fact", fact },
+  { "nbhd-section", nbhd_section },
 }
 
 return {

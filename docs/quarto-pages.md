@@ -72,8 +72,9 @@ rent rise in Huntersville since 2018
 | `::: {.note}` | callout box | `.warn` / `.info` color; `source="..."` (adds "Source:"); `caption="..."` for any other footer |
 | `::: {.chart-card}` | chart card | `#host-id`; `chart="chart-id"` wraps the chart cells; `title`, `subtitle`; notes after the chart sit under it |
 | `::: {.question}` | question heading + intro | starts with a `###` heading and a paragraph; `.small` for the smaller heading |
-| `::: {.section-head}` | a tab's section header | `eyebrow="..."`, a `##` heading, optional lead paragraph |
+| `::: {.section-head}` | a tab's section header | `eyebrow="..."`, a `##` heading, optional lead paragraph (later paragraphs become smaller notes) |
 | `::: {.fact}` | Overview stat tile | `value`, `tone="warn"`, `source` |
+| `::: {.nbhd-section}` | neighborhood dashboard subsection | starts with a `####` heading and a lead paragraph; its charts follow |
 
 Every block takes `style="..."` for one-off spacing. Attribute values are
 Markdown, so `[ACS]{.gloss}`, `*italics*`, and inline `r` code work inside
