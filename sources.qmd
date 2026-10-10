@@ -33,7 +33,7 @@ raw_html(source_list(sources))
 </div>
 <div class="dlstrip" style="margin-top:52px">
 <div><div class="dlstrip-t">Want the raw data?</div><div class="dlstrip-s">Every chart on the portal is available as CSV, with the source noted inline.</div></div>
-<div class="dl-btns"><button class="btn-ghost" onclick="window.location='/data-library.html'"><i class="ti ti-download"></i> Download all CSVs</button><button class="btn-ghost"><i class="ti ti-file-text"></i> Methodology PDF</button></div>
+<div class="dl-btns"><button class="btn-ghost" onclick="window.location='/data-library.html'"><i class="ti ti-download"></i> Download all CSVs</button></div>
 </div>
 </div></section>
 

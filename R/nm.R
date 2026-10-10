@@ -78,3 +78,22 @@ nm_claim <- function(ok, message) {
 # and emit a raw block so Pandoc passes generated markup through untouched.
 esc <- function(x) htmltools::htmlEscape(x)
 raw_html <- function(...) cat("\n```{=html}\n", ..., "\n```\n\n", sep = "")
+
+# Text that follows the page's Area filter. `all` is what "All North Meck"
+# shows; `town` is a function(town) returning the text for one town. Every
+# version is computed here at build time and written into the page;
+# showTown() in js/nm-charts.js displays the one matching the filter (or a
+# chart card's own town chips). Use it inline:
+#
+#   `r by_town(paste("rents rose", fmt_pct(max(chg)), "in", top),
+#              function(t) paste("rents rose", fmt_pct(chg[t]), "in", t))`
+#
+# Single quotes in the markup let it sit inside a component attribute
+# (e.g. a .fact's value="...").
+NM_TOWNS <- c("Cornelius", "Davidson", "Huntersville")
+by_town <- function(all, town) {
+  variants <- vapply(NM_TOWNS, function(t) {
+    sprintf("<span class='by-town' data-town='%s' hidden>%s</span>", t, town(t))
+  }, "")
+  paste0("<span class='by-town' data-town='All'>", all, "</span>", paste(variants, collapse = ""))
+}

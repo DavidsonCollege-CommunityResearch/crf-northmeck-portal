@@ -1309,7 +1309,13 @@ function makeThemeTag(host){
 /* ── SHARE SYSTEM ── */
 (function(){
   'use strict';
-  function txt(el){ return el?el.textContent.replace(/\s+/g,' ').trim():''; }
+  // Visible text only: skips the hidden town versions of by_town() text.
+  function txt(el){
+    if(!el) return '';
+    var c=el.cloneNode(true);
+    c.querySelectorAll('[hidden]').forEach(function(h){ h.remove(); });
+    return c.textContent.replace(/\s+/g,' ').trim();
+  }
   function clean(s){ return (s||'').replace(/^\s*source[:·\s-]*/i,'').trim(); }
   function slug(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,52); }
   function cssEsc(s){ if(window.CSS&&CSS.escape) return CSS.escape(s); return s.replace(/["\\]/g,'\\$&'); }

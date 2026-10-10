@@ -178,3 +178,18 @@ export function townChips(follow = "All", {all = "All towns", label = "Town:", i
   const value = !includeAll && follow === "All" ? TOWNS[0] : follow;
   return chips(options, {label, value, style: "margin-bottom:14px"});
 }
+
+// Show the town-specific version of text written with by_town() in R/nm.R.
+// With no scope it updates the whole page (call it with the page's Area
+// filter); pass a selector to update only the text inside one chart card,
+// e.g. showTown(rentTown, "#rent-chart-host") from that chart's cell.
+// Text inside a card that has its own town chips follows those chips.
+export function showTown(town, scope) {
+  const root = scope ? document.querySelector(scope) : document;
+  if (!root) return;
+  for (const el of root.querySelectorAll(".by-town")) {
+    if (!scope && el.closest("[data-town-scope]")) continue;
+    el.hidden = el.dataset.town !== town;
+  }
+  if (scope) root.setAttribute("data-town-scope", "");
+}

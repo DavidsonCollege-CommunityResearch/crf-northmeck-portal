@@ -80,14 +80,52 @@ nm_claim(names(which.max(ptr_rise)) == "Cornelius", "PTR callout says Cornelius 
 al <- nm_data("alice-town")
 alice_share <- setNames(al$alice_households / al$total_households * 100, al$town)
 
+# Per-town figures for text that follows the Area filter (by_town() in R/nm.R).
+ptr_20_35_town <- setNames(ptr_b$ratio[ptr_b$income_bracket == "$20k-$34,999"], ptr_b$town[ptr_b$income_bracket == "$20k-$34,999"])
+dp_years <- setNames(dp$years, dp$town)
+rent_chg_2020 <- change(rent, from = 2020)
+nm_claim(all(home_chg > inc_chg), "home value callout says incomes rose 'just' X% in each town")
+pop_v <- function(t, y) nm_value(pop, "population", town = t, year = y)
+burden <- function(t, y) nm_value(bt, "burden_rate", town = t, year = y)
+nm_claim(all(sapply(towns, burden, y = 2024) > sapply(towns, burden, y = 2018)), "burden callout says each town's share rose since 2018")
+types <- nm_data("housing-types")
+type_pct <- function(t, bucket) types$pct[types$town == t & types$bucket == bucket]
+own_rate <- function(t, race) race_tenure$ownership_rate[race_tenure$town == t & race_tenure$race == race]
+nm_claim(all(sapply(towns, own_rate, race = "White, not Hispanic") > sapply(towns, own_rate, race = "Black or African American")),
+         "ownership callout calls the White-Black difference a gap in every town")
+inc_v <- function(t, y) nm_value(mi, "income", town = t, year = y)
+rti <- function(t, y) nm_value(ai, "rti", town = t, year = y)
+# "All North Meck" versions of callouts that change with the Area filter
+rent_all_text <- paste0("Median rent in ", (rent_top), " rose from ", (fmt_dollar(rent(rent_top, 2018))), " in 2018 to ", (fmt_dollar(rent(rent_top, 2024))), " in 2024, a ", (fmt_pct(rent_chg[rent_top])), " increase. Rent rose fastest in Cornelius and Huntersville after 2020, while Davidson saw the slowest growth (", (fmt_pct(rent_chg["Davidson"])), " since 2018).")
+home_all_text <- paste0("In Cornelius, home values rose ", (fmt_pct(home_chg["Cornelius"])), " between 2018 and 2024. Median incomes rose just ", (fmt_pct(inc_chg["Cornelius"])), " over the same period.")
+gap_all_text <- paste0("In ", (gap_top), ", rents rose ", (fmt_pct(rent_chg[gap_top])), " between 2018 and 2024 while incomes rose ", (fmt_pct(inc_chg[gap_top])), ". The gap is widest there, but every town shows the same divergence.")
+rti_all_text <- paste0("In all three towns, rent now consumes a larger share of household income than it did in 2018.")
+hpti_all_text <- paste0((if (length(over_4x) == 3) "All three towns have" else paste(fmt_list(over_4x), if (length(over_4x) == 1) "has" else "have")), " crossed the 4× home price-to-income threshold", (if (length(over_4x) < 3) paste0(", and ", fmt_list(setdiff(towns, over_4x)), " is close behind at ", sprintf("%.2f", hpti_2024[setdiff(towns, over_4x)][1]), "×") else ""), ". A median-priced home there now costs more than four years of median household income — well above the historical affordability benchmark for first-time buyers.")
+pop_all_text <- paste0((pop_top), " added the most residents: its population grew by ", (fmt_num(pop_gain[pop_top])), " between 2018 and 2024.")
+types_all_text <- paste0("All three towns are majority single-family, but Cornelius has the highest share of large multifamily (25%), reflecting its denser, more transit-accessible development pattern.")
+burden_all_text <- paste0("In Cornelius, the share of cost-burdened renters rose from ", (fmt_pct(corn_burden_2018)), " in 2018 to ", (fmt_pct(corn_burden_2024)), " in 2024, a jump of ", (round(corn_burden_2024 - corn_burden_2018)), " percentage points in six years.")
+own_all_text <- paste0("White residents own at ", (fmt_pct(min(race_tenure$ownership_rate[race_tenure$race == "White, not Hispanic"]))), "–", (fmt_pct(max(race_tenure$ownership_rate[race_tenure$race == "White, not Hispanic"]))), " across the three towns. Black residents own at ", (fmt_pct(min(race_tenure$ownership_rate[race_tenure$race == "Black or African American"]))), "–", (fmt_pct(max(race_tenure$ownership_rate[race_tenure$race == "Black or African American"]))), ", a gap that reflects decades of structural barriers to wealth-building.")
+comp_all_text <- paste0("Huntersville is the most diverse town, with Black residents at ", (fmt_pct(share("Huntersville", "black"), 1)), " and Asian residents at ", (fmt_pct(share("Huntersville", "asian"), 1)), ". Cornelius and Davidson both remain over 80% white.")
+dp_all_text <- paste0("At current prices, a household earning the median income would need up to ", (sprintf("%.1f", max(dp$years))), " years just to save for a down payment, assuming they save 10% of gross income every year with no competing savings goals.")
+ptr_b_all_text <- paste0("A household earning $20k–$35k would need over ", (floor(min(ptr_20_35))), " years of gross income to buy a median home in any North Meck town, with no money spent on anything else.")
+inc_all_text <- paste0("Davidson's median household income rose from ", (fmt_k(nm_value(mi, "income", town = "Davidson", year = 2018))), " in 2018 to ", (fmt_k(nm_value(mi, "income", town = "Davidson", year = 2024))), " in 2024, but the high median conceals a wide gap: the Gini data shows income inequality within Davidson is growing alongside that headline number.")
+ptr_all_text <- paste0("Davidson's PTR jumped from ", (sprintf("%.1f", gpv("ptr", "Davidson", 2018))), "× in 2018 to ", (sprintf("%.1f", gpv("ptr", "Davidson", 2024))), "× in 2024. A ratio above 3× is widely considered unaffordable for first-time buyers. Cornelius went from ", (sprintf("%.1f", gpv("ptr", "Cornelius", 2018))), "× to ", (sprintf("%.1f", gpv("ptr", "Cornelius", 2024))), "×, the steepest rise in North Meck.")
+gini_all_text <- paste0("Cornelius has seen the sharpest rise in inequality: its Gini coefficient climbed from ", (sprintf("%.2f", gpv("gini", "Cornelius", 2018))), " in 2018 to ", (sprintf("%.2f", gpv("gini", "Cornelius", 2023))), " in 2023 before easing to ", (sprintf("%.2f", gpv("gini", "Cornelius", 2024))), " in 2024, approaching levels seen in major cities. Inequality in Cornelius now far exceeds the national average (~0.40).")
+alice_all_text <- paste0("Between ", (fmt_pct(min(alice_share))), " (", (names(which.min(alice_share))), ") and ", (fmt_pct(max(alice_share))), " (", (names(which.max(alice_share))), ") of households in each North Meck town")
+
 # Race summary table: population from race-summary, tenure from race-tenure.
 rs <- nm_data("race-summary")
 race_rows <- c("White, not Hispanic", "Black or African American", "Hispanic or Latino", "Asian")
-race_table <- do.call(rbind, lapply(race_rows, function(r) {
-  pop_r <- sum(rs[[r]]); t <- race_tenure[race_tenure$race == r, ]
-  own <- sum(t$owner) / sum(t$total) * 100
-  data.frame(group = r, pop = pop_r, share = pop_r / sum(rs$total_pop) * 100, renter = 100 - own, own = own)
-}))
+# One table per Area filter option ("All" sums the three towns).
+race_table_for <- function(area) {
+  rs_a <- if (area == "All") rs else rs[rs$town == area, ]
+  rt_a <- if (area == "All") race_tenure else race_tenure[race_tenure$town == area, ]
+  do.call(rbind, lapply(race_rows, function(r) {
+    pop_r <- sum(rs_a[[r]]); t <- rt_a[rt_a$race == r, ]
+    own <- if (sum(t$total) > 0) sum(t$owner) / sum(t$total) * 100 else NA
+    data.frame(group = r, pop = pop_r, share = pop_r / sum(rs_a$total_pop) * 100, renter = 100 - own, own = own)
+  }))
+}
 ```
 
 ::: {.page .active style="display:block"}
@@ -120,7 +158,7 @@ race_table <- do.call(rbind, lapply(race_rows, function(r) {
 
 ```{ojs}
 //| output: false
-import {Plot, stdPlot, chips, townChips, responsive, loadData, TOWNS, TOWN_COLORS, townColor, yearAxis, niceDomain, fmtDollar, fmtK, FONT} from "/js/nm-charts.js"
+import {Plot, stdPlot, chips, townChips, responsive, loadData, showTown, TOWNS, TOWN_COLORS, townColor, yearAxis, niceDomain, fmtDollar, fmtK, FONT} from "/js/nm-charts.js"
 
 rentIncome = loadData("housing-rent-income")
 valueIncome = loadData("housing-value-income")
@@ -154,6 +192,12 @@ byTown = (rows, town) => town === "All" ? rows : rows.filter(d => d.town === tow
 viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {label: "Area:", hint: "filters every chart"})
 ```
 
+```{ojs}
+//| output: false
+// Show the town version of every callout and stat tile written with by_town().
+showTown(masterTown)
+```
+
 :::
 
 <!-- TAB: overview -->
@@ -166,8 +210,8 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 
 ::: {.stat-row}
 
-::: {.fact value="`r fmt_pct(hh$rent_top_rise)`" tone="warn" source="[ACS]{.gloss} 2018–2024"}
-rent rise in `r hh$rent_top_town` since 2018, from `r fmt_dollar(hh$rent_top_2018)` to `r fmt_dollar(hh$rent_top_2024)`/mo
+::: {.fact value="`r by_town(fmt_pct(hh$rent_top_rise), function(t) fmt_pct(rent_chg[[t]]))`" tone="warn" source="[ACS]{.gloss} 2018–2024"}
+rent rise in `r by_town(paste0(hh$rent_top_town, " since 2018, from ", fmt_dollar(hh$rent_top_2018), " to ", fmt_dollar(hh$rent_top_2024)), function(t) paste0(t, " since 2018, from ", fmt_dollar(rent(t, 2018)), " to ", fmt_dollar(rent(t, 2024))))`/mo
 :::
 
 ::: {.chart-card title="Median Rent by Town (2018–2024)" subtitle="" chart="ovf-rent"}
@@ -192,8 +236,8 @@ responsive(width => stdPlot({
 
 ::: {.stat-row}
 
-::: {.fact value="`r floor(hh$ptr_20_35_min)`+ yrs" tone="warn" source="[ACS]{.gloss} 2024"}
-of gross income to buy the median home, for a $20k–$35k household
+::: {.fact value="`r by_town(paste0(floor(hh$ptr_20_35_min), "+ yrs"), function(t) sprintf("%.0f yrs", ptr_20_35_town[[t]]))`" tone="warn" source="[ACS]{.gloss} 2024"}
+of gross income to buy the median home, for a $20k–$35k household`r by_town("", function(t) paste(" in", t))`
 :::
 
 ::: {.chart-card title="Years of Income to Buy the Median Home, by Bracket (2024)" subtitle="" chart="ovf-ptr"}
@@ -223,8 +267,8 @@ of gross income to buy the median home, for a $20k–$35k household
 
 ::: {.stat-row}
 
-::: {.fact value="[$]{.cur}`r fmt_k(hh$home_top_value, prefix = "")`" source="[ACS]{.gloss} 2024"}
-median home value in `r hh$home_top_town`, `r round(hh$home_top_value / hh$us_median_home, 1)`× the U.S. national median
+::: {.fact value="[$]{.cur}`r by_town(fmt_k(hh$home_top_value, prefix = ""), function(t) fmt_k(home(t, 2024), prefix = ""))`" source="[ACS]{.gloss} 2024"}
+median home value in `r by_town(paste0(hh$home_top_town, ", ", round(hh$home_top_value / hh$us_median_home, 1)), function(t) paste0(t, ", ", round(home(t, 2024) / hh$us_median_home, 1)))`× the U.S. national median
 :::
 
 ::: {.chart-card title="Median Home Value by Town vs. U.S. Median (2024)" subtitle="U.S. median ~`r fmt_k(US_MEDIAN_HOME)`" chart="ovf-home"}
@@ -254,8 +298,8 @@ median home value in `r hh$home_top_town`, `r round(hh$home_top_value / hh$us_me
 
 ::: {.stat-row}
 
-::: {.fact value="~`r round(hh$down_payment_max_years)` yrs" source="[ACS]{.gloss} 2024"}
-to save a 20% down payment at a 10% annual savings rate
+::: {.fact value="`r by_town(paste0("~", round(hh$down_payment_max_years), " yrs"), function(t) sprintf("%.1f yrs", dp_years[[t]]))`" source="[ACS]{.gloss} 2024"}
+to save a 20% down payment at a 10% annual savings rate`r by_town("", function(t) paste(" in", t))`
 :::
 
 ::: {.chart-card title="Years to Save a 20% Down Payment, by Town (2024)" subtitle="Assumes 10% annual savings rate on median household income" chart="ovf-dp"}
@@ -303,6 +347,7 @@ Median rent by town, 2018–2024. Each line tracks what renters paid in that yea
 ```{ojs}
 viewof rentTown = townChips(masterTown)
 {
+  showTown(rentTown, "#rent-chart-host");
   const data = byTown(rentIncome, rentTown);
   return responsive(width => stdPlot({
     width, height: 360, marginLeft: 70, marginBottom: 55,
@@ -319,7 +364,7 @@ viewof rentTown = townChips(masterTown)
 ```
 
 ::: {.note source="[ACS]{.gloss} 2018–2024"}
-Median rent in `r rent_top` rose from `r fmt_dollar(rent(rent_top, 2018))` in 2018 to `r fmt_dollar(rent(rent_top, 2024))` in 2024, a `r fmt_pct(rent_chg[rent_top])` increase. Rent rose fastest in Cornelius and Huntersville after 2020, while Davidson saw the slowest growth (`r fmt_pct(rent_chg["Davidson"])` since 2018).
+`r by_town(rent_all_text, function(t) paste0("Median rent in ", t, " rose from ", fmt_dollar(rent(t, 2018)), " in 2018 to ", fmt_dollar(rent(t, 2024)), " in 2024, a ", fmt_pct(rent_chg[[t]]), " increase (", fmt_pct(rent_chg_2020[[t]]), " since 2020)."))`
 :::
 
 :::
@@ -338,6 +383,7 @@ Home values indexed to 2018 alongside median income, showing how ownership affor
 ```{ojs}
 viewof hvTown = townChips(masterTown)
 {
+  showTown(hvTown, "#home-value-chart-host");
   const filt = byTown(valueIncome, hvTown);
   const base = Object.fromEntries(filt.filter(d => d.year === 2018).map(d => [d.town, d]));
   const indexed = filt.flatMap(d => base[d.town] ? [
@@ -366,7 +412,7 @@ viewof hvTown = townChips(masterTown)
 ```
 
 ::: {.note source="[ACS]{.gloss} 2018–2024"}
-In Cornelius, home values rose `r fmt_pct(home_chg["Cornelius"])` between 2018 and 2024. Median incomes rose just `r fmt_pct(inc_chg["Cornelius"])` over the same period.
+`r by_town(home_all_text, function(t) paste0("In ", t, ", home values rose ", fmt_pct(home_chg[[t]]), " between 2018 and 2024. Median incomes rose just ", fmt_pct(inc_chg[[t]]), " over the same period."))`
 :::
 
 :::
@@ -376,6 +422,7 @@ In Cornelius, home values rose `r fmt_pct(home_chg["Cornelius"])` between 2018 a
 ```{ojs}
 viewof irTown = townChips(masterTown)
 {
+  showTown(irTown, "#income-rent-chart-host");
   const filt = byTown(rentIncome, irTown);
   const base = Object.fromEntries(filt.filter(d => d.year === 2018).map(d => [d.town, d]));
   const indexed = filt.flatMap(d => base[d.town] ? [
@@ -403,7 +450,7 @@ viewof irTown = townChips(masterTown)
 ```
 
 ::: {.note .warn source="[ACS]{.gloss} 2018–2024 · index set to 100 in 2018 so towns can be compared on the same scale regardless of starting dollar values"}
-In `r gap_top`, rents rose `r fmt_pct(rent_chg[gap_top])` between 2018 and 2024 while incomes rose `r fmt_pct(inc_chg[gap_top])`. The gap is widest there, but every town shows the same divergence.
+`r by_town(gap_all_text, function(t) paste0("In ", t, ", rents rose ", fmt_pct(rent_chg[[t]]), " between 2018 and 2024 while incomes rose ", fmt_pct(inc_chg[[t]]), "."))`
 :::
 
 :::
@@ -523,6 +570,7 @@ Rent-to-income ratio measures what share of median household income goes to rent
 ```{ojs}
 viewof rtiTown = townChips(masterTown)
 {
+  showTown(rtiTown, "#rti-chart-host");
   const data = byTown(affordIndex, rtiTown);
   return responsive(width => stdPlot({
     width, height: 280, marginBottom: 55,
@@ -539,7 +587,7 @@ viewof rtiTown = townChips(masterTown)
 ```
 
 ::: {.note source="[ACS]{.gloss} 2018–2024 · ratio = (median annual rent) ÷ (median household income)"}
-In all three towns, rent now consumes a larger share of household income than it did in 2018. The dashed line marks the 30% cost-burden threshold — once crossed, households have less to spend on food, healthcare, and savings.
+`r by_town(rti_all_text, function(t) paste0("In ", t, ", rent now takes ", fmt_pct(rti(t, 2024), 1), " of median household income, up from ", fmt_pct(rti(t, 2018), 1), " in 2018."))` The dashed line marks the 30% cost-burden threshold — once crossed, households have less to spend on food, healthcare, and savings.
 :::
 
 :::
@@ -549,6 +597,7 @@ In all three towns, rent now consumes a larger share of household income than it
 ```{ojs}
 viewof hptiTown = townChips(masterTown)
 {
+  showTown(hptiTown, "#hpti-chart-host");
   const data = byTown(affordIndex, hptiTown);
   return responsive(width => stdPlot({
     width, height: 280, marginBottom: 55,
@@ -565,7 +614,7 @@ viewof hptiTown = townChips(masterTown)
 ```
 
 ::: {.note source="[ACS]{.gloss} 2018–2024 · ratio = median home value ÷ median household income"}
-`r if (length(over_4x) == 3) "All three towns have" else paste(fmt_list(over_4x), if (length(over_4x) == 1) "has" else "have")` crossed the 4× home price-to-income threshold`r if (length(over_4x) < 3) paste0(", and ", fmt_list(setdiff(towns, over_4x)), " is close behind at ", sprintf("%.2f", hpti_2024[setdiff(towns, over_4x)][1]), "×") else ""`. A median-priced home there now costs more than four years of median household income — well above the historical affordability benchmark for first-time buyers.
+`r by_town(hpti_all_text, function(t) paste0(t, "'s home price-to-income ratio reached ", sprintf("%.2f", hpti_2024[[t]]), "× in 2024, ", if (hpti_2024[[t]] >= 4) "above the 4× threshold: a median-priced home now costs more than four years of median household income." else "just under the 4× threshold that marks a home as unaffordable for first-time buyers."))`
 :::
 
 :::
@@ -598,6 +647,7 @@ Total population by town, 2018–2024. Rapid growth increases demand for all hou
 ```{ojs}
 viewof popTown = townChips(masterTown)
 {
+  showTown(popTown, "#population-chart-host");
   const data = byTown(population, popTown);
   return responsive(width => stdPlot({
     width, height: 340, marginBottom: 55,
@@ -614,7 +664,7 @@ viewof popTown = townChips(masterTown)
 ```
 
 ::: {.note source="[ACS]{.gloss} 2018–2024"}
-`r pop_top` added the most residents: its population grew by `r fmt_num(pop_gain[pop_top])` between 2018 and 2024. That kind of growth without matching affordable supply is a core driver of the cost pressure seen in the Affordability tab.
+`r by_town(pop_all_text, function(t) paste0(t, "'s population grew by ", fmt_num(pop_gain[[t]]), " (", fmt_pct(pct_change(pop_v(t, 2018), pop_v(t, 2024))), ") between 2018 and 2024."))` That kind of growth without matching affordable supply is a core driver of the cost pressure seen in the Affordability tab.
 :::
 
 :::
@@ -679,7 +729,7 @@ Owner-occupied households dominate all three towns (70–80% of households), but
 ```
 
 ::: {.note source="[ACS]{.gloss} 2024 · Table B25024"}
-All three towns are majority single-family, but Cornelius has the highest share of large multifamily (25%), reflecting its denser, more transit-accessible development pattern.
+`r by_town(types_all_text, function(t) paste0("In ", t, ", ", fmt_pct(type_pct(t, "Single-family")), " of housing units are single-family and ", fmt_pct(type_pct(t, "Large multifamily (5+ units)")), " are in large multifamily buildings (5+ units)."))`
 :::
 
 :::
@@ -763,7 +813,7 @@ viewof burdenMetric = chips([
 ```
 
 ::: {.note .warn source="[ACS]{.gloss} 2018–2024"}
-In Cornelius, the share of cost-burdened renters rose from `r fmt_pct(corn_burden_2018)` in 2018 to `r fmt_pct(corn_burden_2024)` in 2024, a jump of `r round(corn_burden_2024 - corn_burden_2018)` percentage points in six years.
+`r by_town(burden_all_text, function(t) paste0("In ", t, ", the share of cost-burdened renters rose from ", fmt_pct(burden(t, 2018)), " in 2018 to ", fmt_pct(burden(t, 2024)), " in 2024, up ", round(burden(t, 2024) - burden(t, 2018)), " percentage points in six years."))`
 :::
 
 :::
@@ -876,6 +926,7 @@ Nationally, the Black-white homeownership gap is larger today than it was before
 viewof raceView = chips([{label: "Ownership rate", value: "ownership"}, {label: "Raw counts", value: "counts"}], {label: "View:", style: "margin-bottom:6px"})
 viewof raceTown = townChips(masterTown)
 {
+  showTown(raceTown, "#race-chart-host");
   const CORE = ["White, not Hispanic", "Black or African American", "Hispanic or Latino", "Asian", "Two or more races"];
   const filtered = byTown(raceTenure.filter(d => CORE.includes(d.race)), raceTown);
   if (raceView === "ownership") {
@@ -910,7 +961,7 @@ viewof raceTown = townChips(masterTown)
 ```
 
 ::: {.note source="[ACS]{.gloss} 2024 · Census tenure by race"}
-White residents own at `r fmt_pct(min(race_tenure$ownership_rate[race_tenure$race == "White, not Hispanic"]))`–`r fmt_pct(max(race_tenure$ownership_rate[race_tenure$race == "White, not Hispanic"]))` across the three towns. Black residents own at `r fmt_pct(min(race_tenure$ownership_rate[race_tenure$race == "Black or African American"]))`–`r fmt_pct(max(race_tenure$ownership_rate[race_tenure$race == "Black or African American"]))`, a gap that reflects decades of structural barriers to wealth-building.
+`r by_town(own_all_text, function(t) paste0("In ", t, ", White residents own at ", fmt_pct(own_rate(t, "White, not Hispanic")), " and Black residents at ", fmt_pct(own_rate(t, "Black or African American")), ", a gap that reflects decades of structural barriers to wealth-building."))`
 :::
 
 :::
@@ -920,13 +971,17 @@ White residents own at `r fmt_pct(min(race_tenure$ownership_rate[race_tenure$rac
 ```{r}
 #| output: asis
 cell_class <- function(ok) if (ok) "ok" else "hi"
+for (area in c("All", NM_TOWNS)) {
+race_table <- race_table_for(area)
+cat(sprintf("<div class='by-town' data-town='%s'%s>\n", area, if (area == "All") "" else " hidden"))
 cat('<table style="margin-top:0"><thead><tr><th>Group</th><th>Population (2024)</th><th>Renter households</th><th>Homeownership rate</th></tr></thead><tbody>\n')
 for (i in seq_len(nrow(race_table))) {
   r <- race_table[i, ]
   cat(sprintf('<tr><td class="name">%s</td><td class="num">%s <span style="color:var(--ink-3);font-size:12px">(%s)</span></td><td class="%s">%s</td><td class="%s">%s</td></tr>\n',
               r$group, fmt_num(r$pop), fmt_pct(r$share), cell_class(r$renter <= 40), fmt_pct(r$renter), cell_class(r$own >= 60), fmt_pct(r$own)))
 }
-cat('</tbody></table>\n')
+cat('</tbody></table>\n</div>\n')
+}
 cat('<p style="font-size:12px;color:var(--ink-3);margin-top:8px;font-family:\'Hanken Grotesk\',sans-serif">Population totals: ACS 2024 · Tenure rates: ACS 2024 Census tenure by race</p>\n')
 ```
 
@@ -948,6 +1003,7 @@ cat('<p style="font-size:12px;color:var(--ink-3);margin-top:8px;font-family:\'Ha
 ```{ojs}
 viewof raceCompTown = townChips(masterTown)
 {
+  showTown(raceCompTown, "#race-comp-host");
   const RACE_ORDER = ["White", "Black", "Two or More Races", "Asian", "Some Other Race", "American Indian/Alaska Native", "Native Hawaiian/Pacific Islander"];
   const RACE_COLORS = ["#3f4e75", "#e05c4b", "#f0a500", "#5a9e8f", "#a0522d", "#7a9e4e", "#b07bbf"];
   const cols = {"White": "white", "Black": "black", "Asian": "asian", "Two or More Races": "two_more", "Some Other Race": "other", "American Indian/Alaska Native": "native", "Native Hawaiian/Pacific Islander": "nhpi"};
@@ -971,7 +1027,7 @@ viewof raceCompTown = townChips(masterTown)
 ```
 
 ::: {.note source="[ACS]{.gloss} 2024"}
-Huntersville is the most diverse town, with Black residents at `r fmt_pct(share("Huntersville", "black"), 1)` and Asian residents at `r fmt_pct(share("Huntersville", "asian"), 1)`. Cornelius and Davidson both remain over 80% white.
+`r by_town(comp_all_text, function(t) paste0("In ", t, ", White residents make up ", fmt_pct(share(t, "white"), 1), " of the population, Black residents ", fmt_pct(share(t, "black"), 1), ", and Asian residents ", fmt_pct(share(t, "asian"), 1), "."))`
 :::
 
 :::
@@ -1044,7 +1100,7 @@ North Meck's towns are becoming more diverse, but at very different rates. Hunte
 ```
 
 ::: {.note .warn source="[ACS]{.gloss} 2024 · formula: (median home value × 20%) ÷ (median income × 10%)"}
-At current prices, a household earning the median income would need up to `r sprintf("%.1f", max(dp$years))` years just to save for a down payment, assuming they save 10% of gross income every year with no competing savings goals.
+`r by_town(dp_all_text, function(t) paste0("At current prices, a household earning ", t, "'s median income would need ", sprintf("%.1f", dp_years[[t]]), " years just to save for a down payment, assuming they save 10% of gross income every year with no competing savings goals."))`
 :::
 
 :::
@@ -1061,6 +1117,7 @@ Years of gross income needed to buy the median home, by income bracket and town.
 ```{ojs}
 viewof ptrTown = townChips(masterTown)
 {
+  showTown(ptrTown, "#ptr-chart-host");
   const BRACKETS = ["$10k-$19,999", "$20k-$34,999", "$35k-$49,999", "$50k-$74,999", "$75k-$99,999", "$100k-$149,999"];
   const isAll = ptrTown === "All";
   const subset = ptrBrackets.filter(d => d.income_bracket !== "Less than $10k" && (isAll || d.town === ptrTown));
@@ -1091,7 +1148,7 @@ viewof ptrTown = townChips(masterTown)
 ```
 
 ::: {.note .warn source="[ACS]{.gloss} 2024"}
-A household earning $20k–$35k would need over `r floor(min(ptr_20_35))` years of gross income to buy a median home in any North Meck town, with no money spent on anything else.
+`r by_town(ptr_b_all_text, function(t) paste0("In ", t, ", a household earning $20k–$35k would need ", sprintf("%.1f", ptr_20_35_town[[t]]), " years of gross income to buy a median home, with no money spent on anything else."))`
 :::
 
 :::
@@ -1126,6 +1183,7 @@ Median household income by town over time. The high medians conceal wide variati
 ```{ojs}
 viewof incomeTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10px 0 4px"})
 {
+  showTown(incomeTown, "#median-income-chart-host");
   const data = byTown(incomeTrend, incomeTown);
   return responsive(width => stdPlot({
     width, height: 340, marginBottom: 55,
@@ -1142,7 +1200,7 @@ viewof incomeTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:
 ```
 
 ::: {.note source="[ACS]{.gloss} 2018–2024"}
-Davidson's median household income rose from `r fmt_k(nm_value(mi, "income", town = "Davidson", year = 2018))` in 2018 to `r fmt_k(nm_value(mi, "income", town = "Davidson", year = 2024))` in 2024, but the high median conceals a wide gap: the Gini data shows income inequality within Davidson is growing alongside that headline number.
+`r by_town(inc_all_text, function(t) paste0(t, "'s median household income rose from ", fmt_k(inc_v(t, 2018)), " in 2018 to ", fmt_k(inc_v(t, 2024)), " in 2024. Over the same years, its Gini coefficient of income inequality went from ", sprintf("%.2f", gpv("gini", t, 2018)), " to ", sprintf("%.2f", gpv("gini", t, 2024)), "."))`
 :::
 
 :::
@@ -1159,6 +1217,7 @@ The Gini coefficient measures income inequality: 0 = perfect equality, 1 = maxim
 ```{ojs}
 viewof ptrTrendTown = townChips(masterTown)
 {
+  showTown(ptrTrendTown, "#ptr-trend-host");
   const data = byTown(giniPtr, ptrTrendTown);
   return responsive(width => stdPlot({
     width, height: 300, marginBottom: 55,
@@ -1176,7 +1235,7 @@ viewof ptrTrendTown = townChips(masterTown)
 ```
 
 ::: {.note .warn source="[ACS]{.gloss} 2018–2024"}
-Davidson's PTR jumped from `r sprintf("%.1f", gpv("ptr", "Davidson", 2018))`× in 2018 to `r sprintf("%.1f", gpv("ptr", "Davidson", 2024))`× in 2024. A ratio above 3× is widely considered unaffordable for first-time buyers. Cornelius went from `r sprintf("%.1f", gpv("ptr", "Cornelius", 2018))`× to `r sprintf("%.1f", gpv("ptr", "Cornelius", 2024))`×, the steepest rise in North Meck.
+`r by_town(ptr_all_text, function(t) paste0(t, "'s price-to-income ratio went from ", sprintf("%.1f", gpv("ptr", t, 2018)), "× in 2018 to ", sprintf("%.1f", gpv("ptr", t, 2024)), "× in 2024. A ratio above 3× is widely considered unaffordable for first-time buyers."))`
 :::
 
 :::
@@ -1186,6 +1245,7 @@ Davidson's PTR jumped from `r sprintf("%.1f", gpv("ptr", "Davidson", 2018))`× i
 ```{ojs}
 viewof giniTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10px 0 4px"})
 {
+  showTown(giniTown, "#gini-chart-host");
   const data = byTown(giniPtr, giniTown);
   return responsive(width => stdPlot({
     width, height: 300, marginBottom: 55,
@@ -1203,7 +1263,7 @@ viewof giniTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10
 ```
 
 ::: {.note .warn source="[ACS]{.gloss} 2018–2024"}
-Cornelius has seen the sharpest rise in inequality: its Gini coefficient climbed from `r sprintf("%.2f", gpv("gini", "Cornelius", 2018))` in 2018 to `r sprintf("%.2f", gpv("gini", "Cornelius", 2023))` in 2023 before easing to `r sprintf("%.2f", gpv("gini", "Cornelius", 2024))` in 2024, approaching levels seen in major cities. Inequality in Cornelius now far exceeds the national average (~0.40).
+`r by_town(gini_all_text, function(t) paste0(t, "'s Gini coefficient went from ", sprintf("%.2f", gpv("gini", t, 2018)), " in 2018 to ", sprintf("%.2f", gpv("gini", t, 2024)), " in 2024, compared with a national average of about 0.40."))`
 :::
 
 :::
@@ -1298,7 +1358,7 @@ Comparing North Meck towns to Mecklenburg County as a whole reveals whether subu
 ```
 
 ::: {.note source="[ALICE]{.gloss} Report · United Way" style="margin-top:16px"}
-Between `r fmt_pct(min(alice_share))` (`r names(which.min(alice_share))`) and `r fmt_pct(max(alice_share))` (`r names(which.max(alice_share))`) of households in each North Meck town earn above the federal poverty line but still cannot cover basic costs — making them financially invisible in most need measures. Multi-year trend data will be added when available.
+`r by_town(alice_all_text, function(t) paste0("In ", t, ", ", fmt_pct(alice_share[[t]]), " of households"))` earn above the federal poverty line but still cannot cover basic costs — making them financially invisible in most need measures. Multi-year trend data will be added when available.
 :::
 
 :::
@@ -1382,7 +1442,7 @@ High average education attainment across North Meck coexists with meaningful pov
 ```{=html}
 <div class="dlstrip" style="margin-top:48px">
 <div><div class="dlstrip-t">Take the data with you</div><div class="dlstrip-s">Every chart is available as CSV. Full methodology in the 2026 report.</div></div>
-<div class="dl-btns"><button class="btn-ghost"><i class="ti ti-download"></i> Download CSV</button><button class="btn-ghost"><i class="ti ti-file-text"></i> Methodology PDF</button><button class="btn-ghost">2025 housing report <i class="ti ti-external-link"></i></button></div>
+<div class="dl-btns"><button class="btn-ghost"><i class="ti ti-download"></i> Download CSV</button><button class="btn-ghost">2025 housing report <i class="ti ti-external-link"></i></button></div>
 </div>
 ```
 

@@ -15,11 +15,6 @@ pagetitle: "About · North Meck Insights"
 <p>The Community Research Fellows program at Davidson College pairs students with faculty advisors and community partners to produce public-interest research. Cohorts take on a range of community-driven projects; the work gathered on this portal focuses on North Mecklenburg, each summer adding one new community determinant to the site.</p>
 <p>We use open public data only. The U.S. Census Bureau, HUD, Mecklenburg County records, and published reports. Everything is cited and downloadable.</p>
 <div class="nm-callout info" style="margin-top:8px;max-width:none"><div class="nm-callout-t">Data equity is central to how we work. We apply a diversity, equity, and inclusion lens to how we collect, analyze, and present data, amplifying voices often left out of official statistics.</div><div class="nm-callout-s">Beckman &amp; Long, 2016 · Urban Institute Data Equity Framework, 2021</div></div>
-<p style="margin-top:20px">Every cohort, its team, and its project now live on a dedicated Community Research Fellows site with a fuller record of six years of work than this portal can hold.</p>
-<div class="crf-cta">
-<a class="btn btn-o" href="#" onclick="return false" title="URL coming soon">Explore all CRF work <i class="ti ti-arrow-up-right"></i></a>
-<span class="crf-soon">Link coming soon</span>
-</div>
 </div>
 <img src="/images/about-hero.jpg" alt="Community Research Fellows at work in North Meck" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--rl);display:block">
 </div>
