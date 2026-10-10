@@ -62,7 +62,7 @@ function labelOverflow(chart, width) {
     const box = svg.getBoundingClientRect();
     const texts = [...svg.querySelectorAll("text")].filter(t => t.textContent.trim());
     const role = t => (t.closest("[aria-label]") || {getAttribute: () => ""}).getAttribute("aria-label") || "";
-    const need = {left: 0, right: 0, top: 0, bottom: 0, xTitle: 0, xTitleAxis: "x", yTitle: 0, crowdedTicks: null};
+    const need = {left: 0, right: 0, top: 0, bottom: 0, xTitle: 0, xTitleAxis: "x", yTitle: 0, crowdedTicks: null, leftGap: 0};
     for (const t of texts) {
       const r = t.getBoundingClientRect();
       need.left = Math.max(need.left, box.left - r.left);
@@ -70,6 +70,11 @@ function labelOverflow(chart, width) {
       need.top = Math.max(need.top, box.top - r.top);
       need.bottom = Math.max(need.bottom, r.bottom - box.bottom);
     }
+    // Empty space between the chart's left edge and its leftmost label or mark
+    // (e.g. a left margin estimated too generously for category names).
+    const drawn = [...texts, ...svg.querySelectorAll("rect, path, circle, line")].filter(e => !e.closest("defs, clipPath"));
+    const lefts = drawn.map(e => e.getBoundingClientRect()).filter(r => r.width || r.height).map(r => r.left);
+    if (lefts.length) need.leftGap = Math.min(...lefts) - box.left;
     const overlapHeight = (a, b) => {
       const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
       const w = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
@@ -143,11 +148,20 @@ export function stdPlot(opts) {
 function fitLabels(merged) {
   let chart = Plot.plot(merged);
   const PAD = 2;
-  for (let pass = 0; pass < 6; pass++) {
+  let trimmed = false;
+  const stuck = {};
+  for (let pass = 0; pass < 7; pass++) {
     const need = labelOverflow(chart, merged.width);
     let changed = false;
     for (const [side, key] of [["left", "marginLeft"], ["right", "marginRight"], ["top", "marginTop"], ["bottom", "marginBottom"]]) {
-      if (need[side] > 0.5) { merged[key] += Math.ceil(need[side]) + PAD; changed = true; }
+      // Ignore ≤2px (the bottom of lettering isn't visibly clipped), and stop
+      // growing a side whose overflow didn't shrink last pass: that label is
+      // anchored to the edge and moves with the margin.
+      if (need[side] > 2 && !(stuck[side] && need[side] >= stuck[side])) {
+        stuck[side] = need[side];
+        merged[key] += Math.ceil(need[side]) + PAD;
+        changed = true;
+      }
     }
     if (need.xTitle > 0.5) {
       // Push the x-axis title below the tick labels it collides with.
@@ -168,6 +182,12 @@ function fitLabels(merged) {
     if (need.yTitle > 0.5) {
       // The "↑" y title sits above the plot; more top margin moves the ticks down.
       merged.marginTop += Math.ceil(need.yTitle) + PAD;
+      changed = true;
+    }
+    if (!changed && !trimmed && need.leftGap > 12) {
+      // Reclaim unused left margin (once), leaving a little breathing room.
+      merged.marginLeft = Math.max(0, merged.marginLeft - Math.floor(need.leftGap - 6));
+      trimmed = true;
       changed = true;
     }
     if (!changed) break;

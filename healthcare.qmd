@@ -537,15 +537,16 @@ viewof hcInsTown = townChips(masterTown, {label: ""})
     return responsive(width => {
       const chart = stdPlot({
         width, height: 290, marginLeft: 110, marginTop: 40, marginBottom: 10, marginRight: 10,
-        x: {domain: labels, axis: "top", label: null, tickSize: 0, padding: 0.12},
+        x: {domain: labels, axis: null, padding: 0.12},
         y: {domain: TOWNS, label: null, tickSize: 0, padding: 0.2},
         color: {type: "linear", domain: [0, 65], scheme: "blues", legend: true, label: "% of total population", tickFormat: pctFmt, width: 240, marginLeft: 12},
         marks: [
+          // Column labels styled here (not after drawing) so stdPlot measures them as shown.
+          Plot.axisX({anchor: "top", label: null, tickSize: 0, fontSize: 11, fontWeight: 600, fill: "#1B4F72"}),
           Plot.cell(cells, {x: "type", y: "town", fill: "val", rx: 6, tip: true, title: d => `${d.town} · ${d.type}: ${d.val.toFixed(1)}%`}),
           Plot.text(cells, {x: "type", y: "town", text: d => d.val.toFixed(1) + "%", fontSize: 12, fontWeight: 600, fill: d => d.val > 35 ? "#fff" : "#1B4F72"})
         ]
       });
-      chart.querySelectorAll('[aria-label="x-axis tick label"] text').forEach(el => { el.setAttribute("fill", "#1B4F72"); el.setAttribute("font-weight", "600"); el.setAttribute("font-size", "11"); });
       return chart;
     }, {invalidation});
   }
