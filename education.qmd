@@ -504,9 +504,9 @@ viewof growthTown = townChips(masterTown)
 
 ```{ojs}
 {
-  const data = schoolEconGap.filter(d => d.gap != null).slice().sort((a, b) => b.gap - a.gap);
+  const data = schoolEconGap.filter(d => d.gap != null && (masterTown === "All" || d.town_name === masterTown)).slice().sort((a, b) => b.gap - a.gap);
   return responsive(width => stdPlot({
-    width, height: 480, marginLeft: 190, style: S,
+    width, height: masterTown === "All" ? 480 : Math.max(160, data.length * 26 + 60), marginLeft: 190, style: S,
     x: {label: "Proficiency gap (points)", grid: true},
     y: {label: null, domain: data.map(d => d.school)},
     marks: [

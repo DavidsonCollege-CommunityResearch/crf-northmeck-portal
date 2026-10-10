@@ -147,13 +147,15 @@ withTitle = (text, node) => {
 // Each age group's share of a town's uninsured residents (stacked to 100%).
 AGES = ["Under 18", "19-25", "26-34", "35-64", "65+"]
 AGE_COLS = ["unins_U18", "unins_19_25", "unins_26_34", "unins_35_64", "unins_65_over"]
-ageShareChart = (width, {compact = false} = {}) => {
-  const data = ins2024.flatMap(r => AGES.map((age, i) => ({town: r.Town, age, pct: r[AGE_COLS[i]] / r.all_unins * 100})));
+ageShareChart = (width, {compact = false, town = "All"} = {}) => {
+  const rows = town === "All" ? ins2024 : ins2024.filter(r => r.Town === town);
+  const data = rows.flatMap(r => AGES.map((age, i) => ({town: r.Town, age, pct: r[AGE_COLS[i]] / r.all_unins * 100})));
+  const towns = rows.map(r => r.Town);
   return stdPlot({
-    width, height: compact ? 230 : 300, marginLeft: compact ? 78 : 100, marginBottom: compact ? 30 : 48,
+    width, height: (compact ? 230 : 300) - (TOWNS.length - towns.length) * (compact ? 45 : 60), marginLeft: compact ? 78 : 100, marginBottom: compact ? 30 : 48,
     style: {...FONT, fontSize: compact ? "11px" : "12px"},
     x: {domain: [0, 100], ticks: [0, 25, 50, 75, 100], tickFormat: pctFmt, label: compact ? null : "Share of uninsured population (%)"},
-    y: {domain: TOWNS, label: compact ? null : "Town"},
+    y: {domain: TOWNS.filter(t => towns.includes(t)), label: compact ? null : "Town"},
     color: {domain: AGES, range: ["#1A5276", "#2E86C1", "#85C1E9", "#F0A500", "#C0392B"], legend: true},
     marks: [
       Plot.barX(data, Plot.stackX({x: "pct", y: "town", fill: "age", order: AGES, tip: true,
@@ -262,7 +264,7 @@ viewof masterTown = chips([{label: "All North Meck", value: "All"}, ...TOWNS], {
 <div id="hc-overview-age-uninsured">
 
 ```{ojs}
-responsive(width => ageShareChart(width, {compact: true}), {invalidation})
+responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {invalidation})
 ```
 
 </div>

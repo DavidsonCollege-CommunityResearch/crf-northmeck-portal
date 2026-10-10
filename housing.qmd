@@ -177,10 +177,10 @@ responsive(width => stdPlot({
   width, height: 280, style: {...FONT, fontSize: "12px"},
   x: yearAxis({labelOffset: 42}),
   y: {label: "$/mo", labelOffset: 52, grid: true, tickFormat: fmtDollar},
-  color: townColor({legend: true}),
+  color: townColor({legend: masterTown === "All"}),
   marks: [
-    Plot.line(rentIncome, {x: "year", y: "median_rent", stroke: "town", strokeWidth: 2}),
-    Plot.dot(rentIncome, {x: "year", y: "median_rent", fill: "town", r: 3, tip: true,
+    Plot.line(byTown(rentIncome, masterTown), {x: "year", y: "median_rent", stroke: "town", strokeWidth: 2}),
+    Plot.dot(byTown(rentIncome, masterTown), {x: "year", y: "median_rent", fill: "town", r: 3, tip: true,
       title: d => `${d.town} · ${d.year}\n$${d.median_rent.toLocaleString()}/mo`})
   ]
 }), {invalidation})
@@ -201,13 +201,13 @@ of gross income to buy the median home, for a $20k–$35k household
 ```{ojs}
 {
   const brackets = ["$10k-$19,999", "$20k-$34,999", "$35k-$49,999", "$50k-$74,999", "$75k-$99,999", "$100k-$149,999"];
-  const data = ptrBrackets.filter(d => brackets.includes(d.income_bracket));
+  const data = byTown(ptrBrackets, masterTown).filter(d => brackets.includes(d.income_bracket));
   return responsive(width => stdPlot({
     width, height: 300, style: {...FONT, fontSize: "12px"},
     fx: {domain: brackets, axis: "bottom", label: "Income bracket", tickRotate: -30, padding: 0.12},
     x: {axis: null},
     y: {label: "Years", labelOffset: 44, grid: true},
-    color: townColor({legend: true}),
+    color: townColor({legend: masterTown === "All"}),
     marks: [
       Plot.barY(data, {x: "town", y: "ratio", fx: "income_bracket", fill: "town", tip: true,
         title: d => `${d.town} · ${d.income_bracket}\n${d.ratio} years`}),
@@ -231,10 +231,10 @@ median home value in `r hh$home_top_town`, `r round(hh$home_top_value / hh$us_me
 
 ```{ojs}
 {
-  const towns = valueIncome.filter(d => d.year === 2024).map(d => ({town: d.town, value: d.median_home_value}));
+  const towns = byTown(valueIncome, masterTown).filter(d => d.year === 2024).map(d => ({town: d.town, value: d.median_home_value}));
   const data = [...towns, {town: "U.S. Median", value: US_MEDIAN_HOME}].reverse();
   return responsive(width => stdPlot({
-    width, height: 240, marginRight: 55, style: {...FONT, fontSize: "12px"},
+    width, height: masterTown === "All" ? 240 : 140, marginRight: 55, style: {...FONT, fontSize: "12px"},
     x: {label: "Median home value", labelOffset: 42, grid: true, tickFormat: fmtK},
     y: {label: null},
     color: {domain: [...TOWNS, "U.S. Median"], range: [...TOWNS.map(t => TOWN_COLORS[t]), "#ccc"]},
@@ -262,13 +262,13 @@ to save a 20% down payment at a 10% annual savings rate
 
 ```{ojs}
 responsive(width => stdPlot({
-  width, height: 210, style: {...FONT, fontSize: "12px"},
+  width, height: masterTown === "All" ? 210 : 110, style: {...FONT, fontSize: "12px"},
   x: {label: "Years to save 20% down payment", labelOffset: 42, grid: true, domain: [0, 12]},
   y: {label: null},
   color: townColor(),
   marks: [
-    Plot.barX(downPayment, {y: "town", x: "years", fill: "town", tip: true, title: d => `${d.town}\n${d.years.toFixed(1)} years`}),
-    Plot.text(downPayment, {y: "town", x: "years", text: d => d.years.toFixed(1) + " yrs", dx: 5, textAnchor: "start", fontSize: 11, fill: "#555"})
+    Plot.barX(byTown(downPayment, masterTown), {y: "town", x: "years", fill: "town", tip: true, title: d => `${d.town}\n${d.years.toFixed(1)} years`}),
+    Plot.text(byTown(downPayment, masterTown), {y: "town", x: "years", text: d => d.years.toFixed(1) + " yrs", dx: 5, textAnchor: "start", fontSize: 11, fill: "#555"})
   ]
 }), {invalidation})
 ```
@@ -666,12 +666,12 @@ Owner-occupied households dominate all three towns (70–80% of households), but
   const order = ["Single-family", "Small multifamily (2-4 units)", "Large multifamily (5+ units)", "Mobile / other"];
   const colors = ["#5a9e8f", "#f0a500", "#3f4e75", "#e8a598"];
   return responsive(width => stdPlot({
-    width, height: 220, marginLeft: 90, marginBottom: 50,
+    width, height: masterTown === "All" ? 220 : 140, marginLeft: 90, marginBottom: 50,
     x: {label: "Share of units", labelOffset: 45, tickFormat: d => d + "%", domain: [0, 100]},
     y: {label: null},
     color: {legend: true, domain: order, range: colors},
     marks: [
-      Plot.barX(housingTypes, {x: "pct", y: "town", fill: "bucket", order, tip: true, title: d => `${d.town}\n${d.bucket}: ${d.pct}% (${d.count.toLocaleString()} units)`}),
+      Plot.barX(byTown(housingTypes, masterTown), {x: "pct", y: "town", fill: "bucket", order, tip: true, title: d => `${d.town}\n${d.bucket}: ${d.pct}% (${d.count.toLocaleString()} units)`}),
       Plot.ruleX([0])
     ]
   }), {invalidation});
@@ -1251,7 +1251,7 @@ The FPL was designed in the 1960s and does not account for the true cost of livi
   const yT = Math.max(...aliceTown.map(d => d.year)), yC = Math.max(...aliceCounty.map(d => d.year));
   const below = d => (d.poverty_households + d.alice_households) / d.total_households * 100;
   const bars = [
-    ...aliceTown.filter(d => d.year === yT).map(d => ({label: d.town, pct: below(d), color: TOWN_COLORS[d.town] || "#888"})),
+    ...byTown(aliceTown, masterTown).filter(d => d.year === yT).map(d => ({label: d.town, pct: below(d), color: TOWN_COLORS[d.town] || "#888"})),
     ...aliceCounty.filter(d => d.year === yC).map(d => ({label: d.county, pct: below(d), color: "#aaa"}))
   ].sort((a, b) => b.pct - a.pct);
   return responsive(width => stdPlot({
@@ -1280,7 +1280,7 @@ Comparing North Meck towns to Mecklenburg County as a whole reveals whether subu
 ```{ojs}
 {
   const maxYear = Math.max(...aliceTown.map(d => d.year));
-  const lollipop = aliceTown.filter(d => d.year === maxYear)
+  const lollipop = byTown(aliceTown, masterTown).filter(d => d.year === maxYear)
     .map(d => ({town: d.town, pct: (d.poverty_households + d.alice_households) / d.total_households * 100}))
     .sort((a, b) => b.pct - a.pct);
   return responsive(width => stdPlot({
@@ -1326,10 +1326,10 @@ viewof infraMetric = chips([
     width, height: 300, marginBottom: 50,
     x: yearAxis({labelOffset: 45}),
     y: {label: labels[infraMetric], labelOffset: 55, grid: true, tickFormat: d => d.toFixed(1) + "%", domain: niceDomain(infraAccess.map(d => d[infraMetric]), 2, {pad: 2})},
-    color: townColor({legend: true}),
+    color: townColor({legend: masterTown === "All"}),
     marks: [
-      Plot.line(infraAccess, {x: "year", y: infraMetric, stroke: "town", strokeWidth: 2.5}),
-      Plot.dot(infraAccess, {x: "year", y: infraMetric, fill: "town", r: 5, tip: true, title: d => `${d.town}\n${d.year}\n${d[infraMetric].toFixed(1)}%`})
+      Plot.line(byTown(infraAccess, masterTown), {x: "year", y: infraMetric, stroke: "town", strokeWidth: 2.5}),
+      Plot.dot(byTown(infraAccess, masterTown), {x: "year", y: infraMetric, fill: "town", r: 5, tip: true, title: d => `${d.town}\n${d.year}\n${d[infraMetric].toFixed(1)}%`})
     ]
   }), {invalidation});
 }
@@ -1362,10 +1362,10 @@ viewof mobMetric = chips([
     width, height: 300, marginBottom: 50,
     x: yearAxis({labelOffset: 45}),
     y: {label: labels[mobMetric], labelOffset: 55, grid: true, tickFormat: d => d.toFixed(1) + "%", domain: niceDomain(mobility.map(d => d[mobMetric]), 2, {pad: 2})},
-    color: townColor({legend: true}),
+    color: townColor({legend: masterTown === "All"}),
     marks: [
-      Plot.line(mobility, {x: "year", y: mobMetric, stroke: "town", strokeWidth: 2.5}),
-      Plot.dot(mobility, {x: "year", y: mobMetric, fill: "town", r: 5, tip: true, title: d => `${d.town}\n${d.year}\n${d[mobMetric].toFixed(1)}%`})
+      Plot.line(byTown(mobility, masterTown), {x: "year", y: mobMetric, stroke: "town", strokeWidth: 2.5}),
+      Plot.dot(byTown(mobility, masterTown), {x: "year", y: mobMetric, fill: "town", r: 5, tip: true, title: d => `${d.town}\n${d.year}\n${d[mobMetric].toFixed(1)}%`})
     ]
   }), {invalidation});
 }
