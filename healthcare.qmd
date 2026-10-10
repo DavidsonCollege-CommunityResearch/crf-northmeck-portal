@@ -107,7 +107,7 @@ age_text <- function(t) {
   r <- sort(age_rate_town[, t], decreasing = TRUE)
   who <- function(g) AGE_GROUPS[[g]][3]
   paste0("In ", t, ", ", who(names(r)[1]), " have the highest uninsured rate (", fmt_pct(r[[1]], 1), "), followed by ",
-         who(names(r)[2]), " (", fmt_pct(r[[2]], 1), "). Seniors 65+ have the lowest rate, at ", fmt_pct(age_rate_town["65+", t], 1), ".")
+         who(names(r)[2]), " (", fmt_pct(r[[2]], 1), "). Seniors 65+ have the lowest rate, at ", if (age_rate_town["65+", t] < 0.1) "fewer than 1 in 1,000" else fmt_pct(age_rate_town["65+", t], 1), ".")
 }
 cov_range <- function(t) range(sapply(ins_years, town_cov, t = t))
 emp_cov_town <- sapply(towns, function(t) 100 - trate(t, "emp_uninsured", "emp_insured"))
