@@ -999,19 +999,31 @@ cat('<p style="font-size:12px;color:var(--ink-3);margin-top:8px;font-family:\'Ha
 
 2024 population share by race/ethnicity across the three North Meck towns.
 
-::: {.chart-card #race-comp-host title="Population Share by Race (2024)" subtitle="Share of total population by race/ethnicity" chart="race-comp-chart"}
+::: {.chart-card #race-comp-host title="Population Share by Race (2024)" subtitle="Share of total population by race · Other or multiracial: everyone not counted as White, Black, or Asian alone" chart="race-comp-chart"}
 
 ```{ojs}
 viewof raceCompTown = townChips(masterTown)
 {
   showTown(raceCompTown, "#race-comp-host");
-  const RACE_ORDER = ["White", "Black", "Two or More Races", "Asian", "Some Other Race", "American Indian/Alaska Native", "Native Hawaiian/Pacific Islander"];
-  const RACE_COLORS = ["#3f4e75", "#e05c4b", "#f0a500", "#5a9e8f", "#a0522d", "#7a9e4e", "#b07bbf"];
-  const cols = {"White": "white", "Black": "black", "Asian": "asian", "Two or More Races": "two_more", "Some Other Race": "other", "American Indian/Alaska Native": "native", "Native Hawaiian/Pacific Islander": "nhpi"};
-  const all = raceComposition.flatMap(r => Object.entries(cols).map(([race, col]) => {
-    const count = r[col] || 0;
-    return {town: r.town, race, count, pct: Math.round(count / (r.total || 1) * 1000) / 10};
-  }));
+  // Race groups the warehouse may provide. A group whose column is missing
+  // (null in the data) isn't drawn; everyone not counted in a drawn group
+  // becomes "Other or multiracial", so each bar adds up to 100%.
+  const GROUPS = [
+    ["White", "white", "#3f4e75"], ["Black", "black", "#e05c4b"], ["Asian", "asian", "#5a9e8f"],
+    ["Two or More Races", "two_more", "#f0a500"], ["Some Other Race", "other", "#a0522d"],
+    ["American Indian/Alaska Native", "native", "#7a9e4e"], ["Native Hawaiian/Pacific Islander", "nhpi", "#b07bbf"]
+  ].filter(([, col]) => raceComposition.every(r => r[col] != null));
+  const OTHER = ["Other or multiracial", null, "#b8b8b8"];
+  const all = raceComposition.flatMap(r => {
+    const total = r.total || 1;
+    const rows = GROUPS.map(([race, col]) => ({town: r.town, race, count: r[col]}));
+    const rest = Math.max(0, total - rows.reduce((sum, d) => sum + d.count, 0));
+    if (rest / total > 0.001) rows.push({town: r.town, race: OTHER[0], count: rest});
+    return rows.map(d => ({...d, pct: Math.round(d.count / total * 1000) / 10}));
+  });
+  const shown = [...GROUPS, OTHER].filter(([race]) => all.some(d => d.race === race));
+  const RACE_ORDER = shown.map(g => g[0]);
+  const RACE_COLORS = shown.map(g => g[2]);
   const data = byTown(all, raceCompTown);
   const nTowns = new Set(data.map(d => d.town)).size;
   return responsive(width => stdPlot({
@@ -1040,22 +1052,24 @@ viewof raceCompTown = townChips(masterTown)
 
 Demographic change shapes who can access homeownership and who gets displaced. Rising prices pull in higher-income, whiter households while pushing out lower-income residents of color.
 
-::: {.chart-card #race-trend-chart-host title="Racial Composition by Town (2018–2024)" subtitle="Share of total population by race/ethnicity" chart="race-trend-chart"}
+::: {.chart-card #race-trend-chart-host title="Racial Composition by Town (2018–2024)" subtitle="Share of total population by race · Hispanic or Latino residents can be of any race" chart="race-trend-chart"}
 
 ```{ojs}
 viewof raceTrendTown = townChips(masterTown, {includeAll: false})
-viewof raceTrendRaces = chips(["White", "Black", "Hispanic", "Asian", "Other"], {label: "Race:", multiple: true, style: "margin-bottom:14px"})
+viewof raceTrendRaces = chips(["White", "Black", "Asian", "Other or multiracial", "Hispanic or Latino"], {label: "Race:", multiple: true, style: "margin-bottom:14px"})
 {
-  const RACES = ["White", "Black", "Hispanic", "Asian", "Other"];
+  const RACES = ["White", "Black", "Asian", "Other or multiracial", "Hispanic or Latino"];
   const long = raceTrend.flatMap(d => {
     const t = d.total || 1;
-    const other = Math.max(0, d.total - d.white - d.black - d.hispanic - d.asian);
+    // Hispanic or Latino is an ethnicity, counted within the race groups, so
+    // it isn't subtracted here: "Other" is everyone not White, Black, or Asian alone.
+    const other = Math.max(0, d.total - d.white - d.black - d.asian);
     return [
       {town: d.town, year: d.year, race: "White", pct: d.white / t * 100},
       {town: d.town, year: d.year, race: "Black", pct: d.black / t * 100},
-      {town: d.town, year: d.year, race: "Hispanic", pct: d.hispanic / t * 100},
+      {town: d.town, year: d.year, race: "Hispanic or Latino", pct: d.hispanic / t * 100},
       {town: d.town, year: d.year, race: "Asian", pct: d.asian / t * 100},
-      {town: d.town, year: d.year, race: "Other", pct: other / t * 100}
+      {town: d.town, year: d.year, race: "Other or multiracial", pct: other / t * 100}
     ];
   });
   const subset = long.filter(d => d.town === raceTrendTown && raceTrendRaces.includes(d.race));
@@ -1063,7 +1077,7 @@ viewof raceTrendRaces = chips(["White", "Black", "Hispanic", "Asian", "Other"], 
     width, height: 320, marginBottom: 50,
     x: yearAxis({labelOffset: 45}),
     y: {label: "Share of population (%)", labelOffset: 78, grid: true, tickFormat: d => d.toFixed(0) + "%"},
-    color: {domain: RACES, range: ["#3f4e75", "#e05c4b", "#f0a500", "#5a9e8f", "#aaa"], legend: true},
+    color: {domain: RACES, range: ["#3f4e75", "#e05c4b", "#5a9e8f", "#aaa", "#f0a500"], legend: true},
     marks: [
       Plot.ruleY([100], {stroke: "#aaa", strokeDasharray: "4,3"}),
       Plot.line(subset, {x: "year", y: "pct", stroke: "race", strokeWidth: 2.5}),

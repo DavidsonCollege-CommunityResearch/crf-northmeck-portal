@@ -6,10 +6,10 @@
     "black": 1150,
     "asian": 1043,
     "hispanic": 1761,
-    "two_more": 0,
-    "native": 0,
-    "nhpi": 0,
-    "other": 0
+    "two_more": null,
+    "native": null,
+    "nhpi": null,
+    "other": null
   },
   {
     "town": "Davidson",
@@ -18,10 +18,10 @@
     "black": 1402,
     "asian": 467,
     "hispanic": 554,
-    "two_more": 0,
-    "native": 0,
-    "nhpi": 0,
-    "other": 0
+    "two_more": null,
+    "native": null,
+    "nhpi": null,
+    "other": null
   },
   {
     "town": "Huntersville",
@@ -30,9 +30,9 @@
     "black": 8673,
     "asian": 4116,
     "hispanic": 5285,
-    "two_more": 0,
-    "native": 0,
-    "nhpi": 0,
-    "other": 0
+    "two_more": null,
+    "native": null,
+    "nhpi": null,
+    "other": null
   }
 ]
