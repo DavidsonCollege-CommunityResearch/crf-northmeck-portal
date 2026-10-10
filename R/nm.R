@@ -73,3 +73,8 @@ nm_claim <- function(ok, message) {
   }
   invisible(TRUE)
 }
+
+# Building HTML from R (used by R/cards.R and R/data-library.R): escape text,
+# and emit a raw block so Pandoc passes generated markup through untouched.
+esc <- function(x) htmltools::htmlEscape(x)
+raw_html <- function(...) cat("\n```{=html}\n", ..., "\n```\n\n", sep = "")

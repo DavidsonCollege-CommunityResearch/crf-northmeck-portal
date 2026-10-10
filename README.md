@@ -36,6 +36,7 @@ The site is a [Quarto](https://quarto.org) website. **Read [`docs/quarto-pages.m
 - **`js/main.js`:** site-wide behavior (nav search, glossary, accessibility panel, carousels, chart expand/share, Data Library downloads).
 - **`css/styles.css`:** the one stylesheet. A lot of one-off styling also lives in inline `style="..."` attributes in the pages.
 - **`data/*.json`:** the data snapshot every chart and number comes from.
+- **`_data/*.yml`:** lists that pages are built from: the Data Library catalog (`datasets.yml`), the Sources bibliography (`sources.yml`), topic cards (`topics.yml`, shared by the Topics and home pages), and the home page's neighborhood cards (`neighborhoods.yml`). To add a source, topic, or dataset, edit the YAML, not the page.
 
 **Charts** are [Observable JS](https://quarto.org/docs/interactive/ojs/) cells using [Observable Plot](https://observablehq.com/plot/). Copy a chart from `housing.qmd` rather than starting from scratch: the filter chips, town colors, and resizing are already handled by `js/nm-charts.js`.
 
@@ -76,7 +77,7 @@ MotherDuck (hosted DuckDB)  ->  scripts/refresh-data.mjs  ->  data/<name>.json  
 
 Never type data values into a page or chart. If a number isn't in `data/` yet, add it to a dataset first.
 
-**If the dataset should also be downloadable from the Data Library**, add an entry to the `DATASETS` object in `js/main.js` (filename, source, a plain-language `codebook` for each column, and any caveats) and a matching `.dlib-row` block in `data-library.qmd`. Copy an existing entry.
+**If the dataset should also be downloadable from the Data Library**, add an entry to `_data/datasets.yml` (copy an existing one). That one entry builds the row on the Data Library page and drives its CSV, Excel, and codebook downloads.
 
 `dlib-demographics` is known to be broken upstream (it references a column that doesn't exist on its source table) and is intentionally left showing a visible error. Check with a project lead before "fixing" it. Several datasets are static exports with no query behind them yet; `CLAUDE.md` lists them.
 

@@ -1,0 +1,62 @@
+# Bibliography for the Sources page, in display order (numbers are assigned
+# automatically). The home page's Resources card counts these.
+#
+#   title      what the source is
+#   publisher  who publishes it (and edition / geography if useful)
+#   url, link  where it lives, and the short link text shown
+
+- group: Federal agencies
+  sources:
+  - title: American Community Survey (ACS), 5-year estimates
+    publisher: U.S. Census Bureau · 2024 release
+    url: https://data.census.gov
+    link: data.census.gov
+  - title: FY2025 Income Limits
+    publisher: U.S. Dept. of Housing & Urban Development (HUD)
+    url: https://www.huduser.gov/portal/datasets/il.html
+    link: huduser.gov
+  - title: FY2025 Fair Market Rents
+    publisher: HUD · Charlotte-Concord-Gastonia MSA
+    url: https://www.huduser.gov/portal/datasets/fmr.html
+    link: huduser.gov
+  - title: 'PLACES: Local Data for Better Health'
+    publisher: Centers for Disease Control and Prevention (CDC)
+    url: https://www.cdc.gov/places/
+    link: cdc.gov/places
+  - title: Behavioral Health Treatment Services Locator
+    publisher: Substance Abuse and Mental Health Services Administration (SAMHSA)
+    url: https://findtreatment.gov
+    link: findtreatment.gov
+  - title: Occupational Employment & Wage Statistics (OEWS)
+    publisher: U.S. Bureau of Labor Statistics (BLS)
+    url: https://www.bls.gov/oes/
+    link: bls.gov/oes
+  - title: EDFacts
+    publisher: U.S. Dept. of Education, National Center for Education Statistics
+    url: https://eddataexpress.ed.gov
+    link: eddataexpress.ed.gov
+- group: State agencies
+  sources:
+  - title: School Report Card data
+    publisher: NC Department of Public Instruction
+    url: https://www.dpi.nc.gov/data-reports/school-report-cards
+    link: dpi.nc.gov
+- group: Research & data providers
+  sources:
+  - title: Out of Reach 2025
+    publisher: National Low Income Housing Coalition (NLIHC)
+    url: https://nlihc.org/oor
+    link: nlihc.org
+  - title: ALICE Economic Viability Dashboard
+    publisher: United Way of North Carolina
+    url: https://www.unitedforalice.org
+    link: unitedforalice.org
+  - title: Principles for Advancing Equitable Data Practice, 2020
+    publisher: Urban Institute
+    url: https://www.urban.org/research/publication/principles-advancing-equitable-data-practice
+    link: urban.org
+  - title: Beckman & Long, 2016
+    publisher: Community-based research methods
+    url: >-
+      https://www.routledge.com/Community-Based-Research-Teaching-for-Community-Impact/Beckman-Long/p/book/9781620363560
+    link: routledge.com

@@ -1,0 +1,24 @@
+# The five United Neighborhoods, shown as cards on the home page.
+#
+#   anchor  the section id on neighborhoods.html the card links to
+
+- name: Pottstown
+  town: Huntersville
+  anchor: nbhd-pottstown
+  description: A historically African American neighborhood with deep roots in Huntersville.
+- name: West Davidson
+  town: Davidson
+  anchor: nbhd-westdavidson
+  description: A long-standing community on the west side of town, with its own history.
+- name: Smithville
+  town: Cornelius
+  anchor: nbhd-smithville
+  description: One of Cornelius's oldest African American communities, facing change.
+- name: Huntington Green
+  town: Huntersville
+  anchor: nbhd-huntingtongreen
+  description: A neighborhood in Huntersville with a story worth telling.
+- name: East Catawba
+  town: Cornelius
+  anchor: nbhd-eastcatawba
+  description: The fifth united neighborhood. Its history and data are still being gathered.

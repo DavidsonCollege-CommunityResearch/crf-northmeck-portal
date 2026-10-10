@@ -6,11 +6,6 @@
 
 dlib_catalog <- function(path = "_data/datasets.yml") yaml::read_yaml(path)
 
-esc <- function(x) htmltools::htmlEscape(x)
-
-# Raw HTML for Pandoc to pass through untouched.
-raw_html <- function(...) cat("\n```{=html}\n", ..., "\n```\n\n", sep = "")
-
 dlib_row <- function(d, themes) {
   pills <- vapply(d$themes, function(t) {
     sprintf('<span class="theme-pill dlib-theme-tag theme-%s">%s</span>', t, esc(themes[[t]]))

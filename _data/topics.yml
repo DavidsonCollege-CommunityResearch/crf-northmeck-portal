@@ -1,0 +1,21 @@
+# Topic dashboards, shown as cards on the Topics page and the home page.
+#
+#   page     the dashboard's file name without .html
+#   icon     a Tabler Icons name (https://tabler.io/icons)
+#   updated  shown as "Last Updated: <updated>" on the card
+
+- title: Housing
+  page: housing
+  icon: ti-building-community
+  description: Rents, cost burden, evictions, and the affordability gap across North Meck.
+  updated: Jun 2026
+- title: Education
+  page: education
+  icon: ti-school
+  description: K–12 enrollment, school composition, and access by neighborhood.
+  updated: Jul 2026
+- title: Healthcare
+  page: healthcare
+  icon: ti-heartbeat
+  description: Access to care, insurance coverage, and health outcomes across North Meck.
+  updated: Jul 2026

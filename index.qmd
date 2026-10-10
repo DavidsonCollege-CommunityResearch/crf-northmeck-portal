@@ -16,6 +16,10 @@ listing:
 #| include: false
 source("R/nm.R")
 source("R/housing-headlines.R")
+source("R/cards.R")
+topics <- yaml::read_yaml("_data/topics.yml")
+neighborhoods <- yaml::read_yaml("_data/neighborhoods.yml")
+sources <- yaml::read_yaml("_data/sources.yml")
 hh <- housing_headlines
 ```
 
@@ -100,24 +104,14 @@ hh <- housing_headlines
 </div>
 <div class="topics-carousel">
 <div class="topics" id="topicsTrack">
-<div class="tcard is-active" onclick="window.location='/housing.html'">
-<div class="tc-icon"><i class="ti ti-building-community"></i></div>
-<div class="tc-t">Housing</div>
-<div class="tc-b">Rents, cost burden, evictions, and the affordability gap across North Meck.</div>
-<div class="tc-foot"><span class="badge b-live dot">Last Updated: Jun 2026</span><span class="tc-go">Open →</span></div>
-</div>
-<div class="tcard" onclick="window.location='/education.html'">
-<div class="tc-icon"><i class="ti ti-school"></i></div>
-<div class="tc-t">Education</div>
-<div class="tc-b">K–12 enrollment, school composition, and access by neighborhood.</div>
-<div class="tc-foot"><span class="badge b-live dot">Last Updated: Jul 2026</span><span class="tc-go">Open →</span></div>
-</div>
-<div class="tcard" onclick="window.location='/healthcare.html'">
-<div class="tc-icon"><i class="ti ti-heartbeat"></i></div>
-<div class="tc-t">Healthcare</div>
-<div class="tc-b">Access to care, insurance coverage, and health outcomes across North Meck.</div>
-<div class="tc-foot"><span class="badge b-live dot">Last Updated: Jul 2026</span><span class="tc-go">Open →</span></div>
-</div>
+```
+
+```{r}
+#| output: asis
+raw_html(topic_cards(topics, first_active = TRUE))
+```
+
+```{=html}
 </div>
 </div>
 <p class="topics-note"><i class="ti ti-seeding"></i> <span>New topics are added by each incoming cohort of CRF Fellows.</span></p>
@@ -135,11 +129,14 @@ hh <- housing_headlines
 <button class="btn btn-o" style="margin-top:26px" onclick="window.location='/neighborhoods.html'"><i class="ti ti-map-2"></i> <span>Explore the neighborhoods</span></button>
 <div class="nbhd-carousel">
 <div class="nbhd-grid" id="nbhdTrack">
-<div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-pottstown'"><span class="town">HUNTERSVILLE</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Pottstown</span><span class="ds">A historically African American neighborhood with deep roots in Huntersville.</span><span class="tc-go">Explore →</span></div>
-<div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-westdavidson'"><span class="town">Davidson</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>West Davidson</span><span class="ds">A long-standing community on the west side of town, with its own history.</span><span class="tc-go">Explore →</span></div>
-<div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-smithville'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Smithville</span><span class="ds">One of Cornelius's oldest African American communities, facing change.</span><span class="tc-go">Explore →</span></div>
-<div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-huntingtongreen'"><span class="town">Huntersville</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>Huntington Green</span><span class="ds">A neighborhood in Huntersville with a story worth telling.</span><span class="tc-go">Explore →</span></div>
-<div class="nbhd-tcard" onclick="window.location='neighborhoods.html#nbhd-eastcatawba'"><span class="town">Cornelius</span><span class="nm" style="font-size:20px"><i class="ti ti-map-pin tc-pin"></i>East Catawba</span><span class="ds">The fifth united neighborhood. Its history and data are still being gathered.</span><span class="tc-go">Explore →</span></div>
+```
+
+```{r}
+#| output: asis
+raw_html(neighborhood_cards(neighborhoods))
+```
+
+```{=html}
 </div>
 </div>
 </div>
@@ -180,19 +177,19 @@ hh <- housing_headlines
 <div class="tc-icon"><i class="ti ti-book-2"></i></div>
 <div class="tc-t">Glossary</div>
 <div class="tc-b">Plain-language definitions for every technical term used across the site.</div>
-<div class="tc-foot"><span class="badge b-live dot">22 terms</span><span class="tc-go">Open →</span></div>
+<div class="tc-foot"><span class="badge b-live dot">`r count_glossary_terms()` terms</span><span class="tc-go">Open →</span></div>
 </div>
 <div class="tcard" onclick="window.location='/data-library.html'">
 <div class="tc-icon"><i class="ti ti-list-details"></i></div>
 <div class="tc-t">Data Library</div>
 <div class="tc-b">Every dataset behind the dashboards, filterable and downloadable as CSV, Excel, or a full codebook.</div>
-<div class="tc-foot"><span class="badge b-live dot">29 datasets</span><span class="tc-go">Open →</span></div>
+<div class="tc-foot"><span class="badge b-live dot">`r count_datasets()` datasets</span><span class="tc-go">Open →</span></div>
 </div>
 <div class="tcard" onclick="window.location='/sources.html'">
 <div class="tc-icon"><i class="ti ti-books"></i></div>
 <div class="tc-t">Sources</div>
 <div class="tc-b">The full bibliography behind every number on the site: government agencies, research groups, and data providers.</div>
-<div class="tc-foot"><span class="badge b-live dot">12 sources</span><span class="tc-go">Open →</span></div>
+<div class="tc-foot"><span class="badge b-live dot">`r count_sources(sources)` sources</span><span class="tc-go">Open →</span></div>
 </div>
 </div>
 </div>
