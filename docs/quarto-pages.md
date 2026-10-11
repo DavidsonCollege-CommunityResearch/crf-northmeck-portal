@@ -70,16 +70,54 @@ rent rise in Huntersville since 2018
 |---|---|---|
 | `[ACS]{.gloss}` | clickable glossary term | `term=alice` when the term differs from the text |
 | `::: {.note}` | callout box | `.warn` / `.info` color; `source="..."` (adds "Source:"); `caption="..."` for any other footer |
-| `::: {.chart-card}` | chart card | `#host-id`; `chart="chart-id"` wraps the chart cells; `title`, `subtitle`; notes after the chart sit under it |
+| `::: {.chart-card}` | chart card | `#host-id`; `chart="chart-id"` wraps the chart cells; `title`, `subtitle`; notes after the chart sit under it; `.wide` spans a full `.chart-grid` row |
 | `::: {.question}` | question heading + intro | starts with a `###` heading and a paragraph; `.small` for the smaller heading |
 | `::: {.section-head}` | a tab's section header | `eyebrow="..."`, a `##` heading, optional lead paragraph (later paragraphs become smaller notes) |
-| `::: {.fact}` | Overview stat tile | `value`, `tone="warn"`, `source` |
+| `::: {.fact}` | Overview headline figure | `value`, `tone="warn"`, `source`; `target="#card-id"` makes it scroll to its chart |
 | `::: {.nbhd-section}` | neighborhood dashboard subsection | starts with a `####` heading and a lead paragraph; its charts follow |
 
 Every block takes `style="..."` for one-off spacing. Attribute values are
 Markdown, so `[ACS]{.gloss}`, `*italics*`, and inline `r` code work inside
 them. Plain layout wrappers are ordinary fenced divs: `::: {.wrap}`,
 `::: {.g2}`, `::: {.tabpane data-pane="supply"}`.
+
+### Overview tabs: a figure row and a chart grid
+
+Each dashboard's Overview puts its headline figures in one row and their
+charts in a two-column grid below, in the same order:
+
+````markdown
+::: {.fact-band}
+
+::: {.fact target="#ov-rent-host" value="`r fmt_pct(chg)`" tone="warn" source="[ACS]{.gloss} 2018–2024"}
+rent rise in Huntersville since 2018
+:::
+
+...more figures...
+
+:::
+
+::: {.chart-grid}
+
+::: {.chart-card #ov-rent-host title="Median Rent by Town" chart="ov-rent"}
+...chart cell...
+:::
+
+::: {.chart-card .wide #ov-growth-host title="..." chart="ov-growth"}
+...a chart that gets a whole row...
+:::
+
+:::
+````
+
+- A figure with `target="#card-id"` scrolls to that chart and outlines it when
+  clicked (or focused and Enter pressed). A glossary term inside the figure
+  still opens the glossary instead.
+- Charts in the same grid row are drawn to the same height automatically: the
+  shorter one grows to match. Pair charts of similar size, and give a chart
+  that is much shorter or taller than its neighbors `.wide` so it gets its own
+  row instead of being stretched.
+- The figure row wraps to 2×2 and the grid to one column on phones.
 
 One-off layouts (a page's hero and tab bar, the home page) stay as HTML in a
 raw block, which Pandoc passes through untouched:
@@ -183,6 +221,12 @@ viewof rentTown = townChips(masterTown)
 :::
 ````
 
+- `stdPlot()` fits each chart to its labels: after drawing, it measures the
+  chart and widens a margin when a label would be clipped or collide with an
+  axis title, tilts x tick labels that run into each other, and trims unused
+  left margin. You rarely need hand-tuned `marginLeft` / `marginBottom`. Style
+  axis labels inside the chart definition (e.g. `Plot.axisX({fontWeight: 600})`)
+  rather than editing the SVG afterwards, so they're measured as they appear.
 - `responsive(render, {invalidation})` redraws at the container's width on
   load, when a hidden tab opens, when the card is expanded, and on resize.
 - `chips(options, {label, value, multiple})` renders the site's `.filterbar` /
