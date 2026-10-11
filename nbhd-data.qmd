@@ -6,21 +6,35 @@ pagetitle: "Neighborhood Data · North Meck Insights"
 #| include: false
 source("R/nm.R")
 
-# The section leads say how far back the trend charts go ("since 2020").
-# Use the latest first year among the neighborhoods that have a data panel,
-# so the sentence is true for every neighborhood a reader can select.
-nbhd_files <- c("nbhd-demographics", "nbhd-economic", "nbhd-housing",
-                "nbhd-education", "nbhd-transportation", "nbhd-childcare")
+# The section leads say how far back each dataset's trend charts go
+# ("since 2020 (2018 in West Davidson)"). Charts start at each neighborhood's
+# own first year, so name the usual first year and any neighborhood that
+# differs, which keeps the sentence true for every neighborhood a reader can select.
 data_nbhds <- c("Pottstown", "West Davidson", "Smithville", "Huntington Green")
-first_years <- unlist(lapply(nbhd_files, function(f) {
+since_txt <- function(f) {
   d <- nm_data(f)
-  sapply(data_nbhds, function(n) {
+  fy <- sapply(data_nbhds, function(n) {
     y <- d$year[d$neighborhood_name == n]
     if (!length(y)) stop(f, " has no rows for ", n, call. = FALSE)
     min(y)
   })
+  base <- as.numeric(names(which.max(table(fy))))
+  exc <- fy[fy != base]
+  paste0("since ", base,
+         if (length(exc)) paste0(" (", paste0(exc, " in ", names(exc), collapse = "; "), ")"))
+}
+
+# "grown" in the section leads: latest year above each neighborhood's first year.
+grew <- function(f, col) all(sapply(data_nbhds, function(n) {
+  d <- nm_data(f)
+  d <- d[d$neighborhood_name == n, ]
+  d <- d[order(d$year), ]
+  d[[col]][nrow(d)] > d[[col]][1]
 }))
-since_year <- max(first_years)
+nm_claim(grew("nbhd-economic", "total_households"),
+         "Income Over Time lead says the number of households has grown in every neighborhood")
+nm_claim(grew("nbhd-transportation", "total_workers"),
+         "Remote Work lead says the working-age population has grown in every neighborhood")
 ```
 
 ::: {.page .active style="display:block"}
@@ -244,15 +258,15 @@ ndChart(DEMO, nbhd, (rows, w) => stdPlot({
 ::: {.nbhd-section}
 #### Race
 
-Share of the population by race, most recent ACS year.
+Share of the population by race, most recent ACS year, with the Hispanic or Latino share (of any race) shown alongside.
 
-::: {.chart-card title="Racial & Ethnic Composition" subtitle="Share of population by race/ethnicity, most recent ACS year" chart="nd-race-chart"}
+::: {.chart-card title="Racial & Ethnic Composition" subtitle="Share of population by race, plus Hispanic or Latino residents of any race, most recent ACS year" chart="nd-race-chart"}
 
 ```{ojs}
 ndChart(DEMO, nbhd, (rows, w) => {
   const RACE_COLORS = {
-    "White alone": BLUE2, "Black or Afr. Am.": ACCENT, "Hispanic or Latino": RED,
-    "Asian alone": GOLD, "Other / multiracial": MUTED
+    "White alone": BLUE2, "Black or Afr. Am.": ACCENT, "Asian alone": GOLD,
+    "Other / multiracial": MUTED, "Hispanic (any race)": RED
   };
   const latest = rows[rows.length - 1];
   const total = latest.total_population || 1;
@@ -260,9 +274,10 @@ ndChart(DEMO, nbhd, (rows, w) => {
   const raceData = [
     {group: "White alone",         pct: +(latest.race_white / total * 100).toFixed(1)},
     {group: "Black or Afr. Am.",   pct: +(latest.race_black / total * 100).toFixed(1)},
-    {group: "Hispanic or Latino",  pct: +(latest.hispanic_latino / total * 100).toFixed(1)},
     {group: "Asian alone",         pct: +(latest.race_asian / total * 100).toFixed(1)},
-    {group: "Other / multiracial", pct: +(other / total * 100).toFixed(1)}
+    {group: "Other / multiracial", pct: +(other / total * 100).toFixed(1)},
+    // Ethnicity, not race: these residents are also counted in the race bars.
+    {group: "Hispanic (any race)", pct: +(latest.hispanic_latino / total * 100).toFixed(1)}
   ];
   return stdPlot({
     width: w, height: 280, marginBottom: 56, style: STYLE,
@@ -276,6 +291,10 @@ ndChart(DEMO, nbhd, (rows, w) => {
   });
 }, invalidation)
 ```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+Hispanic or Latino residents may be of any race, so they are also counted in the race bars and the shares add to more than 100%. The race bars alone add to 100%.
+:::
 
 :::
 
@@ -342,6 +361,10 @@ ndChart(ECON, nbhd, (rows, w) => stdPlot({
 }), invalidation)
 ```
 
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+Where a neighborhood spans more than one block group, this is the average of the block-group medians weighted by households, an approximation rather than a true neighborhood median.
+:::
+
 :::
 
 :::
@@ -351,7 +374,7 @@ ndChart(ECON, nbhd, (rows, w) => stdPlot({
 ::: {.nbhd-section}
 #### Income Over Time
 
-How the income bracket mix has shifted since `r since_year`, and how the number of households has grown alongside it.
+How the income bracket mix has shifted `r since_txt("nbhd-economic")`, and how the number of households has grown alongside it.
 
 ::: {.g2}
 
@@ -436,9 +459,12 @@ Who owns versus rents in this neighborhood, and how home values and rents compar
 ```{ojs}
 ndChart(HOUS, nbhd, (rows, w) => {
   const latest = rows[rows.length - 1];
+  // Shares of occupied units (owner + renter), so the two bars add to 100%.
+  // (owner_rate / renter_rate in the extract divide by all units, vacant included.)
+  const occupied = (latest.owner_occupied + latest.renter_occupied) || 1;
   const tenureData = [
-    {label: "Owner-occupied",  pct: latest.owner_rate},
-    {label: "Renter-occupied", pct: latest.renter_rate}
+    {label: "Owner-occupied",  pct: +(latest.owner_occupied / occupied * 100).toFixed(1)},
+    {label: "Renter-occupied", pct: +(latest.renter_occupied / occupied * 100).toFixed(1)}
   ];
   return stdPlot({
     width: w, height: 170, marginBottom: 36, style: STYLE,
@@ -479,6 +505,10 @@ ndChart(HOUS, nbhd, (rows, w) => {
 }, invalidation)
 ```
 
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+Where a neighborhood spans more than one block group, these are averages of the block-group medians (rent weighted by renter households, home value by owner households), an approximation rather than true neighborhood medians.
+:::
+
 :::
 
 :::
@@ -488,24 +518,44 @@ ndChart(HOUS, nbhd, (rows, w) => {
 ::: {.nbhd-section}
 #### Cost Burden
 
-Share of renter households spending 30%+ of income on rent — the standard definition of cost-burdened.
+Share of renter households spending 30% or more of income on rent, the standard definition of cost-burdened, split into those paying 30–49.9% and those paying half or more (severely cost-burdened).
 
-::: {.chart-card title="Housing Cost Burden Rate" subtitle="% of renter households paying ≥30% of income on rent" chart="nd-burden-chart"}
+::: {.chart-card title="Housing Cost Burden Rate" subtitle="% of renter households by share of income spent on rent, by year" chart="nd-burden-chart"}
 
 ```{ojs}
-ndChart(HOUS, nbhd, (rows, w) => stdPlot({
-  width: w, height: 220, marginBottom: 48, style: STYLE,
-  x: yearX(rows),
-  y: {label: "Cost Burden Rate", labelOffset: 40, grid: true,
-      domain: [0, Math.min(100, yMax(rows, "burden_rate", 1.3))], tickFormat: d => d + "%"},
-  marks: [
-    Plot.line(rows, {x: "year", y: "burden_rate", stroke: RED, strokeWidth: 2.5}),
-    Plot.dot(rows, {x: "year", y: "burden_rate", fill: RED, r: 4,
-      tip: true, title: d => `${d.year}\n${d.burden_rate}% cost-burdened`}),
-    Plot.ruleY([0])
-  ]
-}), invalidation)
+ndChart(HOUS, nbhd, (rows, w) => {
+  // Both bands as shares of renter households, stacked so the bar's top is the 30%+ share.
+  const BANDS = ["30–49.9% of income", "50%+ of income"];
+  const long = [];
+  rows.forEach(d => {
+    const renters = d.renter_occupied || 0;
+    if (!renters) return;
+    const mod = +(d.cost_burdened / renters * 100).toFixed(1);
+    const sev = +(d.severely_burdened / renters * 100).toFixed(1);
+    const total = +(mod + sev).toFixed(1);
+    long.push({year: d.year, band: BANDS[0], pct: mod, total});
+    long.push({year: d.year, band: BANDS[1], pct: sev, total});
+  });
+  if (!long.length) return null;
+  const mx = Math.max(...long.map(d => d.total));
+  return stdPlot({
+    width: w, height: 260, marginBottom: 48, style: STYLE,
+    x: yearX(rows),
+    y: {label: "Share of renter households (%)", labelOffset: 48, grid: true,
+        domain: [0, Math.min(100, Math.ceil((mx * 1.15) / 5) * 5 || 10)], tickFormat: d => d + "%"},
+    color: {domain: BANDS, range: [GOLD, RED], legend: true},
+    marks: [
+      Plot.barY(long, Plot.stackY({order: BANDS, x: "year", y: "pct", fill: "band",
+        tip: true, title: d => `${d.year}\n${d.band}: ${d.pct}%\nTotal 30%+: ${d.total}%`})),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
 ```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+The two bands are added together on the assumption that the 30–49.9% count does not also include the severely burdened households; we are still confirming this with our data team.
+:::
 
 :::
 
@@ -524,7 +574,7 @@ ndChart(HOUS, nbhd, (rows, w) => stdPlot({
 ::: {.nbhd-section style="margin-top:40px"}
 #### Educational Attainment
 
-Highest level of education completed by residents 25 and older in this neighborhood, and how that mix has shifted since `r since_year`.
+Highest level of education completed by residents 25 and older in this neighborhood, and how that mix has shifted `r since_txt("nbhd-education")`.
 
 ::: {.g2}
 
@@ -657,7 +707,7 @@ ndChart(EDUC, nbhd, (rows, w) => stdPlot({
 ::: {.nbhd-section style="margin-top:40px"}
 #### Commute Mode
 
-How residents get to work: driving alone, transit, walking, cycling, or working from home, and how that mix has shifted since `r since_year`.
+How residents get to work: driving alone, transit, walking, cycling, or working from home, and how that mix has shifted `r since_txt("nbhd-transportation")`.
 
 ::: {.g2}
 
@@ -797,19 +847,31 @@ Estimated share of young children whose parents are in the labor force — a pro
 ::: {.chart-card title="Under-6 Children Likely Needing Childcare" subtitle="% of children under 6 where all available parents work" chart="nd-under6-chart"}
 
 ```{ojs}
-ndChart(CHLD, nbhd, (rows, w) => stdPlot({
-  width: w, height: 240, marginBottom: 48, style: STYLE,
-  x: yearX(rows),
-  y: {label: "% Under-6 Needing Care", labelOffset: 40, grid: true,
-      domain: [0, Math.min(100, yMax(rows, "pct_under6_needs_childcare", 1.3))], tickFormat: d => d + "%"},
-  marks: [
-    Plot.barY(rows, {x: "year", y: "pct_under6_needs_childcare", fill: ACCENT, rx: 3}),
-    Plot.text(rows, {x: "year", y: "pct_under6_needs_childcare", text: d => (d.pct_under6_needs_childcare || 0) + "%",
-      dy: -6, textAnchor: "middle", fill: "var(--ink-2)", fontSize: 12}),
-    Plot.ruleY([0])
-  ]
-}), invalidation)
+ndChart(CHLD, nbhd, (rows, w) => {
+  // Years resting on fewer than SMALL_N children under 6 are drawn lighter and labelled with their count.
+  const SMALL_N = 50;
+  const small = d => (d.children_under6 || 0) < SMALL_N;
+  return stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: yearX(rows),
+    y: {label: "% Under-6 Needing Care", labelOffset: 40, grid: true,
+        domain: [0, Math.min(100, yMax(rows, "pct_under6_needs_childcare", 1.3))], tickFormat: d => d + "%"},
+    marks: [
+      Plot.barY(rows, {x: "year", y: "pct_under6_needs_childcare", fill: d => small(d) ? MUTED : ACCENT, rx: 3,
+        tip: true, title: d => `${d.year}\n${d.pct_under6_needs_childcare || 0}% of ${(d.children_under6 || 0).toLocaleString()} children under 6`
+          + (small(d) ? "\nSmall sample: read with caution" : "")}),
+      Plot.text(rows, {x: "year", y: "pct_under6_needs_childcare",
+        text: d => (d.pct_under6_needs_childcare || 0) + "%" + (small(d) ? `\nn=${d.children_under6 || 0}` : ""),
+        lineAnchor: "bottom", dy: -6, textAnchor: "middle", fill: "var(--ink-2)", fontSize: 12}),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
 ```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+These percentages rest on small counts of young children. Lighter bars mark years with fewer than 50 children under 6 in the estimate (the count is shown as n), where the share is unreliable and can swing widely from year to year.
+:::
 
 :::
 
@@ -839,7 +901,7 @@ ndChart(CHLD, nbhd, (rows, w) => stdPlot({
 ::: {.nbhd-section}
 #### Children Under 18
 
-Total number of children under 18 living in this neighborhood, and how that's changed since `r since_year`.
+Total number of children under 18 living in this neighborhood, and how that's changed `r since_txt("nbhd-childcare")`.
 
 ::: {.chart-card title="Total Children Under 18 Over Time" subtitle="Number of residents under age 18, by year" chart="nd-total-under18-chart"}
 

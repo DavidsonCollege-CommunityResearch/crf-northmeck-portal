@@ -61,10 +61,16 @@ hg_now <- round_h(hg[length(hg)])
 nm_claim(hg_now > hg_first, "Huntington Green caption says population grew since 2020")
 nm_claim(all(abs(hg[-1] - hg_now) <= 100), "Huntington Green caption says population has held at about its current level since the first year")
 
-# East Catawba
+# Today's Black share of the block groups approximating Smithville
+sv_black <- 100 * nm_value(demo, "race_black", neighborhood_name = "Smithville", year = last_year) /
+  pop("Smithville", last_year)
+
+# East Catawba (block groups still being confirmed; figures shown as provisional)
 ec <- pop_series("East Catawba")
 ec_growth <- pct_change(ec[1], ec[length(ec)])
 nm_claim(ec_growth > 0, "East Catawba caption says its population grew")
+nm_claim(all(ec[length(ec)] > 1.5 * c(pt[length(pt)], wd[length(wd)], sv[length(sv)], hg[length(hg)])),
+         "East Catawba note says its block groups cover a much larger population than the other four neighborhoods")
 ```
 
 <div class="page active" style="display:block">
@@ -82,7 +88,7 @@ nm_claim(ec_growth > 0, "East Catawba caption says its population grew")
 <div style="width:100%;border-radius:var(--rl);border:1px solid var(--line);overflow:hidden">
 <iframe src="/maps/neighborhoods-map.html" title="Interactive map of North Meck towns and United Neighborhoods boundaries" loading="lazy" style="display:block;width:100%;height:560px;border:0"></iframe>
 </div>
-<p class="meta" style="margin-top:10px;font-size:13px;color:var(--ink-3)">Census data (ACS 5-year 2024, 2020 Decennial) via tidycensus. Neighborhood boundaries shown at block-group level (dashed) and block level (solid).</p>
+<p class="meta" style="margin-top:10px;font-size:13px;color:var(--ink-3)">Census data (ACS 5-year `r last_year`, 2020 Decennial) via tidycensus. Neighborhood boundaries shown at block-group level (dashed) and block level (solid).</p>
 <div style="margin-top:44px">
 <span class="eyebrow" style="display:block;font-size:15px">Where they are</span>
 <h3 class="sec-h" style="font-size:24px;margin-top:10px"></h3>
@@ -113,7 +119,7 @@ nm_claim(ec_growth > 0, "East Catawba caption says its population grew")
 <div class="nstats">
 <div class="nstat"><div class="nstat-n">1909</div><div class="nstat-l">Established by formerly enslaved &amp; free Black families</div></div>
 <div class="nstat"><div class="nstat-n">~150</div><div class="nstat-l">Homes in the historic community</div></div>
-<div class="nstat"><div class="nstat-n">$1.72M</div><div class="nstat-l">County purchase of the 30-acre Valea Village tract, 2022</div></div>
+<div class="nstat"><div class="nstat-n">$1.72M</div><div class="nstat-l">County purchase of the 30-acre Valea Village tract, 2022</div><div class="nstat-l" style="font-size:11px;font-style:italic;margin-top:4px">Source: Pride Magazine, 2024</div></div>
 <div class="nstat"><div class="nstat-n">1937</div><div class="nstat-l">Torrence-Lytle School built; closed 1966</div></div>
 </div>
 
@@ -142,10 +148,10 @@ minichart("Pottstown", sprintf("Pottstown's block-group population grew %s from 
 <div>
 <div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
 <div class="nstats">
-<div class="nstat"><div class="nstat-n">1920s</div><div class="nstat-l">Neighborhood established west of the railroad</div></div>
+<div class="nstat"><div class="nstat-n">Early 1900s</div><div class="nstat-l">Neighborhood takes shape west of the railroad</div></div>
 <div class="nstat"><div class="nstat-n">1937</div><div class="nstat-l">Davidson Colored School built, now the Ada Jenkins Center</div></div>
-<div class="nstat"><div class="nstat-n">2009</div><div class="nstat-l">Listed within the Davidson Historic District</div></div>
-<div class="nstat"><div class="nstat-n">398</div><div class="nstat-l">Contributing historic resources in the district</div></div>
+<div class="nstat"><div class="nstat-n">2009</div><div class="nstat-l">Listed within the Davidson Historic District</div><div class="nstat-l" style="font-size:11px;font-style:italic;margin-top:4px">Source: National Register nomination, 2009</div></div>
+<div class="nstat"><div class="nstat-n">398</div><div class="nstat-l">Contributing historic resources in the district</div><div class="nstat-l" style="font-size:11px;font-style:italic;margin-top:4px">Source: National Register nomination, 2009</div></div>
 </div>
 
 ```{r}
@@ -165,7 +171,7 @@ minichart("West Davidson", sprintf("West Davidson's block-group population peake
 <div class="nbhd-prose">
 <p>Smithville is the freedmen's community of Cornelius and the largest intact historically African American community in Mecklenburg County. Its roots reach to the 1860s, but it took its name and shape in 1908, when landowner Jacob L. Smith began parceling out his land to Black families, selling to those who could pay and giving it freely to those who could not, so families of formerly enslaved sharecroppers could own homes and stay together.</p>
 <p>For generations Smithville sustained itself through its churches, its Rosenwald school, and tight-knit civic life; resident Nannie Potts went on to become Cornelius's first Black and first female mayor. Denied town services for decades, Smithville was finally annexed by Cornelius in the 1970s. Today, hemmed in by lakefront wealth, the Smithville Community Coalition is leading a resident-authored revitalization plan to add affordable housing without displacing anyone.</p>
-<p class="meta">Demographics: a predominantly Black neighborhood east of I-77, long redlined and underserved, with many aging residents who are direct descendants of the families Jacob Smith first sold land to in 1908.</p>
+<p class="meta">Demographics: a historically Black neighborhood east of I-77, long redlined and underserved, with many aging residents who are direct descendants of the families Jacob Smith first sold land to in 1908. Today the block groups that approximate it are `r fmt_pct(sv_black, 1)` Black (`r last_year` ACS 5-year estimate).</p>
 <div class="reports"><div class="reports-h">Articles &amp; reports</div>
 <div class="report-item" onclick="window.open('https://www.wfae.org/local-news/2019-02-24/finding-home-the-fight-to-save-smithville','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Finding Home: The Fight to Save Smithville</div><div class="report-m"><span class="report-kind">Report</span> WFAE 90.7 · 2019</div></div></div>
 <div class="report-item" onclick="window.open('https://smithvillecommunitycoalition.org/history-smithville','_blank','noopener')"><i class="ti ti-external-link"></i><div class="report-tx"><div class="report-t">Smithville History &amp; Revitalization Plan</div><div class="report-m"><span class="report-kind">Resource</span> Smithville Community Coalition</div></div></div>
@@ -227,7 +233,7 @@ minichart("Huntington Green", sprintf("Huntington Green's block-group population
 <div class="nbhd-prose">
 <p class="nph">East Catawba joins the project as the fifth United Neighborhood. Its founding story, families, and landmarks have not yet been documented here. This section is a scaffold for the research team to complete with verified history.</p>
 <p class="nph">Add the neighborhood's origins, the institutions that anchor it (churches, schools, civic groups), and the pressures it faces today, each with a public source.</p>
-<p class="meta nph">Demographics: to be confirmed.</p>
+<p class="meta">Demographics: the population figures here come from the block groups we are using for East Catawba for now. Its boundary is still being confirmed, so treat them as provisional; they cover a much larger population than the other four neighborhoods.</p>
 <div class="reports"><div class="reports-h">Articles &amp; reports</div>
 <div class="report-item" style="cursor:default"><i class="ti ti-file-plus"></i><div class="report-tx"><div class="report-t nph">Add verified articles &amp; reports for East Catawba</div><div class="report-m"><span class="report-kind">Placeholder</span> source to be added</div></div></div>
 </div>
@@ -235,7 +241,7 @@ minichart("Huntington Green", sprintf("Huntington Green's block-group population
 <div>
 <div class="data-tag"><i class="ti ti-chart-bar"></i> By the numbers</div>
 <div class="nstats">
-<div class="nstat"><div class="nstat-n">~`r fmt_num(round_h(pop("East Catawba", last_year)))`</div><div class="nstat-l">Residents (`r last_year` ACS 5-year block-group estimate)</div></div>
+<div class="nstat"><div class="nstat-n">~`r fmt_num(round_h(pop("East Catawba", last_year)))`</div><div class="nstat-l">Residents (`r last_year` ACS 5-year block-group estimate; provisional, boundary still being confirmed)</div></div>
 <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">Year established, to be verified</div></div>
 <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">Key landmark or institution, to be verified</div></div>
 <div class="nstat"><div class="nstat-n nph">—</div><div class="nstat-l">A defining statistic, to be verified</div></div>
@@ -243,7 +249,7 @@ minichart("Huntington Green", sprintf("Huntington Green's block-group population
 
 ```{r}
 #| output: asis
-minichart("East Catawba", sprintf("East Catawba's block-group population grew %s from %s to %s, reaching %s.",
+minichart("East Catawba", sprintf("East Catawba's block-group population grew %s from %s to %s, reaching %s. Provisional: the boundary is still being confirmed.",
                                   fmt_pct(ec_growth), names(ec)[1], names(ec)[length(ec)], fmt_num(round_h(ec[length(ec)]))))
 ```
 
