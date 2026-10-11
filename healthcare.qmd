@@ -21,9 +21,9 @@ rate <- function(u, i) tot[[u]] / (tot[[u]] + tot[[i]]) * 100   # uninsured shar
 # Overview stat 1: working-age adults (35-64) among the uninsured
 age_unins <- c("unins_U18", "unins_19_25", "unins_26_34", "unins_35_64", "unins_65_over")
 share_3564 <- setNames(i24$unins_35_64 / i24$all_unins * 100, towns)
-share_3564_all <- tot[["unins_35_64"]] / tot[["all_unins"]]
-nm_claim(all(apply(i24[age_unins], 1, which.max) == 4), "overview stat says 35–64 is the largest uninsured age group in every town")
-nm_claim(all(share_3564 >= 40 & share_3564 <= 60), "overview stat says about 1 in 2 uninsured residents in every town is 35–64")
+share_3564_all <- tot[["unins_35_64"]] / tot[["all_unins"]] * 100
+nm_claim(all(apply(i24[age_unins], 1, which.max) == 4) && which.max(tot[age_unins]) == 4,
+         "overview stat and age callout say 35–64 is the largest uninsured age group, overall and in every town")
 
 # Overview stat 2: employer coverage
 cov_types <- c("emp_based_ins", "dir_purchase_ins", "medicare_cov", "medicaid_cov", "tricare_cov", "VA_cov", "other_cov_type")
@@ -34,7 +34,14 @@ nm_claim(all(apply(i24[cov_types], 1, function(v) v[1] >= 2 * sort(v, decreasing
 # Overview stat 3: preventive care (CDC PLACES)
 pc <- nm_data("cdc-preventive-care")
 pc_avg <- tapply(pc$val, pc$measure, mean)
-nm_claim(names(which.min(pc_avg)) == "Dental", "preventive-care stat says dental visits are the lowest measure")
+# Measures come from different PLACES survey years; the stat ranks dental only against same-year measures.
+nm_claim(all(tapply(pc$year, pc$measure, function(y) length(unique(y))) == 1), "preventive-care text gives one survey year per measure")
+pc_year <- tapply(pc$year, pc$measure, unique)
+dental_year <- pc_year[["Dental"]]
+pc_same_year <- names(pc_year)[pc_year == dental_year]
+nm_claim(names(which.min(pc_avg[pc_same_year])) == "Dental", "preventive-care stat says dental visits are the lowest of the measures from the same survey year")
+n_words <- c("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
+pc_years_text <- paste(sapply(sort(unique(pc_year), decreasing = TRUE), function(y) paste0(fmt_list(names(pc_year)[pc_year == y]), ": ", y)), collapse = " · ")
 
 # Dot chart callout: uninsured per 100 residents (same rounding as the chart)
 unins_rate <- setNames(i24$all_unins / (i24$all_ins + i24$all_unins) * 100, towns)
@@ -53,6 +60,10 @@ inc_high <- (tot[["no_ins_75_100"]] + tot[["no_ins_100_above"]]) /
   (tot[["no_ins_75_100"]] + tot[["no_ins_100_above"]] + tot[["ins_75_100"]] + tot[["ins_100_above"]]) * 100
 inc_ratio <- inc_low / inc_high
 nm_claim(inc_ratio >= 2, "income callout says the under-$25k uninsured rate is several times the $75k+ rate")
+BRK <- c("U25", "25_50", "50_75", "75_100", "100_above")
+BRK_LABEL <- setNames(c("under $25k", "$25k–$50k", "$50k–$75k", "$75k–$100k", "$100k or more"), BRK)
+brk_rate_all <- sapply(BRK, function(k) rate(paste0("no_ins_", k), paste0("ins_", k)))
+nm_claim(!is.unsorted(rev(brk_rate_all)), "income callout and coverage-gap intro say uninsured rates rise as household income falls (North Meck totals)")
 age_rate <- c("Under 19" = rate("unins_U18", "ins_U18"), "19–25" = rate("unins_19_25", "ins_19_25"),
               "26–34" = rate("unins_26_34", "ins_26_34"), "35–64" = rate("unins_35_64", "ins_35_64"),
               "65+" = rate("unins_65_over", "ins_65_over"))
@@ -70,7 +81,11 @@ nm_claim(cov_gain[["Huntersville"]] < cov_gain[["Cornelius"]], "trend callout sa
 # Employment callout
 emp_cov <- 100 - rate("emp_uninsured", "emp_insured")
 unemp_cov <- 100 - rate("unemp_uninsured", "unemp_insured")
-nm_claim(100 - unemp_cov > max(inc_low, age_rate), "employment callout calls employment the strongest predictor: unemployed uninsured rate should top every income and age group")
+nm_claim(emp_cov > unemp_cov, "employment callout says employed residents are insured at a higher rate than unemployed residents (North Meck totals)")
+
+# Health Insurance section head: rates vary more by income and age than by town
+nm_claim(diff(range(unins_rate)) < diff(range(brk_rate_all)) && diff(range(unins_rate)) < diff(range(age_rate)),
+         "insurance section head says uninsured rates vary more by income and age than from town to town")
 
 # Mental health (CDC PLACES) and facility map
 mh_dep <- nm_data("mh-depression")
@@ -78,7 +93,8 @@ mh_years <- sort(unique(mh_dep$year))
 nm_claim(identical(mh_years, sort(unique(nm_data("mh-distress")$year))), "mental health cards list the same years for both charts")
 fac <- nm_data("mental-health-facilities")
 meck_cities <- c("Charlotte", "Cornelius", "Davidson", "Huntersville", "Matthews", "Mint Hill", "Pineville")
-nm_claim(any(!fac$city %in% meck_cities), "facility map text says it covers Mecklenburg and surrounding counties")
+fac_meck <- sum(fac$city %in% meck_cities)
+nm_claim(fac_meck < nrow(fac), "facility map text says it covers the Charlotte region, not just Mecklenburg County")
 
 # Chronic disease (CDC PLACES; static file, see data/cdc-chronic-disease.json)
 cd <- nm_data("cdc-chronic-disease")
@@ -88,14 +104,25 @@ cd_years <- sort(unique(cd$year))
 trate <- function(t, u, i) { r <- i24[i24$Town == t, ]; r[[u]] / (r[[u]] + r[[i]]) * 100 }
 emp_share_town <- setNames(i24$emp_based_ins / i24$all_ins * 100, towns)
 pc_town <- tapply(pc$val, list(pc$town, pc$measure), mean)
-nm_claim(all(apply(pc_town[towns, , drop = FALSE], 1, which.min) == which(colnames(pc_town) == "Dental")),
-         "preventive-care stat says dental visits are the lowest measure in each town")
+nm_claim(all(apply(pc_town[towns, pc_same_year, drop = FALSE], 1, function(v) names(which.min(v))) == "Dental"),
+         "preventive-care stat says dental visits are the lowest same-year measure in each town")
 emp_pct <- setNames(i24$emp_based_ins / i24$Tot_pop * 100, towns)
 medicare_pct <- setNames(i24$medicare_cov / i24$Tot_pop * 100, towns)
 inc_low_town <- sapply(towns, trate, u = "no_ins_U25", i = "ins_U25")
 inc_high_town <- setNames((i24$no_ins_75_100 + i24$no_ins_100_above) /
   (i24$no_ins_75_100 + i24$no_ins_100_above + i24$ins_75_100 + i24$ins_100_above) * 100, towns)
-nm_claim(all(inc_low_town / inc_high_town >= 1.5), "income callout says each town's under-$25k uninsured rate is N times its $75k+ rate")
+brk_rate_town <- sapply(towns, function(t) sapply(BRK, function(k) trate(t, paste0("no_ins_", k), paste0("ins_", k))))  # rows: brackets
+income_town_text <- function(t) {
+  r <- brk_rate_town[, t]; top <- names(which.max(r))
+  if (top == "U25") {
+    nm_claim(inc_low_town[[t]] / inc_high_town[[t]] >= 1.5, paste0("income callout says ", t, "'s under-$25k uninsured rate is N times its $75k+ rate"))
+    return(paste0("In ", t, ", residents of households earning under $25k have the highest uninsured rate (", fmt_pct(r[["U25"]], 1), "), about ",
+                  round(inc_low_town[[t]] / inc_high_town[[t]]), "× the ", fmt_pct(inc_high_town[[t]], 1), " rate for residents of households earning $75k or more."))
+  }
+  paste0("In ", t, ", residents of households earning ", BRK_LABEL[[top]], " have the highest uninsured rate (", fmt_pct(r[[top]], 1),
+         "), above the ", fmt_pct(r[["U25"]], 1), " rate for those earning under $25k. Residents of households earning $75k or more are uninsured at ",
+         fmt_pct(inc_high_town[[t]], 1), ".")
+}
 AGE_GROUPS <- list("Under 19" = c("unins_U18", "ins_U18", "children under 19"),
                    "19–25" = c("unins_19_25", "ins_19_25", "adults 19–25"),
                    "26–34" = c("unins_26_34", "ins_26_34", "adults 26–34"),
@@ -114,11 +141,24 @@ emp_cov_town <- sapply(towns, function(t) 100 - trate(t, "emp_uninsured", "emp_i
 unemp_cov_town <- sapply(towns, function(t) 100 - trate(t, "unemp_uninsured", "unemp_insured"))
 unemp_n <- setNames(i24$unemp_insured + i24$unemp_uninsured, towns)
 # "All North Meck" versions of callouts that change with the Area filter
-type_all_text <- paste0("Employer-based insurance dominates across all three towns, reflecting North Meck's relatively high employment rate. Medicaid enrollment is similar from town to town, ranging from ", fmt_pct(min(medicaid_pct), 1), " of residents in ", names(which.min(medicaid_pct)), " to ", fmt_pct(max(medicaid_pct), 1), " in ", names(which.max(medicaid_pct)), ". Uninsured rates remain low overall, but even a ", floor(min(unins_pop_pct)), "–", ceiling(max(unins_pop_pct)), "% gap represents thousands of residents without coverage.")
-income_all_text <- paste0("The coverage gap widens sharply at lower incomes — households earning under $25k are uninsured at about ", round(inc_ratio), "× the rate of those earning $75k or more, reflecting Medicaid eligibility gaps and the inability to afford marketplace premiums without employer contributions.")
-age_all_text <- "Adults aged 26–34 carry the highest uninsured rate of any age group — they've aged off parental plans and often work gig or service jobs without employer coverage. Children under 19 and seniors 65+ show near-universal coverage through CHIP and Medicare respectively."
-trend_all_text <- paste0("Overall coverage rates have held steady at ", fmt_pct(min(cov_by_year), 1), "–", fmt_pct(max(cov_by_year), 1), " since ", y_first, ", but the trend masks variation: Davidson has consistently led all three towns in coverage while Huntersville — despite rapid population growth — has gained just ", sprintf("%.1f", cov_gain[["Huntersville"]]), " percentage points since ", y_first, ", versus ", sprintf("%.1f", cov_gain[["Cornelius"]]), " in Cornelius.")
-emp_all_text <- paste0("Employment is the single strongest predictor of coverage: employed residents are insured at ~", fmt_pct(emp_cov), ", versus ", fmt_pct(unemp_cov), " for unemployed residents. Job loss without a safety net leaves families immediately exposed — and North Meck's service-sector workforce has the least cushion.")
+type_all_text <- paste0("Employer-based insurance dominates across all three towns. Medicaid enrollment is similar from town to town, ranging from ", fmt_pct(min(medicaid_pct), 1), " of residents in ", names(which.min(medicaid_pct)), " to ", fmt_pct(max(medicaid_pct), 1), " in ", names(which.max(medicaid_pct)), ". Uninsured rates remain low overall, but the ", fmt_pct(min(unins_pop_pct), 1), "–", fmt_pct(max(unins_pop_pct), 1), " of residents without coverage in each town add up to about ", fmt_num(round(tot[["all_unins"]], -1)), " people.")
+income_all_text <- paste0("The coverage gap widens sharply at lower incomes: residents of households earning under $25k are uninsured at about ", round(inc_ratio), "× the rate of residents of households earning $75k or more (", fmt_pct(inc_low, 1), " vs. ", fmt_pct(inc_high, 1), ").")
+age_all_text <- paste0("Adults aged 26–34 have the highest uninsured rate of any age group (", fmt_pct(age_rate[["26–34"]], 1), "), even though adults 35–64 make up the largest share of the uninsured, as the chart shows. Turning 26 is also when young adults lose the option, under the Affordable Care Act, of staying on a parent's plan. Children under 19 and seniors 65+ have near-universal coverage (", fmt_pct(100 - age_rate[["Under 19"]]), " and ", fmt_pct(100 - age_rate[["65+"]]), " insured); seniors qualify for Medicare at 65.")
+trend_all_text <- paste0("Overall coverage rates have held steady at ", fmt_pct(min(cov_by_year), 1), "–", fmt_pct(max(cov_by_year), 1), " since ", y_first, ", but the trend masks variation: Davidson has consistently led all three towns in coverage while Huntersville has gained just ", sprintf("%.1f", cov_gain[["Huntersville"]]), " percentage points since ", y_first, ", versus ", sprintf("%.1f", cov_gain[["Cornelius"]]), " in Cornelius.")
+unemp_top <- towns[which.max(i24$unemp_uninsured)]
+unemp_rest <- setdiff(towns, unemp_top)
+nm_claim(unemp_top == "Huntersville" && max(i24$unemp_uninsured) / tot[["unemp_uninsured"]] >= 0.9,
+         "employment callout says nearly all uninsured unemployed residents live in Huntersville")
+nm_claim(all(unemp_cov_town[unemp_rest] >= 95) && all(unemp_n[unemp_rest] < 500),
+         "employment callout says nearly all unemployed residents of Cornelius and Davidson are insured, from small samples")
+emp_all_text <- paste0("Across North Meck, ", fmt_pct(emp_cov), " of employed residents are insured, versus ", fmt_pct(unemp_cov),
+                       " of unemployed residents. That gap comes almost entirely from Huntersville, home to ", fmt_num(max(i24$unemp_uninsured)), " of the ",
+                       fmt_num(tot[["unemp_uninsured"]]), " uninsured unemployed residents (", fmt_pct(100 - unemp_cov_town[[unemp_top]]), " of its unemployed residents lack coverage). In ",
+                       fmt_list(unemp_rest), ", nearly all unemployed residents are insured, though those estimates rest on small samples (about ",
+                       fmt_list(fmt_num(round(unemp_n[unemp_rest], -1))), " unemployed residents).")
+emp_town_text <- function(t) paste0("In ", t, ", ", fmt_pct(emp_cov_town[[t]], 1), " of employed residents are insured, compared with ", fmt_pct(unemp_cov_town[[t]], 1),
+                                    " of its roughly ", fmt_num(round(unemp_n[[t]], -1)), " unemployed residents",
+                                    if (unemp_n[[t]] < 500) " (a small ACS sample, so treat the comparison with caution)" else "", ".")
 ```
 
 ::: {.page .active style="display:block"}
@@ -188,7 +228,7 @@ withTitle = (text, node) => {
 }
 
 // Each age group's share of a town's uninsured residents (stacked to 100%).
-AGES = ["Under 18", "19-25", "26-34", "35-64", "65+"]
+AGES = ["Under 19", "19-25", "26-34", "35-64", "65+"]
 AGE_COLS = ["unins_U18", "unins_19_25", "unins_26_34", "unins_35_64", "unins_65_over"]
 ageShareChart = (width, {compact = false, town = "All"} = {}) => {
   const rows = town === "All" ? ins2024 : ins2024.filter(r => r.Town === town);
@@ -233,7 +273,7 @@ groupRate = (r, ins, unins) => ({ins: r[ins] / (r[ins] + r[unins]) * 100})
 // Uninsured rate by age group for one row of insurance data.
 trendRates = r => ({
   year: r.year,
-  "Under 18": r.unins_U18 / (r.ins_U18 + r.unins_U18) * 100,
+  "Under 19": r.unins_U18 / (r.ins_U18 + r.unins_U18) * 100,
   "19-64": (r.unins_19_25 + r.unins_26_34 + r.unins_35_64) / (r.ins_19_25 + r.ins_26_34 + r.ins_35_64 + r.unins_19_25 + r.unins_26_34 + r.unins_35_64) * 100,
   "65+": r.unins_65_over / (r.ins_65_over + r.unins_65_over) * 100,
   "Total population": r.all_unins / (r.all_ins + r.all_unins) * 100
@@ -307,23 +347,23 @@ showTown(masterTown)
 
 ::: {.fact-band}
 
-::: {.fact target="#he-ov1-host" value="`r by_town(paste0("~1 in ", round(1 / share_3564_all)), function(t) fmt_pct(share_3564[[t]]))`" tone="warn" source="ACS 2024 · Table B27001"}
-`r by_town("uninsured residents in every North Meck town are working-age adults 35–64 which is the single largest age group without coverage", function(t) paste0("of uninsured residents in ", t, " are working-age adults 35–64, the single largest age group without coverage"))`
+::: {.fact target="#he-ov1-host" value="`r by_town(fmt_pct(share_3564_all), function(t) fmt_pct(share_3564[[t]]))`" tone="warn" source="ACS 2024 · Table B27001"}
+`r by_town(paste0("of uninsured North Meck residents are working-age adults 35–64, the single largest age group without coverage in every town (", fmt_pct(min(share_3564)), "–", fmt_pct(max(share_3564)), " of each town's uninsured)"), function(t) paste0("of uninsured residents in ", t, " are working-age adults 35–64, the single largest age group without coverage"))`
 :::
 
 ::: {.fact target="#he-ov2-host" value="`r by_town(paste0("~", round(emp_share * 10), " in 10"), function(t) fmt_pct(emp_share_town[[t]]))`" tone="warn" source="ACS 2024, Table B27010"}
 `r by_town("insured North Meck residents get their coverage through an employer, by far the most common source of coverage across all three towns", function(t) paste0("of insured ", t, " residents get their coverage through an employer, by far the most common source of coverage in the town"))`
 :::
 
-::: {.fact target="#he-ov3-host" value="~`r by_town(fmt_pct(pc_avg[["Dental"]]), function(t) fmt_pct(pc_town[t, "Dental"]))`" tone="warn" source="CDC PLACES"}
-of `r by_town("North Meck", identity)` adults report visiting a dentist in the past year, the lowest completion rate of the `r c("one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")[length(pc_avg)]` preventive care measures we track
+::: {.fact target="#he-ov3-host" value="~`r by_town(fmt_pct(pc_avg[["Dental"]]), function(t) fmt_pct(pc_town[t, "Dental"]))`" tone="warn" source="CDC PLACES, `r dental_year`"}
+of `r by_town("North Meck", identity)` adults reported visiting a dentist in the past year in `r dental_year`, the lowest rate of the `r n_words[length(pc_same_year)]` preventive care measures we track from that survey year
 :::
 
 :::
 
 ::: {.chart-grid style="margin-bottom:48px"}
 
-::: {.chart-card #he-ov1-host title="`r area_label('Uninsured rate by town & age group', 'Uninsured rate by age group: {town}')`" subtitle="Share of uninsured population by age group · ACS 2024" chart="hc-overview-age-uninsured"}
+::: {.chart-card #he-ov1-host title="`r area_label('Uninsured residents by age group, by town', 'Uninsured residents by age group: {town}')`" subtitle="Share of uninsured population by age group · ACS 2024" chart="hc-overview-age-uninsured"}
 
 ```{ojs}
 responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {invalidation})
@@ -357,13 +397,17 @@ responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {in
 
 :::
 
-::: {.chart-card .wide #he-ov3-host title="Preventive care completion rates by measure" subtitle="`r area_label('Average share of adults completing each screening or checkup, across all three towns', 'Share of adults completing each screening or checkup in {town}')`" chart="chart-preventive-overview" style="margin-bottom:28px"}
+::: {.chart-card .wide #he-ov3-host title="Preventive care completion rates by measure" subtitle="`r area_label(paste0('Average share of adults completing each screening or checkup, across all three towns · ', pc_years_text), paste0('Share of adults completing each screening or checkup in {town} · ', pc_years_text))`" chart="chart-preventive-overview" style="margin-bottom:28px"}
 
 ```{ojs}
 {
   const scoped = masterTown === "All" ? prevCare : prevCare.filter(d => d.town === masterTown);
   const measures = [...new Set(scoped.map(d => d.measure))];
-  const data = measures.map(m => ({measure: m, avg: d3.mean(scoped.filter(d => d.measure === m), d => d.val)})).sort((a, b) => b.avg - a.avg);
+  // Measures come from different PLACES survey years, so each label carries its year.
+  const data = measures.map(m => {
+    const rows = scoped.filter(d => d.measure === m);
+    return {measure: `${m} (${rows[0].year})`, avg: d3.mean(rows, d => d.val)};
+  }).sort((a, b) => b.avg - a.avg);
   return responsive(width => stdPlot({
     width, height: 90 + data.length * 30, marginLeft: 110,
     x: {label: "Completion rate (%)", domain: [0, 100], grid: true},
@@ -432,7 +476,7 @@ responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {in
 ::: {.section-head eyebrow="Health Insurance"}
 ## Who has coverage, and who is one medical bill away from a financial crisis?
 
-Insurance status is a primary driver of whether people seek preventive care or delay treatment until a condition becomes an emergency. In North Meck, income and employment type shape coverage more than geography alone.
+Insurance status is a primary driver of whether people seek preventive care or delay treatment until a condition becomes an emergency. In North Meck, uninsured rates vary far more by income and age than from town to town.
 :::
 
 <!-- Dot chart: always all three towns; hidden while the coverage-type chart below shows a single town -->
@@ -539,7 +583,8 @@ viewof hcInsTown = townChips(masterTown, {label: ""})
         width, height: 290, marginLeft: 110, marginTop: 40, marginBottom: 10, marginRight: 10,
         x: {domain: labels, axis: null, padding: 0.12},
         y: {domain: TOWNS, label: null, tickSize: 0, padding: 0.2},
-        color: {type: "linear", domain: [0, 65], scheme: "blues", legend: true, label: "% of total population", tickFormat: pctFmt, width: 240, marginLeft: 12},
+        // Top of the scale rounds the largest cell up to the next 5%, so no value falls off the end.
+        color: {type: "linear", domain: [0, Math.ceil(d3.max(cells, d => d.val) / 5) * 5], scheme: "blues", legend: true, label: "% of total population", tickFormat: pctFmt, width: 240, marginLeft: 12},
         marks: [
           // Column labels styled here (not after drawing) so stdPlot measures them as shown.
           Plot.axisX({anchor: "top", label: null, tickSize: 0, fontSize: 11, fontWeight: 600, fill: "#1B4F72"}),
@@ -582,11 +627,11 @@ viewof hcInsTown = townChips(masterTown, {label: ""})
 ::: {.question}
 ### Who faces the greatest coverage gap?
 
-Lower-income households and working-age adults aged 26–64 carry the highest uninsured rates.
+Residents of lower-income households and working-age adults aged 26–64 carry the highest uninsured rates.
 
 ::: {.g2}
 
-::: {.chart-card #hc-ins-income-host title="By income bracket (2024)" subtitle="ACS B27016 · insured vs. uninsured rate" chart="hc-ins-income" style="padding:20px 16px 12px"}
+::: {.chart-card #hc-ins-income-host title="By income bracket (2024)" subtitle="`r by_town('ACS B27015 · uninsured rate by household income, by town', function(t) 'ACS B27015 · insured vs. uninsured rate by household income')`" chart="hc-ins-income" style="padding:20px 16px 12px"}
 
 ```{ojs}
 viewof incomeTown = townChips(masterTown, {all: "All", label: ""})
@@ -621,20 +666,20 @@ viewof incomeTown = townChips(masterTown, {all: "All", label: ""})
 }
 ```
 
-::: {.note .info source="[ACS]{.gloss} 2024 · Table B27016" style="margin-top:16px"}
-`r by_town(income_all_text, function(t) paste0("In ", t, ", households earning under $25k are uninsured at ", fmt_pct(inc_low_town[[t]], 1), ", about ", round(inc_low_town[[t]] / inc_high_town[[t]]), "× the ", fmt_pct(inc_high_town[[t]], 1), " rate for households earning $75k or more."))`
+::: {.note .info source="[ACS]{.gloss} 2024 · Table B27015" style="margin-top:16px"}
+`r by_town(income_all_text, income_town_text)`
 :::
 
 :::
 
-::: {.chart-card #hc-ins-age-host title="By age group (2024)" subtitle="ACS B27001 · insured vs. uninsured rate" chart="hc-ins-age" style="padding:20px 16px 12px"}
+::: {.chart-card #hc-ins-age-host title="By age group (2024)" subtitle="`r by_town('ACS B27001 · share of uninsured residents in each age group, by town', function(t) 'ACS B27001 · insured vs. uninsured rate by age group')`" chart="hc-ins-age" style="padding:20px 16px 12px"}
 
 ```{ojs}
 viewof ageTown = townChips(masterTown, {all: "All", label: ""})
 {
   showTown(ageTown, "#hc-ins-age-host");
   if (ageTown === "All") {
-    return responsive(width => withTitle("Uninsurance Rates by Age, North Mecklenburg 2024", ageShareChart(width)), {invalidation});
+    return responsive(width => withTitle("Uninsured Residents by Age Group, North Mecklenburg 2024", ageShareChart(width)), {invalidation});
   }
   const r = singleRow(ageTown);
   const groups = [["Under 19", "U18"], ["19–25", "19_25"], ["26–34", "26_34"], ["35–64", "35_64"], ["65+", "65_over"]]
@@ -678,8 +723,8 @@ viewof ageTrendTown = townChips(masterTown, {label: ""})
     ]
   });
   if (ageTrendTown === "All") {
-    const GROUPS = ["Under 18", "19-64", "65+", "Total population"];
-    const PANEL_TITLES = ["Under 18", "19-64", "65+", "Total Population"];
+    const GROUPS = ["Under 19", "19-64", "65+", "Total population"];
+    const PANEL_TITLES = ["Under 19", "19-64", "65+", "Total Population"];
     const COLORS = ["#2a78d6", "#1baf7a", "#eda100"];
     const rows = insurance.flatMap(r => { const t = trendRates(r); return GROUPS.map(g => ({key: r.Town, group: g, year: r.year, value: t[g]})); });
     return responsive(width => {
@@ -701,7 +746,7 @@ viewof ageTrendTown = townChips(masterTown, {label: ""})
       return wrap;
     }, {invalidation});
   }
-  const GROUPS = ["Under 18", "19-64", "65+", "Total population"];
+  const GROUPS = ["Under 19", "19-64", "65+", "Total population"];
   const COLORS = ["#2E86AB", "#1B4F72", "#E8A838", "#7B7D7D"];
   const rows = trendRows(ageTrendTown).flatMap(r => { const t = trendRates(r); return GROUPS.map(g => ({key: g, group: ageTrendTown, year: r.year, value: t[g]})); });
   // Line-end labels, nudged apart so they don't overlap.
@@ -725,7 +770,7 @@ viewof ageTrendTown = townChips(masterTown, {label: ""})
 ::: {.question}
 ### Is coverage improving, and does employment predict it?
 
-Coverage rates have remained relatively stable since `r y_first` — but small shifts matter for thousands of residents. Employment status is strongly predictive of whether someone has a plan at all.
+Coverage rates have remained relatively stable since `r y_first` — but small shifts matter for thousands of residents. Employment status matters too, though the pattern differs sharply from town to town.
 
 ::: {.g2}
 
@@ -783,7 +828,7 @@ viewof empTown = townChips(masterTown, {all: "All", label: ""})
 ```
 
 ::: {.note .warn source="[ACS]{.gloss} 2024 · Table B27011" style="margin-top:16px"}
-`r by_town(emp_all_text, function(t) paste0("In ", t, ", ", fmt_pct(emp_cov_town[[t]], 1), " of employed residents are insured, compared with ", fmt_pct(unemp_cov_town[[t]], 1), " of its roughly ", fmt_num(round(unemp_n[[t]], -1)), " unemployed residents."))`
+`r by_town(emp_all_text, emp_town_text)`
 :::
 
 :::
@@ -861,11 +906,11 @@ responsive(width => prevalenceChart(mhDepression, depressionTown, width, {yearCo
 ::: {.question}
 ### Where are mental health and substance use facilities located?
 
-DHHS-licensed mental health and substance use facilities in Mecklenburg County and surrounding counties. Search your address to find facilities within a given radius.
+Mental health and substance use treatment facilities across the Charlotte region, from SAMHSA's treatment services locator. Search your address to find facilities within a given radius.
 
 ::: {#mh-map-card .card}
 <div class="card-t">Mental Health &amp; Substance Use Facility Locations</div>
-<div class="card-s">`r nrow(fac)` licensed facilities · Mecklenburg County and surrounding counties · NC DHHS</div>
+<div class="card-s">`r nrow(fac)` facilities in the Charlotte region, `r fac_meck` of them in Mecklenburg County · SAMHSA</div>
 
 ```{=html}
 <div style="display:flex;gap:8px;margin:14px 0 10px">
@@ -911,7 +956,7 @@ DHHS-licensed mental health and substance use facilities in Mecklenburg County a
 ::: {.section-head eyebrow="Chronic Disease & Prevention"}
 ## How much chronic disease burden does North Meck carry, and is it preventable?
 
-Diabetes, obesity, and hypertension are among the most prevalent and costly chronic conditions in the United States. Their rates are shaped by income, food access, housing stability, and stress — making them direct downstream indicators of the social determinants this portal tracks.
+Diabetes, obesity, and high blood pressure are among the most common chronic conditions in adults. These estimates show how prevalent each one is in North Meck's towns, and how that has changed over time.
 :::
 
 <!-- Section 1: Chronic disease metric charts -->
@@ -941,7 +986,7 @@ responsive(width => chronicChart("diabetes", width), {invalidation})
 
 :::
 
-::: {.chart-card #cd-obesity-host title="Obesity Prevalence" subtitle="`r paste(cd_years, collapse = " · ")` · CDC PLACES"}
+::: {.chart-card #cd-obesity-host title="Age-adjusted Obesity Prevalence" subtitle="`r paste(cd_years, collapse = " · ")` · CDC PLACES"}
 
 ::: {#cd-obesity-chart style="width:100%"}
 
@@ -955,7 +1000,7 @@ responsive(width => chronicChart("obesity", width), {invalidation})
 
 :::
 
-::: {.chart-card #cd-hbp-host title="High Blood Pressure Prevalence" subtitle="`r paste(cd_years, collapse = " · ")` · CDC PLACES"}
+::: {.chart-card #cd-hbp-host title="Age-adjusted High Blood Pressure Prevalence" subtitle="`r paste(cd_years, collapse = " · ")` · CDC PLACES"}
 
 ::: {#cd-hbp-chart style="width:100%"}
 
@@ -987,7 +1032,7 @@ Chronic disease and housing cost burden often overlap — residents under financ
 ::: {.question}
 ### Are residents getting screened for the conditions most likely to affect them?
 
-Screening rates for colorectal cancer, cervical cancer, and cholesterol are lower among uninsured and lower-income populations — allowing preventable conditions to progress untreated.
+Screening for colorectal cancer, cervical cancer, and high cholesterol can catch these conditions early, when they are easier to treat.
 
 ::: {.g2}
 
