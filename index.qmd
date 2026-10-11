@@ -21,6 +21,38 @@ topics <- yaml::read_yaml("_data/topics.yml")
 neighborhoods <- yaml::read_yaml("_data/neighborhoods.yml")
 sources <- yaml::read_yaml("_data/sources.yml")
 hh <- housing_headlines
+
+# Education spotlight (NC DPI school report cards; same files as education.qmd)
+gl <- nm_data("grade-level-proficiency")
+gl_scored <- gl[!is.na(gl$glp), ]  # e.g. Merancas reports ">95", not a number
+glp_gap <- max(gl_scored$glp) - min(gl_scored$glp)
+rg <- nm_data("school-race-gap")
+rg_top <- rg[which.max(rg$gap), ]
+dg <- nm_data("school-disability-gap")
+dg_top <- dg[which.max(dg$gap), ]
+eg <- nm_data("school-economic-gap")
+eg_top <- eg[which.max(eg$gap), ]
+
+# Healthcare spotlight (ACS 2024; same file and math as healthcare.qmd)
+ins <- nm_data("healthcare-insurance")
+i24 <- ins[ins$year == 2024, ]
+tot <- colSums(i24[sapply(i24, is.numeric) & names(i24) != "year"])
+rate <- function(u, i) tot[[u]] / (tot[[u]] + tot[[i]]) * 100
+unins_rate <- setNames(i24$all_unins / (i24$all_ins + i24$all_unins) * 100, i24$Town)
+unins_ch <- unins_rate[c("Cornelius", "Huntersville")]
+nm_claim(round(unins_ch[[1]]) == round(unins_ch[[2]]) && all(unins_ch > unins_rate[["Davidson"]]),
+         "home healthcare stat quotes one uninsured rate for Cornelius and Huntersville, the two highest")
+nm_claim(sum(i24$all_unins[i24$Town %in% names(unins_ch)]) >= 2000, "home healthcare stat says thousands are uninsured")
+age_rate <- c("Under 19" = rate("unins_U18", "ins_U18"), "19–25" = rate("unins_19_25", "ins_19_25"),
+              "26–34" = rate("unins_26_34", "ins_26_34"), "35–64" = rate("unins_35_64", "ins_35_64"),
+              "65+" = rate("unins_65_over", "ins_65_over"))
+age_top <- names(which.max(age_rate))
+nm_claim(age_top == "26–34", "home healthcare stat explains the top uninsured age group as aged off parental plans")
+inc_low <- rate("no_ins_U25", "ins_U25")
+inc_high <- (tot[["no_ins_75_100"]] + tot[["no_ins_100_above"]]) /
+  (tot[["no_ins_75_100"]] + tot[["no_ins_100_above"]] + tot[["ins_75_100"]] + tot[["ins_100_above"]]) * 100
+emp_cov <- 100 - rate("emp_uninsured", "emp_insured")
+unemp_cov <- 100 - rate("unemp_uninsured", "unemp_insured")
 ```
 
 ```{=html}
@@ -67,25 +99,25 @@ hh <- housing_headlines
 <div class="stats stats-4">
 <div class="stat"><div class="stat-n warn">`r fmt_pct(hh$rent_top_rise)`</div><div class="stat-l">rent rise in `r hh$rent_top_town`, 2018–2024 (`r fmt_dollar(hh$rent_top_2018)` → `r fmt_dollar(hh$rent_top_2024)`/mo)</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2018–2024</span></div>
 <div class="stat"><div class="stat-n warn">`r floor(hh$ptr_20_35_min)`+ yrs</div><div class="stat-l">of gross income to buy the median home, for a $20k–$35k household</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-<div class="stat"><div class="stat-n"><span class="cur">$</span>`r fmt_k(hh$home_top_value, prefix = "")`</div><div class="stat-l">median home in `r hh$home_top_town`, `r round(hh$home_top_value / hh$us_median_home, 1)`× the U.S. national median</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-<div class="stat"><div class="stat-n">~`r round(hh$down_payment_max_years)` yrs</div><div class="stat-l">to save a 20% down payment at a 10% annual savings rate</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+<div class="stat"><div class="stat-n"><span class="cur">$</span>`r fmt_k(hh$home_top_value, prefix = "")`</div><div class="stat-l">median home in `r hh$home_top_town`, `r sprintf("%.1f", hh$home_top_value / hh$us_median_home)`× the U.S. national median</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024 · U.S.: ACS 2024 5-year, B25077</span></div>
+<div class="stat"><div class="stat-n">up to ~`r round(hh$down_payment_max_years)` yrs</div><div class="stat-l">to save a 20% down payment at a 10% annual savings rate (longest in `r hh$down_payment_max_town`)</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
 </div>
 <button class="spot-readmore" onclick="storyGo(this)" data-topic="housing" style="font-size:17px"><span class="rs-pre">Read the story:</span><span class="rs-rotator"><span class="rs-title"><span class="rs-text"></span><i class="ti ti-arrow-narrow-right"></i></span></span></button>
 </div>
 <div class="spot-slide" data-topic="education">
 <div class="stats stats-4">
-<div class="stat"><div class="stat-n warn">68.6 pts</div><div class="stat-l">gap in grade-level proficiency between North Meck's highest- and lowest-performing schools</div><span class="stat-src">NC DPI, 2024–25</span></div>
-<div class="stat"><div class="stat-n warn">47.4 pts</div><div class="stat-l">proficiency gap between Hispanic and white students at Cornelius Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
-<div class="stat"><div class="stat-n warn">61.4 pts</div><div class="stat-l">proficiency gap for students with disabilities at Barnette Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
-<div class="stat"><div class="stat-n warn">42.1 pts</div><div class="stat-l">proficiency gap for economically disadvantaged students at Huntersville Elementary</div><span class="stat-src">NC DPI, 2024–25</span></div>
+<div class="stat"><div class="stat-n warn">`r fmt_num(glp_gap, 1)` pts</div><div class="stat-l">gap in grade-level proficiency between North Meck's highest- and lowest-performing schools, among schools with reported scores</div><span class="stat-src">NC DPI, 2024–25</span></div>
+<div class="stat"><div class="stat-n warn">`r fmt_num(rg_top$gap, 1)` pts</div><div class="stat-l">proficiency gap between `r rg_top$comparison_group` and white students at `r rg_top$school`</div><span class="stat-src">NC DPI, 2024–25</span></div>
+<div class="stat"><div class="stat-n warn">`r fmt_num(dg_top$gap, 1)` pts</div><div class="stat-l">proficiency gap for students with disabilities at `r dg_top$school`</div><span class="stat-src">NC DPI, 2024–25</span></div>
+<div class="stat"><div class="stat-n warn">`r fmt_num(eg_top$gap, 1)` pts</div><div class="stat-l">proficiency gap for economically disadvantaged students at `r eg_top$school`</div><span class="stat-src">NC DPI, 2024–25</span></div>
 </div>
 </div>
 <div class="spot-slide" data-topic="healthcare">
 <div class="stats stats-4">
-<div class="stat"><div class="stat-n warn">5%</div><div class="stat-l">of residents uninsured in Cornelius &amp; Huntersville — thousands without a safety net</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-<div class="stat"><div class="stat-n warn">26–34</div><div class="stat-l">age group with the highest uninsured rate — off parental plans, often no employer coverage</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-<div class="stat"><div class="stat-n warn">5.4×</div><div class="stat-l">more likely to be uninsured if your household earns under $25k vs. over $100k</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
-<div class="stat"><div class="stat-n">95%</div><div class="stat-l">of employed residents have coverage, vs. 76% for unemployed residents</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+<div class="stat"><div class="stat-n warn">`r fmt_pct(unins_ch[["Cornelius"]])`</div><div class="stat-l">of residents uninsured in Cornelius &amp; Huntersville — thousands without a safety net</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+<div class="stat"><div class="stat-n warn">`r age_top`</div><div class="stat-l">age group with the highest uninsured rate (`r fmt_pct(age_rate[[age_top]], 1)`) — off parental plans, often no employer coverage</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+<div class="stat"><div class="stat-n warn">`r round(inc_low / inc_high)`×</div><div class="stat-l">more likely to be uninsured if your household earns under $25k vs. $75k or more</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
+<div class="stat"><div class="stat-n">`r fmt_pct(emp_cov)`</div><div class="stat-l">of employed residents have coverage, vs. `r fmt_pct(unemp_cov)` for unemployed residents</div><span class="stat-src"><span class="gloss-link" data-term="acs" role="button" tabindex="0" onclick="glossTerm('acs')">ACS</span> 2024</span></div>
 </div>
 </div>
 </div>

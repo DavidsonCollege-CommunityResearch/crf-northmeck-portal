@@ -45,14 +45,18 @@ nm_value <- function(df, col, ...) {
 # Percent change from `from` to `to`, as a number (42.4 means +42.4%).
 pct_change <- function(from, to) (to - from) / from * 100
 
+# Round halves up (62.5 -> 63), as the charts' toFixed() does, so a figure
+# reads the same in text and tooltips. formatC() alone rounds 62.5 to 62.
+round_half_up <- function(x, digits = 0) sign(x) * floor(abs(x) * 10^digits + 0.5) / 10^digits
+
 fmt_dollar <- function(x, digits = 0) {
-  paste0(ifelse(x < 0, "-", ""), "$", formatC(abs(x), format = "f", digits = digits, big.mark = ","))
+  paste0(ifelse(x < 0, "-", ""), "$", formatC(round_half_up(abs(x), digits), format = "f", digits = digits, big.mark = ","))
 }
-fmt_num <- function(x, digits = 0) formatC(x, format = "f", digits = digits, big.mark = ",")
-fmt_pct <- function(x, digits = 0) paste0(formatC(x, format = "f", digits = digits), "%")
+fmt_num <- function(x, digits = 0) formatC(round_half_up(x, digits), format = "f", digits = digits, big.mark = ",")
+fmt_pct <- function(x, digits = 0) paste0(formatC(round_half_up(x, digits), format = "f", digits = digits), "%")
 # "$693k" style, for big dollar figures in stat tiles. Use prefix = "" when
 # the "$" is styled separately (e.g. <span class="cur">$</span>).
-fmt_k <- function(x, digits = 0, prefix = "$") paste0(prefix, formatC(x / 1000, format = "f", digits = digits), "k")
+fmt_k <- function(x, digits = 0, prefix = "$") paste0(prefix, formatC(round_half_up(x / 1000, digits), format = "f", digits = digits), "k")
 
 # "Cornelius, Davidson and Huntersville"
 fmt_list <- function(x) {

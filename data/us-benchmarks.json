@@ -1,0 +1,16 @@
+[
+  {
+    "measure": "median_home_value",
+    "label": "U.S. median home value (owner-occupied)",
+    "value": 332700,
+    "year": 2024,
+    "source": "U.S. Census Bureau, ACS 2024 5-year estimates, table B25077"
+  },
+  {
+    "measure": "gini",
+    "label": "U.S. Gini index of household income inequality",
+    "value": 0.4832,
+    "year": 2024,
+    "source": "U.S. Census Bureau, ACS 2024 5-year estimates, table B19083"
+  }
+]

@@ -15,13 +15,14 @@ local({
 
   ptr <- nm_data("dlib-ptr-by-bracket")
   ptr_20_35 <- ptr$ratio[ptr$income_bracket == "$20k-$34,999"]
-  nm_claim(all(ptr_20_35 >= 20), "housing headline says a $20k–$35k household needs 20+ years of income in every town")
+  # Quoted as "N+ yrs" with N = floor(min(ptr_20_35)), so it holds in every town.
 
   dp <- nm_data("down-payment-years")
 
-  # U.S. comparison: NOT from our data store. A fixed reference value carried
-  # over from the original page; replace with a sourced figure and cite it.
-  us_median_home <- 179400
+  # U.S. comparison values (data/us-benchmarks.json): ACS 2024 5-year,
+  # B25077 (median home value) and B19083 (Gini index).
+  us <- nm_data("us-benchmarks")
+  us_median_home <- nm_value(us, "value", measure = "median_home_value")
 
   housing_headlines <<- list(
     rent_top_town = top,
@@ -32,6 +33,7 @@ local({
     home_top_town = home_top,
     home_top_value = home[[home_top]],
     us_median_home = us_median_home,
-    down_payment_max_years = max(dp$years)
+    down_payment_max_years = max(dp$years),
+    down_payment_max_town = dp$town[which.max(dp$years)]
   )
 })
