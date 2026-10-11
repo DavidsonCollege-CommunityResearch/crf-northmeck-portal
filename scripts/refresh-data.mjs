@@ -1,4 +1,4 @@
-// Snapshots MotherDuck data into public/data/*.json so the site never has to
+// Snapshots MotherDuck data into data/*.json so the site never has to
 // ship a MotherDuck token or run live queries in the browser. Run by
 // .github/workflows/refresh-data.yml on a schedule, or locally by anyone
 // with a MOTHERDUCK_TOKEN of their own (no token is ever committed).
@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUT_DIR = path.resolve(__dirname, '../public/data');
+const OUT_DIR = path.resolve(__dirname, '../data');
 const TOWNS = "('Cornelius','Davidson','Huntersville')";
 
 const TOKEN = process.env.MOTHERDUCK_TOKEN;
@@ -536,12 +536,20 @@ async function run() {
     const twoMoreCol = findCol(colNames, ['two_or_more', 'two or more', 'multiracial']);
     const nativeCol = findCol(colNames, ['american_indian', 'native_american', 'aian']);
     const nhpiCol = findCol(colNames, ['native_hawaiian', 'pacific_islander', 'nhpi']);
-    const otherCol = findCol(colNames, ['some_other', 'other_race']);
+    const otherCol = findCol(colNames, ['some_other', 'other_race', 'race_other']);
     const yearCol = findCol(colNames, ['year']);
     const townCol = findCol(colNames, ['town']);
+    // A race group with no column is written as null, not 0: zero would
+    // claim nobody in these towns belongs to that group. Charts show the
+    // uncounted remainder as "Other or multiracial" (see GitHub issue #37).
+    const optional = { two_more: twoMoreCol, native: nativeCol, nhpi: nhpiCol, other: otherCol };
+    const missing = Object.entries(optional).filter(([, col]) => !col).map(([key]) => key);
+    if (missing.length) {
+      console.warn(`⚠ race-composition: agg_town_demographics has no column for ${missing.join(', ')}; written as null (GitHub issue #37)`);
+    }
     const maxYearRows = await all(conn, `SELECT MAX(${yearCol}) as yr FROM nmidw.agg_town_demographics`);
     const maxYear = maxYearRows[0].yr;
-    const sql = `SELECT ${townCol} as town, ${totalCol} as total, ${whiteCol} as white, ${blackCol} as black, ${asianCol} as asian, ${hispanicCol} as hispanic, ${twoMoreCol || '0'} as two_more, ${nativeCol || '0'} as native, ${nhpiCol || '0'} as nhpi, ${otherCol || '0'} as other FROM nmidw.agg_town_demographics WHERE ${yearCol} = ${maxYear} AND ${townCol} IN ${TOWNS}`;
+    const sql = `SELECT ${townCol} as town, ${totalCol} as total, ${whiteCol} as white, ${blackCol} as black, ${asianCol} as asian, ${hispanicCol} as hispanic, ${twoMoreCol || 'NULL'} as two_more, ${nativeCol || 'NULL'} as native, ${nhpiCol || 'NULL'} as nhpi, ${otherCol || 'NULL'} as other FROM nmidw.agg_town_demographics WHERE ${yearCol} = ${maxYear} AND ${townCol} IN ${TOWNS}`;
     const rows = await all(conn, sql);
     await writeJSON('race-composition', rows);
     console.log(`✓ race-composition: ${rows.length} rows`);

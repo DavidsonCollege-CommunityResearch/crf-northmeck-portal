@@ -1,0 +1,11 @@
+---
+title: "Why some neighborhoods get left out of the data"
+pagetitle: "Why some neighborhoods get left out of the data · North Meck Insights"
+categories: [Data equity]
+date: 2025-03-01
+read-time: "3 min read"
+thumbnail-icon: ti-chart-bar
+draft: true
+---
+
+Placeholder entry — not yet written.

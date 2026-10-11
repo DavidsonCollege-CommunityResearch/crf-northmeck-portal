@@ -1,0 +1,935 @@
+---
+pagetitle: "Neighborhood Data · North Meck Insights"
+---
+
+```{r}
+#| include: false
+source("R/nm.R")
+
+# The section leads say how far back each dataset's trend charts go
+# ("since 2020 (2018 in West Davidson)"). Charts start at each neighborhood's
+# own first year, so name the usual first year and any neighborhood that
+# differs, which keeps the sentence true for every neighborhood a reader can select.
+data_nbhds <- c("Pottstown", "West Davidson", "Smithville", "Huntington Green")
+since_txt <- function(f) {
+  d <- nm_data(f)
+  fy <- sapply(data_nbhds, function(n) {
+    y <- d$year[d$neighborhood_name == n]
+    if (!length(y)) stop(f, " has no rows for ", n, call. = FALSE)
+    min(y)
+  })
+  base <- as.numeric(names(which.max(table(fy))))
+  exc <- fy[fy != base]
+  paste0("since ", base,
+         if (length(exc)) paste0(" (", paste0(exc, " in ", names(exc), collapse = "; "), ")"))
+}
+
+# "grown" in the section leads: latest year above each neighborhood's first year.
+grew <- function(f, col) all(sapply(data_nbhds, function(n) {
+  d <- nm_data(f)
+  d <- d[d$neighborhood_name == n, ]
+  d <- d[order(d$year), ]
+  d[[col]][nrow(d)] > d[[col]][1]
+}))
+nm_claim(grew("nbhd-economic", "total_households"),
+         "Income Over Time lead says the number of households has grown in every neighborhood")
+nm_claim(grew("nbhd-transportation", "total_workers"),
+         "Remote Work lead says the working-age population has grown in every neighborhood")
+```
+
+::: {.page .active style="display:block"}
+
+::: {.wrap}
+<div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><a onclick="window.location='/neighborhoods.html'">United Neighborhoods</a><i class="ti ti-chevron-right"></i><span id="nbhd-data-crumb">Pottstown</span></div>
+
+::: {.dash-hero style="margin-bottom:36px"}
+
+::: {}
+<span class="eyebrow" style="font-size:15px">United Neighborhoods · Data Dashboard</span>
+<h1 class="dash-h1" id="nbhd-data-title">Pottstown</h1>
+<p class="lead dash-lead" style="margin-bottom:0" id="nbhd-data-subtitle">Block-group level ACS data for the Pottstown area in Huntersville.</p>
+:::
+
+:::
+
+```{ojs}
+//| output: false
+import {Plot, stdPlot, responsive, loadData} from "/js/nm-charts.js"
+
+// Page-local metadata: header text for each neighborhood and the name used
+// in the nbhd-*.json extracts. (main.js has a similar NBHD_META, but the
+// baseline page always showed these subtitles, so they are kept as-is.)
+NBHD_META = ({
+  pottstown:       {name: "Pottstown",        subtitle: "Block-group level ACS data for the Pottstown area in Huntersville."},
+  westdavidson:    {name: "West Davidson",    subtitle: "Block-group level ACS data for the West Davidson area in Davidson."},
+  smithville:      {name: "Smithville",       subtitle: "Block-group level ACS data for the Smithville area in Cornelius."},
+  huntingtongreen: {name: "Huntington Green", subtitle: "Block-group level ACS data for the Huntington Green area in Huntersville."},
+  eastcatawba:     {name: "East Catawba",     subtitle: "Data coming soon for the East Catawba area in Cornelius.", noData: true}
+})
+
+STYLE = ({fontFamily: "Hanken Grotesk, sans-serif", fontSize: "13px"})
+ACCENT = "#3f4e75"
+RED = "#e05c4b"
+BLUE2 = "#6b7fa3"
+GOLD = "#f0a500"
+MUTED = "#b0b8c8"
+
+// Numeric strings -> numbers, rows sorted by year (charts read the last row as "latest").
+prep = rows => rows
+  .map(r => Object.fromEntries(Object.entries(r).map(([k, v]) =>
+    [k, k !== "neighborhood_name" && v !== null && v !== "" && !isNaN(v) ? Number(v) : v])))
+  .sort((a, b) => a.year - b.year)
+
+DEMO = loadData("nbhd-demographics").then(prep)
+ECON = loadData("nbhd-economic").then(prep)
+HOUS = loadData("nbhd-housing").then(prep)
+EDUC = loadData("nbhd-education").then(prep)
+TRAN = loadData("nbhd-transportation").then(prep)
+CHLD = loadData("nbhd-childcare").then(prep)
+
+forNbhd = (ds, key) => ds.filter(d => d.neighborhood_name === NBHD_META[key].name)
+
+yMax = (rows, col, padding) => {
+  const mx = Math.max(...rows.map(d => d[col] || 0));
+  return Math.ceil((mx * padding) / 5) * 5 || 10;
+}
+
+yearX = (rows, label = "Year") => ({label, labelOffset: 42, ticks: rows.map(d => d.year), tickFormat: String})
+
+// One neighborhood chart: redraws at the container's width, or says so when
+// the selected neighborhood has no rows in this dataset.
+ndChart = (ds, key, build, invalidation) => {
+  const rows = forNbhd(ds, key);
+  if (!rows.length) {
+    const p = document.createElement("p");
+    p.style.cssText = "color:#e05c4b;padding:12px;font-size:13px;font-family:'Hanken Grotesk',sans-serif";
+    p.textContent = "Data unavailable";
+    return p;
+  }
+  return responsive(w => build(rows, w) ?? document.createElement("div"), {invalidation});
+}
+```
+
+<!-- Neighborhood selector (starts from ?nbhd=… so the nav links land on the right one) -->
+
+```{ojs}
+viewof nbhd = {
+  const param = new URLSearchParams(window.location.search).get("nbhd");
+  let current = NBHD_META[param] ? param : "pottstown";
+  const bar = document.createElement("div");
+  bar.className = "nbhd-selector";
+  bar.style.marginBottom = "24px";
+  const buttons = Object.entries(NBHD_META).map(([key, meta]) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "nbhd-sel-btn" + (meta.noData ? " no-data" : "");
+    b.dataset.nbhd = key;
+    b.style.lineHeight = "normal";  // Quarto's OJS styles shrink button line-height
+    b.textContent = meta.name;
+    b.addEventListener("click", () => {
+      if (current === key) return;
+      current = key;
+      sync();
+      bar.dispatchEvent(new Event("input", {bubbles: true}));
+    });
+    bar.append(b);
+    return b;
+  });
+  function sync() {
+    for (const b of buttons) b.classList.toggle("active", b.dataset.nbhd === current);
+  }
+  Object.defineProperty(bar, "value", {get: () => current, set: v => { current = v; sync(); }});
+  sync();
+  return bar;
+}
+```
+
+```{ojs}
+//| output: false
+// Header text and which panel (data vs. "coming soon") is showing.
+{
+  const meta = NBHD_META[nbhd];
+  document.getElementById("nbhd-data-title").textContent = meta.name;
+  document.getElementById("nbhd-data-subtitle").textContent = meta.subtitle;
+  document.getElementById("nbhd-data-crumb").textContent = meta.name;
+  document.getElementById("nbhd-panel-data").classList.toggle("active", !meta.noData);
+  document.getElementById("nbhd-panel-eastcatawba").classList.toggle("active", !!meta.noData);
+}
+```
+
+<!-- Block-group disclaimer -->
+
+::: {.nbhd-disclaimer}
+<i class="ti ti-info-circle"></i>
+<div id="nbhd-disclaimer-text"><strong>Data note:</strong> Neighborhood boundaries don't align perfectly with U.S. Census geography. The data shown here is from the <strong>ACS block group</strong> that best approximates each neighborhood — the smallest geographic unit the Census publishes. This means the numbers may include some residents just outside the neighborhood boundary. All data comes from the American Community Survey 5-year estimates.</div>
+:::
+
+<!-- Sub-topic tabs (raw HTML so Pandoc doesn't wrap the spans in a <p>) -->
+
+```{=html}
+<div class="tabs" id="nbhd-data-tabs">
+<span class="tab active" data-tab="nd-demographics" onclick="setTab(this)">Demographics</span>
+<span class="tab" data-tab="nd-economic" onclick="setTab(this)">Economic Profile</span>
+<span class="tab" data-tab="nd-housing" onclick="setTab(this)">Housing</span>
+<span class="tab" data-tab="nd-education" onclick="setTab(this)">Education</span>
+<span class="tab" data-tab="nd-transportation" onclick="setTab(this)">Transportation</span>
+<span class="tab" data-tab="nd-childcare" onclick="setTab(this)">Childcare</span>
+</div>
+```
+
+:::
+
+<!-- ── EAST CATAWBA: no data ── -->
+
+::: {#nbhd-panel-eastcatawba .nbhd-panel}
+
+::: {.wrap}
+
+::: {.nbhd-no-data style="margin-top:48px"}
+<i class="ti ti-database-off"></i>
+<div class="nbhd-no-data-h">Data not yet available for East Catawba</div>
+<p class="nbhd-no-data-p">East Catawba is the fifth United Neighborhood. We are still collecting and verifying block-group data for this area. Check back as the research progresses, or explore the neighborhood's history in the <a onclick="window.location='/neighborhoods.html#nbhd-eastcatawba'" style="color:var(--accent);cursor:pointer">neighborhood overview</a>.</p>
+:::
+
+:::
+
+:::
+
+<!-- ── DATA PANELS (shared for all 4 data neighborhoods) ── -->
+
+::: {#nbhd-panel-data .nbhd-panel .active}
+<!-- TAB: Demographics -->
+
+::: {.tabpane .active data-pane="nd-demographics"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Population & Ethnicity
+
+Total population and Hispanic or Latino population share of the block groups approximating this neighborhood, from ACS 5-year estimates.
+
+::: {.g2}
+
+::: {.chart-card title="Total Population" subtitle="Summed across all block groups that approximate this neighborhood" chart="nd-pop-chart"}
+
+```{ojs}
+ndChart(DEMO, nbhd, (rows, w) => {
+  const mx = Math.max(...rows.map(d => d.total_population));
+  return stdPlot({
+    width: w, height: 260, marginBottom: 48, style: STYLE,
+    x: yearX(rows),
+    y: {label: "Population", labelOffset: 48, grid: true, domain: [0, Math.ceil((mx * 1.15) / 50) * 50]},
+    marks: [
+      Plot.line(rows, {x: "year", y: "total_population", stroke: ACCENT, strokeWidth: 2.5}),
+      Plot.dot(rows, {x: "year", y: "total_population", fill: ACCENT, r: 4,
+        tip: true, title: d => `${d.year}\n${Math.round(d.total_population).toLocaleString()} residents`}),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
+```
+
+:::
+
+::: {.chart-card title="Hispanic or Latino Population Rate" subtitle="% of residents identifying as Hispanic or Latino" chart="nd-hl-chart"}
+
+```{ojs}
+ndChart(DEMO, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 36, marginLeft: 54, style: STYLE,
+  y: {label: null, domain: rows.map(d => d.year), tickFormat: String},
+  x: {label: "Share Hispanic or Latino (%)", labelOffset: 30, grid: true,
+      domain: [0, Math.min(100, yMax(rows, "hispanic_rate", 1.3))], tickFormat: d => d + "%"},
+  marks: [
+    Plot.barX(rows, {x: "hispanic_rate", y: "year", fill: RED, rx: 3}),
+    Plot.text(rows, {x: "hispanic_rate", y: "year", text: d => (d.hispanic_rate || 0) + "%", dx: 6,
+      textAnchor: "start", fill: "var(--ink-2)", fontSize: 12}),
+    Plot.ruleX([0])
+  ]
+}), invalidation)
+```
+
+:::
+
+:::
+
+:::
+
+::: {.nbhd-section}
+#### Race
+
+Share of the population by race, most recent ACS year, with the Hispanic or Latino share (of any race) shown alongside.
+
+::: {.chart-card title="Racial & Ethnic Composition" subtitle="Share of population by race, plus Hispanic or Latino residents of any race, most recent ACS year" chart="nd-race-chart"}
+
+```{ojs}
+ndChart(DEMO, nbhd, (rows, w) => {
+  const RACE_COLORS = {
+    "White alone": BLUE2, "Black or Afr. Am.": ACCENT, "Asian alone": GOLD,
+    "Other / multiracial": MUTED, "Hispanic (any race)": RED
+  };
+  const latest = rows[rows.length - 1];
+  const total = latest.total_population || 1;
+  const other = Math.max(0, total - latest.race_white - latest.race_black - latest.race_asian);
+  const raceData = [
+    {group: "White alone",         pct: +(latest.race_white / total * 100).toFixed(1)},
+    {group: "Black or Afr. Am.",   pct: +(latest.race_black / total * 100).toFixed(1)},
+    {group: "Asian alone",         pct: +(latest.race_asian / total * 100).toFixed(1)},
+    {group: "Other / multiracial", pct: +(other / total * 100).toFixed(1)},
+    // Ethnicity, not race: these residents are also counted in the race bars.
+    {group: "Hispanic (any race)", pct: +(latest.hispanic_latino / total * 100).toFixed(1)}
+  ];
+  return stdPlot({
+    width: w, height: 280, marginBottom: 56, style: STYLE,
+    y: {label: "Share of population (%)", labelOffset: 48, grid: true, domain: [0, 100], tickFormat: d => d + "%"},
+    x: {label: null, domain: raceData.map(d => d.group)},
+    marks: [
+      Plot.barY(raceData, {x: "group", y: "pct", fill: d => RACE_COLORS[d.group], rx: 3}),
+      Plot.text(raceData, {x: "group", y: "pct", text: d => d.pct + "%", dy: -8, fill: "var(--ink-2)", fontSize: 12}),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+Hispanic or Latino residents may be of any race, so they are also counted in the race bars and the shares add to more than 100%. The race bars alone add to 100%.
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+<!-- TAB: Economic Profile -->
+
+::: {.tabpane data-pane="nd-economic"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Income
+
+Household income distribution and median household income for residents in this block group.
+
+::: {.g2}
+
+::: {.chart-card title="Household Income Distribution" subtitle="Share of households in each income bracket, most recent ACS year" chart="nd-income-dist-chart"}
+
+```{ojs}
+ndChart(ECON, nbhd, (rows, w) => {
+  const latest = rows[rows.length - 1];
+  const total = latest.total_households || 1;
+  const brackets = [
+    {label: "Under $25k", pct: +(latest.income_under_25k / total * 100).toFixed(1)},
+    {label: "$25k–$50k",  pct: +(latest.income_25k_50k / total * 100).toFixed(1)},
+    {label: "$50k–$100k", pct: +(latest.income_50k_100k / total * 100).toFixed(1)},
+    {label: "$100k+",     pct: +(latest.income_100k_plus / total * 100).toFixed(1)}
+  ];
+  return stdPlot({
+    width: w, height: 210, marginBottom: 36, marginLeft: 90, style: STYLE,
+    x: {label: "Share of households (%) →", labelOffset: 30, domain: [0, 100], tickFormat: d => d + "%"},
+    y: {label: null, domain: brackets.map(d => d.label)},
+    marks: [
+      Plot.barX(brackets, {x: "pct", y: "label", fill: ACCENT, rx: 3}),
+      Plot.text(brackets, {x: "pct", y: "label", text: d => d.pct + "%", dx: 6,
+        textAnchor: "start", fill: "var(--ink-2)", fontSize: 12}),
+      Plot.ruleX([0])
+    ]
+  });
+}, invalidation)
+```
+
+:::
+
+::: {.chart-card title="Median Household Income" subtitle="Median household income in dollars" chart="nd-income-trend-chart"}
+
+```{ojs}
+ndChart(ECON, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "Median Household Income", labelOffset: 56, grid: true, tickFormat: d => "$" + (d / 1000).toFixed(0) + "k"},
+  marks: [
+    Plot.line(rows, {x: "year", y: "median_household_income", stroke: ACCENT, strokeWidth: 2.5}),
+    Plot.dot(rows, {x: "year", y: "median_household_income", fill: ACCENT, r: 4,
+      tip: true, title: d => `${d.year}\n$${Math.round(d.median_household_income).toLocaleString()}`}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+Where a neighborhood spans more than one block group, this is the average of the block-group medians weighted by households, an approximation rather than a true neighborhood median.
+:::
+
+:::
+
+:::
+
+:::
+
+::: {.nbhd-section}
+#### Income Over Time
+
+How the income bracket mix has shifted `r since_txt("nbhd-economic")`, and how the number of households has grown alongside it.
+
+::: {.g2}
+
+::: {.chart-card title="Household Income Distribution Over Time" subtitle="Share of households in each income bracket, by year" chart="nd-income-dist-trend-chart"}
+
+```{ojs}
+ndChart(ECON, nbhd, (rows, w) => {
+  const BRACKETS = ["Under $25k", "$25k–$50k", "$50k–$100k", "$100k+"];
+  const BRACKET_COLORS = {"Under $25k": "#440154", "$25k–$50k": "#31688e", "$50k–$100k": "#35b779", "$100k+": "#fde725"};
+  const long = [];
+  rows.forEach(d => {
+    const tot = d.total_households || 0;
+    if (!tot) return;
+    long.push({year: d.year, bracket: "Under $25k", pct: +(d.income_under_25k / tot * 100).toFixed(1)});
+    long.push({year: d.year, bracket: "$25k–$50k",  pct: +(d.income_25k_50k / tot * 100).toFixed(1)});
+    long.push({year: d.year, bracket: "$50k–$100k", pct: +(d.income_50k_100k / tot * 100).toFixed(1)});
+    long.push({year: d.year, bracket: "$100k+",     pct: +(d.income_100k_plus / tot * 100).toFixed(1)});
+  });
+  if (!long.length) return null;
+  return stdPlot({
+    width: w, height: 300, marginBottom: 56, marginRight: 20, style: STYLE,
+    x: yearX(rows),
+    y: {label: "Share of Households (%)", labelOffset: 48, grid: true, domain: [0, 100], tickFormat: d => d + "%"},
+    color: {domain: BRACKETS, range: BRACKETS.map(b => BRACKET_COLORS[b]), legend: true},
+    marks: [
+      Plot.barY(long, Plot.stackY({order: BRACKETS, x: "year", y: "pct", fill: "bracket",
+        tip: true, title: d => `${d.bracket}\n${d.year}: ${d.pct}%`})),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+::: {.chart-card title="Total Households Over Time" subtitle="Number of households, by year" chart="nd-total-households-chart"}
+
+```{ojs}
+ndChart(ECON, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "Total Households", labelOffset: 52, grid: true, domain: [0, yMax(rows, "total_households", 1.15)]},
+  marks: [
+    Plot.barY(rows, {x: "year", y: "total_households", fill: ACCENT, rx: 3,
+      tip: true, title: d => `${d.year}\n${d.total_households.toLocaleString()} households`}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+<!-- TAB: Housing -->
+
+::: {.tabpane data-pane="nd-housing"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Tenure & Home Values
+
+Who owns versus rents in this neighborhood, and how home values and rents compare.
+
+::: {.g2}
+
+::: {.chart-card title="Owner vs. Renter Occupied" subtitle="Share of occupied housing units by tenure, most recent ACS year" chart="nd-tenure-chart"}
+
+```{ojs}
+ndChart(HOUS, nbhd, (rows, w) => {
+  const latest = rows[rows.length - 1];
+  // Shares of occupied units (owner + renter), so the two bars add to 100%.
+  // (owner_rate / renter_rate in the extract divide by all units, vacant included.)
+  const occupied = (latest.owner_occupied + latest.renter_occupied) || 1;
+  const tenureData = [
+    {label: "Owner-occupied",  pct: +(latest.owner_occupied / occupied * 100).toFixed(1)},
+    {label: "Renter-occupied", pct: +(latest.renter_occupied / occupied * 100).toFixed(1)}
+  ];
+  return stdPlot({
+    width: w, height: 170, marginBottom: 36, style: STYLE,
+    x: {label: "Share of occupied units (%) →", labelOffset: 30, domain: [0, 100], tickFormat: d => d + "%"},
+    y: {label: null, domain: tenureData.map(d => d.label)},
+    marks: [
+      Plot.barX(tenureData, {x: "pct", y: "label", fill: d => d.label.startsWith("Owner") ? ACCENT : RED, rx: 3}),
+      Plot.text(tenureData, {x: "pct", y: "label", text: d => d.pct + "%", dx: 6,
+        textAnchor: "start", fill: "var(--ink-2)", fontSize: 12}),
+      Plot.ruleX([0])
+    ]
+  });
+}, invalidation)
+```
+
+:::
+
+::: {.chart-card title="Median Gross Rent & Home Value" subtitle="Most recent ACS estimate" chart="nd-rent-value-chart"}
+
+```{ojs}
+ndChart(HOUS, nbhd, (rows, w) => {
+  const latest = rows[rows.length - 1];
+  const bars = [
+    {label: "Median Gross Rent", value: latest.median_gross_rent, note: "/mo"},
+    {label: "Median Home Value", value: latest.median_home_value, note: ""}
+  ];
+  return stdPlot({
+    width: w, height: 190, marginBottom: 36, style: STYLE,
+    x: {label: "Dollars →", labelOffset: 30, tickFormat: d => "$" + (d / 1000).toFixed(0) + "k"},
+    y: {label: null, domain: bars.map(d => d.label)},
+    marks: [
+      Plot.barX(bars, {x: "value", y: "label", fill: ACCENT, rx: 3}),
+      Plot.text(bars, {x: "value", y: "label", text: d => "$" + (d.value || 0).toLocaleString() + d.note,
+        dx: 6, textAnchor: "start", fill: "var(--ink-2)", fontSize: 12}),
+      Plot.ruleX([0])
+    ]
+  });
+}, invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+Where a neighborhood spans more than one block group, these are averages of the block-group medians (rent weighted by renter households, home value by owner households), an approximation rather than true neighborhood medians.
+:::
+
+:::
+
+:::
+
+:::
+
+::: {.nbhd-section}
+#### Cost Burden
+
+Share of renter households spending 30% or more of income on rent, the standard definition of cost-burdened, split into those paying 30–49.9% and those paying half or more (severely cost-burdened).
+
+::: {.chart-card title="Housing Cost Burden Rate" subtitle="% of renter households by share of income spent on rent, by year" chart="nd-burden-chart"}
+
+```{ojs}
+ndChart(HOUS, nbhd, (rows, w) => {
+  // Both bands as shares of renter households, stacked so the bar's top is the 30%+ share.
+  const BANDS = ["30–49.9% of income", "50%+ of income"];
+  const long = [];
+  rows.forEach(d => {
+    const renters = d.renter_occupied || 0;
+    if (!renters) return;
+    const mod = +(d.cost_burdened / renters * 100).toFixed(1);
+    const sev = +(d.severely_burdened / renters * 100).toFixed(1);
+    const total = +(mod + sev).toFixed(1);
+    long.push({year: d.year, band: BANDS[0], pct: mod, total});
+    long.push({year: d.year, band: BANDS[1], pct: sev, total});
+  });
+  if (!long.length) return null;
+  const mx = Math.max(...long.map(d => d.total));
+  return stdPlot({
+    width: w, height: 260, marginBottom: 48, style: STYLE,
+    x: yearX(rows),
+    y: {label: "Share of renter households (%)", labelOffset: 48, grid: true,
+        domain: [0, Math.min(100, Math.ceil((mx * 1.15) / 5) * 5 || 10)], tickFormat: d => d + "%"},
+    color: {domain: BANDS, range: [GOLD, RED], legend: true},
+    marks: [
+      Plot.barY(long, Plot.stackY({order: BANDS, x: "year", y: "pct", fill: "band",
+        tip: true, title: d => `${d.year}\n${d.band}: ${d.pct}%\nTotal 30%+: ${d.total}%`})),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+The two bands are added together on the assumption that the 30–49.9% count does not also include the severely burdened households; we are still confirming this with our data team.
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+<!-- TAB: Education -->
+
+::: {.tabpane data-pane="nd-education"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Educational Attainment
+
+Highest level of education completed by residents 25 and older in this neighborhood, and how that mix has shifted `r since_txt("nbhd-education")`.
+
+::: {.g2}
+
+::: {.chart-card title="Educational Attainment Composition Over Time" subtitle="Share of adults 25+ by highest level completed, by year" chart="nd-attainment-composition-chart"}
+
+```{ojs}
+ndChart(EDUC, nbhd, (rows, w) => {
+  const LEVELS = ["Less than HS", "HS / Equivalent", "Some College", "Associate's", "Bachelor's", "Graduate/Prof."];
+  const LEVEL_COLORS = {
+    "Less than HS": "#440154", "HS / Equivalent": "#414487", "Some College": "#2a788e",
+    "Associate's": "#22a884", "Bachelor's": "#7ad151", "Graduate/Prof.": "#fde725"
+  };
+  const COLS = ["n_less_than_hs", "n_hs_or_equiv", "n_some_college", "n_associates", "n_bachelors", "n_graduate_or_prof"];
+  const long = [];
+  rows.forEach(d => {
+    const tot = d.pop_25_plus || 0;
+    if (!tot) return;
+    LEVELS.forEach((level, i) => long.push({year: d.year, level, pct: +(d[COLS[i]] / tot * 100).toFixed(1)}));
+  });
+  if (!long.length) return null;
+  return stdPlot({
+    width: w, height: 300, marginBottom: 70, marginRight: 20, style: STYLE,
+    x: yearX(rows),
+    y: {label: "Share of Adults 25+ (%)", labelOffset: 48, grid: true, domain: [0, 100], tickFormat: d => d + "%"},
+    color: {domain: LEVELS, range: LEVELS.map(l => LEVEL_COLORS[l]), legend: true},
+    marks: [
+      Plot.barY(long, Plot.stackY({order: LEVELS, x: "year", y: "pct", fill: "level",
+        tip: true, title: d => `${d.level}\n${d.year}: ${d.pct}%`})),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+::: {.chart-card title="Bachelor's Degree or Higher Rate" subtitle="% of adults 25+ with a bachelor's degree or above" chart="nd-bachelors-chart"}
+
+```{ojs}
+ndChart(EDUC, nbhd, (rows, w) => stdPlot({
+  width: w, height: 300, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "% Bachelor's or Higher", labelOffset: 40, grid: true,
+      domain: [0, Math.min(100, yMax(rows, "pct_bachelors_or_higher", 1.3))], tickFormat: d => d + "%"},
+  marks: [
+    Plot.line(rows, {x: "year", y: "pct_bachelors_or_higher", stroke: ACCENT, strokeWidth: 2.5}),
+    Plot.dot(rows, {x: "year", y: "pct_bachelors_or_higher", fill: ACCENT, r: 4,
+      tip: true, title: d => `${d.year}\n${d.pct_bachelors_or_higher}% bachelor's+`}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+:::
+
+:::
+
+::: {.nbhd-section}
+#### Attainment Trends
+
+Two ends of the same scale: how many adults live here, and whether the share without a high school diploma is growing or shrinking.
+
+::: {.g2}
+
+::: {.chart-card title="Population 25+ Over Time" subtitle="Number of residents age 25 and older, by year" chart="nd-pop25-chart"}
+
+```{ojs}
+ndChart(EDUC, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "Population 25+", labelOffset: 52, grid: true, domain: [0, yMax(rows, "pop_25_plus", 1.15)]},
+  marks: [
+    Plot.barY(rows, {x: "year", y: "pop_25_plus", fill: ACCENT, rx: 3,
+      tip: true, title: d => `${d.year}\n${d.pop_25_plus.toLocaleString()} adults 25+`}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+::: {.chart-card title="Less Than High School Rate Over Time" subtitle="% of adults 25+ without a high school diploma or equivalent" chart="nd-less-hs-chart"}
+
+```{ojs}
+ndChart(EDUC, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "% Less Than High School", labelOffset: 44, grid: true,
+      domain: [0, Math.max(5, Math.ceil(Math.max(...rows.map(d => d.pct_less_than_hs || 0)) * 1.3))],
+      tickFormat: d => d + "%"},
+  marks: [
+    Plot.line(rows, {x: "year", y: "pct_less_than_hs", stroke: RED, strokeWidth: 2.5}),
+    Plot.dot(rows, {x: "year", y: "pct_less_than_hs", fill: RED, r: 4,
+      tip: true, title: d => `${d.year}\n${d.pct_less_than_hs}% less than HS`}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+<!-- TAB: Transportation -->
+
+::: {.tabpane data-pane="nd-transportation"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Commute Mode
+
+How residents get to work: driving alone, transit, walking, cycling, or working from home, and how that mix has shifted `r since_txt("nbhd-transportation")`.
+
+::: {.g2}
+
+::: {.chart-card title="Commute Mode Share" subtitle="% of workers by primary mode of transportation, most recent [ACS]{.gloss} year" chart="nd-commute-mode-chart"}
+
+```{ojs}
+ndChart(TRAN, nbhd, (rows, w) => {
+  const latest = rows[rows.length - 1];
+  const other = Math.max(0, +(100 - latest.pct_drove_alone - latest.pct_public_transit - latest.pct_worked_from_home).toFixed(1));
+  const modeData = [
+    {label: "Drove alone",      pct: latest.pct_drove_alone},
+    {label: "Worked from home", pct: latest.pct_worked_from_home},
+    {label: "Other",            pct: other},
+    {label: "Public transit",   pct: latest.pct_public_transit}
+  ];
+  return stdPlot({
+    width: w, height: 200, marginBottom: 36, style: STYLE,
+    x: {label: "Share of workers (%) →", labelOffset: 30, domain: [0, 100], tickFormat: d => d + "%"},
+    y: {label: null, domain: modeData.map(d => d.label)},
+    marks: [
+      Plot.barX(modeData, {x: "pct", y: "label", fill: ACCENT, rx: 3}),
+      Plot.text(modeData, {x: "pct", y: "label", text: d => d.pct + "%", dx: 6,
+        textAnchor: "start", fill: "var(--ink-2)", fontSize: 12}),
+      Plot.ruleX([0])
+    ]
+  });
+}, invalidation)
+```
+
+:::
+
+::: {.chart-card title="Commute Mode Over Time" subtitle="Share of workers driving alone, using public transit, or working from home, by year" chart="nd-commute-trend-chart"}
+
+```{ojs}
+ndChart(TRAN, nbhd, (rows, w) => {
+  const long = [];
+  rows.forEach(d => {
+    long.push({year: d.year, series: "Drove alone",      pct: d.pct_drove_alone});
+    long.push({year: d.year, series: "Public transit",   pct: d.pct_public_transit});
+    long.push({year: d.year, series: "Worked from home", pct: d.pct_worked_from_home});
+  });
+  const SERIES_COLORS = {"Drove alone": ACCENT, "Public transit": BLUE2, "Worked from home": GOLD};
+  return stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: yearX(rows),
+    y: {label: "Share of workers (%)", labelOffset: 48, grid: true, domain: [0, 100], tickFormat: d => d + "%"},
+    color: {domain: Object.keys(SERIES_COLORS), range: Object.values(SERIES_COLORS), legend: true},
+    marks: [
+      Plot.line(long, {x: "year", y: "pct", stroke: "series", strokeWidth: 2.5}),
+      Plot.dot(long, {x: "year", y: "pct", fill: "series", r: 3.5,
+        tip: true, title: d => `${d.series}\n${d.year}: ${d.pct}%`}),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+:::
+
+:::
+
+::: {.nbhd-section}
+#### Remote Work & Workforce
+
+Remote work reshaped commuting patterns nationally after 2020. Tracking it locally shows how much of that shift reached this neighborhood, and how its working-age population has grown alongside it.
+
+::: {.g2}
+
+::: {.chart-card title="Remote Work Adoption Over Time" subtitle="% of workers working from home, by year" chart="nd-remote-work-chart"}
+
+```{ojs}
+ndChart(TRAN, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "Working From Home (%)", labelOffset: 48, grid: true,
+      domain: [0, Math.ceil(Math.max(...rows.map(d => d.pct_worked_from_home || 0)) * 1.2 / 5) * 5 || 20]},
+  marks: [
+    Plot.line(rows, {x: "year", y: "pct_worked_from_home", stroke: GOLD, strokeWidth: 2.5}),
+    Plot.dot(rows, {x: "year", y: "pct_worked_from_home", fill: GOLD, r: 4,
+      tip: true, title: d => `${d.year}\n${d.pct_worked_from_home}% worked from home`}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+::: {.chart-card title="Total Workers Over Time" subtitle="Number of employed residents age 16 and over, by year" chart="nd-total-workers-chart"}
+
+```{ojs}
+ndChart(TRAN, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "Total Workers", labelOffset: 48, grid: true, domain: [0, yMax(rows, "total_workers", 1.15)]},
+  marks: [
+    Plot.barY(rows, {x: "year", y: "total_workers", fill: ACCENT, rx: 3,
+      tip: true, title: d => `${d.year}\n${d.total_workers.toLocaleString()} workers`}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+<!-- TAB: Childcare -->
+
+::: {.tabpane data-pane="nd-childcare"}
+
+::: {.wrap}
+
+::: {.nbhd-section style="margin-top:40px"}
+#### Childcare Need
+
+Estimated share of young children whose parents are in the labor force — a proxy for households that likely need childcare.
+
+::: {.g2}
+
+::: {.chart-card title="Under-6 Children Likely Needing Childcare" subtitle="% of children under 6 where all available parents work" chart="nd-under6-chart"}
+
+```{ojs}
+ndChart(CHLD, nbhd, (rows, w) => {
+  // Years resting on fewer than SMALL_N children under 6 are drawn lighter and labelled with their count.
+  const SMALL_N = 50;
+  const small = d => (d.children_under6 || 0) < SMALL_N;
+  return stdPlot({
+    width: w, height: 240, marginBottom: 48, style: STYLE,
+    x: yearX(rows),
+    y: {label: "% Under-6 Needing Care", labelOffset: 40, grid: true,
+        domain: [0, Math.min(100, yMax(rows, "pct_under6_needs_childcare", 1.3))], tickFormat: d => d + "%"},
+    marks: [
+      Plot.barY(rows, {x: "year", y: "pct_under6_needs_childcare", fill: d => small(d) ? MUTED : ACCENT, rx: 3,
+        tip: true, title: d => `${d.year}\n${d.pct_under6_needs_childcare || 0}% of ${(d.children_under6 || 0).toLocaleString()} children under 6`
+          + (small(d) ? "\nSmall sample: read with caution" : "")}),
+      Plot.text(rows, {x: "year", y: "pct_under6_needs_childcare",
+        text: d => (d.pct_under6_needs_childcare || 0) + "%" + (small(d) ? `\nn=${d.children_under6 || 0}` : ""),
+        lineAnchor: "bottom", dy: -6, textAnchor: "middle", fill: "var(--ink-2)", fontSize: 12}),
+      Plot.ruleY([0])
+    ]
+  });
+}, invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+These percentages rest on small counts of young children. Lighter bars mark years with fewer than 50 children under 6 in the estimate (the count is shown as n), where the share is unreliable and can swing widely from year to year.
+:::
+
+:::
+
+::: {.chart-card title="Ages 6–17 Likely Needing After-School Care" subtitle="% of children 6–17 where all available parents work" chart="nd-afterschool-chart"}
+
+```{ojs}
+ndChart(CHLD, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "% Ages 6–17 Needing Care", labelOffset: 40, grid: true,
+      domain: [0, Math.min(100, yMax(rows, "pct_6_17_needs_afterschool", 1.3))], tickFormat: d => d + "%"},
+  marks: [
+    Plot.barY(rows, {x: "year", y: "pct_6_17_needs_afterschool", fill: BLUE2, rx: 3}),
+    Plot.text(rows, {x: "year", y: "pct_6_17_needs_afterschool", text: d => (d.pct_6_17_needs_afterschool || 0) + "%",
+      dy: -6, textAnchor: "middle", fill: "var(--ink-2)", fontSize: 12}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+:::
+
+:::
+
+:::
+
+::: {.nbhd-section}
+#### Children Under 18
+
+Total number of children under 18 living in this neighborhood, and how that's changed `r since_txt("nbhd-childcare")`.
+
+::: {.chart-card title="Total Children Under 18 Over Time" subtitle="Number of residents under age 18, by year" chart="nd-total-under18-chart"}
+
+```{ojs}
+ndChart(CHLD, nbhd, (rows, w) => stdPlot({
+  width: w, height: 240, marginBottom: 48, style: STYLE,
+  x: yearX(rows),
+  y: {label: "Children Under 18", labelOffset: 52, grid: true, domain: [0, yMax(rows, "total_under_18", 1.15)]},
+  marks: [
+    Plot.barY(rows, {x: "year", y: "total_under_18", fill: ACCENT, rx: 3,
+      tip: true, title: d => `${d.year}\n${d.total_under_18.toLocaleString()} children under 18`}),
+    Plot.ruleY([0])
+  ]
+}), invalidation)
+```
+
+::: {.note source="[ACS]{.gloss} 5-Year Estimates"}
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+
+:::
+

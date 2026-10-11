@@ -1,0 +1,103 @@
+---
+pagetitle: "Data Library · North Meck Insights"
+---
+
+<!-- The dataset rows (and their downloads) come from _data/datasets.yml;
+     edit that file to add or change a dataset. The header and filter menus
+     below are plain HTML. -->
+
+```{r}
+#| include: false
+source("R/nm.R")
+source("R/data-library.R")
+catalog <- dlib_catalog()
+```
+
+```{=html}
+<div class="page active" style="display:block">
+
+<div class="wrap"><div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Data Library</span></div></div>
+<section class="section"><div class="wrap">
+<div class="dlib-hero">
+<span class="dlib-badge">Data Library</span>
+<h1 class="dlib-title">Public datasets from our research, ready to use</h1>
+<p class="dlib-intro">Every chart on this portal is built from a publicly available dataset. Download the data behind our housing, education, healthcare, and neighborhood research as CSV or Excel, with a plain-language codebook for each file. New datasets are added every summer as Fellows publish their research.</p>
+</div>
+<div class="dlib-filter">
+<span class="dlib-filter-label">Filter by</span>
+<div class="dlib-search"><input type="text" id="dlibSearch" placeholder="Search datasets" oninput="dlibFilter()" aria-label="Search datasets"></div>
+<div class="dlib-dd" data-key="topic">
+<button class="dlib-dd-btn" data-label="Topic" onclick="dlibToggle(this)" aria-haspopup="listbox"><span class="dlib-dd-txt">Topic</span><i class="ti ti-chevron-down"></i></button>
+<div class="dlib-dd-menu" role="listbox">
+<div class="dlib-dd-opt on" data-val="all" onclick="dlibPick(this)">All topics</div>
+<div class="dlib-dd-opt" data-val="housing" onclick="dlibPick(this)">Housing</div>
+<div class="dlib-dd-opt" data-val="education" onclick="dlibPick(this)">Education</div>
+<div class="dlib-dd-opt" data-val="healthcare" onclick="dlibPick(this)">Healthcare</div>
+</div>
+</div>
+<div class="dlib-dd" data-key="geo">
+<button class="dlib-dd-btn" data-label="Level of detail" onclick="dlibToggle(this)" aria-haspopup="listbox"><span class="dlib-dd-txt">Level of detail</span><i class="ti ti-chevron-down"></i></button>
+<div class="dlib-dd-menu" role="listbox">
+<div class="dlib-dd-opt on" data-val="all" onclick="dlibPick(this)">All levels</div>
+<div class="dlib-dd-opt" data-val="town" onclick="dlibPick(this)">Town (annual trend)</div>
+<div class="dlib-dd-opt" data-val="county" onclick="dlibPick(this)">County</div>
+<div class="dlib-dd-opt" data-val="neighborhood" onclick="dlibPick(this)">Neighborhood</div>
+<div class="dlib-dd-opt" data-val="school" onclick="dlibPick(this)">School</div>
+<div class="dlib-dd-opt" data-val="facility" onclick="dlibPick(this)">Facility location</div>
+</div>
+</div>
+<div class="dlib-dd" data-key="theme">
+<button class="dlib-dd-btn" data-label="Theme" onclick="dlibToggle(this)" aria-haspopup="listbox"><span class="dlib-dd-txt">Theme</span><i class="ti ti-chevron-down"></i></button>
+<div class="dlib-dd-menu" role="listbox">
+<div class="dlib-dd-opt on" data-val="all" onclick="dlibPick(this)">All themes</div>
+<div class="dlib-dd-opt" data-val="affordability" onclick="dlibPick(this)">Affordability</div>
+<div class="dlib-dd-opt" data-val="economic-mobility" onclick="dlibPick(this)">Economic mobility</div>
+<div class="dlib-dd-opt" data-val="racial-equity" onclick="dlibPick(this)">Racial equity</div>
+<div class="dlib-dd-opt" data-val="demographics" onclick="dlibPick(this)">Demographics</div>
+</div>
+</div>
+</div>
+<div class="dlib-results" id="dlibResults">
+```
+
+```{r}
+#| output: asis
+dlib_sections(catalog)
+dlib_download_registry(catalog)
+```
+
+```{=html}
+<div class="dlib-empty" id="dlibEmpty" style="display:none">No datasets match your filters. <button class="dlib-clear" onclick="dlibClear()">Clear filters</button></div>
+</div>
+</div></section>
+
+</div>
+<script>
+// Charts across the site link here as data-library.html#dlib-<id> so the
+// download link in each chart's expanded view lands on its exact dataset.
+// Scroll to it and briefly highlight it so it's obvious which row matched.
+(function(){
+function focusFromHash(){
+var hash = window.location.hash;
+if (!hash || hash.length < 2) return;
+var row = document.getElementById(hash.slice(1));
+if (!row || !row.classList.contains('dlib-row')) return;
+setTimeout(function(){
+row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+row.classList.add('dlib-row-highlight');
+setTimeout(function(){ row.classList.remove('dlib-row-highlight'); }, 2600);
+}, 60);
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', focusFromHash);
+else focusFromHash();
+window.addEventListener('hashchange', focusFromHash);
+})();
+</script>
+<style>
+.dlib-row-highlight { animation: dlibHighlight 2.6s ease; }
+@keyframes dlibHighlight {
+0%   { background: rgba(240,165,0,0.22); }
+100% { background: transparent; }
+}
+</style>
+```

@@ -1,0 +1,1344 @@
+# Data Library catalog: every downloadable dataset, grouped into the page's
+# sections. data-library.qmd builds the page from this file, and the CSV /
+# Excel / codebook downloads read their file names, sources, and column
+# descriptions from it too. Add a dataset by copying an entry.
+#
+#   id        anchor and download key (dlib-<id> on the page)
+#   name, description, tags: shown on the page (plain text)
+#   keywords  extra words the Data Library search box matches
+#   level     "Level of detail" filter: town, county, neighborhood, school,
+#             facility, bracket
+#   topics    "Topic" filter; themes: "Theme" filter (labels listed below)
+#   download  data: the data/<name>.json file to export; file: download name
+
+themes:
+  affordability: Affordability
+  economic-mobility: Economic mobility
+  demographics: Demographics
+  racial-equity: Racial equity
+sections:
+- title: Housing
+  datasets:
+  - id: economic-trends
+    name: Rent, income & home values by town (2018–2024)
+    description: >-
+      Median gross rent, household income, and home values for Cornelius, Davidson, and Huntersville
+      — the foundation for all affordability analysis on the portal. Includes affordability
+      ratios and income inequality (Gini).
+    keywords: economic trends rent income home values by town 2018-2024
+    level: town
+    topics: [housing, economics]
+    themes: [affordability, economic-mobility]
+    tags: [Town · 2018–2024, ACS 5-yr estimates]
+    download:
+      file: nmidw_economic_trends_2018-2024
+      data: dlib-economic-trends
+      source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates
+      years: 2018–2024
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: median_rent_monthly_usd
+        type: integer
+        description: Median gross rent in dollars per month (ACS Table B25064)
+      - column: median_household_income_usd
+        type: integer
+        description: Median household income in dollars (ACS Table B19013)
+      - column: median_home_value_usd
+        type: integer
+        description: Median owner-occupied home value in dollars (ACS Table B25077)
+      - column: home_price_to_income_ratio
+        type: decimal
+        description: >-
+          Median home value ÷ median household income. Ratios above 3× are considered unaffordable
+          by conventional standards; above 4× signals severe pressure for first-time buyers.
+      - column: rent_to_income_pct
+        type: decimal
+        description: >-
+          Annual rent (monthly × 12) as a percentage of median household income. HUD defines
+          cost burden at 30%.
+      - column: gini_coefficient
+        type: decimal
+        description: >-
+          Gini coefficient for income inequality within the town (0 = perfect equality, 1
+          = maximum inequality). Derived from ACS income distribution tables.
+      notes: >-
+        All dollar values are nominal (not inflation-adjusted). ACS 5-year estimates carry
+        a margin of error; small-area figures for Davidson may be imprecise due to small sample
+        size.
+  - id: housing-burden
+    name: Housing cost burden by town (2018–2024)
+    description: >-
+      Share of renter households spending 30%+ and 50%+ of income on housing, with household
+      counts. Shows how displacement pressure has grown in each town since 2018.
+    keywords: housing cost burden renter severely burdened by town 2018-2024
+    level: town
+    topics: [housing]
+    themes: [affordability]
+    tags: [Town · 2018–2024, ACS 5-yr estimates]
+    download:
+      file: nmidw_housing_burden_2018-2024
+      data: dlib-housing-burden
+      source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates
+      years: 2018–2024
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: total_households
+        type: integer
+        description: Total number of renter households in the town
+      - column: cost_burdened_households
+        type: integer
+        description: Renter households spending 30–50% of gross income on housing (ACS CHAS)
+      - column: severely_cost_burdened_households
+        type: integer
+        description: >-
+          Renter households spending more than 50% of gross income on housing (ACS CHAS).
+          At this level, households have less than half their income for food, healthcare,
+          transportation, and savings.
+      - column: cost_burden_rate_pct
+        type: decimal
+        description: Share of renter households that are cost-burdened (spending 30%+), as
+          a percentage
+      notes: >-
+        Cost burden is measured for renter households only. The 30% threshold is the HUD standard
+        definition of housing cost burden. ACS 5-year estimates.
+  - id: burden-by-bracket
+    name: Cost burden by income bracket, renter & owner (2024)
+    description: >-
+      Household counts by town, tenure (renter/owner), income bracket, and burden level —
+      reveals which income groups face the most severe housing cost pressure. Key for targeting
+      policy interventions.
+    keywords: cost burden by income bracket renter owner 2024
+    level: bracket
+    topics: [housing]
+    themes: [affordability]
+    tags: [Income bracket · 2024, ACS CHAS / HUD]
+    download:
+      file: nmidw_cost_burden_by_bracket_2024
+      data: dlib-burden-by-bracket
+      source: U.S. Census Bureau, ACS Comprehensive Housing Affordability Strategy (CHAS)
+        via HUD
+      years: '2024'
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: tenure
+        type: text
+        description: 'Housing tenure: Renter or Owner'
+      - column: income_bracket
+        type: text
+        description: Household income bracket (7 levels from Less than $10k to $100k+)
+      - column: burden
+        type: text
+        description: >-
+          Cost burden category: Not burdened (<30%), Cost burdened (30-50%), or Severely burdened
+          (50%+)
+      - column: count
+        type: integer
+        description: >-
+          Estimated number of households in this town/tenure/bracket/burden combination. Zero
+          may indicate suppressed small values.
+      notes: >-
+        Source: ACS CHAS (Comprehensive Housing Affordability Strategy) data via HUD, 2024.
+        Small cell counts (under 10 households) are suppressed and shown as 0. Use row totals
+        with caution for Davidson due to small sample size.
+  - id: ptr-by-bracket
+    name: Home purchase affordability by income bracket (2024)
+    description: >-
+      Years of gross income needed to buy the median home in each town, calculated for every
+      income bracket. Shows how far homeownership is out of reach at different points on the
+      income spectrum.
+    keywords: home price to income ratio years to buy by income bracket 2024
+    level: bracket
+    topics: [housing, economics]
+    themes: [affordability]
+    tags: [Income bracket · 2024, ACS 5-yr estimates]
+    download:
+      file: nmidw_home_affordability_by_bracket_2024
+      data: dlib-ptr-by-bracket
+      source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, 2024
+      years: '2024'
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: home_value
+        type: integer
+        description: Median home value in dollars for the town (ACS Table B25077, 2024)
+      - column: income_bracket
+        type: text
+        description: Household income bracket
+      - column: midpoint
+        type: integer
+        description: Midpoint of the income bracket in dollars, used as the denominator for
+          the ratio
+      - column: ratio
+        type: decimal
+        description: >-
+          Years of gross income to purchase the median home: median_home_value ÷ income_bracket_midpoint.
+          Does not account for down payment, mortgage rates, or property taxes.
+      notes: >-
+        The ratio is a simplified affordability metric. A ratio of 3× is the conventional
+        threshold for "affordable" homeownership; ratios above 4× are considered severely
+        unaffordable. This metric does not account for mortgage interest rates, which significantly
+        affect monthly payment affordability.
+- title: Demographics & Income
+  datasets:
+  - id: demographics
+    name: Population, households & income by town (2018–2024)
+    description: >-
+      Total population, household counts, and median household income for each town by year.
+      Covers North Meck's population growth. Racial composition is shown in the housing
+      dashboard's charts.
+    keywords: population households income by town 2018-2024
+    level: town
+    topics: [demographics, economics]
+    themes: [demographics]
+    tags: [Town · 2018–2024, ACS 5-yr estimates]
+    download:
+      file: nmidw_demographics_2018-2024
+      data: dlib-demographics
+      source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates
+      years: 2018–2024
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: total_population
+        type: integer
+        description: Total resident population estimate (ACS Table B01003)
+      - column: total_households
+        type: integer
+        description: Total number of occupied housing units (ACS Table B11001)
+      - column: median_household_income_usd
+        type: integer
+        description: >-
+          Median household income in dollars (ACS Table B19013). Includes all income sources
+          before taxes.
+      notes: >-
+        ACS 5-year estimates are rolling averages centered on the reference year. Population
+        and household counts reflect ACS estimates, not decennial Census counts. Racial composition
+        data is available separately in the portal charts.
+- title: Economic Well-Being
+  datasets:
+  - id: alice-town
+    name: ALICE households by town (2024)
+    description: >-
+      Households below the Federal Poverty Level, households above poverty but below the ALICE
+      Threshold (working but unable to afford a basic survival budget), and households above
+      the ALICE Threshold, for each town.
+    keywords: alice households asset limited income constrained employed by town 2024
+    level: town
+    topics: [economics]
+    themes: [economic-mobility]
+    tags: [Town · 2024, United Way ALICE Report]
+    download:
+      file: nmidw_alice_households_by_town_2024
+      data: alice-town
+      source: >-
+        United Way of North Carolina, ALICE Economic Viability Dashboard (household counts
+        modeled against Census ACS income data)
+      years: '2024'
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: year
+        type: integer
+        description: Reference year for the estimate
+      - column: total_households
+        type: integer
+        description: Total households in the town
+      - column: poverty_households
+        type: integer
+        description: Households with income below the Federal Poverty Level
+      - column: alice_households
+        type: integer
+        description: >-
+          Households above the poverty line but below the ALICE Threshold, meaning income
+          doesn't cover a basic survival budget (housing, food, transportation, childcare,
+          healthcare) for the area
+      - column: above_alice_households
+        type: integer
+        description: Households with income at or above the ALICE Threshold
+      notes: >-
+        ALICE stands for Asset Limited, Income Constrained, Employed. It captures households
+        working but still unable to afford a basic survival budget, a group the Federal Poverty
+        Level alone misses, which matters in a suburban area like North Meck where the poverty
+        rate is low but the cost of living is high. This is a single-year (2024) snapshot,
+        not a trend. Source: United Way of North Carolina ALICE Report.
+  - id: charlotte-housing-wage
+    name: Housing wage vs. local occupation wages, Charlotte metro (2025)
+    description: >-
+      The hourly wage needed to afford a 2-bedroom at Fair Market Rent, compared against BLS
+      wage estimates for common local occupations.
+    keywords: housing wage vs local occupation wages charlotte 2025
+    level: metro
+    topics: [housing, economics]
+    themes: [affordability]
+    tags: [Metro · 2025, NLIHC · BLS OEWS]
+    download:
+      file: nmidw_charlotte_housing_wage_2025
+      data: charlotte-housing-wage
+      source: >-
+        National Low Income Housing Coalition (NLIHC), Out of Reach 2025; U.S. Bureau of Labor
+        Statistics, Occupational Employment & Wage Statistics
+      years: '2025'
+      codebook:
+      - column: occupation
+        type: text
+        description: Occupation title, or "Housing Wage Needed" for the benchmark row
+      - column: hourly_wage
+        type: decimal
+        description: Hourly wage in dollars
+      - column: category
+        type: text
+        description: '"Benchmark" for the housing wage threshold, "Occupation" for actual
+          local wage data'
+      notes: >-
+        The housing wage is the hourly pay a full-time worker needs so that rent on a 2-bedroom
+        unit at Fair Market Rent does not exceed 30% of income. Occupational wages are BLS
+        OEWS estimates for the Charlotte-Concord-Gastonia MSA, not North Meck specifically.
+  - id: charlotte-fmr-bedroom
+    name: Fair Market Rent by bedroom size, Charlotte vs. peer metros (2025)
+    description: >-
+      HUD Fair Market Rents by unit size for Charlotte, Raleigh, and Atlanta, for cross-metro
+      comparison.
+    keywords: fair market rent by bedroom size charlotte raleigh atlanta 2025
+    level: metro
+    topics: [housing]
+    themes: [affordability]
+    tags: [Metro · 2025, HUD FY2025 FMR]
+    download:
+      file: nmidw_charlotte_fmr_by_bedroom_2025
+      data: charlotte-fmr-bedroom
+      source: U.S. Dept. of Housing & Urban Development (HUD), FY2025 Fair Market Rents
+      years: '2025'
+      codebook:
+      - column: region
+        type: text
+        description: 'Metro area: Charlotte, Raleigh, or Atlanta'
+      - column: bedrooms
+        type: text
+        description: Unit size (Studio through 4-Bedroom)
+      - column: fmr
+        type: integer
+        description: Fair Market Rent in dollars per month
+      notes: >-
+        FMRs are generally set at the 40th percentile of gross rents for standard-quality
+        units in each metro area. Compares Charlotte-Concord-Gastonia against two peer Southeast
+        metros, not North Meck specifically.
+  - id: charlotte-ami-gap
+    name: Affordable rent vs. Fair Market Rent by AMI bracket, Charlotte metro (2025)
+    description: >-
+      Maximum affordable rent at each Area Median Income tier compared to actual Fair Market
+      Rent, by unit size, for the Charlotte HUD Metro FMR Area.
+    keywords: affordable rent vs fair market rent by ami bracket charlotte 2025
+    level: metro
+    topics: [housing]
+    themes: [affordability]
+    tags:
+    - Metro · 2025
+    - HUD FY2025 Income Limits & FMR
+    download:
+      file: nmidw_charlotte_ami_affordability_gap_2025
+      data: charlotte-ami-gap
+      source: U.S. Dept. of Housing & Urban Development (HUD), FY2025 Income Limits & Fair
+        Market Rents
+      years: '2025'
+      codebook:
+      - column: bedrooms
+        type: text
+        description: Unit size (Studio through 4-Bedroom)
+      - column: ami_level
+        type: text
+        description: Income tier as a percentage of Area Median Income (AMI)
+      - column: max_affordable_rent
+        type: integer
+        description: Maximum rent affordable at 30% of income for this AMI tier, in dollars
+          per month
+      - column: fmr
+        type: integer
+        description: Fair Market Rent for the same unit size, in dollars per month, for comparison
+      notes: >-
+        Charlotte-Concord-Gastonia HUD Metro FMR Area, not North Meck specifically. A household
+        is priced out whenever max_affordable_rent falls short of fmr.
+  - id: alice-county
+    name: ALICE households, Mecklenburg County trend (2010–2024)
+    description: >-
+      The same ALICE breakdown as the town-level dataset, but for Mecklenburg County as a
+      whole across ten reporting years, showing how financial hardship has shifted county-wide
+      over time.
+    keywords: alice households mecklenburg county trend 2010-2024
+    level: county
+    topics: [economics]
+    themes: [economic-mobility]
+    tags: [County · 2010–2024, United Way ALICE Report]
+    download:
+      file: nmidw_alice_households_mecklenburg_county_2010-2024
+      data: alice-county
+      source: United Way of North Carolina, ALICE Economic Viability Dashboard
+      years: 2010–2024 (every two years through 2018, then yearly; no 2020)
+      codebook:
+      - column: county
+        type: text
+        description: County name (Mecklenburg County)
+      - column: year
+        type: integer
+        description: Reference year for the estimate
+      - column: total_households
+        type: integer
+        description: Total households in the county
+      - column: poverty_households
+        type: integer
+        description: Households with income below the Federal Poverty Level
+      - column: alice_households
+        type: integer
+        description: Households above the poverty line but below the ALICE Threshold
+      - column: above_alice_households
+        type: integer
+        description: Households with income at or above the ALICE Threshold
+      notes: >-
+        County-level companion to the town-level ALICE dataset, covering Mecklenburg County
+        as a whole across ten reporting years rather than a single year. ALICE reports are
+        released roughly every two years, so the year gaps here are expected, not missing
+        data. Source: United Way of North Carolina ALICE Report.
+  - id: economic-mobility
+    name: Education, poverty & unemployment by town (2018–2024)
+    description: >-
+      Bachelor's/master's attainment rate, poverty rate, and unemployment rate for each town
+      by year — three indicators commonly used together as a rough read on economic mobility.
+    keywords: economic mobility education poverty unemployment by town 2018-2024
+    level: town
+    topics: [economics, education]
+    themes: [economic-mobility]
+    tags: [Town · 2018–2024, ACS 5-yr estimates]
+    download:
+      file: nmidw_economic_mobility_by_town_2018-2024
+      data: economic-mobility
+      source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates
+      years: 2018–2024
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: edu
+        type: decimal
+        description: Share of the population 25+ holding a bachelor's or master's degree,
+          as a percentage
+      - column: poverty
+        type: decimal
+        description: Share of the population living below the Federal Poverty Level, as a
+          percentage
+      - column: unemployment
+        type: decimal
+        description: Share of the civilian labor force that is unemployed, as a percentage
+      notes: >-
+        These three rates are commonly used together as a rough proxy for economic mobility,
+        though none of them measures mobility directly (movement between income levels over
+        time). ACS 5-year estimates.
+- title: Education
+  datasets:
+  - id: school-proficiency
+    name: Grade-level proficiency & college/career readiness by school (2024)
+    description: >-
+      Grade-Level Proficient rate and College/Career Ready rate for every North Meck school,
+      with Title I status and grade span.
+    keywords: grade level proficiency college career readiness by school 2024
+    level: school
+    topics: [education]
+    themes: [economic-mobility]
+    tags: [School · 2024, NC School Report Cards]
+    download:
+      file: nmidw_school_grade_level_proficiency_2024
+      data: grade-level-proficiency
+      source: NC Department of Public Instruction, School Report Card data
+      years: '2024'
+      codebook:
+      - column: school
+        type: text
+        description: School name
+      - column: grade_span
+        type: text
+        description: Grades served by the school (e.g. K-5, 9-12)
+      - column: town
+        type: text
+        description: Town the school is located in
+      - column: is_title_1
+        type: boolean
+        description: Whether the school receives Title I federal funding for high-poverty
+          enrollment
+      - column: glp
+        type: decimal
+        description: Grade-Level Proficient rate, as a percentage
+      - column: glp_raw
+        type: text
+        description: >-
+          Original state-reported proficiency figure, kept as text since some values are reported
+          as a range or suppressed rather than a single number
+      - column: ccr
+        type: decimal
+        description: College/Career Ready rate, as a percentage
+      notes: >-
+        School-level data naming individual schools alongside performance metrics. Flagged
+        for sign-off before public release given the equity sensitivity of school-by-school
+        comparisons. Source: NC School Report Cards.
+  - id: school-growth
+    name: Academic growth by school (2024)
+    description: >-
+      State growth status and EVAAS growth index for every North Meck school — measures year-over-year
+      student progress, not absolute achievement level.
+    keywords: school academic growth evaas index by school 2024
+    level: school
+    topics: [education]
+    themes: [economic-mobility]
+    tags: [School · 2024, NC School Report Cards]
+    download:
+      file: nmidw_school_academic_growth_2024
+      data: school-academic-growth
+      source: NC Department of Public Instruction, School Report Card data (EVAAS growth index)
+      years: '2024'
+      codebook:
+      - column: school
+        type: text
+        description: School name
+      - column: grade_span
+        type: text
+        description: Grades served by the school
+      - column: town
+        type: text
+        description: Town the school is located in
+      - column: status
+        type: text
+        description: State growth status category (e.g. Exceeded, Met, Not Met)
+      - column: index_score
+        type: decimal
+        description: >-
+          EVAAS growth index score. Positive values indicate more growth than expected for
+          the year; negative values indicate less
+      notes: >-
+        Growth measures year-over-year student progress, not absolute achievement level, a
+        school can show strong growth while still having a low proficiency rate, or vice versa.
+        Same sign-off flag as the other school-level datasets.
+  - id: school-graduation
+    name: Four-year graduation rate by high school (2024)
+    description: Four-year cohort graduation rate for every North Meck high school. High-school
+      level only.
+    keywords: four year graduation rate by high school 2024
+    level: school
+    topics: [education]
+    themes: [economic-mobility]
+    tags: [School · 2024, NC School Report Cards]
+    download:
+      file: nmidw_four_year_graduation_rate_2024
+      data: four-year-school-graduation
+      source: NC Department of Public Instruction, School Report Card data
+      years: '2024'
+      codebook:
+      - column: school
+        type: text
+        description: High school name
+      - column: town
+        type: text
+        description: Town the school is located in
+      - column: grad_4yr
+        type: decimal
+        description: Four-year cohort graduation rate, as a percentage
+      - column: grad_4yr_raw
+        type: text
+        description: >-
+          Original state-reported figure, kept as text since some values are suppressed for
+          small cohort size rather than reported as a number
+      notes: >-
+        Applies only to high schools. Small graduating classes can make year-to-year swings
+        look larger than they are. Same sign-off flag as the other school-level datasets.
+  - id: school-economic-gap
+    name: Achievement gap by economic disadvantage, all schools (2024)
+    description: >-
+      Grade-Level Proficient rate for economically disadvantaged vs. non-disadvantaged students
+      at every North Meck school, with the resulting percentage-point gap.
+    keywords: achievement gap by economic disadvantage school 2024
+    level: school
+    topics: [education]
+    themes: [economic-mobility]
+    tags: [School · 2024, NC School Report Cards]
+    download:
+      file: nmidw_school_achievement_economic_gap_2024
+      data: school-achievement-and-economic-gap
+      source: NC Department of Public Instruction, School Report Card data
+      years: '2024'
+      codebook:
+      - column: school
+        type: text
+        description: School name
+      - column: town
+        type: text
+        description: Town the school is located in
+      - column: econ_disadv
+        type: decimal
+        description: Grade-Level Proficient rate among economically disadvantaged students,
+          as a percentage
+      - column: not_disadv
+        type: decimal
+        description: Grade-Level Proficient rate among non-economically-disadvantaged students,
+          as a percentage
+      - column: gap
+        type: decimal
+        description: Percentage-point gap between the two groups (not_disadv minus econ_disadv)
+      notes: >-
+        A separate, high-school-only version of this same comparison exists (school-hs-economic-gap).
+        Same sign-off flag as the other school-level datasets given it names individual schools
+        alongside an equity gap.
+  - id: school-hs-economic-gap
+    name: Achievement gap by economic disadvantage, high schools (2024)
+    description: Same comparison as the all-schools economic gap dataset, limited to high
+      schools.
+    keywords: achievement gap by economic disadvantage high school 2024
+    level: school
+    topics: [education]
+    themes: [economic-mobility]
+    tags: [School · 2024, NC School Report Cards]
+    download:
+      file: nmidw_hs_achievement_economic_gap_2024
+      data: highschool-achievement-economic-gap
+      source: NC Department of Public Instruction, School Report Card data
+      years: '2024'
+      codebook:
+      - column: school
+        type: text
+        description: High school name
+      - column: town
+        type: text
+        description: Town the school is located in
+      - column: econ_disadv
+        type: decimal
+        description: Grade-Level Proficient rate among economically disadvantaged students,
+          as a percentage
+      - column: not_disadv
+        type: decimal
+        description: Grade-Level Proficient rate among non-economically-disadvantaged students,
+          as a percentage
+      - column: gap
+        type: decimal
+        description: Percentage-point gap between the two groups (not_disadv minus econ_disadv)
+      notes: >-
+        High-school-only counterpart to school-economic-gap, which covers all grade levels.
+        Same sign-off flag as the other school-level datasets.
+  - id: school-race-gap
+    name: Proficiency gap by race, by school (2024)
+    description: >-
+      Grade-Level Proficient rate for White students compared against Black, Hispanic, Asian,
+      American Indian, and Two-or-More-Races students at each school where enough students
+      are enrolled to report.
+    keywords: proficiency gap by race school 2024
+    level: school
+    topics: [education]
+    themes: [racial-equity]
+    tags: [School · 2024, NC School Report Cards]
+    download:
+      file: nmidw_school_race_gap_2024
+      data: school-race-gap
+      source: NC Department of Public Instruction, School Report Card data
+      years: '2024'
+      codebook:
+      - column: school
+        type: text
+        description: School name
+      - column: comparison_group
+        type: text
+        description: >-
+          Racial/ethnic group being compared against the White student proficiency rate (Black,
+          Hispanic, Asian, American Indian, or Two or More Races)
+      - column: white_pct
+        type: decimal
+        description: Grade-Level Proficient rate among White students at the school, as a
+          percentage
+      - column: comparison_pct
+        type: decimal
+        description: Grade-Level Proficient rate among the comparison group at the school,
+          as a percentage
+      - column: gap
+        type: decimal
+        description: Percentage-point gap (white_pct minus comparison_pct)
+      notes: >-
+        Each school can appear multiple times, once per comparison group with enough students
+        to report. Same sign-off flag as the other school-level datasets.
+  - id: school-disability-gap
+    name: Proficiency gap, students with disabilities, by school (2024)
+    description: >-
+      Grade-Level Proficient rate for students with disabilities compared to students without,
+      at every North Meck school.
+    keywords: proficiency gap students with disabilities school 2024
+    level: school
+    topics: [education]
+    themes: [demographics]
+    tags: [School · 2024, NC School Report Cards]
+    download:
+      file: nmidw_school_disability_gap_2024
+      data: school-disability-gap
+      source: NC Department of Public Instruction, School Report Card data
+      years: '2024'
+      codebook:
+      - column: school
+        type: text
+        description: School name
+      - column: swd_pct
+        type: decimal
+        description: Grade-Level Proficient rate among students with disabilities, as a percentage
+      - column: nswd_pct
+        type: decimal
+        description: Grade-Level Proficient rate among students without disabilities, as a
+          percentage
+      - column: gap
+        type: decimal
+        description: Percentage-point gap (nswd_pct minus swd_pct)
+      notes: >-
+        Same sign-off flag as the other school-level datasets given it names individual schools
+        alongside an equity gap.
+  - id: school-enrollment
+    name: Population growth vs. K-12 enrollment by town (2018–2024)
+    description: >-
+      Total population age 3+, K-12 enrollment, and total school enrollment (all levels) for
+      residents of each town by year.
+    keywords: population growth k12 enrollment by town 2018-2024
+    level: town
+    topics: [education]
+    themes: [demographics]
+    tags: [Town · 2018–2024, ACS 5-yr estimates]
+    download:
+      file: nmidw_school_enrollment_by_town_2018-2024
+      data: pop-growth-k12-enrollment
+      source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates
+      years: 2018–2024
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: total_pop_3_plus
+        type: integer
+        description: Total population age 3 and over (the population eligible to be enrolled
+          in school)
+      - column: n_enrolled_k12_total
+        type: integer
+        description: Number of residents enrolled in K-12 school
+      - column: n_enrolled_total
+        type: integer
+        description: Number of residents enrolled in school at any level (preschool through
+          graduate)
+      notes: >-
+        This is town-level residency data (who lives in the town and is enrolled somewhere),
+        not school-level enrollment counts, it doesn't tell you how many students attend a
+        school located in that town. ACS 5-year estimates.
+- title: Healthcare
+  datasets:
+  - id: healthcare-insurance
+    name: Health insurance coverage by town (2018–2024)
+    description: >-
+      Insurance and uninsurance counts broken out by age group, coverage type, employment
+      status, and household income bracket, for each town.
+    keywords: health insurance coverage by age employment income town 2018-2024
+    level: town
+    topics: [healthcare]
+    themes: [affordability]
+    tags: [Town · 2018–2024, ACS Table B27010]
+    download:
+      file: nmidw_healthcare_insurance_by_town_2024
+      data: healthcare-insurance
+      source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, Table
+        B27010
+      years: 2018–2024
+      codebook:
+      - column: GEOID
+        type: text
+        description: Census geographic identifier for the town
+      - column: Town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: Tot_pop
+        type: integer
+        description: Total resident population
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: all_ins
+        type: integer
+        description: Total population with any health insurance coverage
+      - column: all_unins
+        type: integer
+        description: Total population with no health insurance coverage
+      - column: ins_U18 / unins_U18
+        type: integer
+        description: Population under 18 with / without health insurance
+      - column: ins_19_25 / unins_19_25
+        type: integer
+        description: Population 19–25 with / without health insurance
+      - column: ins_26_34 / unins_26_34
+        type: integer
+        description: Population 26–34 with / without health insurance
+      - column: ins_35_64 / unins_35_64
+        type: integer
+        description: Population 35–64 with / without health insurance
+      - column: ins_65_over / unins_65_over
+        type: integer
+        description: Population 65+ with / without health insurance
+      - column: emp_based_ins
+        type: integer
+        description: Population covered through an employer or union plan
+      - column: dir_purchase_ins
+        type: integer
+        description: Population covered through a directly-purchased plan
+      - column: medicare_cov
+        type: integer
+        description: Population covered by Medicare
+      - column: medicaid_cov
+        type: integer
+        description: Population covered by Medicaid or other means-tested public coverage
+      - column: tricare_cov
+        type: integer
+        description: Population covered by TRICARE/military health coverage
+      - column: VA_cov
+        type: integer
+        description: Population covered through VA health care
+      - column: other_cov_type
+        type: integer
+        description: Population covered through some other plan type not listed above
+      - column: emp_insured / emp_uninsured
+        type: integer
+        description: Employed labor force with / without insurance
+      - column: unemp_insured / unemp_uninsured
+        type: integer
+        description: Unemployed labor force with / without insurance
+      - column: ins_U25 / no_ins_U25
+        type: integer
+        description: Population in households earning under $25k with / without insurance
+      - column: ins_25_50 / no_ins_25_50
+        type: integer
+        description: Population in households earning $25k–$50k with / without insurance
+      - column: ins_50_75 / no_ins_50_75
+        type: integer
+        description: Population in households earning $50k–$75k with / without insurance
+      - column: ins_75_100 / no_ins_75_100
+        type: integer
+        description: Population in households earning $75k–$100k with / without insurance
+      - column: ins_100_above / no_ins_100_above
+        type: integer
+        description: Population in households earning $100k+ with / without insurance
+      notes: >-
+        This dataset joins two source tables (coverage type by age, and coverage by employment/income
+        status), so column groups come from different ACS cross-tabulations rather than one
+        single table. Counts are people, not households. 2024 ACS 5-year estimates.
+  - id: cdc-preventive-care
+    name: Preventive care & screening rates by town
+    description: >-
+      Crude prevalence of adults reporting routine checkups, cholesterol screening, cervical
+      and colon cancer screening, mammography, and dental visits, by town. Survey year varies
+      by measure.
+    keywords: >-
+      preventive care screening rates checkup cholesterol cervical colon mammogram dental
+      by town
+    level: town
+    topics: [healthcare]
+    themes: [affordability]
+    tags: [Town · 2020 & 2023, CDC PLACES]
+    download:
+      file: nmidw_cdc_preventive_care_screening
+      data: cdc-preventive-care
+      source: 'Centers for Disease Control and Prevention (CDC), PLACES: Local Data for Better
+        Health'
+      years: 'Checkup & Cholesterol screening: 2023 · Cervical, colon, mammogram & dental:
+        2020'
+      codebook:
+      - column: measure
+        type: text
+        description: 'Preventive care measure: Checkup, Cholesterol, Cervical, Colon, Mammogram,
+          or Dental'
+      - column: year
+        type: integer
+        description: PLACES survey cycle year for this measure
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: val
+        type: decimal
+        description: Crude prevalence (%) of adults reporting this preventive service
+      notes: >-
+        Crude (not age-adjusted) prevalence, matching how the on-page chart displays them.
+        Each measure comes from a different CDC PLACES survey cycle, so the year genuinely
+        varies by measure rather than reflecting a data gap. Sourced from the main warehouse
+        (agg_town_cdc_prevention), unlike the mental-health prevalence charts.
+- title: Transportation
+  datasets:
+  - id: infrastructure-access
+    name: Vehicle access, internet & insurance rates by town (2018–2024)
+    description: >-
+      Share of renter and owner households with no vehicle, households with no internet subscription,
+      and uninsurance rates for the labor force and for seniors, by town and year.
+    keywords: vehicle access internet insurance rates by town 2018-2024
+    level: town
+    topics: [transportation, healthcare]
+    themes: [affordability]
+    tags: [Town · 2018–2024, ACS 5-yr estimates]
+    download:
+      file: nmidw_infrastructure_access_by_town_2018-2024
+      data: infrastructure-access
+      source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates
+      years: 2018–2024
+      codebook:
+      - column: town
+        type: text
+        description: Municipality name (Cornelius, Davidson, or Huntersville)
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: renter_no_car
+        type: decimal
+        description: Share of renter households with no vehicle available, as a percentage
+      - column: owner_no_car
+        type: decimal
+        description: Share of owner households with no vehicle available, as a percentage
+      - column: no_internet
+        type: decimal
+        description: Share of households with no internet subscription of any kind, as a percentage
+      - column: labor_uninsured
+        type: decimal
+        description: Share of the civilian labor force with no health insurance coverage,
+          as a percentage
+      - column: senior_uninsured
+        type: decimal
+        description: Share of residents 65+ with no health insurance coverage, as a percentage
+      notes: >-
+        This dataset spans three access dimensions (transportation, internet, insurance) that
+        are grouped together in the source table rather than three separate ones. ACS 5-year
+        estimates.
+- title: Neighborhoods
+  datasets:
+  - id: nbhd-demographics
+    name: Neighborhood demographics, all 5 United Neighborhoods
+    description: >-
+      Population, racial composition, Hispanic/Latino rate, and foreign-born rate for Pottstown,
+      West Davidson, Smithville, Huntington Green, and East Catawba, rolled up from block-group
+      data.
+    keywords: united neighborhoods demographics population race foreign born
+    level: neighborhood
+    topics: [neighborhoods, demographics]
+    themes: [demographics]
+    tags: [Neighborhood, 'ACS 5-yr, block-group rollup']
+    download:
+      file: nmidw_neighborhood_demographics_2018-2024
+      data: nbhd-demographics
+      source: >-
+        U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
+        level, rolled up to neighborhood boundaries
+      years: 2020–2024 (West Davidson from 2018)
+      codebook:
+      - column: neighborhood_name
+        type: text
+        description: >-
+          One of the five United Neighborhoods (Pottstown, West Davidson, Smithville, Huntington
+          Green, East Catawba)
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: total_population
+        type: integer
+        description: Total resident population estimate
+      - column: race_white
+        type: integer
+        description: Population identifying as White alone
+      - column: race_black
+        type: integer
+        description: Population identifying as Black or African American alone
+      - column: race_asian
+        type: integer
+        description: Population identifying as Asian alone
+      - column: hispanic_latino
+        type: integer
+        description: Population identifying as Hispanic or Latino (any race)
+      - column: hispanic_rate
+        type: decimal
+        description: Hispanic/Latino population as a percentage of total population
+      - column: foreign_born
+        type: integer
+        description: Foreign-born population
+      - column: foreign_born_rate
+        type: decimal
+        description: Foreign-born population as a percentage of total population
+      notes: >-
+        Neighborhood boundaries are approximated from Census block groups, since neighborhoods
+        themselves aren't official Census geography, so figures are estimates, not exact counts.
+        Some neighborhoods span more than one block group, in which case values are summed
+        (counts) or recalculated from summed counts (rates), never averaged directly. Block-group
+        boundary approximation carries more uncertainty for smaller neighborhoods. There is
+        an unresolved documented boundary question for one shared block group between Smithville
+        and East Catawba, flagged separately for review.
+  - id: nbhd-economic
+    name: Neighborhood economic profile, all 5 United Neighborhoods
+    description: >-
+      Household income distribution, median household income, income inequality (Gini), and
+      poverty rate for each United Neighborhood.
+    keywords: united neighborhoods economic profile income poverty gini
+    level: neighborhood
+    topics: [neighborhoods, economics]
+    themes: [economic-mobility]
+    tags: [Neighborhood, 'ACS 5-yr, block-group rollup']
+    download:
+      file: nmidw_neighborhood_economic_profile_2018-2024
+      data: nbhd-economic
+      source: >-
+        U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
+        level, rolled up to neighborhood boundaries
+      years: 2020–2024 (West Davidson from 2018)
+      codebook:
+      - column: neighborhood_name
+        type: text
+        description: One of the five United Neighborhoods
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: total_households
+        type: integer
+        description: Total households
+      - column: income_under_25k
+        type: integer
+        description: Households earning under $25,000
+      - column: income_25k_50k
+        type: integer
+        description: Households earning $25,000–$50,000
+      - column: income_50k_100k
+        type: integer
+        description: Households earning $50,000–$100,000
+      - column: income_100k_plus
+        type: integer
+        description: Households earning $100,000 or more
+      - column: median_household_income
+        type: integer
+        description: >-
+          Median household income in dollars, weighted by household count where the neighborhood
+          spans multiple block groups
+      - column: gini
+        type: decimal
+        description: >-
+          Gini coefficient of income inequality (0 = perfect equality, 1 = maximum inequality),
+          weighted by household count
+      - column: below_poverty
+        type: integer
+        description: Households with income below the Federal Poverty Level
+      - column: poverty_rate
+        type: decimal
+        description: Households below the Federal Poverty Level as a percentage of total households
+      notes: Same block-group rollup caveats as the neighborhood demographics dataset apply
+        here.
+  - id: nbhd-housing
+    name: Neighborhood housing profile, all 5 United Neighborhoods
+    description: >-
+      Owner/renter occupancy rates, median gross rent, median home value, and cost burden
+      for each United Neighborhood.
+    keywords: united neighborhoods housing tenure rent value burden
+    level: neighborhood
+    topics: [neighborhoods, housing]
+    themes: [affordability]
+    tags: [Neighborhood, 'ACS 5-yr, block-group rollup']
+    download:
+      file: nmidw_neighborhood_housing_2018-2024
+      data: nbhd-housing
+      source: >-
+        U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
+        level, rolled up to neighborhood boundaries
+      years: 2020–2024 (West Davidson from 2018)
+      codebook:
+      - column: neighborhood_name
+        type: text
+        description: One of the five United Neighborhoods
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: total_housing_units
+        type: integer
+        description: Total housing units
+      - column: owner_occupied
+        type: integer
+        description: Owner-occupied housing units
+      - column: renter_occupied
+        type: integer
+        description: Renter-occupied housing units
+      - column: owner_rate
+        type: decimal
+        description: Owner-occupied units as a percentage of total housing units
+      - column: renter_rate
+        type: decimal
+        description: Renter-occupied units as a percentage of total housing units
+      - column: median_gross_rent
+        type: integer
+        description: Median monthly gross rent in dollars, weighted by renter-occupied unit
+          count
+      - column: median_home_value
+        type: integer
+        description: Median owner-occupied home value in dollars, weighted by owner-occupied
+          unit count
+      - column: cost_burdened
+        type: integer
+        description: Renter households spending 30%+ of income on housing
+      - column: severely_burdened
+        type: integer
+        description: Renter households spending 50%+ of income on housing
+      - column: burden_rate
+        type: decimal
+        description: Cost-burdened renter households as a percentage of all renter-occupied
+          units
+      - column: owner_no_vehicle
+        type: integer
+        description: Owner households with no vehicle available
+      - column: renter_no_vehicle
+        type: integer
+        description: Renter households with no vehicle available
+      notes: Same block-group rollup caveats as the neighborhood demographics dataset apply
+        here.
+  - id: nbhd-education
+    name: Neighborhood education profile, all 5 United Neighborhoods
+    description: Educational attainment breakdown and school enrollment for each United Neighborhood.
+    keywords: united neighborhoods education attainment enrollment
+    level: neighborhood
+    topics: [neighborhoods, education]
+    themes: [economic-mobility]
+    tags: [Neighborhood, 'ACS 5-yr, block-group rollup']
+    download:
+      file: nmidw_neighborhood_education_2018-2024
+      data: nbhd-education
+      source: >-
+        U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
+        level, rolled up to neighborhood boundaries
+      years: 2020–2024 (West Davidson from 2018)
+      codebook:
+      - column: neighborhood_name
+        type: text
+        description: One of the five United Neighborhoods
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: pop_25_plus
+        type: integer
+        description: Population age 25 and over
+      - column: n_less_than_hs
+        type: integer
+        description: Population 25+ with less than a high school diploma
+      - column: n_hs_or_equiv
+        type: integer
+        description: Population 25+ with a high school diploma or equivalent
+      - column: n_some_college
+        type: integer
+        description: Population 25+ with some college, no degree
+      - column: n_associates
+        type: integer
+        description: Population 25+ with an associate's degree
+      - column: n_bachelors
+        type: integer
+        description: Population 25+ with a bachelor's degree
+      - column: n_graduate_or_prof
+        type: integer
+        description: Population 25+ with a graduate or professional degree
+      - column: pct_less_than_hs
+        type: decimal
+        description: Share of population 25+ with less than a high school diploma, as a percentage
+      - column: pct_hs_or_equiv
+        type: decimal
+        description: Share of population 25+ with a high school diploma or equivalent, as
+          a percentage
+      - column: pct_bachelors
+        type: decimal
+        description: Share of population 25+ with a bachelor's degree, as a percentage
+      - column: pct_bachelors_or_higher
+        type: decimal
+        description: Share of population 25+ with a bachelor's degree or higher, as a percentage
+      - column: n_enrolled_total
+        type: integer
+        description: Residents currently enrolled in school at any level
+      - column: n_enrolled_k12
+        type: integer
+        description: Residents currently enrolled in K-12 school
+      notes: Same block-group rollup caveats as the neighborhood demographics dataset apply
+        here.
+  - id: nbhd-transportation
+    name: Neighborhood transportation profile, all 5 United Neighborhoods
+    description: Commute mode share, average commute time, and vehicle access for each United
+      Neighborhood.
+    keywords: united neighborhoods transportation commute mode
+    level: neighborhood
+    topics: [neighborhoods, transportation]
+    themes: [affordability]
+    tags: [Neighborhood, 'ACS 5-yr, block-group rollup']
+    download:
+      file: nmidw_neighborhood_transportation_2018-2024
+      data: nbhd-transportation
+      source: >-
+        U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
+        level, rolled up to neighborhood boundaries
+      years: 2020–2024 (West Davidson from 2018)
+      codebook:
+      - column: neighborhood_name
+        type: text
+        description: One of the five United Neighborhoods
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: total_workers
+        type: integer
+        description: Total workers age 16 and over
+      - column: drove_alone
+        type: integer
+        description: Workers who commute by driving alone
+      - column: public_transit
+        type: integer
+        description: Workers who commute by public transit
+      - column: walked
+        type: integer
+        description: Workers who commute by walking
+      - column: bicycle
+        type: integer
+        description: Workers who commute by bicycle
+      - column: worked_from_home
+        type: integer
+        description: Workers who work from home
+      - column: pct_drove_alone
+        type: decimal
+        description: Share of workers who drove alone, as a percentage
+      - column: pct_public_transit
+        type: decimal
+        description: Share of workers who used public transit, as a percentage
+      - column: pct_worked_from_home
+        type: decimal
+        description: Share of workers who worked from home, as a percentage
+      - column: avg_commute_minutes
+        type: decimal
+        description: Average one-way commute time in minutes, weighted by worker count
+      - column: households_no_vehicle
+        type: integer
+        description: Households with no vehicle available
+      notes: Same block-group rollup caveats as the neighborhood demographics dataset apply
+        here.
+  - id: nbhd-childcare
+    name: Neighborhood childcare need, all 5 United Neighborhoods
+    description: >-
+      Children under 18 by age group, modeled likely need for childcare or after-school care
+      based on parental labor-force participation, and grandparent-caregiver households, for
+      each United Neighborhood.
+    keywords: united neighborhoods childcare need grandparent caregivers
+    level: neighborhood
+    topics: [neighborhoods]
+    themes: [demographics]
+    tags: [Neighborhood, 'ACS 5-yr, block-group rollup']
+    download:
+      file: nmidw_neighborhood_childcare_2018-2024
+      data: nbhd-childcare
+      source: >-
+        U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
+        level, rolled up to neighborhood boundaries
+      years: 2020–2024 (West Davidson from 2018)
+      codebook:
+      - column: neighborhood_name
+        type: text
+        description: One of the five United Neighborhoods
+      - column: year
+        type: integer
+        description: ACS survey year
+      - column: total_under_18
+        type: integer
+        description: Total population under 18
+      - column: children_under6
+        type: integer
+        description: Children under age 6
+      - column: children_6_17
+        type: integer
+        description: Children age 6-17
+      - column: under6_needs_childcare
+        type: integer
+        description: >-
+          Children under 6 in households where all present parents are in the labor force,
+          an ACS-based proxy for likely childcare need
+      - column: pct_under6_needs_childcare
+        type: decimal
+        description: Share of children under 6 likely needing childcare, as a percentage
+      - column: age6_17_needs_afterschool
+        type: integer
+        description: >-
+          Children age 6-17 in households where all present parents are in the labor force,
+          a proxy for likely after-school care need
+      - column: pct_6_17_needs_afterschool
+        type: decimal
+        description: Share of children 6-17 likely needing after-school care, as a percentage
+      - column: grandparent_caregivers
+        type: integer
+        description: Households where a grandparent is the primary caregiver for a co-resident
+          grandchild
+      notes: >-
+        "Needs childcare" and "needs after-school care" are modeled proxies based on parental
+        labor-force participation, not a direct survey question about childcare arrangements
+        or unmet need. Same block-group rollup caveats as the neighborhood demographics dataset
+        apply here.
+- title: Facilities & Resources
+  datasets:
+  - id: mhsu-facilities
+    name: Mental health & substance use treatment facility directory
+    description: >-
+      Name, address, phone, website, and facility type for mental health and substance use
+      treatment facilities in or near Mecklenburg County. A resource directory, not a dataset
+      about mental health prevalence or outcomes.
+    keywords: mental health substance use treatment facility directory
+    level: facility
+    topics: [facilities]
+    themes: [demographics]
+    tags: [Facility location, SAMHSA facility locator]
+    download:
+      file: nmidw_mental_health_substance_use_facilities
+      data: mental-health-facilities
+      source: SAMHSA Behavioral Health Treatment Services Locator
+      years: Current as of most recent SAMHSA data pull
+      codebook:
+      - column: facility_name
+        type: text
+        description: Facility name
+      - column: street1
+        type: text
+        description: Street address
+      - column: city
+        type: text
+        description: City
+      - column: phone
+        type: text
+        description: Facility phone number
+      - column: website
+        type: text
+        description: Facility website, where available
+      - column: latitude
+        type: decimal
+        description: Latitude coordinate
+      - column: longitude
+        type: decimal
+        description: Longitude coordinate
+      - column: types
+        type: text
+        description: >-
+          Facility type(s) offered (e.g. mental health, substance use), comma-separated where
+          a facility offers more than one
+      notes: >-
+        This is a directory of treatment facility locations, not a dataset about mental health
+        prevalence or outcomes. Limited to facilities in or near Mecklenburg County. Source:
+        SAMHSA facility locator.

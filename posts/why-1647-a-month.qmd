@@ -1,0 +1,217 @@
+---
+title: "How Much You'd Need to Earn to Afford a One-Bedroom in North Meck"
+description: "Median rent across Davidson, Cornelius, and Huntersville rose nearly 40% in just six years. Local paychecks haven't kept pace — and by 2024, nearly half of renters here were spending more than they could comfortably afford."
+pagetitle: "How Much You'd Need to Earn to Afford a One-Bedroom in North Meck · North Meck Insights"
+categories: [Housing]
+eyebrow: "Housing · Analysis"
+date: 2026-07-16
+read-time: "4 min read"
+image: /images/why-1647-thumbnail.png
+thumbnail-icon: ti-cash
+author: "Paul Park"
+author-role: "2026 Community Research Fellow"
+aliases:
+  - /blog-why-1647-a-month.html
+---
+
+```{r}
+#| include: false
+source("R/nm.R")
+towns <- c("Cornelius", "Davidson", "Huntersville")
+
+# One-bedroom fair market rent and the hourly wage it takes to afford it
+# (rent at 30% of income, 40 hours x 52 weeks).
+fmr <- nm_data("charlotte-fmr-bedroom")
+fmr_1br <- nm_value(fmr, "fmr", region = "Charlotte", bedrooms = "1-Bedroom")
+fmr_studio <- nm_value(fmr, "fmr", region = "Charlotte", bedrooms = "Studio")
+housing_wage <- fmr_1br * 12 / 0.30 / 2080
+FEDERAL_MIN_WAGE <- 7.25  # federal minimum wage; not from our data store
+min_wage_hours <- housing_wage * 40 / FEDERAL_MIN_WAGE
+
+wage <- nm_data("charlotte-housing-wage")
+occ <- wage[wage$category == "Occupation", ]
+occ_above <- occ$occupation[occ$hourly_wage >= housing_wage]
+nm_claim(nrow(occ) == 8, "says we tracked eight local occupations")
+nm_claim(housing_wage / FEDERAL_MIN_WAGE > 4, "says the 1-bed housing wage is more than four times the federal minimum wage")
+nm_claim(min_wage_hours > 168, "quote says a minimum-wage worker would need more hours than a week has")
+
+# North Meck median rent: average of the three towns' medians, by year
+ri <- nm_data("housing-rent-income")
+rent <- function(t, y) nm_value(ri, "median_rent", town = t, year = y)
+avg_rent <- function(y) mean(sapply(towns, rent, y = y))
+rent_chg <- sapply(towns, function(t) pct_change(rent(t, 2018), rent(t, 2024)))
+avg_chg <- pct_change(avg_rent(2018), avg_rent(2024))
+nm_claim(names(sort(rent_chg, decreasing = TRUE)) == c("Huntersville", "Cornelius", "Davidson"),
+         "town paragraph lists Huntersville, Cornelius, Davidson from fastest to slowest rent growth")
+
+# Renter cost burden, 2018 vs 2024
+bt <- nm_data("housing-burden-trend")
+burden <- function(t, y) nm_value(bt, "burden_rate", town = t, year = y)
+burden_2024 <- sapply(towns, burden, y = 2024)
+nm_claim(all(burden_2024 >= 40 & burden_2024 < 50), "dek and burden section say 'nearly half' of renters are cost-burdened")
+nm_claim(all(burden_2024 > sapply(towns, burden, y = 2018)), "burden callouts say each town is 'up from' 2018")
+
+ai <- nm_data("housing-affordability-index")
+rti <- function(t, y) nm_value(ai, "rti", town = t, year = y)
+nm_claim(rti("Cornelius", 2024) > rti("Cornelius", 2018) && rti("Huntersville", 2024) > rti("Huntersville", 2018),
+         "closing paragraph says rent-to-income ratios climbed in Cornelius and Huntersville")
+
+# Affordability by income level for a one-bedroom. Annual income is the
+# income at which the affordable rent is exactly 30% of income.
+ami <- nm_data("charlotte-ami-gap")
+ami_1br <- ami[ami$bedrooms == "1-Bedroom", ]
+ami_1br$annual <- ami_1br$max_affordable_rent * 12 / 0.30
+ami_1br$gap <- ami_1br$max_affordable_rent - ami_1br$fmr
+gap_50 <- -ami_1br$gap[ami_1br$ami_level == "50% AMI"]
+nm_claim(gap_50 > 500, "says a 50% AMI household is short by more than $500 a month")
+```
+
+<figure class="post-media">
+<img src="/images/why-1647-thumbnail.png" alt="A North Meck apartment block" style="width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:16px; border:1px solid var(--line);">
+<figcaption class="post-figcap">A one-bedroom in the Charlotte-Concord-Gastonia region now rents for roughly `r fmt_dollar(fmr_1br)` a month at fair market rate.</figcaption>
+</figure>
+
+<p class="post-lead">Ask anyone renting in Cornelius, Davidson, or Huntersville and you'll hear a version of the same story: the rent keeps climbing, and the paycheck doesn't. Our own numbers back them up.</p>
+
+## The number that started it
+
+For a one-bedroom apartment at fair market rent in the Charlotte-Concord-Gastonia region, a full-time worker needs to earn **`r fmt_dollar(housing_wage, 2)` an hour** to spend no more than 30% of their income on housing.
+
+That's more than four times the federal minimum wage. Of the eight local occupations we tracked, only `r if (length(occ_above) == 1) "one clears" else paste(length(occ_above), "clear")` that bar.
+
+```{ojs}
+//| output: false
+import {Plot, stdPlot, responsive, loadData, FONT, fmtDollar} from "/js/nm-charts.js"
+wages = loadData("charlotte-housing-wage")
+fmrBedroom = loadData("charlotte-fmr-bedroom")
+rentIncome = loadData("housing-rent-income")
+NEED = "#e05c4b"   // highlight: the wage/rent the post is about
+BAR = "#3f4e75"
+```
+
+<figure class="post-figure">
+<div class="card">
+<div class="card-t">The wage you'd need vs. what local jobs pay</div>
+<div class="card-s">Hourly wage to afford a 1-bed at fair market rent, vs. Charlotte-Concord-Gastonia occupational wages</div>
+
+```{ojs}
+{
+  const fmr1 = fmrBedroom.find(d => d.region === "Charlotte" && d.bedrooms === "1-Bedroom").fmr;
+  const need = fmr1 * 12 / 0.30 / 2080;
+  const short = {
+    "Registered Nurses": "Registered nurse",
+    "Heavy & Tractor-Trailer Truck Drivers": "Truck driver",
+    "Customer Service Representatives": "Customer service",
+    "Laborers & Freight/Stock Movers": "Laborer / stock mover",
+    "Stockers and Order Fillers": "Stocker / order filler",
+    "Retail Salespersons": "Retail sales",
+    "Fast Food/Counter Workers": "Fast food / counter",
+    "Cashiers": "Cashier"
+  };
+  const rows = [
+    {label: "1-bed housing wage", wage: need, need: true, full: "Housing wage needed (1-bed)"},
+    ...wages.filter(d => d.category === "Occupation").map(d => ({label: short[d.occupation] || d.occupation, wage: d.hourly_wage, need: false, full: d.occupation}))
+  ].sort((a, b) => b.wage - a.wage);
+  return responsive(width => stdPlot({
+    width, height: 440, marginLeft: 160, marginRight: 70,
+    x: {label: "Hourly wage", grid: true, line: true, tickFormat: d => "$" + d, domain: [0, 45]},
+    y: {domain: rows.map(d => d.label), label: null, line: true, tickSize: 0},
+    marks: [
+      Plot.barX(rows, {x: "wage", y: "label", fill: d => d.need ? NEED : BAR, rx: 3,
+        tip: true, title: d => `${d.full}\n$${d.wage.toFixed(2)}/hr`}),
+      Plot.ruleX([need], {stroke: NEED, strokeDasharray: "5,3", strokeWidth: 1.5}),
+      Plot.text(rows, {x: "wage", y: "label", text: d => "$" + d.wage.toFixed(2), textAnchor: "start", dx: 6, fontSize: 12,
+        fill: d => d.need ? NEED : "#333", fontWeight: d => d.need ? 700 : 400})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+<figcaption class="post-figcap">Source: BLS Occupational Employment &amp; Wage Statistics, Charlotte-Concord-Gastonia MSA, 2023. 1-bed housing wage derived from the NLIHC <em>Out of Reach</em> 2025 fair market rent (HUD FY2025) (`r fmt_dollar(fmr_1br)`/month). Dashed line: the 1-bed housing wage.</figcaption>
+</figure>
+
+<blockquote class="post-quote">A minimum-wage worker would need close to `r round(min_wage_hours)` hours in a single week to match what a 1-bedroom-affording paycheck brings home in 40. A week only has 168 hours.</blockquote>
+
+## And locally, rent went up fast
+
+Zoom into Davidson, Cornelius, and Huntersville specifically, and the trend is just as sharp. Average across all three towns, median rent rose from about **`r fmt_dollar(avg_rent(2018))` a month in 2018 to `r fmt_dollar(avg_rent(2024))` in 2024** — a `r fmt_pct(avg_chg)` jump in just six years.
+
+<figure class="post-figure">
+<div class="card">
+<div class="card-t">North Meck median rent rose `r fmt_pct(avg_chg)` in six years</div>
+<div class="card-s">Average of Cornelius, Davidson, and Huntersville median gross rent, 2018–2024</div>
+
+```{ojs}
+{
+  const years = [...new Set(rentIncome.map(d => d.year))].sort();
+  const avg = years.map(year => {
+    const rows = rentIncome.filter(d => d.year === year);
+    return {year, rent: rows.reduce((s, d) => s + d.median_rent, 0) / rows.length};
+  });
+  const last = years[years.length - 1];
+  return responsive(width => stdPlot({
+    width, height: 340, marginLeft: 70,
+    x: {label: null, type: "band", line: true, tickSize: 0, padding: 0.25, tickFormat: d => String(d)},
+    y: {label: "Median rent ($/mo)", grid: true, line: true, tickFormat: fmtDollar, domain: [0, 2000]},
+    marks: [
+      Plot.barY(avg, {x: "year", y: "rent", fill: d => d.year === last ? NEED : BAR, rx: 3,
+        tip: true, title: d => `${d.year}\n$${Math.round(d.rent).toLocaleString()}/mo`}),
+      Plot.text(avg, {x: "year", y: "rent", text: d => fmtDollar(d.rent), dy: -8, fontSize: 12, fill: "#333"})
+    ]
+  }), {invalidation});
+}
+```
+
+</div>
+<figcaption class="post-figcap">Source: North Meck Insights data warehouse (U.S. Census ACS, 2018–2024).</figcaption>
+</figure>
+
+The three towns didn't move at exactly the same pace. Huntersville's median rent climbed from `r fmt_dollar(rent("Huntersville", 2018))` to `r fmt_dollar(rent("Huntersville", 2024))` (+`r fmt_pct(rent_chg["Huntersville"])`). Cornelius went from `r fmt_dollar(rent("Cornelius", 2018))` to `r fmt_dollar(rent("Cornelius", 2024))` (+`r fmt_pct(rent_chg["Cornelius"])`). Davidson, starting from a similar point at `r fmt_dollar(rent("Davidson", 2018))`, reached `r fmt_dollar(rent("Davidson", 2024))` by 2024 (+`r fmt_pct(rent_chg["Davidson"])`) — still a steep rise, even as the smallest of the three.
+
+## Who feels it first
+
+By 2024, cost burden — spending more than 30% of income on housing — reached nearly half of renter households in all three towns, and it rose in every town.
+
+```{r}
+#| output: asis
+for (t in towns) {
+  cat(sprintf('<div class="nm-callout info" style="margin:28px 0"><div class="nm-callout-t"><strong>%s:</strong> %s of renter households cost-burdened in 2024, up from %s in 2018.</div><div class="nm-callout-s">Source: North Meck Insights data warehouse (ACS 2018–2024)</div></div>\n\n',
+              t, fmt_pct(burden(t, 2024), 1), fmt_pct(burden(t, 2018), 1)))
+}
+```
+
+## What a livable income actually looks like here
+
+Our regional affordability data shows exactly where the line falls for a one-bedroom at fair market rent (`r fmt_dollar(fmr_1br)`/month):
+
+```{r}
+#| output: asis
+cat('<table class="post-table">\n<thead><tr><th>Income level (AMI)</th><th>Annual income</th><th>What they can afford/mo</th><th>Fair market rent</th><th>Gap</th></tr></thead>\n<tbody>\n')
+for (i in seq_len(nrow(ami_1br))) {
+  r <- ami_1br[i, ]
+  gap <- if (r$gap >= 0) paste0("+", fmt_dollar(r$gap), " (Affordable)") else paste0("–", fmt_dollar(-r$gap), " (Unaffordable)")
+  cat(sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n',
+              r$ami_level, fmt_dollar(r$annual), fmt_dollar(r$max_affordable_rent), fmt_dollar(r$fmr), gap))
+}
+cat('</tbody>\n</table>\n')
+```
+
+<p class="post-figcap">Annual income is the income at which the affordable rent equals 30% of income.</p>
+
+A household earning half the area median income is short by more than `r fmt_dollar(floor(gap_50 / 100) * 100)` a month, every month, just to reach fair market rent for a one-bedroom apartment. Even a studio rents for `r fmt_dollar(fmr_studio)`.
+
+## What this means
+
+The gap between rent and income is not abstract — it shows up in the rent-to-income ratios climbing in Cornelius and Huntersville, and in the growing share of neighbors who are cost-burdened in all three towns. Understanding the size of the gap is the first step toward closing it, which is why every figure on this site links back to its public source.
+
+The full picture, town by town, lives in the Housing dashboard.
+
+<button class="btn btn-p" style="margin:6px 0 8px" onclick="window.location='/housing.html'"><i class="ti ti-chart-histogram"></i> Explore the housing data</button>
+
+<h2 class="post-sources-h">Sources</h2>
+<ul class="post-sources">
+<li>National Low Income Housing Coalition, <em>Out of Reach</em> 2025 — Charlotte-Concord-Gastonia fair market rents and affordability by income level (North Meck Insights datasets <code>charlotte-fmr-bedroom</code>, <code>charlotte-ami-gap</code>)</li>
+<li>U.S. Bureau of Labor Statistics, Occupational Employment &amp; Wage Statistics, Charlotte-Concord-Gastonia MSA, 2023 (North Meck Insights dataset <code>charlotte-housing-wage</code>)</li>
+<li>North Meck Insights data warehouse — <code>agg_town_economic_trends</code>, <code>agg_town_housing_burden</code> (U.S. Census ACS, 2018–2024)</li>
+</ul>

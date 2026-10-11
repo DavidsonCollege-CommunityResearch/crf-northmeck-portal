@@ -1,0 +1,41 @@
+---
+pagetitle: "Sources · North Meck Insights"
+---
+
+<!-- The bibliography comes from _data/sources.yml. -->
+
+```{r}
+#| include: false
+source("R/nm.R")
+source("R/cards.R")
+sources <- yaml::read_yaml("_data/sources.yml")
+```
+
+```{=html}
+<div class="page active" style="display:block">
+
+<div class="wrap"><div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><span>Sources</span></div></div>
+<section class="section"><div class="wrap">
+<div class="sec-head" style="max-width:680px">
+<span class="eyebrow" style="font-size:15px">Sources</span>
+<h2 class="sec-h" style="font-size:32px">Every source, in one place</h2>
+<p class="lead">A full bibliography of the open public data behind the portal. Every chart is built from one of these; the few outside figures quoted in the glossary and stories name their own source. Open data only, all of it free to verify and download.</p>
+</div>
+<div class="biblio">
+```
+
+```{r}
+#| output: asis
+raw_html(source_list(sources))
+```
+
+```{=html}
+</div>
+<div class="dlstrip" style="margin-top:52px">
+<div><div class="dlstrip-t">Want the raw data?</div><div class="dlstrip-s">Every chart on the portal is available as CSV, with the source noted inline.</div></div>
+<div class="dl-btns"><button class="btn-ghost" onclick="window.location='/data-library.html'"><i class="ti ti-download"></i> Download all CSVs</button></div>
+</div>
+</div></section>
+
+</div>
+```

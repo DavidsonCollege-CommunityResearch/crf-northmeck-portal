@@ -1,0 +1,16 @@
+[
+{"town":"Cornelius","level":"Less than HS","earnings":25255},
+{"town":"Cornelius","level":"HS Diploma","earnings":44030},
+{"town":"Cornelius","level":"Some College","earnings":59510},
+{"town":"Cornelius","level":"Bachelor's","earnings":88510},
+{"town":"Cornelius","level":"Graduate/Prof","earnings":111383},
+{"town":"Davidson","level":"Less than HS","earnings":27750},
+{"town":"Davidson","level":"Some College","earnings":46319},
+{"town":"Davidson","level":"Bachelor's","earnings":135211},
+{"town":"Davidson","level":"Graduate/Prof","earnings":151226},
+{"town":"Huntersville","level":"Less than HS","earnings":24041},
+{"town":"Huntersville","level":"HS Diploma","earnings":45963},
+{"town":"Huntersville","level":"Some College","earnings":60143},
+{"town":"Huntersville","level":"Bachelor's","earnings":90507},
+{"town":"Huntersville","level":"Graduate/Prof","earnings":103843}
+]

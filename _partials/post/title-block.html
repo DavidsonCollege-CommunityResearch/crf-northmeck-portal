@@ -1,0 +1,16 @@
+<!-- Header for blog posts (posts/_metadata.yml). Opens the page and article;
+     _extensions/post-layout.lua wraps the post body and closes them. -->
+<div class="page active" style="display:block">
+<div class="wrap"><div class="crumb"><a onclick="window.location='/index.html'">Home</a><i class="ti ti-chevron-right"></i><a onclick="window.location='/blog.html'">Stories</a><i class="ti ti-chevron-right"></i><span>$for(categories)$$categories$$sep$, $endfor$</span></div></div>
+<article class="post">
+<div class="wrap">
+<header class="post-head">
+<span class="eyebrow" style="font-size:13px">$if(eyebrow)$$eyebrow$$else$$for(categories)$$categories$$sep$, $endfor$$endif$</span>
+<h1 class="post-title" style="font-size:48px;text-align:left">$title$</h1>
+$if(description)$<p class="post-dek">$description$</p>$endif$
+<div class="post-byline">
+<div class="post-author-ph"><i class="ti ti-user"></i></div>
+<div><div class="by-n">$for(by-author)$$it.name.literal$$sep$, $endfor$</div><div class="by-m">$if(author-role)$$author-role$ · $endif$$date$$if(read-time)$ · $read-time$$endif$</div></div>
+</div>
+</header>
+</div>

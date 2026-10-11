@@ -1,0 +1,12 @@
+Package: northmeckinsights
+Title: North Meck Insights site build
+Version: 0.0.1
+Description: Not an R package. Lists the R packages the Quarto site needs to
+    render, so CI (r-lib/actions/setup-r-dependencies) and contributors can
+    install them with remotes::install_deps().
+Imports:
+    jsonlite,
+    knitr,
+    rmarkdown,
+    yaml,
+    htmltools

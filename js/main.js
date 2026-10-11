@@ -1,0 +1,1659 @@
+/* ── STATIC DATA LOADER ──
+   Charts used to query MotherDuck live from the browser (a hardcoded token
+   shipped to every visitor, plus MotherDuck's hosted CDN/query channel being
+   intermittently flaky). Data is now snapshotted server-side on a schedule
+   (scripts/refresh-data.mjs, run by .github/workflows/refresh-data.yml) into
+   public/data/*.json, which the client just fetches like any other static
+   asset — no token, no live connection, nothing MotherDuck-specific left
+   in the browser at all. */
+var MD_DATA_BASE = (function(){
+  var s = document.currentScript;
+  if (s && s.src) return s.src.replace(/js\/main\.js(?:\?.*)?$/, '');
+  return './';
+})();
+
+// Shared town color palette — viridis-based (colorblind-safe), one definition
+// used by the remaining plain-JS charts (e.g. js/healthcare-map.js) instead of each
+// one declaring its own colors. Change a town's color here and it updates
+// everywhere at once.
+// Shared chart defaults — one wrapper every Plot-based chart script uses
+// instead of calling Plot.plot() directly, so margins, font, and axis-arrow
+// conventions stay consistent site-wide without editing each chart by hand.
+window.CHART_MARGINS = { marginLeft: 64, marginRight: 40, marginTop: 24, marginBottom: 48 };
+window.fmtDollar = function(d) { return "$" + Math.round(d).toLocaleString(); };
+window.fmtPercent = function(d) { return d + "%"; };
+window.stdPlot = function(opts) {
+  const merged = Object.assign({}, window.CHART_MARGINS, opts);
+  if (!merged.style) {
+    merged.style = { fontFamily: "Hanken Grotesk, sans-serif", fontSize: "12px" };
+  }
+  // Self-adjusting left margin: if the y-axis has a fixed list of text labels
+  // (category names like town or school names), make sure marginLeft is wide
+  // enough for the longest one actually present, rather than relying on each
+  // chart hardcoding a guessed pixel number that can fall short for long
+  // names it wasn't tested against. Only raises the margin, never shrinks a
+  // value a chart already explicitly set larger for its own reasons.
+  if (merged.y && typeof merged.y === "object" && Array.isArray(merged.y.domain) &&
+      merged.y.domain.length && merged.y.domain.every(function(d){ return typeof d === "string"; })) {
+    var longest = merged.y.domain.reduce(function(a, b){ return b.length > a.length ? b : a; }, "");
+    var fontSize = parseInt((merged.style && merged.style.fontSize) || "12", 10) || 12;
+    var neededLeft = Math.ceil(longest.length * fontSize * 0.62) + 26;
+    if (!(opts.marginLeft > neededLeft)) {
+      merged.marginLeft = neededLeft;
+    }
+  }
+  if (merged.y && typeof merged.y === "object" && merged.y.domain === undefined && merged.y.zero === undefined) {
+    merged.y = Object.assign({}, merged.y, { zero: true });
+  }
+  if (merged.y && typeof merged.y === "object" && typeof merged.y.label === "string" && merged.y.label && !merged.y.label.startsWith("↑")) {
+    merged.y = Object.assign({}, merged.y, { label: "↑ " + merged.y.label });
+  }
+  if (merged.x && typeof merged.x === "object" && typeof merged.x.label === "string" && merged.x.label && !merged.x.label.endsWith("→")) {
+    merged.x = Object.assign({}, merged.x, { label: merged.x.label + " →" });
+  }
+  return window.Plot.plot(merged);
+};
+
+window.TOWN_COLORS = { Cornelius: "#440154", Davidson: "#21908c", Huntersville: "#b5de2b" };
+
+window.loadData = async function(name){
+  var res = await fetch(MD_DATA_BASE + 'data/' + name + '.json');
+  if (!res.ok) throw new Error('Failed to load data/' + name + '.json: HTTP ' + res.status);
+  return await res.json();
+};
+
+window.mdShowError = function(containerId){
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = '<div class="md-error" style="padding:24px 12px;text-align:center;color:var(--ink-3);font-family:\'Hanken Grotesk\',sans-serif;font-size:13.5px">'
+    + '<i class="ti ti-cloud-off" style="font-size:22px;display:block;margin-bottom:6px;opacity:.55"></i>'
+    + "Couldn't load this chart right now.<br><a href=\"javascript:location.reload()\" style=\"color:var(--accent)\">Try refreshing the page</a></div>";
+};
+
+// Set active nav link based on current page
+document.addEventListener('DOMContentLoaded', function() {
+  var path = window.location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('a[data-page]').forEach(function(el) {
+    var p = el.getAttribute('data-page');
+    var matches = (p === 'home' && (path === '' || path === 'index.html')) ||
+                  (path === p + '.html');
+    el.classList.toggle('active', matches);
+  });
+});
+
+
+// ── Nav search ──────────────────────────────────────────────────────────────
+var NAV_INDEX = [
+  { title:'Housing', sub:'Affordability, displacement, homeownership', page:'housing', icon:'ti-building-community' },
+  { title:'Healthcare', sub:'Insurance, access, mental health, chronic disease', page:'healthcare', icon:'ti-heartbeat' },
+  { title:'Education', sub:'Enrollment, outcomes, early childhood', page:'education', icon:'ti-school' },
+  { title:'Data Library', sub:'Download open datasets', page:'data-library', icon:'ti-database' },
+  { title:'Neighborhoods', sub:'Pottstown, West Davidson, Smithville, Huntington Green, East Catawba', page:'neighborhoods', icon:'ti-map-2' },
+  { title:'Stories', sub:'Research in plain English', page:'blog', icon:'ti-newspaper' },
+  { title:'About', sub:'Community Research Fellows, Davidson College', page:'about', icon:'ti-users' },
+  { title:'Data Dictionary', sub:'Column definitions and codebooks for every dataset', page:'dictionary', icon:'ti-book-2' },
+  { title:'Data Sources', sub:'Where our data comes from', page:'sources', icon:'ti-file-text' },
+  // Housing subtopics
+  { title:'Housing Supply', sub:'Population growth, household counts, housing types', page:'housing', icon:'ti-building-community' },
+  { title:'Housing Affordability', sub:'Rent-to-income ratio, home price-to-income', page:'housing', icon:'ti-cash' },
+  { title:'Displacement Risk', sub:'Cost burden, ALICE households, severe burden', page:'housing', icon:'ti-alert-triangle' },
+  { title:'Homeownership', sub:'Homeownership rates, racial composition', page:'housing', icon:'ti-home' },
+  // Healthcare subtopics
+  { title:'Health Insurance', sub:'Uninsured rates, coverage gaps', page:'healthcare', icon:'ti-shield-check' },
+  { title:'Mental Health', sub:'Mental health outcomes and provider access', page:'healthcare', icon:'ti-brain' },
+  { title:'Chronic Disease', sub:'Diabetes, hypertension, obesity rates', page:'healthcare', icon:'ti-activity' },
+  // Income & need
+  { title:'Income & Economic Need', sub:'Gini index, poverty, ALICE, infrastructure', page:'housing', icon:'ti-trending-up' },
+  { title:'Rent', sub:'Median rent trends by town', page:'housing', icon:'ti-home-dollar' },
+  { title:'Home Values', sub:'Median home value by town', page:'housing', icon:'ti-building' },
+  { title:'Cornelius', sub:'Town data and neighborhood profile', page:'neighborhoods', icon:'ti-map-pin' },
+  { title:'Davidson', sub:'Town data and neighborhood profile', page:'neighborhoods', icon:'ti-map-pin' },
+  { title:'Huntersville', sub:'Town data and neighborhood profile', page:'neighborhoods', icon:'ti-map-pin' },
+];
+
+// Chart-level index: one entry per actual chart card, generated from each
+// page's real DOM (title + containing tab + a stable anchor id already on
+// that card). This is what lets a search for something like "rent" jump
+// straight to the specific chart instead of just the top of a topic page.
+//
+// NOTE: currently covers Housing and Healthcare only, since those are the
+// only two pages where every chart card already has a stable id to anchor
+// to. Education and the per-neighborhood dashboards use different markup
+// patterns and don't have those anchors yet — that's a separate follow-up
+// pass, not something this index can cover until those ids are added.
+var CHART_INDEX = [
+  { title:'Rent vs. Income Growth, Indexed to 2018', sub:'When the rent line rises above the income line, affordability is eroding · North Mecklenburg', page:'housing', anchor:'income-rent-chart-host', pane:'overview', icon:'ti-building-community' },
+  { title:'Median Rent by Town (2018–2024)', sub:'Cornelius, Davidson, Huntersville', page:'housing', anchor:'rent-chart-host', pane:'affordability', icon:'ti-building-community' },
+  { title:'Home Value vs. Income Growth, Indexed to 2018', sub:'Home values have risen far faster than incomes, making ownership increasingly out of reach', page:'housing', anchor:'home-value-chart-host', pane:'affordability', icon:'ti-building-community' },
+  { title:'Rent-to-Income Ratio by Town (2018–2024)', sub:'Median rent ÷ median household income · 30% HUD threshold shown', page:'housing', anchor:'rti-chart-host', pane:'affordability', icon:'ti-building-community' },
+  { title:'Home Price-to-Income Ratio by Town (2018–2024)', sub:'Median home value ÷ median household income · 4× threshold shown', page:'housing', anchor:'hpti-chart-host', pane:'affordability', icon:'ti-building-community' },
+  { title:'Population Growth by Town (2018–2024)', sub:'Cornelius, Davidson, Huntersville', page:'housing', anchor:'population-chart-host', pane:'supply', icon:'ti-building-community' },
+  { title:'Total Households by Town (2018–2024)', sub:'', page:'housing', anchor:'tenure-chart-host', pane:'supply', icon:'ti-building-community' },
+  { title:'Housing Types by Town (2024)', sub:'Share of housing units by structure type', page:'housing', anchor:'housing-types-host', pane:'supply', icon:'ti-building-community' },
+  { title:'Cost Burden by Income Bracket', sub:'Households by housing cost burden level · North Mecklenburg', page:'housing', anchor:'burden-chart-host', pane:'displacement', icon:'ti-building-community' },
+  { title:'Renter Cost Burden Rate Over Time', sub:'Share of renter households spending 30%+ of income on housing · 2018–2024 · North Mecklenburg', page:'housing', anchor:'burden-trend-host', pane:'displacement', icon:'ti-building-community' },
+  { title:'Severely Cost-Burdened Households by Town (2018–2024)', sub:'Households spending 50%+ of income on housing', page:'housing', anchor:'severely-burdened-host', pane:'displacement', icon:'ti-building-community' },
+  { title:'Homeownership Rate by Race & Ethnicity', sub:'Owner-occupied households as share of all households by group · North Mecklenburg', page:'housing', anchor:'race-chart-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Population Share by Race (2024)', sub:'Share of total population by race/ethnicity', page:'housing', anchor:'race-comp-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Racial Composition by Town (2018–2024)', sub:'Share of total population by race/ethnicity', page:'housing', anchor:'race-trend-chart-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Years to Save for a 20% Down Payment, by Town', sub:'Assumes 10% annual savings rate on median household income', page:'housing', anchor:'down-payment-chart-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Years of Income to Buy a Home, by Income Bracket', sub:'Median home value ÷ income bracket midpoint, showing how many years of gross income to buy', page:'housing', anchor:'ptr-chart-host', pane:'homeownership', icon:'ti-building-community' },
+  { title:'Median Household Income by Town (2018–2024)', sub:'Cornelius, Davidson, Huntersville', page:'housing', anchor:'median-income-chart-host', pane:'income', icon:'ti-building-community' },
+  { title:'Home Price-to-Income Ratio Over Time', sub:'Median home value ÷ median household income, years of income to buy', page:'housing', anchor:'ptr-trend-host', pane:'income', icon:'ti-building-community' },
+  { title:'Income Inequality Over Time (Gini Coefficient)', sub:'0 = perfect equality · 1 = maximum inequality', page:'housing', anchor:'gini-chart-host', pane:'income', icon:'ti-building-community' },
+  { title:'Household financial stability by town (latest year)', sub:'Below FPL · ALICE · Above ALICE threshold', page:'housing', anchor:'alice-bar-host', pane:'income', icon:'ti-building-community' },
+  { title:'North Meck vs Mecklenburg County (latest year)', sub:'Share below ALICE threshold · towns vs county benchmark', page:'housing', anchor:'alice-county-host', pane:'income', icon:'ti-building-community' },
+  { title:'Access Gaps by Town (2018–2024)', sub:'One metric at a time', page:'housing', anchor:'infra-chart-host', pane:'income', icon:'ti-building-community' },
+  { title:'Education & Economic Mobility by Town (2018–2024)', sub:'One metric at a time', page:'housing', anchor:'mobility-chart-host', pane:'income', icon:'ti-building-community' },
+  { title:'Frequent Mental Distress by Year', sub:'2019, 2021, 2023 · Age-adjusted · CDC PLACES', page:'healthcare', anchor:'mh-distressbar-host', pane:'hc-mental', icon:'ti-heartbeat' },
+  { title:'Depression Prevalence by Year', sub:'2019, 2021, 2023 · Age-adjusted · CDC PLACES', page:'healthcare', anchor:'mh-depbar-host', pane:'hc-mental', icon:'ti-heartbeat' },
+  { title:'Mental Health & Substance Use Facility Locations', sub:'Treatment facilities in the Charlotte region · SAMHSA', page:'healthcare', anchor:'mh-map-card', pane:'hc-mental', icon:'ti-heartbeat' },
+  { title:'Age-adjusted Diabetes Prevalence', sub:'2019 · 2021 · 2023 · CDC PLACES', page:'healthcare', anchor:'cd-diabetes-host', pane:'hc-chronic', icon:'ti-heartbeat' },
+  { title:'Obesity Prevalence', sub:'2019 · 2021 · 2023 · CDC PLACES', page:'healthcare', anchor:'cd-obesity-host', pane:'hc-chronic', icon:'ti-heartbeat' },
+  { title:'High Blood Pressure Prevalence', sub:'2019 · 2021 · 2023 · CDC PLACES', page:'healthcare', anchor:'cd-hbp-host', pane:'hc-chronic', icon:'ti-heartbeat' }
+];
+
+var SEARCH_INDEX = NAV_INDEX.concat(CHART_INDEX);
+
+function navSearchInput(input){
+  var q = (input.value || '').trim().toLowerCase();
+  var dd = document.getElementById('navSearchDd');
+  if (!dd) return;
+  if (!q){ dd.classList.remove('open'); dd.innerHTML=''; return; }
+  var results = SEARCH_INDEX.filter(function(r){
+    return r.title.toLowerCase().includes(q) || r.sub.toLowerCase().includes(q);
+  }).slice(0,8);
+  if (!results.length){
+    dd.innerHTML='<div class="nav-search-dd-empty">No results for "'+q+'"</div>';
+  } else {
+    dd.innerHTML = results.map(function(r,i){
+      return '<div class="nav-search-dd-item" data-idx="'+i+'" onclick="navSearchGoTo('+i+')">'
+        +'<i class="ti '+r.icon+' nav-search-dd-icon"></i>'
+        +'<div class="nav-search-dd-text">'
+        +'<div class="nav-search-dd-title">'+r.title+'</div>'
+        +'<div class="nav-search-dd-sub">'+r.sub+'</div>'
+        +'</div></div>';
+    }).join('');
+  }
+  dd._results = results;
+  dd._active = -1;
+  dd.classList.add('open');
+}
+
+function navSearchKey(e){
+  var dd = document.getElementById('navSearchDd');
+  if (!dd || !dd.classList.contains('open')) return;
+  var items = dd.querySelectorAll('.nav-search-dd-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown'){ e.preventDefault(); dd._active = Math.min((dd._active||0)+1, items.length-1); items.forEach(function(el,i){ el.style.background = i===dd._active ? 'var(--bg-alt)' : ''; }); }
+  else if (e.key === 'ArrowUp'){ e.preventDefault(); dd._active = Math.max((dd._active||0)-1, 0); items.forEach(function(el,i){ el.style.background = i===dd._active ? 'var(--bg-alt)' : ''; }); }
+  else if (e.key === 'Enter' && dd._active >= 0 && dd._results){ navSearchGoTo(dd._active); }
+  else if (e.key === 'Escape'){ navSearchClose(); }
+}
+
+var PAGE_MAP = {home:'index.html',housing:'housing.html',education:'education.html',healthcare:'healthcare.html',blog:'blog.html',about:'about.html',topics:'topics.html','data-library':'data-library.html',dictionary:'data-library.html',sources:'sources.html',neighborhoods:'neighborhoods.html','nbhd-data':'nbhd-data.html'};
+
+// Called when a search result is clicked or selected with Enter.
+function navSearchGoTo(idx){
+  var dd = document.getElementById('navSearchDd');
+  var r = dd && dd._results && dd._results[idx];
+  if (!r) return;
+  var url = PAGE_MAP[r.page] || (r.page + '.html');
+  if (r.anchor) url += '#' + r.anchor;
+  window.location = url;
+  var inp = document.getElementById('navSearch');
+  if (inp) inp.value = '';
+  navSearchClose();
+}
+window.navSearchGoTo = navSearchGoTo;
+
+// Kept for anything still calling the old page-only version directly.
+function navSearchGo(page){
+  window.location = PAGE_MAP[page] || (page + '.html');
+  var inp = document.getElementById('navSearch');
+  if (inp) inp.value = '';
+  navSearchClose();
+}
+window.navSearchGo = navSearchGo;
+
+// On page load, if the URL has a hash pointing at a specific chart (as search
+// results now produce), switch to the right tab if needed, scroll the chart
+// into view, and give it a brief highlight so it's obvious what was found.
+document.addEventListener('DOMContentLoaded', function(){
+  var id = (window.location.hash || '').replace('#','');
+  if (!id) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+  var pane = el.closest ? el.closest('.tabpane') : null;
+  if (pane && pane.dataset && pane.dataset.pane){
+    var tabBtn = document.querySelector('.tab[data-tab="'+pane.dataset.pane+'"]');
+    if (tabBtn && window.setTab) window.setTab(tabBtn);
+  }
+  setTimeout(function(){
+    el.scrollIntoView({ behavior:'smooth', block:'center' });
+    el.classList.add('search-highlight');
+    setTimeout(function(){ el.classList.remove('search-highlight'); }, 2200);
+  }, 220);
+});
+
+function navSearchClose(){
+  var dd = document.getElementById('navSearchDd');
+  if (dd){ dd.classList.remove('open'); dd.innerHTML=''; }
+}
+function navSearchExpand(){
+  var wrap = document.getElementById('navSearchWrap');
+  var input = document.getElementById('navSearch');
+  if(!wrap || !input) return;
+  wrap.classList.add('expanded');
+  setTimeout(function(){ input.focus(); }, 260);
+}
+function navSearchCollapse(){
+  var wrap = document.getElementById('navSearchWrap');
+  var input = document.getElementById('navSearch');
+  if(!wrap || !input) return;
+  if(wrap.contains(document.activeElement)) return;
+  navSearchClose();
+  wrap.classList.remove('expanded');
+  input.value = '';
+}
+window.navSearchInput = navSearchInput;
+window.navSearchKey = navSearchKey;
+window.navSearchClose = navSearchClose;
+window.navSearchExpand = navSearchExpand;
+window.navSearchCollapse = navSearchCollapse;
+// ────────────────────────────────────────────────────────────────────────────
+
+function toggleDD(e, el){
+  e.stopPropagation();
+  var dd = el.closest('.nav-dd');
+  var isOpen = dd.classList.contains('open');
+  document.querySelectorAll('.nav-dd').forEach(function(d){ d.classList.remove('open'); });
+  if (!isOpen) dd.classList.add('open');
+}
+window.toggleDD = toggleDD;
+
+function toggleMobileNav() {
+  var links = document.querySelector('.nav-links');
+  var btn = document.getElementById('navBurger');
+  var icon = document.getElementById('navBurgerIcon');
+  var isOpen = links.classList.toggle('mobile-open');
+  btn.setAttribute('aria-expanded', String(isOpen));
+  icon.className = isOpen ? 'ti ti-x' : 'ti ti-menu-2';
+  if (!isOpen) document.querySelectorAll('.nav-dd').forEach(function(d){ d.classList.remove('open'); });
+}
+window.toggleMobileNav = toggleMobileNav;
+
+document.addEventListener('click', function(e){
+  document.querySelectorAll('.nav-dd').forEach(function(d){ d.classList.remove('open'); });
+  var nav = document.querySelector('.nav');
+  var links = document.querySelector('.nav-links');
+  if (links && links.classList.contains('mobile-open') && nav && !nav.contains(e.target)) {
+    toggleMobileNav();
+  }
+});
+
+function setTab(el){
+  var pane = el.dataset.tab;
+  var y = window.scrollY;
+  el.parentElement.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t === el); });
+  var page = el.closest('.page');
+  if (page) page.querySelectorAll('.tabpane').forEach(function(p){ p.classList.toggle('active', p.dataset.pane === pane); });
+  window.scrollTo(0, y);
+  requestAnimationFrame(function(){
+    document.dispatchEvent(new CustomEvent('tabChange', { detail: { pane: pane } }));
+    document.dispatchEvent(new CustomEvent('masterTownChange', { detail: { town: window.__masterTown || 'All' } }));
+  });
+}
+window.setTab = setTab;
+
+document.addEventListener('tabChange', function(e){
+  var p = e.detail.pane;
+  if (p === 'hc-mental'  && window.__mhRender) setTimeout(window.__mhRender, 60);
+  if (p === 'hc-chronic' && window.__cdRender) setTimeout(window.__cdRender, 60);
+});
+
+function setChip(el){
+  el.parentElement.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('on', c === el); });
+  var label = el.textContent.trim();
+  window.__masterTown = label === "All North Meck" ? "All" : label;
+  document.dispatchEvent(new CustomEvent('masterTownChange', { detail: { town: window.__masterTown } }));
+}
+window.__masterTown = "All";
+window.setChip = setChip;
+
+/* ── SCROLL HELPERS ── */
+function scrollTopSmooth(){
+  var start = window.scrollY || document.documentElement.scrollTop || 0;
+  if (start <= 0) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce){ window.scrollTo(0, 0); return; }
+  var dur = Math.min(750, Math.max(320, start * 0.55));
+  var t0 = null, ease = function(p){ return 1 - Math.pow(1-p, 3); };
+  function step(ts){ if (t0 === null) t0 = ts; var p = Math.min(1, (ts-t0)/dur); window.scrollTo(0, Math.round(start*(1-ease(p)))); if (p < 1) requestAnimationFrame(step); }
+  requestAnimationFrame(step);
+}
+window.scrollTopSmooth = scrollTopSmooth;
+
+function scrollToNbhd(id){
+  var el = document.getElementById(id); if (!el) return;
+  var targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 84);
+  var start = window.scrollY || 0, dist = targetY - start;
+  if (Math.abs(dist) < 2) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce){ window.scrollTo(0, targetY); return; }
+  var dur = Math.min(750, Math.max(320, Math.abs(dist) * 0.5));
+  var t0 = null, ease = function(p){ return 1 - Math.pow(1-p, 3); };
+  function step(ts){ if (t0 === null) t0 = ts; var p = Math.min(1, (ts-t0)/dur); window.scrollTo(0, Math.round(start+dist*ease(p))); if (p<1) requestAnimationFrame(step); }
+  requestAnimationFrame(step);
+}
+window.scrollToNbhd = scrollToNbhd;
+
+function gotoNbhd(id){ window.location='neighborhoods.html'; setTimeout(function(){ scrollToNbhd(id); }, 80); }
+window.gotoNbhd = gotoNbhd;
+
+var NBHD_META = {
+  pottstown:       { label:'Pottstown',        town:'Huntersville', sub:'Block-group level ACS data approximating the Pottstown area of Huntersville.', extraNote:' Pottstown spans two block groups, so its figures carry slightly more uncertainty than other neighborhoods.' },
+  westdavidson:    { label:'West Davidson',     town:'Davidson',     sub:'Block-group level ACS data approximating the West Davidson area of Davidson.', extraNote:'' },
+  smithville:      { label:'Smithville',        town:'Cornelius',    sub:'Block-group level ACS data approximating the Smithville area of Cornelius.', extraNote:'' },
+  huntingtongreen: { label:'Huntington Green',  town:'Huntersville', sub:'Block-group level ACS data approximating the Huntington Green area of Huntersville.', extraNote:'' },
+  eastcatawba:     { label:'East Catawba',      town:'Cornelius',    sub:'Data not yet available for East Catawba.', extraNote:'' }
+};
+
+function setNbhdData(btn){
+  var nbhd = btn.dataset.nbhd;
+  setNbhdDataByKey(nbhd);
+}
+window.setNbhdData = setNbhdData;
+
+function setNbhdDataByKey(nbhd){
+  var meta = NBHD_META[nbhd] || NBHD_META.pottstown;
+
+  // Update selector buttons
+  document.querySelectorAll('.nbhd-sel-btn').forEach(function(b){
+    b.classList.toggle('active', b.dataset.nbhd === nbhd);
+  });
+
+  // Update header
+  var titleEl = document.getElementById('nbhd-data-title');
+  var subtitleEl = document.getElementById('nbhd-data-subtitle');
+  var crumbEl = document.getElementById('nbhd-data-crumb');
+  if(titleEl) titleEl.textContent = meta.label;
+  if(subtitleEl) subtitleEl.textContent = meta.sub;
+  if(crumbEl) crumbEl.textContent = meta.label;
+  var disclaimer = document.getElementById('nbhd-disclaimer-text');
+  if(disclaimer) disclaimer.innerHTML = '<strong>Data note:</strong> Neighborhood boundaries don\'t align perfectly with U.S. Census geography. The data shown here is from the <strong>ACS block group</strong> that best approximates each neighborhood — the smallest geographic unit the Census publishes. This means the numbers may include some residents just outside the neighborhood boundary.' + (meta.extraNote||'') + ' All data comes from the American Community Survey 5-year estimates.';
+
+  // Show correct panel
+  var dataPanel = document.getElementById('nbhd-panel-data');
+  var noDataPanel = document.getElementById('nbhd-panel-eastcatawba');
+  var isNoData = nbhd === 'eastcatawba';
+  if(dataPanel) dataPanel.classList.toggle('active', !isNoData);
+  if(noDataPanel) noDataPanel.classList.toggle('active', isNoData);
+
+  // Reset tabs to first tab when switching neighborhoods
+  if(!isNoData){
+    var tabs = document.getElementById('nbhd-data-tabs');
+    if(tabs){
+      var first = tabs.querySelector('.tab');
+      if(first){
+        tabs.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t === first); });
+        var pane = first.dataset.tab;
+        document.querySelectorAll('#page-nbhd-data .tabpane').forEach(function(p){ p.classList.toggle('active', p.dataset.pane === pane); });
+      }
+    }
+  }
+}
+window.setNbhdDataByKey = setNbhdDataByKey;
+
+/* ── FILTER CHIPS ── */
+window.econChip = function(el) {
+  var chart = el.getAttribute('data-econ-chart');
+  var town  = el.getAttribute('data-econ-town');
+  document.querySelectorAll('[data-econ-chart="'+chart+'"]').forEach(function(c){ c.classList.remove('on'); });
+  el.classList.add('on');
+  if (window.__renders && window.__renders[chart]) {
+    window.__renders[chart](town);
+  }
+};
+
+/* ── GLOSSARY ── */
+
+function glossFilter(q){
+  var t=q.trim().toLowerCase();
+  var items=document.querySelectorAll('#glossaryModal .gloss');
+  var any=false;
+  items.forEach(function(el){
+    var term=el.querySelector('.gloss-term').textContent.toLowerCase();
+    var def=el.querySelector('.gloss-def').textContent.toLowerCase();
+    var show=!t||term.includes(t)||def.includes(t);
+    el.style.display=show?'':'none';
+    if(show) any=true;
+  });
+  document.getElementById('glossNoResults').style.display=any?'none':'block';
+}
+function openGlossary(){ document.getElementById('glossaryModal').classList.add('open'); document.body.style.overflow='hidden'; var s=document.getElementById('glossSearch'); if(s){s.value='';glossFilter('');} }
+function closeGlossary(){ document.getElementById('glossaryModal').classList.remove('open'); document.body.style.overflow=''; }
+window.openGlossary = openGlossary; window.closeGlossary = closeGlossary;
+
+function glossTerm(id){
+  openGlossary();
+  var body = document.querySelector('#glossaryModal .gloss-modal-body');
+  var el = document.querySelector('#glossaryModal .gloss[data-term="'+id+'"]');
+  if (!body || !el) return;
+  setTimeout(function(){
+    var top = Math.max(0, el.offsetTop - body.offsetTop - 18);
+    try { body.scrollTo({ top: top, behavior: 'smooth' }); } catch(e){ body.scrollTop = top; }
+    el.classList.remove('gloss-hit'); void el.offsetWidth; el.classList.add('gloss-hit');
+    setTimeout(function(){ el.classList.remove('gloss-hit'); }, 2700);
+  }, 120);
+}
+window.glossTerm = glossTerm;
+
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape'){
+    closeGlossary();
+    if(window.closeVizModal) window.closeVizModal();
+    var links = document.querySelector('.nav-links');
+    if (links && links.classList.contains('mobile-open')) toggleMobileNav();
+  }
+});
+
+/* ── FAB ── */
+function toggleFab(e){ e.stopPropagation(); document.getElementById('supportFab').classList.toggle('open'); }
+window.toggleFab = toggleFab;
+
+/* ── ACCESSIBILITY ── */
+// Toggles: on/off
+var A11Y_TOGGLES = ['contrast','dyslexia','spacing','motion','noimages'];
+// Stepped: 0..max levels
+var A11Y_STEPS = { text: 4, lh: 3, cursor: 3, sr: 3 };
+var A11Y_STATE = {};
+A11Y_TOGGLES.forEach(function(k){ A11Y_STATE[k] = localStorage.getItem('a11y_'+k) === '1'; });
+Object.keys(A11Y_STEPS).forEach(function(k){ A11Y_STATE[k] = parseInt(localStorage.getItem('a11y_'+k)||'0',10); });
+
+function a11yApply(){
+  var html = document.documentElement;
+  // Toggles
+  A11Y_TOGGLES.forEach(function(k){
+    html.classList.toggle('a11y-'+k, !!A11Y_STATE[k]);
+    var btn = document.getElementById('a11y-'+k);
+    if(btn){ btn.classList.toggle('on', !!A11Y_STATE[k]); btn.setAttribute('aria-pressed', A11Y_STATE[k]?'true':'false'); }
+  });
+  // Stepped
+  Object.keys(A11Y_STEPS).forEach(function(k){
+    var v = A11Y_STATE[k]||0;
+    for(var i=1;i<=A11Y_STEPS[k];i++) html.classList.remove('a11y-'+k+'-'+i);
+    if(v>0) html.classList.add('a11y-'+k+'-'+v);
+    var btn = document.getElementById('a11y-'+k);
+    if(btn) btn.classList.toggle('on', v>0);
+    // light up bars
+    document.querySelectorAll('[data-k="'+k+'"]').forEach(function(bar){
+      bar.classList.toggle('lit', parseInt(bar.dataset.v,10) <= v);
+    });
+  });
+  // Toggle bars (single bar)
+  A11Y_TOGGLES.forEach(function(k){
+    document.querySelectorAll('[data-k="'+k+'"]').forEach(function(bar){
+      bar.classList.toggle('lit', !!A11Y_STATE[k]);
+    });
+  });
+  // Screen reader on/off
+  if((A11Y_STATE.sr||0) > 0) srOn(); else srOff();
+  // OpenDyslexic on demand
+  if(A11Y_STATE.dyslexia && !document.getElementById('od-font')){
+    var lnk=document.createElement('link'); lnk.id='od-font'; lnk.rel='stylesheet';
+    lnk.href='https://fonts.cdnfonts.com/css/opendyslexic'; document.head.appendChild(lnk);
+  }
+}
+
+function a11yToggle(k){
+  A11Y_STATE[k] = !A11Y_STATE[k];
+  localStorage.setItem('a11y_'+k, A11Y_STATE[k]?'1':'0');
+  a11yApply();
+}
+
+function a11yStep(k, max){
+  A11Y_STATE[k] = ((A11Y_STATE[k]||0) % max) + 1;
+  // clicking at max wraps back to 0
+  if(A11Y_STATE[k] > max) A11Y_STATE[k] = 0;
+  localStorage.setItem('a11y_'+k, A11Y_STATE[k]);
+  a11yApply();
+}
+
+function a11yReset(){
+  A11Y_TOGGLES.forEach(function(k){ A11Y_STATE[k]=false; localStorage.removeItem('a11y_'+k); });
+  Object.keys(A11Y_STEPS).forEach(function(k){ A11Y_STATE[k]=0; localStorage.removeItem('a11y_'+k); });
+  srOff();
+  a11yApply();
+}
+
+/* ── SCREEN READER (TTS) ── */
+var SR_RATES = [0, 0.7, 1.0, 1.5];
+var __srActive = false;
+
+function srSpeak(text){
+  if(!window.speechSynthesis || !text.trim()) return;
+  window.speechSynthesis.cancel();
+  var utt = new SpeechSynthesisUtterance(text.trim());
+  utt.rate = SR_RATES[A11Y_STATE.sr || 0] || 1.0;
+  window.speechSynthesis.speak(utt);
+}
+
+function srHandleFocus(e){
+  var el = e.target;
+  var READ = 'p, li, h1, h2, h3, h4, label, .nm-callout-t, .card-t, .stat-v, .stat-l, button, a, .gloss-term';
+  var src = el.matches(READ) ? el : el.closest(READ);
+  if(src) srSpeak(src.innerText || src.textContent);
+}
+
+function srOn(){
+  if(__srActive) return;
+  __srActive = true;
+  document.addEventListener('focusin', srHandleFocus);
+  document.addEventListener('click', srHandleFocus);
+}
+
+function srOff(){
+  if(!__srActive) return;
+  __srActive = false;
+  document.removeEventListener('focusin', srHandleFocus);
+  document.removeEventListener('click', srHandleFocus);
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+function toggleA11y(){
+  var panel=document.getElementById('a11yPanel');
+  var isOpen=panel.classList.toggle('open');
+  document.getElementById('a11yBtn').setAttribute('aria-expanded',isOpen);
+  if(isOpen){ document.addEventListener('click',a11yOutside,true); }
+  else { document.removeEventListener('click',a11yOutside,true); }
+}
+function a11yOutside(e){
+  var panel=document.getElementById('a11yPanel'), btn=document.getElementById('a11yBtn');
+  if(!panel.contains(e.target)&&!btn.contains(e.target)){
+    panel.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+    document.removeEventListener('click',a11yOutside,true);
+  }
+}
+window.toggleA11y=toggleA11y; window.a11yToggle=a11yToggle; window.a11yStep=a11yStep; window.a11yReset=a11yReset;
+a11yApply();
+document.addEventListener('click', function(e){ var fab = document.getElementById('supportFab'); if (fab && fab.classList.contains('open') && !fab.contains(e.target)) fab.classList.remove('open'); });
+
+/* ── MAP ── */
+(function(){
+  var modal = document.getElementById('nmapModal');
+  var stage = document.getElementById('nmapStage');
+  var tip   = document.getElementById('nmapTip');
+  if (!modal || !stage) return;
+  function nmapMove(e){ var r = stage.getBoundingClientRect(); tip.style.left=(e.clientX-r.left)+'px'; tip.style.top=(e.clientY-r.top)+'px'; }
+  function nmapHide(){ tip.classList.remove('on'); }
+  window.openMap = function(){ modal.classList.add('open'); document.body.style.overflow='hidden'; };
+  window.closeMap = function(){ modal.classList.remove('open'); document.body.style.overflow=''; nmapHide(); };
+  document.addEventListener('keydown', function(e){ if (e.key==='Escape' && modal.classList.contains('open')) window.closeMap(); });
+  stage.querySelectorAll('[data-nmap]').forEach(function(el){
+    el.addEventListener('mouseenter', function(e){
+      var name=el.getAttribute('data-name'), town=el.getAttribute('data-town');
+      tip.innerHTML = town ? '<b>'+name+'</b><span>in '+town+'</span>' : '<b>'+name+'</b><span>Town</span>';
+      tip.classList.add('on'); nmapMove(e);
+    });
+    el.addEventListener('mousemove', nmapMove);
+    el.addEventListener('mouseleave', nmapHide);
+  });
+})();
+
+/* ── DATA LIBRARY ── */
+(function(){
+  var state = { search:'', geo:'all', topic:'all', theme:'all' };
+
+  /* ── filter / UI ── */
+  window.dlibToggle = function(btn){
+    var dd=btn.closest('.dlib-dd'), open=dd.classList.contains('open');
+    document.querySelectorAll('.dlib-dd').forEach(function(d){ d.classList.remove('open'); });
+    if (!open) dd.classList.add('open');
+  };
+  document.addEventListener('click', function(e){ if (!e.target.closest('.dlib-dd')) document.querySelectorAll('.dlib-dd').forEach(function(d){ d.classList.remove('open'); }); });
+  window.dlibPick = function(opt){
+    var dd=opt.closest('.dlib-dd'), key=dd.getAttribute('data-key'), val=opt.getAttribute('data-val');
+    state[key]=val;
+    dd.querySelectorAll('.dlib-dd-opt').forEach(function(o){ o.classList.toggle('on', o===opt); });
+    var btn=dd.querySelector('.dlib-dd-btn'), txt=btn.querySelector('.dlib-dd-txt');
+    btn.classList.toggle('active', val!=='all');
+    txt.textContent=(val==='all')?btn.getAttribute('data-label'):opt.textContent.trim();
+    dd.classList.remove('open');
+    window.dlibFilter();
+  };
+  window.dlibFilter = function(){
+    var sEl=document.getElementById('dlibSearch');
+    state.search=(sEl&&sEl.value?sEl.value:'').trim().toLowerCase();
+    var any=false;
+    document.getElementById('dlibResults').querySelectorAll('.dlib-row').forEach(function(r){
+      var ok=true;
+      if (state.search && r.getAttribute('data-name').indexOf(state.search)<0) ok=false;
+      if (state.geo!=='all' && r.getAttribute('data-geo')!==state.geo) ok=false;
+      if (state.topic!=='all' && (' '+r.getAttribute('data-topic')+' ').indexOf(' '+state.topic+' ')<0) ok=false;
+      if (state.theme!=='all' && (' '+r.getAttribute('data-theme')+' ').indexOf(' '+state.theme+' ')<0) ok=false;
+      r.style.display=ok?'':'none';
+      if (ok) any=true;
+    });
+    document.getElementById('dlibResults').querySelectorAll('.dlib-section').forEach(function(s){
+      var vis=Array.prototype.some.call(s.querySelectorAll('.dlib-row'),function(r){ return r.style.display!=='none'; });
+      s.style.display=vis?'':'none';
+    });
+    // Once a topic filter is active, rows from several original sections can
+    // mix together under one header (a row tagged "housing economics" shows
+    // under Economic Well-Being too), so the section headers stop being an
+    // accurate label. Hide them and show a flat list instead; they come back
+    // once the topic filter is cleared.
+    document.getElementById('dlibResults').querySelectorAll('.dlib-section-h').forEach(function(h){
+      h.style.display = (state.topic==='all' && state.theme==='all') ? '' : 'none';
+    });
+    document.getElementById('dlibEmpty').style.display=any?'none':'block';
+  };
+  window.dlibClear = function(){
+    state={search:'',geo:'all',topic:'all',theme:'all'};
+    var s=document.getElementById('dlibSearch'); if(s) s.value='';
+    document.querySelectorAll('.dlib-dd').forEach(function(dd){
+      var btn=dd.querySelector('.dlib-dd-btn'),txt=btn.querySelector('.dlib-dd-txt');
+      btn.classList.remove('active'); txt.textContent=btn.getAttribute('data-label');
+      dd.querySelectorAll('.dlib-dd-opt').forEach(function(o){ o.classList.toggle('on',o.getAttribute('data-val')==='all'); });
+    });
+    window.dlibFilter();
+  };
+
+  /* ── dataset registry ── */
+  // Download info (file names, sources, codebooks) for each dataset comes from
+  // _data/datasets.yml, which data-library.qmd writes into window.DLIB_DATASETS.
+  var DATASETS = window.DLIB_DATASETS || {};
+
+  /* ── helpers ── */
+  function toast(msg, dur){
+    var t=document.getElementById('dlibToast');
+    t.innerHTML=msg; t.classList.add('on');
+    clearTimeout(t._timer);
+    t._timer=setTimeout(function(){ t.classList.remove('on'); }, dur||3000);
+  }
+
+  function triggerDownload(content, filename, mime){
+    var blob=new Blob([content],{type:mime});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1000);
+  }
+
+  function rowsToCSV(rows){
+    if (!rows.length) return '';
+    var headers=Object.keys(rows[0]);
+    var lines=[headers.join(',')];
+    rows.forEach(function(r){
+      lines.push(headers.map(function(h){
+        var v=r[h]==null?'':String(r[h]);
+        return v.includes(',')||v.includes('"')||v.includes('\n') ? '"'+v.replace(/"/g,'""')+'"' : v;
+      }).join(','));
+    });
+    return lines.join('\r\n');
+  }
+
+  function rowsToExcelHTML(rows, title){
+    if (!rows.length) return '';
+    var headers=Object.keys(rows[0]);
+    var hRow='<tr>'+headers.map(function(h){ return '<th style="background:#3f4e75;color:#fff;font-weight:bold;padding:6px 10px">'+h+'</th>'; }).join('')+'</tr>';
+    var dRows=rows.map(function(r,i){
+      var bg=i%2===0?'#ffffff':'#f5f6fa';
+      return '<tr>'+headers.map(function(h){
+        return '<td style="padding:5px 10px;background:'+bg+'">'+( r[h]==null?'':r[h] )+'</td>';
+      }).join('')+'</tr>';
+    }).join('');
+    return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"><style>table{border-collapse:collapse}th,td{border:1px solid #ddd}</style></head><body><h2 style="font-family:Arial">'+title+'</h2><p style="font-family:Arial;color:#666;font-size:12px">Source: North Meck Insights · northmeckinsights.org · Downloaded '+new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})+'</p><table>'+hRow+dRows+'</table></body></html>';
+  }
+
+  function buildCodebook(ds, datasetName){
+    var lines=[
+      'NORTH MECK INSIGHTS — DATA CODEBOOK',
+      '=====================================',
+      'Dataset: '+datasetName,
+      'Source:  '+ds.source,
+      'Years:   '+ds.years,
+      'Published by: Community Research Fellows, Davidson College',
+      'Downloaded:   '+new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),
+      '',
+      'COLUMN DEFINITIONS',
+      '------------------'
+    ];
+    ds.codebook.forEach(function(c){
+      lines.push(c[0].padEnd(38)+c[1].padEnd(12)+c[2]);
+    });
+    lines.push('','NOTES','-----',ds.notes,'','For methodology and full source citations, visit northmeckinsights.org/sources');
+    return lines.join('\r\n');
+  }
+
+  /* ── inline JSON datasets (hardcoded in page) ── */
+  /* ── main download handler ── */
+  var toastT;
+  window.dlibDownload = async function(e, fmt){
+    var btn=e.target.closest('.dlib-dl');
+    var row=e.target.closest('.dlib-row');
+    var dsId=row?row.getAttribute('data-id'):'';
+    var dsName=row?row.querySelector('.dlib-row-name').textContent.trim():'Dataset';
+    var ds=DATASETS[dsId];
+    if (!ds){ toast('Dataset not found.'); return; }
+
+    if (fmt==='Codebook'){
+      triggerDownload(buildCodebook(ds,dsName), ds.filename+'_codebook.txt', 'text/plain;charset=utf-8');
+      toast('<b>Codebook</b> downloaded · '+dsName, 2800);
+      return;
+    }
+
+    /* set loading state */
+    btn.classList.add('loading');
+    var origHTML=btn.innerHTML;
+    btn.innerHTML='<i class="ti ti-loader-2" style="animation:spin 1s linear infinite"></i> Loading…';
+    toast('Fetching data…', 30000);
+
+    try {
+      var rows=[];
+
+      if (ds.jsonFile){
+        rows=await window.loadData(ds.jsonFile);
+      }
+
+      if (!rows.length) throw new Error('No data returned.');
+
+      var today=new Date().toISOString().slice(0,10);
+      if (fmt==='CSV'){
+        triggerDownload(rowsToCSV(rows), ds.filename+'_'+today+'.csv', 'text/csv;charset=utf-8');
+        toast('<b>CSV</b> downloaded · '+rows.length+' rows', 2800);
+      } else {
+        triggerDownload(rowsToExcelHTML(rows,dsName), ds.filename+'_'+today+'.xls', 'application/vnd.ms-excel');
+        toast('<b>Excel</b> downloaded · '+rows.length+' rows', 2800);
+      }
+    } catch(err){
+      toast('Error: '+err.message, 4000);
+      console.error('dlibDownload error:', err);
+    } finally {
+      btn.classList.remove('loading');
+      btn.innerHTML=origHTML;
+    }
+  };
+})();
+
+/* ── FACTS BAR ── */
+var FACTS = [
+  { icon:'ti-ripple',title:'Lake Norman',desc:"NC's largest man-made lake, formed by damming the Catawba River in 1963." },
+  { icon:'ti-building-bank',title:'Davidson College',desc:'Founded in 1837; its best-known alumnus is NBA star Stephen Curry.' },
+  { icon:'ti-history',title:"Battle of Cowan's Ford",desc:'General Davidson fell here in 1781, now beneath Lake Norman.' },
+  { icon:'ti-home-heart',title:'Smithville',desc:"Settled in 1908 by formerly enslaved families, on land Jacob Smith sold or gave outright to those who couldn't afford it." },
+  { icon:'ti-plant',title:'How Cornelius began',desc:"The town was born from an 1890s dispute over weighing cotton." },
+  { icon:'ti-school',title:'Torrence-Lytle School',desc:"From 1937–1966, the area's only high school for Black students." },
+  { icon:'ti-train',title:'The railroad town',desc:'Incorporated in 1873, Huntersville grew up around its rail depot.' },
+  { icon:'ti-building-factory',title:'Linden Cotton Factory',desc:"Davidson's first textile mill, built on Depot Street in 1890." },
+  { icon:'ti-trending-up',title:'A fast-growing region',desc:'Huntersville is home to more than 60,000 residents today, making it the largest of the three North Meck towns.' },
+  { icon:'ti-feather',title:'Carolina Raptor Center',desc:'At Latta Preserve, home to 30+ species of eagles and owls.' },
+  { icon:'ti-flag',title:'Loch Norman Games',desc:'Historic Rural Hill hosts the Loch Norman Highland Games each April.' },
+  { icon:'ti-building-monument',title:'A protected downtown',desc:"Davidson's core earned National Register Historic status in 2009." },
+  { icon:'ti-anchor',title:'Cornelius, once Liverpool',desc:"The town was first incorporated as 'Liverpool,' nicknamed for its cotton trade, before being renamed to honor investor Joseph Benjamin Cornelius." },
+  { icon:'ti-book',title:"Huntersville's first name",desc:'Originally called Craighead after a Presbyterian minister, the town was renamed for landowner Robert Boston Hunter.' },
+  { icon:'ti-building-church',title:'Hopewell Presbyterian',desc:'Founded in 1762, this church lent its name to Hopewell High School, still teaching North Meck students today.' },
+  { icon:'ti-map-pin',title:'Davidson College, NC',desc:"The town wasn't originally called Davidson at all; it was incorporated as 'Davidson College, NC,' shortened in 1891." },
+  { icon:'ti-shield-check',title:"North Carolina's safest city",desc:'In 2025, Davidson was ranked the safest city in North Carolina by SafeWise.' }
+];
+(function(){
+  var bar=document.getElementById('factsBar'); if(!bar) return;
+  var rot=document.getElementById('factsRot');
+  var iconEl=document.getElementById('factIcon'),titleEl=document.getElementById('factTitle'),descEl=document.getElementById('factDesc');
+  var i=0, paused=false, swapT;
+  function paint(n){
+    var f=FACTS[n];
+    iconEl.className='ti '+FACTS[n].icon;
+    titleEl.textContent=f.title; descEl.textContent=f.desc;
+  }
+  function swap(){
+    rot.style.opacity=0; rot.style.transform='translateY(4px)';
+    clearTimeout(swapT);
+    swapT=setTimeout(function(){ i=(i+1)%FACTS.length; paint(i); rot.style.opacity=1; rot.style.transform='none'; }, 400);
+  }
+  paint(0);
+  bar.addEventListener('mouseenter',function(){ paused=true; });
+  bar.addEventListener('mouseleave',function(){ paused=false; });
+  setInterval(function(){ if(!paused) swap(); }, 7000);
+})();
+
+/* ── DATA SPOTLIGHT CAROUSEL ── */
+var SPOT = [
+  { topic:'housing',   label:'Explore Housing data',   icon:'ti-building-community', h:'The Housing Squeeze in North Meck',   lead:'Rising rents, home prices, and savings timelines show how tough housing has gotten for people in North Meck.' },
+  { topic:'education', label:'Explore Education data', icon:'ti-school',             h:'School Proficiency in North Meck',      lead:'Proficiency gaps between student groups, and between schools, show where opportunity is most unequal across North Meck.' },
+  { topic:'healthcare', label:'Explore Healthcare data', icon:'ti-heartbeat',        h:'Healthcare Coverage in North Meck', lead:'Who is uninsured in North Meck, which age groups face the most risk, and how employment status shapes access to care.' },
+];
+(function(){
+  var track=document.getElementById('spotTrack'); if(!track) return;
+  var hEl=document.getElementById('spotH'),leadEl=document.getElementById('spotLead');
+  var topicEl=document.getElementById('spotTopic'),topicIcon=document.getElementById('spotTopicIcon'),topicName=document.getElementById('spotTopicName');
+  var dotsWrap=document.getElementById('spotDots'),prev=document.getElementById('spotPrev'),next=document.getElementById('spotNext'); if(!dotsWrap||!prev||!next) return;
+  var idx=0, swapTimer, scrollTimer;
+  SPOT.forEach(function(s,i){
+    var b=document.createElement('button');
+    b.className='spot-dot'+(i===0?' on':'');
+    b.setAttribute('aria-label','Show '+s.topic+' spotlight');
+    b.addEventListener('click',function(){ spotGo(i); });
+    dotsWrap.appendChild(b);
+  });
+  function render(i){
+    hEl.style.opacity=0; leadEl.style.opacity=0;
+    if(topicEl){ topicEl.style.opacity=0; topicEl.dataset.topic=SPOT[i].topic; }
+    clearTimeout(swapTimer);
+    swapTimer=setTimeout(function(){
+      hEl.textContent=SPOT[i].h; leadEl.textContent=SPOT[i].lead;
+      if(topicIcon) topicIcon.className='ti '+SPOT[i].icon;
+      if(topicName) topicName.textContent=SPOT[i].label;
+      hEl.style.opacity=1; leadEl.style.opacity=1;
+      if(topicEl) topicEl.style.opacity=1;
+    }, 170);
+    Array.prototype.forEach.call(dotsWrap.children,function(d,j){ d.classList.toggle('on',j===i); });
+    prev.disabled=(i===0); next.disabled=(i===SPOT.length-1);
+  }
+  window.spotGo=function(i){ i=Math.max(0,Math.min(SPOT.length-1,i)); idx=i; render(i); track.scrollTo({left:i*track.clientWidth,behavior:'smooth'}); };
+  window.spotStep=function(d){ window.spotGo(idx+d); };
+  function syncFromScroll(){
+    var i=Math.max(0,Math.min(SPOT.length-1,Math.round(track.scrollLeft/track.clientWidth)));
+    if(i!==idx){ idx=i; render(i); }
+  }
+  track.addEventListener('scroll',function(){ clearTimeout(scrollTimer); scrollTimer=setTimeout(syncFromScroll,90); });
+  track.scrollLeft=0; render(0);
+  requestAnimationFrame(function(){ track.scrollLeft=0; });
+  window.addEventListener('load',function(){ track.scrollLeft=0; idx=0; render(0); });
+  window.addEventListener('pagehide',function(){ track.scrollLeft=0; });
+  window.addEventListener('beforeunload',function(){ track.scrollLeft=0; });
+})();
+
+/* ── BLOG CAROUSEL ── */
+(function(){
+  var track=document.getElementById('blogTrack'); if(!track) return;
+  var prev=document.getElementById('blogPrev'),next=document.getElementById('blogNext');
+  function stepBy(){ var card=track.querySelector('.bcard'); return card?card.getBoundingClientRect().width+22:track.clientWidth; }
+  function update(){ var max=track.scrollWidth-track.clientWidth-2; prev.disabled=track.scrollLeft<=2; next.disabled=track.scrollLeft>=max; }
+  window.blogStep=function(d){ track.scrollBy({left:d*stepBy(),behavior:'smooth'}); };
+  var t; track.addEventListener('scroll',function(){ clearTimeout(t); t=setTimeout(update,90); });
+  track.scrollLeft=0; update();
+  window.addEventListener('load',function(){ track.scrollLeft=0; update(); });
+  window.addEventListener('pagehide',function(){ track.scrollLeft=0; });
+})();
+
+/* ── TOPICS CAROUSEL ── */
+(function(){
+  var track=document.getElementById('topicsTrack'); if(!track) return;
+  track.scrollLeft=0;
+  window.addEventListener('load',function(){ track.scrollLeft=0; });
+})();
+
+/* ── RESOURCES CAROUSEL ── */
+(function(){
+  var track=document.getElementById('resourcesTrack'); if(!track) return;
+  track.scrollLeft=0;
+  window.addEventListener('load',function(){ track.scrollLeft=0; });
+})();
+
+/* ── ROTATING STORY LINKS ── */
+(function(){
+  var STORY = {
+    housing: [
+      { t:'How Much You\'d Need to Earn to Afford a One-Bedroom in North Meck', go:'post-housing' }
+    ],
+  };
+  var HOLD=4500, ANIM=430;
+  window.storyGo=function(btn){ window.location = (btn._go === 'post-housing' ? 'blog' : (btn._go||'blog')) + '.html'; };
+  document.querySelectorAll('.spot-readmore[data-topic]').forEach(function(btn){
+    var list=STORY[btn.dataset.topic]||[];
+    if(!list.length) return;
+    var el=btn.querySelector('.rs-title'),txt=btn.querySelector('.rs-text');
+    var i=0;
+    txt.textContent=list[i].t; btn._go=list[i].go;
+    if(list.length<2) return;
+    setInterval(function(){
+      el.style.transition='transform .42s cubic-bezier(.4,0,.2,1), opacity .42s ease';
+      el.style.transform='translateY(-115%)'; el.style.opacity='0';
+      setTimeout(function(){
+        i=(i+1)%list.length; txt.textContent=list[i].t; btn._go=list[i].go;
+        el.style.transition='none'; el.style.transform='translateY(115%)';
+        void el.offsetHeight;
+        el.style.transition='transform .42s cubic-bezier(.4,0,.2,1), opacity .42s ease';
+        el.style.transform='translateY(0)'; el.style.opacity='1';
+      }, ANIM);
+    }, HOLD);
+  });
+})();
+
+/* ── VIZ EXPAND ── */
+// Maps a chart/table container's DOM id to its Data Library dataset id (the
+// `data-id` on the matching .dlib-row in data-library.astro). Built by tracing
+// every window.loadData(...) call in housing.js/education.js/healthcare.js
+// back to the chart element(s) it renders into. A handful of charts on the
+// site are still hardcoded JS arrays with no live table behind them yet
+// (the housing-types and race-ownership charts on the Housing page, and the
+// education-page enrollment/attainment/earnings trend charts) — those are
+// intentionally left out here, so their download link falls back to the
+// plain Data Library page. The 3 Charlotte-region charts and the Preventive
+// Care chart were in that same state; as of [today], all 4 now load live
+// from the main warehouse (agg_charlotte_occupation_housing_wage,
+// agg_charlotte_fair_market_rent, agg_charlotte_ami_affordability_gap,
+// agg_town_cdc_prevention) and are mapped below.
+// chart-economic-gap is also intentionally left out: it currently loads a
+// 'school-economic-gap' JSON file that has no query behind it in
+// refresh-data.mjs and doesn't match the 'school-achievement-and-economic-gap'
+// dataset's data, so it's unclear which table it should map to. Flag for Pete.
+// Mental Health prevalence charts (mh-depbar-chart, mh-distressbar-chart) are
+// left out per instruction, since they pull from gold.cdc_places, not main.
+var CHART_TO_DATASET = {
+  // Housing
+  'rent-chart':'economic-trends', 'income-rent-chart':'economic-trends', 'home-value-chart':'economic-trends',
+  'ovf-rent':'economic-trends', 'ovf-home':'economic-trends', 'ovf-ptr':'economic-trends', 'ovf-dp':'economic-trends',
+  'hpti-chart':'economic-trends', 'rti-chart':'economic-trends',
+  'down-payment-chart':'economic-trends', 'gini-chart':'economic-trends', 'ptr-trend-chart':'economic-trends',
+  'population-chart':'demographics', 'race-summary-table-wrap':'demographics',
+  'race-comp-chart':'demographics', 'race-trend-chart':'demographics', 'median-income-chart':'demographics',
+  'tenure-chart':'housing-burden', 'burden-trend-chart':'housing-burden', 'severely-burdened-chart':'housing-burden',
+  'burden-chart':'burden-by-bracket',
+  'ptr-chart':'ptr-by-bracket',
+  'alice-bar-chart':'alice-town', 'alice-trend-chart':'alice-town',
+  'alice-county-chart':'alice-county', 'alice-county-composition-chart':'alice-county',
+  'infra-chart':'infrastructure-access',
+  'mobility-chart':'economic-mobility',
+  'chart-housing-wage':'charlotte-housing-wage', 'chart-fmr-bedroom':'charlotte-fmr-bedroom',
+  'chart-ami-gap':'charlotte-ami-gap',
+  // Education
+  'chart-grade-level-proficiency':'school-proficiency', 'chart-hs-ccr':'school-proficiency',
+  'chart-school-academic-growth':'school-growth',
+  'chart-four-year-graduation-rate':'school-graduation',
+  'chart-school-achievement-economic-gap':'school-economic-gap',
+  'chart-hs-achievement-economic-gap':'school-hs-economic-gap',
+  'chart-pop-vs-k12':'school-enrollment', 'chart-total-enrollment-trend':'school-enrollment',
+  'chart-race-gap-avg':'school-race-gap', 'chart-race-gap-top':'school-race-gap',
+  'chart-disability-gap':'school-disability-gap',
+  'chart-title1-proficiency':'school-proficiency',
+  'chart-growth-overview':'school-growth',
+  'chart-disability-gap-overview':'school-disability-gap',
+  // Healthcare
+  'hc-ins-dot-wrap':'healthcare-insurance', 'hc-ins-heatmap-title':'healthcare-insurance',
+  'hc-ins-heatmap-sub':'healthcare-insurance', 'hc-ins-heatmap':'healthcare-insurance',
+  'mh-address-btn':'mhsu-facilities', 'mh-address-input':'mhsu-facilities', 'mh-facility-map':'mhsu-facilities',
+  'chart-preventive-care':'cdc-preventive-care',
+  'chart-insurance-type-overview':'healthcare-insurance', 'chart-preventive-overview':'cdc-preventive-care',
+  // Neighborhoods (nbhd-data.astro)
+  'nd-pop-chart':'nbhd-demographics', 'nd-hl-chart':'nbhd-demographics', 'nd-race-chart':'nbhd-demographics',
+  'nd-income-dist-chart':'nbhd-economic', 'nd-income-trend-chart':'nbhd-economic',
+  'nd-income-dist-trend-chart':'nbhd-economic', 'nd-total-households-chart':'nbhd-economic',
+  'nd-tenure-chart':'nbhd-housing', 'nd-rent-value-chart':'nbhd-housing', 'nd-burden-chart':'nbhd-housing',
+  'nd-attainment-composition-chart':'nbhd-education', 'nd-bachelors-chart':'nbhd-education',
+  'nd-pop25-chart':'nbhd-education', 'nd-less-hs-chart':'nbhd-education',
+  'nd-commute-mode-chart':'nbhd-transportation', 'nd-commute-trend-chart':'nbhd-transportation',
+  'nd-remote-work-chart':'nbhd-transportation', 'nd-total-workers-chart':'nbhd-transportation',
+  'nd-under6-chart':'nbhd-childcare', 'nd-afterschool-chart':'nbhd-childcare', 'nd-total-under18-chart':'nbhd-childcare'
+};
+// Finds the dataset id for a viz-host: checks the host itself and every
+// descendant for either a matching id (CHART_TO_DATASET) or an explicit
+// data-dlib attribute (used for the hardcoded neighborhood mini-charts, which
+// have no unique id to key off of).
+function findDatasetForHost(root){
+  if(!root) return null;
+  var direct=root.getAttribute && root.getAttribute('data-dlib');
+  if(direct) return direct;
+  if(root.id && CHART_TO_DATASET[root.id]) return CHART_TO_DATASET[root.id];
+  var withDlib=root.querySelector('[data-dlib]');
+  if(withDlib) return withDlib.getAttribute('data-dlib');
+  var els=root.querySelectorAll('[id]');
+  for(var i=0;i<els.length;i++){
+    if(CHART_TO_DATASET[els[i].id]) return CHART_TO_DATASET[els[i].id];
+  }
+  return null;
+}
+
+/* ── CHART THEME TAGS ── */
+// Every chart on the site gets tagged with one of 3 editorial themes that run
+// through the portal (affordability, economic mobility, racial equity), or a
+// 4th catch-all (demographics) for charts that are descriptive rather than
+// tied to one of those 3 storylines. Racial Equity is reserved for charts
+// that show an explicit gap between racial groups; charts that just show
+// racial composition/counts with no comparison go to Demographics instead.
+var THEME_DEFS = {
+  'affordability': { label:'Affordability', text:'Whether housing, insurance, and other basic costs are within reach for local incomes.' },
+  'economic-mobility': { label:'Economic mobility', text:'Whether people have a realistic path to higher income and financial stability over time.' },
+  'racial-equity': { label:'Racial equity', text:'Where outcomes differ by race, and by how much.' },
+  'demographics': { label:'Demographics', text:'Who lives here: population, composition, and how the area is changing.' }
+};
+var CHART_TO_THEME = {
+  // Housing — Affordability
+  'rent-chart':'affordability', 'income-rent-chart':'affordability', 'home-value-chart':'affordability',
+  'ovf-rent':'affordability', 'ovf-home':'affordability', 'ovf-ptr':'affordability', 'ovf-dp':'affordability',
+  'hpti-chart':'affordability', 'rti-chart':'affordability', 'down-payment-chart':'affordability',
+  'burden-trend-chart':'affordability', 'severely-burdened-chart':'affordability', 'burden-chart':'affordability',
+  'ptr-chart':'affordability', 'ptr-trend-chart':'affordability', 'tenure-chart':'affordability',
+  'infra-chart':'affordability',
+  'chart-housing-wage':'affordability', 'chart-fmr-bedroom':'affordability', 'chart-ami-gap':'affordability',
+  // Housing — Economic mobility
+  'gini-chart':'economic-mobility', 'alice-bar-chart':'economic-mobility', 'alice-trend-chart':'economic-mobility',
+  'alice-county-chart':'economic-mobility', 'alice-county-composition-chart':'economic-mobility',
+  'mobility-chart':'economic-mobility',
+  // Housing — Racial equity
+  'race-chart':'racial-equity',
+  // Housing — Demographics
+  'population-chart':'demographics', 'race-summary-table-wrap':'demographics', 'race-comp-chart':'demographics',
+  'race-trend-chart':'demographics', 'median-income-chart':'demographics', 'housing-types-chart':'demographics',
+  // Education — Economic mobility
+  'chart-level-trend':'economic-mobility', 'chart-bach-trend':'economic-mobility',
+  'chart-attainment-breakdown':'economic-mobility', 'chart-earnings':'economic-mobility',
+  'chart-grade-level-proficiency':'economic-mobility', 'chart-hs-ccr':'economic-mobility',
+  'chart-school-academic-growth':'economic-mobility', 'chart-four-year-graduation-rate':'economic-mobility',
+  'chart-school-achievement-economic-gap':'economic-mobility', 'chart-hs-achievement-economic-gap':'economic-mobility',
+  'chart-economic-gap':'economic-mobility',
+  // Education — Racial equity
+  'chart-race-gap-avg':'racial-equity', 'chart-race-gap-top':'racial-equity',
+  // Education — Demographics
+  'chart-k12-trend':'demographics', 'chart-pop-vs-k12':'demographics', 'chart-total-enrollment-trend':'demographics',
+  'chart-disability-gap':'demographics',
+  'chart-title1-proficiency':'economic-mobility', 'chart-growth-overview':'economic-mobility',
+  'chart-disability-gap-overview':'demographics',
+  // Healthcare — Affordability
+  'hc-ins-dot-wrap':'affordability', 'hc-ins-heatmap-title':'affordability', 'hc-ins-heatmap-sub':'affordability',
+  'hc-ins-heatmap':'affordability', 'hc-ins-age':'affordability', 'hc-ins-age-trend':'affordability',
+  'hc-ins-emp':'affordability', 'hc-ins-income':'affordability', 'hc-ins-trend':'affordability',
+  'hc-overview-age-uninsured':'affordability',
+  // Healthcare — Demographics
+  'mh-depbar-chart':'demographics', 'mh-distressbar-chart':'demographics', 'mh-address-btn':'demographics',
+  'mh-address-input':'demographics', 'mh-facility-map':'demographics', 'cd-diabetes-chart':'demographics',
+  'cd-hbp-chart':'demographics', 'cd-obesity-chart':'demographics', 'chart-preventive-care':'demographics',
+  'chart-preventive-overview':'demographics', 'chart-insurance-type-overview':'affordability',
+  // Neighborhoods dashboard — Affordability
+  'nd-tenure-chart':'affordability', 'nd-rent-value-chart':'affordability', 'nd-burden-chart':'affordability',
+  'nd-commute-mode-chart':'affordability', 'nd-commute-trend-chart':'affordability',
+  'nd-remote-work-chart':'affordability', 'nd-total-workers-chart':'affordability',
+  // Neighborhoods dashboard — Economic mobility
+  'nd-income-dist-chart':'economic-mobility', 'nd-income-trend-chart':'economic-mobility',
+  'nd-income-dist-trend-chart':'economic-mobility', 'nd-total-households-chart':'economic-mobility',
+  'nd-attainment-composition-chart':'economic-mobility', 'nd-bachelors-chart':'economic-mobility',
+  'nd-pop25-chart':'economic-mobility', 'nd-less-hs-chart':'economic-mobility',
+  // Neighborhoods dashboard — Demographics
+  'nd-pop-chart':'demographics', 'nd-hl-chart':'demographics', 'nd-race-chart':'demographics',
+  'nd-under6-chart':'demographics', 'nd-afterschool-chart':'demographics', 'nd-total-under18-chart':'demographics'
+};
+function findThemeForHost(root){
+  if(!root) return null;
+  var direct=root.getAttribute && root.getAttribute('data-theme');
+  if(direct) return direct;
+  if(root.id && CHART_TO_THEME[root.id]) return CHART_TO_THEME[root.id];
+  var withTheme=root.querySelector('[data-theme]');
+  if(withTheme) return withTheme.getAttribute('data-theme');
+  var els=root.querySelectorAll('[id]');
+  for(var i=0;i<els.length;i++){
+    if(CHART_TO_THEME[els[i].id]) return CHART_TO_THEME[els[i].id];
+  }
+  return null;
+}
+var themeTipEl=null;
+function closeThemeTip(){ if(themeTipEl){ themeTipEl.remove(); themeTipEl=null; } }
+window.toggleThemeTip=function(tag,def){
+  if(themeTipEl && themeTipEl._forTag===tag){ closeThemeTip(); return; }
+  closeThemeTip();
+  var tip=document.createElement('div'); tip.className='viz-theme-tip'; tip.setAttribute('role','tooltip');
+  tip.innerHTML='<strong>'+def.label+'</strong>'+def.text;
+  document.body.appendChild(tip);
+  var r=tag.getBoundingClientRect(), tw=tip.offsetWidth;
+  tip.style.left=Math.max(8,Math.min(r.left,window.innerWidth-tw-8))+'px';
+  tip.style.top=(r.bottom+8)+'px';
+  themeTipEl=tip; themeTipEl._forTag=tag;
+};
+document.addEventListener('click',function(e){
+  if(themeTipEl && !e.target.closest('.viz-theme-tag') && !e.target.closest('.viz-theme-tip')) closeThemeTip();
+});
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeThemeTip(); });
+window.addEventListener('scroll',closeThemeTip,true);
+function makeThemeTag(host){
+  var theme=findThemeForHost(host), def=theme&&THEME_DEFS[theme];
+  if(!def) return null;
+  var tag=document.createElement('button'); tag.type='button';
+  tag.className='theme-pill viz-theme-tag theme-'+theme;
+  tag.textContent=def.label;
+  tag.setAttribute('aria-label',def.label+', click for what this theme means');
+  tag.onclick=function(e){ e.stopPropagation(); window.toggleThemeTip(tag,def); };
+  return tag;
+}
+(function(){
+  function makeTools(host){
+    var tools=document.createElement('div'); tools.className='viz-tools';
+    var share=document.createElement('button'); share.className='viz-share'; share.type='button';
+    share.setAttribute('aria-label','Share or download this visualization');
+    share.innerHTML='<i class="ti ti-share-2"></i>';
+    share.onclick=function(e){ e.stopPropagation(); if(window.openSharePop) window.openSharePop(share,host,'viz'); };
+    var b=document.createElement('button'); b.className='viz-expand'; b.type='button';
+    b.setAttribute('aria-label','Expand chart for a larger view');
+    b.onclick=function(e){ e.stopPropagation(); window.expandViz(b); };
+    b.innerHTML='<i class="ti ti-arrows-diagonal"></i><span>Expand</span>';
+    tools.appendChild(share); tools.appendChild(b); return tools;
+  }
+  function decorate(root){
+    if(!root.querySelector('.viz-tools')) root.appendChild(makeTools(root));
+    if(!root.querySelector('.viz-theme-tag')){ var tag=makeThemeTag(root); if(tag) root.insertBefore(tag,root.firstChild); }
+  }
+  function initViz(){
+    var set=new Set();
+    document.querySelectorAll('.bars').forEach(function(bars){
+      if(bars.closest('.minichart')) return;
+      set.add(bars.closest('.card')||bars.parentElement);
+    });
+    document.querySelectorAll('.minichart').forEach(function(m){ set.add(m); });
+    document.querySelectorAll('.map-ph').forEach(function(m){ set.add(m); });
+    document.querySelectorAll('.srow-viz').forEach(function(s){ set.add(s); });
+    set.forEach(function(root){
+      if(!root||root.classList.contains('viz-host')) return;
+      root.classList.add('viz-host'); decorate(root);
+    });
+    document.querySelectorAll('.viz-host').forEach(function(root){ decorate(root); });
+    document.querySelectorAll('table').forEach(function(tbl){
+      if(tbl.closest('.viz-host')) return;
+      var host=document.createElement('div'); host.className='viz-host table-host';
+      tbl.parentNode.insertBefore(host,tbl); host.appendChild(tbl); decorate(host);
+    });
+  }
+  window.expandViz=function(btn){
+    var root=btn.closest('.viz-host'); if(!root) return;
+    window.__vizHost=root;
+    window.__vizParent=root.parentNode;
+    window.__vizNext=root.nextSibling;
+    var body=document.getElementById('vizBody'); body.innerHTML='';
+    root.classList.add('viz-clone');
+    // Hide this card's own Share/Expand buttons while it's living inside the
+    // modal — the modal already has its own Share button in its header, and
+    // an "Expand" button makes no sense once you're already in the expanded view.
+    var ownTools=root.querySelector('.viz-tools');
+    if(ownTools) ownTools.style.display='none';
+    body.appendChild(root); // move (not clone) — keeps all event listeners
+    // Point "Download the data used in this chart" at this specific chart's
+    // dataset in the Data Library, scrolled/highlighted on arrival. Falls
+    // back to the plain Data Library page for charts with no live table yet.
+    var dlLink=document.querySelector('.viz-download-link');
+    if(dlLink){
+      var dsId=findDatasetForHost(root);
+      var baseHref=dlLink.getAttribute('data-base-href')||dlLink.href;
+      dlLink.setAttribute('data-base-href', baseHref);
+      dlLink.href = dsId ? (baseHref+'#dlib-'+dsId) : baseHref;
+    }
+    document.getElementById('vizModal').classList.add('open'); document.body.style.overflow='hidden';
+    // Re-render charts at modal width after layout settles
+    setTimeout(function(){
+      document.dispatchEvent(new CustomEvent('masterTownChange', { detail: { town: window.__masterTown || 'All' } }));
+      document.dispatchEvent(new CustomEvent('tabChange', { detail: { pane: 'expand' } }));
+      // Force ResizeObserver-based charts to re-render at modal width
+      root.querySelectorAll('[id^="chart-"]').forEach(function(el){
+        var w = el.offsetWidth;
+        if(w > 0){ el.style.width=(w-1)+'px'; requestAnimationFrame(function(){ el.style.width=''; }); }
+      });
+    }, 80);
+  };
+  window.closeVizModal=function(){
+    var m=document.getElementById('vizModal'); if(m) m.classList.remove('open');
+    document.body.style.overflow='';
+    // move element back to its original position
+    if(window.__vizHost && window.__vizParent){
+      window.__vizHost.classList.remove('viz-clone');
+      // Restore this card's own Share/Expand buttons now that it's back on the page
+      var ownTools=window.__vizHost.querySelector('.viz-tools');
+      if(ownTools) ownTools.style.display='';
+      if(window.__vizNext && window.__vizNext.parentNode===window.__vizParent){
+        window.__vizParent.insertBefore(window.__vizHost, window.__vizNext);
+      } else {
+        window.__vizParent.appendChild(window.__vizHost);
+      }
+      window.__vizHost=null; window.__vizParent=null; window.__vizNext=null;
+    }
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',initViz);
+  else initViz();
+})();
+
+/* ── BAR CHART TOOLTIPS (v1 feature) ── */
+(function(){
+  var tooltip=document.getElementById('chartTooltip');
+  var ttVal=document.getElementById('ttVal'),ttLabel=document.getElementById('ttLabel'),ttSrc=document.getElementById('ttSrc');
+  document.querySelectorAll('.bar[data-val]').forEach(function(bar){
+    bar.addEventListener('mouseenter',function(){
+      ttVal.textContent=bar.dataset.val; ttLabel.textContent=bar.dataset.label; ttSrc.textContent='Source: '+bar.dataset.src;
+      tooltip.classList.add('visible');
+    });
+    bar.addEventListener('mousemove',function(e){
+      var x=e.clientX+14, y=e.clientY-10, tw=tooltip.offsetWidth;
+      tooltip.style.left=(x+tw>window.innerWidth?e.clientX-tw-14:x)+'px'; tooltip.style.top=y+'px';
+    });
+    bar.addEventListener('mouseleave',function(){ tooltip.classList.remove('visible'); });
+  });
+})();
+
+/* ── GLOSSARY TERM LINKING ── */
+(function(){
+  var TERMS = [
+    { id:'severely-cost-burdened', a:[['severely[\\s-]+cost[\\s-]+burdened?',false]] },
+    { id:'cost-burdened',          a:[['cost[\\s-]+burdened?',false]] },
+    { id:'ami',                    a:[['area median income',false],['AMI',true]] },
+    { id:'fmr',                    a:[['fair market rent',false],['FMR',true]] },
+    { id:'noah',                   a:[['naturally occurring affordable housing',false],['NOAH',true]] },
+    { id:'eviction-filing',        a:[['eviction filings?',false],['eviction cases?',false]] },
+    { id:'data-equity',            a:[['data[\\s-]equity',false]] },
+    { id:'housing-wage',           a:[['housing wage',false]] },
+    { id:'acs',                    a:[['american community survey',false],['ACS',true]] },
+    { id:'hud',                    a:[['HUD',true]] },
+    { id:'redlining',              a:[['redlin(?:ing|ed)',false]] },
+    { id:'homeownership',          a:[['homeownership',false]] },
+    { id:'voucher',                a:[['housing choice vouchers?',false],['section 8',false]] },
+    { id:'msa',                    a:[['metropolitan statistical area',false],['MSA',true]] },
+    { id:'two-gen',                a:[['two[\\s-]generation',false]] },
+    { id:'alice',                  a:[['ALICE(?!\\s+threshold)',true],['asset limited,? income constrained',false]] },
+    { id:'alice-threshold',        a:[['ALICE threshold',true],['ALICE Threshold',true]] },
+    { id:'fpl',                    a:[['federal poverty (?:line|level|guideline)s?',false],['FPL',true],['poverty line',false]] },
+    { id:'gini',                   a:[['Gini coefficient',false],['Gini index',false]] },
+    { id:'survival-budget',        a:[['survival budget',false]] }
+  ];
+  TERMS.forEach(function(t){ t.re=t.a.map(function(p){ return new RegExp('\\b(?:'+p[0]+')\\b',p[1]?'g':'gi'); }); });
+  var ROOTS=['.page'];
+  var CAND='p, li, td, th, blockquote, figcaption, .lead, .card-s, .stat-l, .nm-callout-t, .post-dek, .post-lead, .minichart-cap';
+  var SKIP='a, button, .btn, .gloss-link, .link, .stat-src, .gloss, #glossaryModal, nav, .nav, .crumb, .eyebrow, .tab, .chip, [data-no-gloss], h1, h2, h3, .sec-h, .card-t, .ovchart-h, .minichart-h, .bcard-t, .partner-name';
+  function isSkipped(el){ return !el||!!el.closest(SKIP); }
+  function firstMatch(text,from,used){
+    var best=null;
+    for(var i=0;i<TERMS.length;i++){
+      var t=TERMS[i]; if(used.has(t.id)) continue;
+      for(var j=0;j<t.re.length;j++){
+        var re=t.re[j]; re.lastIndex=from; var m=re.exec(text);
+        if(m){ var c={id:t.id,start:m.index,end:m.index+m[0].length,str:m[0]}; if(!best||c.start<best.start||(c.start===best.start&&c.str.length>best.str.length)) best=c; }
+      }
+    }
+    return best;
+  }
+  function wrapTextNode(node,used){
+    var text=node.nodeValue,hits=[],pos=0,m;
+    while((m=firstMatch(text,pos,used))){ hits.push(m); used.add(m.id); pos=m.end; }
+    if(!hits.length) return;
+    var frag=document.createDocumentFragment(),last=0;
+    hits.forEach(function(h){
+      if(h.start>last) frag.appendChild(document.createTextNode(text.slice(last,h.start)));
+      var span=document.createElement('span'); span.className='gloss-link'; span.setAttribute('data-term',h.id);
+      span.setAttribute('role','button'); span.setAttribute('tabindex','0'); span.setAttribute('title','What does this mean?');
+      span.textContent=h.str;
+      span.addEventListener('click',function(e){ e.stopPropagation(); glossTerm(h.id); });
+      span.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); glossTerm(h.id); } });
+      frag.appendChild(span); last=h.end;
+    });
+    if(last<text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    node.parentNode.replaceChild(frag,node);
+  }
+  function processSection(section){
+    var used=new Set();
+    section.querySelectorAll('.gloss-link[data-term]').forEach(function(s){ used.add(s.getAttribute('data-term')); });
+    var walker=document.createTreeWalker(section,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+      if(!n.nodeValue||!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      var p=n.parentElement;
+      if(!p||isSkipped(p)||!p.closest(CAND)) return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    }});
+    var nodes=[],nn;
+    while((nn=walker.nextNode())) nodes.push(nn);
+    nodes.forEach(function(n){ wrapTextNode(n,used); });
+  }
+  function runAll(){
+    ROOTS.forEach(function(sel){
+      var root=document.querySelector(sel); if(!root) return;
+      var secs=Array.prototype.slice.call(root.querySelectorAll('.tabpane,.post,.section')).filter(function(s){ return !s.parentElement.closest('.tabpane,.post,.section'); });
+      if(secs.length) secs.forEach(processSection); else processSection(root);
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',runAll);
+  else runAll();
+})();
+
+/* ── SHARE SYSTEM ── */
+(function(){
+  'use strict';
+  // Visible text only: skips the hidden town versions of by_town() text.
+  function txt(el){
+    if(!el) return '';
+    var c=el.cloneNode(true);
+    c.querySelectorAll('[hidden]').forEach(function(h){ h.remove(); });
+    return c.textContent.replace(/\s+/g,' ').trim();
+  }
+  function clean(s){ return (s||'').replace(/^\s*source[:·\s-]*/i,'').trim(); }
+  function slug(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,52); }
+  function cssEsc(s){ if(window.CSS&&CSS.escape) return CSS.escape(s); return s.replace(/["\\]/g,'\\$&'); }
+  function pageOf(el){ var p=el.closest('.page'); return p?p.id.replace(/^page-/,''):'home'; }
+  function paneOf(el){ var p=el.closest('.tabpane'); return p?p.getAttribute('data-pane'):null; }
+  function knownPage(p){ return true; }
+  function baseUrl(){ return location.origin+location.pathname; }
+  function linkFor(id){ return baseUrl()+'#s='+encodeURIComponent(id); }
+  function linkPage(p){ return baseUrl()+'#p='+encodeURIComponent(p); }
+  var usedIds={};
+  function assignId(el,base){
+    if(el.dataset.shareId){ usedIds[el.dataset.shareId]=1; return el.dataset.shareId; }
+    var id=slug(base)||'item',u=id,k=2;
+    while(usedIds[u]) u=id+'-'+(k++);
+    usedIds[u]=1; el.dataset.shareId=u; return u;
+  }
+  function shareId(el){ return el.dataset.shareId||assignId(el,pageOf(el)+'-'+findTitle(el,true)); }
+  function linkOf(el){ return el.dataset.shareLink||linkFor(shareId(el)); }
+  // Title text as written for "All North Meck", ignoring which town the Area
+  // filter shows, so share links (#s=...) don't change with the filter.
+  function canonTxt(el){
+    if(!el) return '';
+    var c=el.cloneNode(true);
+    c.querySelectorAll('.by-town:not([data-town="All"])').forEach(function(h){ h.remove(); });
+    return c.textContent.replace(/\s+/g,' ').trim();
+  }
+  function findTitle(host, canonical){
+    var read=canonical?canonTxt:txt;
+    var sel=['.card-t','.ovchart-h','.minichart-h'];
+    for(var i=0;i<sel.length;i++){ var e=host.querySelector(sel[i]); if(e) return read(e); }
+    var cap=host.querySelector('caption'); if(cap) return txt(cap);
+    if(host.classList.contains('map-ph')){ var mt=host.querySelector('.t'); if(mt) return txt(mt); }
+    var sec=host.closest('.tabpane,.section,.page');
+    if(sec){ var h=sec.querySelector('.sec-h,.post-title'); if(h) return txt(h); }
+    return 'North Meck data';
+  }
+  function findSource(host){
+    var fig=host.closest('figure');
+    if(fig){ var fc=fig.querySelector('figcaption'); if(fc) return clean(txt(fc)); }
+    var sel=['.nm-callout-s','.minichart-cap','.scale-lbl'];
+    for(var i=0;i<sel.length;i++){ var e=host.querySelector(sel[i]); if(e) return clean(txt(e)); }
+    var row=host.closest('.stat-row');
+    if(row){ var ss=row.querySelector('.stat-src'); if(ss) return clean(txt(ss)); }
+    var own=host.querySelector('.stat-src'); if(own) return clean(txt(own));
+    return 'North Meck Insights';
+  }
+  function vizData(host){
+    var out=[],i;
+    var table=host.querySelector('table');
+    if(table){
+      var heads=[].map.call(table.querySelectorAll('thead th'),txt);
+      if(heads.length) out.push(heads.join('  |  '));
+      [].forEach.call(table.querySelectorAll('tbody tr'),function(tr){ out.push([].map.call(tr.querySelectorAll('th,td'),txt).join('  |  ')); });
+      return out;
+    }
+    if(host.querySelector('.ovlolly')){ [].forEach.call(host.querySelectorAll('.ovlolc'),function(c){ out.push(txt(c.querySelector('.ovll'))+': '+txt(c.querySelector('.ovlv'))); }); return out; }
+    if(host.querySelector('.ovbullet')){ [].forEach.call(host.querySelectorAll('.ovbrow'),function(r){ out.push(txt(r.querySelector('.ovblabel'))+': '+txt(r.querySelector('.ovbval'))); }); var flag=host.querySelector('.ovbtflag'); if(flag) out.push('Threshold — '+txt(flag)); return out; }
+    if(host.querySelector('.ovarea')){ var xs=[].map.call(host.querySelectorAll('.ovarea-x span'),txt); var vs=[].map.call(host.querySelectorAll('.ovpv'),txt); for(i=0;i<vs.length;i++) out.push((xs[i]?xs[i]+': ':'')+vs[i]); return out; }
+    if(host.classList.contains('minichart')){ var mx=[].map.call(host.querySelectorAll('.bars-x span'),txt); var mv=[].map.call(host.querySelectorAll('.bar .bv'),txt); for(i=0;i<mv.length;i++) out.push((mx[i]?mx[i]+': ':'')+mv[i]); return out; }
+    var bcs=host.querySelectorAll('.bc');
+    if(bcs.length){ [].forEach.call(bcs,function(bc){ var lbl=bc.querySelector('.bc-lbl'); if(!lbl) return; var b=lbl.querySelector('b'); var val=b?txt(b):''; var name=txt(lbl); if(val) name=name.replace(val,'').trim(); out.push(val?(name+': '+val):name); }); return out; }
+    var sub=host.querySelector('.s'); if(sub) out.push(txt(sub));
+    return out;
+  }
+  function buildVizText(host){
+    var parts=[findTitle(host)];
+    var data=vizData(host).slice(0,16);
+    if(data.length){ parts.push('',data.join('\n')); }
+    parts.push('','Source: '+findSource(host),linkOf(host));
+    return parts.join('\n');
+  }
+  function buildStatText(el){
+    var n=txt(el.querySelector('.stat-n')),l=txt(el.querySelector('.stat-l'));
+    var s=clean(txt(el.querySelector('.stat-src')))||'North Meck Insights';
+    return [n+(l?' — '+l:''),'','Source: '+s,linkOf(el)].join('\n');
+  }
+  function buildStoryText(a){
+    var parts=[txt(a.querySelector('.post-title'))];
+    var dek=txt(a.querySelector('.post-dek')); if(dek) parts.push('',dek);
+    var srcs=[].map.call(a.querySelectorAll('.post-sources li'),function(li){ return '• '+txt(li); });
+    if(srcs.length){ parts.push('','Sources:',srcs.join('\n')); }
+    parts.push('',linkOf(a)); return parts.join('\n');
+  }
+  function fallbackCopy(t){ try{ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.focus(); ta.select(); var ok=document.execCommand('copy'); ta.remove(); return ok; }catch(e){ return false; } }
+  function copyText(t){ if(navigator.clipboard&&navigator.clipboard.writeText) return navigator.clipboard.writeText(t).then(function(){ return true; },function(){ return fallbackCopy(t); }); return Promise.resolve(fallbackCopy(t)); }
+  function exportViz(host){
+    if(typeof htmlToImage==='undefined'){ alert('Image download needs an internet connection. Please try again while online.'); return Promise.resolve(false); }
+    var clone=host.cloneNode(true);
+    clone.querySelectorAll('.viz-tools,.share-corner,.share-btn').forEach(function(e){ e.remove(); });
+    clone.querySelectorAll('i.ti,.ti').forEach(function(e){ if(/\bti-/.test(e.className)) e.remove(); });
+    clone.classList.remove('viz-host'); clone.classList.add('viz-clone');
+    var wrap=document.createElement('div'); wrap.className='viz-export';
+    var inner=document.createElement('div'); inner.className='viz-export-inner';
+    inner.appendChild(clone);
+    var foot=document.createElement('div'); foot.className='viz-export-src'; foot.textContent='Source: '+findSource(host);
+    inner.appendChild(foot); wrap.appendChild(inner); document.body.appendChild(wrap);
+    return new Promise(function(resolve){ setTimeout(resolve,70); }).then(function(){
+      return htmlToImage.toPng(wrap,{pixelRatio:2,backgroundColor:'#fbf7ef',width:920,skipFonts:true,fontEmbedCSS:'',cacheBust:false});
+    }).then(function(url){
+      var a=document.createElement('a'); a.href=url; a.download=(slug(findTitle(host))||'north-meck-chart')+'.png';
+      document.body.appendChild(a); a.click(); a.remove(); return true;
+    }).catch(function(err){ console.warn('[share] PNG export failed',err); alert('Sorry — the image could not be generated.'); return false; })
+    .then(function(r){ wrap.remove(); return r; });
+  }
+  var POP,BACK;
+  function ensurePop(){
+    if(POP) return;
+    BACK=document.createElement('div'); BACK.className='share-pop-back';
+    BACK.addEventListener('click',closeSharePop);
+    POP=document.createElement('div'); POP.className='share-pop'; POP.setAttribute('role','menu');
+    POP.addEventListener('click',function(e){ e.stopPropagation(); });
+    document.body.appendChild(BACK); document.body.appendChild(POP);
+  }
+  function actionsFor(el,type){
+    if(type==='viz') return [
+      { ic:'ti-download', label:'Download as image', ok:'Saved', run:function(){ return exportViz(el); } },
+      { ic:'ti-clipboard-text', label:'Copy summary + source', ok:'Copied', run:function(){ return copyText(buildVizText(el)); } },
+      { ic:'ti-link', label:'Copy link to this chart', ok:'Copied', run:function(){ return copyText(linkOf(el)); } }
+    ];
+    if(type==='story') return [
+      { ic:'ti-link', label:'Copy link to this story', ok:'Copied', run:function(){ return copyText(linkOf(el)); } },
+      { ic:'ti-clipboard-text', label:'Copy story + sources', ok:'Copied', run:function(){ return copyText(buildStoryText(el)); } },
+      { ic:'ti-printer', label:'Print / Save as PDF', ok:'Opening', run:function(){ setTimeout(function(){ window.print(); },80); return true; } }
+    ];
+    if(type==='stat') return [
+      { ic:'ti-clipboard-text', label:'Copy stat + source', ok:'Copied', run:function(){ return copyText(buildStatText(el)); } },
+      { ic:'ti-link', label:'Copy link to this stat', ok:'Copied', run:function(){ return copyText(linkOf(el)); } }
+    ];
+    return [
+      { ic:'ti-link', label:'Copy link', ok:'Copied', run:function(){ return copyText(linkOf(el)); } },
+      { ic:'ti-clipboard-text', label:'Copy title + link', ok:'Copied', run:function(){ return copyText((el.dataset.shareTitle||'')+'\n'+linkOf(el)); } }
+    ];
+  }
+  function runAction(row,a){
+    if(row.classList.contains('busy')||row.classList.contains('ok')) return;
+    row.classList.add('busy');
+    Promise.resolve(a.run()).then(function(ok){
+      row.classList.remove('busy'); if(ok===false) return;
+      var lbl=row.querySelector('.share-row-label'),ic=row.querySelector('i');
+      var oldL=lbl.textContent,oldI=ic.className;
+      row.classList.add('ok'); ic.className='ti ti-check'; lbl.textContent=(a.ok||'Done')+'!';
+      setTimeout(function(){ row.classList.remove('ok'); ic.className=oldI; lbl.textContent=oldL; closeSharePop(); },1150);
+    });
+  }
+  function openSharePop(anchor,el,type){
+    ensurePop(); POP.innerHTML='';
+    var h=document.createElement('div'); h.className='share-pop-h'; h.textContent='Share this';
+    POP.appendChild(h);
+    actionsFor(el,type).forEach(function(a){
+      var row=document.createElement('button'); row.type='button'; row.className='share-row'; row.setAttribute('role','menuitem');
+      row.innerHTML='<i class="ti '+a.ic+'"></i><span class="share-row-label">'+a.label+'</span>';
+      row.addEventListener('click',function(){ runAction(row,a); });
+      POP.appendChild(row);
+    });
+    POP.classList.add('open'); BACK.classList.add('open'); positionPop(anchor);
+  }
+  function positionPop(anchor){
+    var r=anchor.getBoundingClientRect(),pw=POP.offsetWidth,ph=POP.offsetHeight;
+    var top=r.bottom+8,left=r.right-pw;
+    var minL=8,maxL=Math.max(minL,document.documentElement.clientWidth-pw-8);
+    if(left<minL) left=minL;
+    if(left>maxL) left=maxL;
+    if(r.bottom+8+ph>window.innerHeight&&r.top-8-ph>0) top=r.top-8-ph;
+    POP.style.top=top+'px'; POP.style.left=left+'px';
+  }
+  function closeSharePop(){ if(POP){ POP.classList.remove('open'); BACK.classList.remove('open'); } }
+  window.openSharePop=openSharePop; window.closeSharePop=closeSharePop;
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeSharePop(); });
+  window.addEventListener('resize',closeSharePop);
+  window.addEventListener('scroll',function(){ if(POP&&POP.classList.contains('open')) closeSharePop(); },true);
+  function mkBtn(cls,label){ var b=document.createElement('button'); b.type='button'; b.className='share-btn'+(cls?' '+cls:''); b.setAttribute('aria-label',label||'Share'); b.innerHTML='<i class="ti ti-share-2"></i>'; return b; }
+  function injectStoryBar(a){
+    var body=a.querySelector('.post-body'); if(!body||body.querySelector('.share-bar')) return;
+    var bar=document.createElement('div'); bar.className='share-bar';
+    bar.innerHTML='<span class="share-bar-lbl"><i class="ti ti-share-2"></i>Share</span>';
+    [['ti-link','Copy link','link'],['ti-clipboard-text','Copy with sources','src'],['ti-printer','Save as PDF','print']].forEach(function(d){
+      var b=document.createElement('button'); b.type='button'; b.className='share-act';
+      b.innerHTML='<i class="ti '+d[0]+'"></i>'+d[1];
+      b.addEventListener('click',function(){ storyAct(b,a,d[2]); });
+      bar.appendChild(b);
+    });
+    body.insertBefore(bar,body.firstChild);
+  }
+  function flashBtn(btn,label){ if(btn.classList.contains('ok')) return; var html=btn.innerHTML; btn.classList.add('ok'); btn.innerHTML='<i class="ti ti-check"></i>'+label; setTimeout(function(){ btn.classList.remove('ok'); btn.innerHTML=html; },1300); }
+  function storyAct(btn,a,kind){ var p; if(kind==='link') p=copyText(linkOf(a)); else if(kind==='src') p=copyText(buildStoryText(a)); else{ setTimeout(function(){ window.print(); },80); p=Promise.resolve(true); } Promise.resolve(p).then(function(ok){ if(ok!==false) flashBtn(btn,kind==='print'?'Opening…':'Copied'); }); }
+  function attachCardShare(card){
+    if(card.querySelector('.bcard-share')) return;
+    var oc=card.getAttribute('onclick')||''; var m=oc.match(/(?:goto|openPost)\('([^']+)'/);
+    var target=m?m[1]:'blog'; card.dataset.shareLink=linkPage(knownPage(target)?target:'blog');
+    card.dataset.shareTitle=txt(card.querySelector('.bcard-t'));
+    var btn=mkBtn('bcard-share','Share this story');
+    btn.addEventListener('click',function(e){ e.stopPropagation(); openSharePop(btn,card,'card'); });
+    card.appendChild(btn);
+  }
+  function attachCornerShare(el,type,label,idBase){
+    if(el.querySelector(':scope > .share-corner')) return;
+    el.classList.add('has-share'); assignId(el,idBase);
+    var wrap=document.createElement('div'); wrap.className='share-corner';
+    var btn=mkBtn('',label);
+    btn.addEventListener('click',function(e){ e.stopPropagation(); openSharePop(btn,el,type); });
+    wrap.appendChild(btn); el.appendChild(wrap); return btn;
+  }
+  function scrollToEl(el){ var y=el.getBoundingClientRect().top+window.scrollY-110; window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); el.classList.remove('share-flash'); void el.offsetWidth; el.classList.add('share-flash'); setTimeout(function(){ el.classList.remove('share-flash'); },1800); }
+  function applyHash(){
+    var hs=location.hash||'';
+    var mp=hs.match(/^#p=(.+)$/);
+    if(mp){ return; } // MPA: hash-based page navigation not needed
+    var ms=hs.match(/^#s=(.+)$/); if(!ms) return;
+    var id=decodeURIComponent(ms[1]);
+    var el=document.querySelector('[data-share-id="'+cssEsc(id)+'"]'); if(!el) return;
+    var pane=paneOf(el); if(pane){ var tab=document.querySelector('.tab[data-tab="'+pane+'"]'); if(tab&&window.setTab) setTab(tab); }
+    setTimeout(function(){ scrollToEl(el); },150);
+  }
+  function init(){
+    document.querySelectorAll('.viz-host').forEach(function(h){ assignId(h,pageOf(h)+'-'+findTitle(h)); });
+    document.querySelectorAll('article.post').forEach(function(a){ assignId(a,pageOf(a)); a.dataset.shareLink=linkPage(pageOf(a)); injectStoryBar(a); });
+    document.querySelectorAll('.bcard').forEach(attachCardShare);
+    window.addEventListener('hashchange',applyHash); applyHash();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+})();
+
+/* ── HELP MODAL (Report an issue / Give feedback) ── */
+function openHelpForm(type) {
+  var modal = document.getElementById('helpModal');
+  if (!modal) return;
+  switchHelpTab(type || 'issue');
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeHelpForm() {
+  var modal = document.getElementById('helpModal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+// TODO: replace with your real reCAPTCHA v2 site key from
+// https://www.google.com/recaptcha/admin (the public key, safe to expose here).
+var RECAPTCHA_SITE_KEY = '6LdnnXMtAAAAAF6OLVd0MT2zf0B-PtnC4HdIJZaH';
+window.__recaptchaIssueId = undefined;
+window.__recaptchaFeedbackId = undefined;
+// Called automatically once the reCAPTCHA API script finishes loading (see the
+// ?onload= param on the script tag in HelpModal.astro). Only the Issue tab's
+// widget is rendered here, since it's the visible tab by default; the
+// Feedback tab's widget renders lazily in switchHelpTab() to avoid the
+// zero-width rendering bug that happens inside a display:none container.
+function grecaptchaOnLoad() {
+  window.__recaptchaIssueId = grecaptcha.render('recaptchaIssue', { sitekey: RECAPTCHA_SITE_KEY });
+}
+window.grecaptchaOnLoad = grecaptchaOnLoad;
+
+function switchHelpTab(type) {
+  var isIssue = type === 'issue';
+  document.getElementById('helpTabIssue').classList.toggle('active', isIssue);
+  document.getElementById('helpTabFeedback').classList.toggle('active', !isIssue);
+  document.getElementById('helpFormIssue').style.display = isIssue ? 'block' : 'none';
+  document.getElementById('helpFormFeedback').style.display = isIssue ? 'none' : 'block';
+  // The Feedback form starts hidden (display:none), and reCAPTCHA renders
+  // incorrectly (zero width) if built inside a hidden container. So its
+  // widget is rendered lazily, the first time this tab is actually shown,
+  // rather than eagerly at page load alongside the Issue tab's widget.
+  if (!isIssue && window.__recaptchaFeedbackId === undefined && window.grecaptcha) {
+    window.__recaptchaFeedbackId = grecaptcha.render('recaptchaFeedback', { sitekey: RECAPTCHA_SITE_KEY });
+  }
+}
+// Shows/hides the "Please specify" box under an Issue Type / Feedback Type
+// dropdown, only when "Other" is selected.
+function toggleOtherField(selectId, wrapId, inputId) {
+  var select = document.getElementById(selectId);
+  var wrap = document.getElementById(wrapId);
+  var input = document.getElementById(inputId);
+  var isOther = select.value === 'Other';
+  wrap.style.display = isOther ? 'block' : 'none';
+  if (!isOther) input.value = '';
+}
+// 1-5 mood scale for the feedback form. Stores the chosen value in a hidden
+// field (since it's a set of buttons, not a native radio group) and marks
+// the selected face visually.
+function setMood(n) {
+  document.getElementById('feedbackMoodValue').value = n;
+  document.querySelectorAll('.mood-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-mood') === String(n));
+  });
+}
+// The form itself POSTs to Apps Script via the hidden iframe (see HelpModal.astro).
+// this handler manages button/success UI and mood-scale validation. Returning
+// false cancels the native form submission (used when the mood scale is
+// required but empty); returning true lets the POST proceed as normal.
+function handleHelpSubmit(type) {
+  if (type === 'feedback') {
+    var mood = document.getElementById('feedbackMoodValue').value;
+    if (!mood) {
+      alert('Please select how you feel about the site before submitting.');
+      return false;
+    }
+  }
+
+  var widgetId = type === 'issue' ? window.__recaptchaIssueId : window.__recaptchaFeedbackId;
+  if (!window.grecaptcha || widgetId === undefined || !grecaptcha.getResponse(widgetId)) {
+    alert('Please check the "I\'m not a robot" box before submitting.');
+    return false;
+  }
+
+  var form = document.getElementById(type === 'issue' ? 'helpFormIssue' : 'helpFormFeedback');
+  var urlPathField = document.getElementById(type === 'issue' ? 'issueUrlPath' : 'feedbackUrlPath');
+  var btn = document.getElementById(type === 'issue' ? 'issueSubmitBtn' : 'feedbackSubmitBtn');
+
+  urlPathField.value = window.location.pathname;
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  setTimeout(function() {
+    form.classList.add('sent');
+    grecaptcha.reset(widgetId);
+  }, 1200);
+
+  return true;
+}
+window.openHelpForm = openHelpForm;
+window.closeHelpForm = closeHelpForm;
+window.switchHelpTab = switchHelpTab;
+window.toggleOtherField = toggleOtherField;
+window.setMood = setMood;
+window.handleHelpSubmit = handleHelpSubmit;
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeHelpForm();
+});
+
+
+/* ── OVERVIEW FIGURES → CHARTS ── */
+// A headline figure with target="#card-id" (the .fact component) scrolls to
+// its chart card and briefly highlights it.
+window.nmFocusCard = function(sel){
+  var card = document.querySelector(sel); if(!card) return;
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card.classList.remove('card-flash'); void card.offsetWidth; card.classList.add('card-flash');
+  setTimeout(function(){ card.classList.remove('card-flash'); }, 1800);
+};

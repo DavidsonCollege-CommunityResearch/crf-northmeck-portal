@@ -3,6 +3,17 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Redeploy after the monthly data refresh. Its commit is pushed with
+  # GITHUB_TOKEN, which doesn't trigger `push` workflows, so listen for the
+  # refresh workflow finishing instead.
+  workflow_run:
+    workflows: ["Refresh MotherDuck data snapshot"]
+    types: [completed]
+    branches: [main]
+  # Build (but don't publish) pull requests, so a broken render or a failing
+  # nm_claim() shows up before it reaches main.
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -20,13 +31,39 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install, build, and upload your site
-        uses: withastro/action@v3
         with:
-          node-version: 24
+          # On workflow_run, build main as it is now (including the data
+          # commit the refresh just pushed), not the commit that started it.
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || '' }}
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.9.38
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.6'
+          use-public-rspm: true
+
+      # Installs the R packages listed in DESCRIPTION (cached between runs).
+      - name: Install R packages
+        uses: r-lib/actions/setup-r-dependencies@v2
+
+      # Fails (and leaves the live site as it was) if a page's nm_claim()
+      # finds that its text no longer matches the data.
+      - name: Render site
+        run: quarto render
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

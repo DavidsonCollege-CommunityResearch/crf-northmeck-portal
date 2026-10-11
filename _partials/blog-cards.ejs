@@ -1,0 +1,9 @@
+<!-- Stories page card grid. Card markup matches _partials/home-stories.ejs; keep the two in sync. -->
+<div class="blog-grid">
+<% for (const item of items) { const tag = (item.categories || [])[0] || ''; const href = '/' + item.path.replace(/\\/g, '/').replace(/^\/+/, '').replace(/\.qmd$/, '.html'); %>
+<article class="bcard" <%= metadataAttrs(item) %> onclick="window.location='<%- href %>'">
+<% if (item.image) { %><div class="bcard-thumb"><img src="<%- item.image %>" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div><% } else { %><div class="bcard-thumb ph"><i class="ti <%- item['thumbnail-icon'] %>"></i><span><%= tag %> post thumbnail</span></div><% } %>
+<span class="bcard-tag" style="font-size:13px"><%= tag %></span><h3 class="bcard-t"><%= item.title %></h3><div class="bcard-meta"><%= item.date %><% if (item['read-time']) { %> · <%= item['read-time'] %><% } %></div>
+</article>
+<% } %>
+</div>
