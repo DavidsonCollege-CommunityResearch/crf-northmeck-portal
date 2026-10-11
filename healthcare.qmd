@@ -323,7 +323,7 @@ of `r by_town("North Meck", identity)` adults report visiting a dentist in the p
 
 ::: {.chart-grid style="margin-bottom:48px"}
 
-::: {.chart-card #he-ov1-host title="Uninsured rate by town & age group" subtitle="Share of uninsured population by age group · ACS 2024" chart="hc-overview-age-uninsured"}
+::: {.chart-card #he-ov1-host title="`r area_label('Uninsured rate by town & age group', 'Uninsured rate by age group: {town}')`" subtitle="Share of uninsured population by age group · ACS 2024" chart="hc-overview-age-uninsured"}
 
 ```{ojs}
 responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {invalidation})
@@ -357,7 +357,7 @@ responsive(width => ageShareChart(width, {compact: true, town: masterTown}), {in
 
 :::
 
-::: {.chart-card .wide #he-ov3-host title="Preventive care completion rates by measure" subtitle="Average share of adults completing each screening or checkup, across all three towns" chart="chart-preventive-overview" style="margin-bottom:28px"}
+::: {.chart-card .wide #he-ov3-host title="Preventive care completion rates by measure" subtitle="`r area_label('Average share of adults completing each screening or checkup, across all three towns', 'Share of adults completing each screening or checkup in {town}')`" chart="chart-preventive-overview" style="margin-bottom:28px"}
 
 ```{ojs}
 {

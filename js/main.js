@@ -1332,11 +1332,20 @@ function makeThemeTag(host){
     while(usedIds[u]) u=id+'-'+(k++);
     usedIds[u]=1; el.dataset.shareId=u; return u;
   }
-  function shareId(el){ return el.dataset.shareId||assignId(el,pageOf(el)+'-'+findTitle(el)); }
+  function shareId(el){ return el.dataset.shareId||assignId(el,pageOf(el)+'-'+findTitle(el,true)); }
   function linkOf(el){ return el.dataset.shareLink||linkFor(shareId(el)); }
-  function findTitle(host){
+  // Title text as written for "All North Meck", ignoring which town the Area
+  // filter shows, so share links (#s=...) don't change with the filter.
+  function canonTxt(el){
+    if(!el) return '';
+    var c=el.cloneNode(true);
+    c.querySelectorAll('.by-town:not([data-town="All"])').forEach(function(h){ h.remove(); });
+    return c.textContent.replace(/\s+/g,' ').trim();
+  }
+  function findTitle(host, canonical){
+    var read=canonical?canonTxt:txt;
     var sel=['.card-t','.ovchart-h','.minichart-h'];
-    for(var i=0;i<sel.length;i++){ var e=host.querySelector(sel[i]); if(e) return txt(e); }
+    for(var i=0;i<sel.length;i++){ var e=host.querySelector(sel[i]); if(e) return read(e); }
     var cap=host.querySelector('caption'); if(cap) return txt(cap);
     if(host.classList.contains('map-ph')){ var mt=host.querySelector('.t'); if(mt) return txt(mt); }
     var sec=host.closest('.tabpane,.section,.page');

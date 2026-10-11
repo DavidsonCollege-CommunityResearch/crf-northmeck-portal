@@ -231,7 +231,7 @@ to save a 20% down payment at a 10% annual savings rate`r by_town("", function(t
 
 ::: {.chart-grid style="margin-bottom:48px"}
 
-::: {.chart-card #ovf-rent-host title="Median Rent by Town (2018–2024)" subtitle="" chart="ovf-rent"}
+::: {.chart-card #ovf-rent-host title="`r area_label('Median Rent by Town (2018–2024)', 'Median Rent in {town} (2018–2024)')`" subtitle="" chart="ovf-rent"}
 
 ```{ojs}
 responsive(width => stdPlot({
@@ -272,7 +272,7 @@ responsive(width => stdPlot({
 
 :::
 
-::: {.chart-card #ovf-home-host title="Median Home Value by Town vs. U.S. Median (2024)" subtitle="U.S. median ~`r fmt_k(US_MEDIAN_HOME)`" chart="ovf-home"}
+::: {.chart-card #ovf-home-host title="`r area_label('Median Home Value by Town vs. U.S. Median (2024)', 'Median Home Value in {town} vs. U.S. Median (2024)')`" subtitle="U.S. median ~`r fmt_k(US_MEDIAN_HOME)`" chart="ovf-home"}
 
 ```{ojs}
 {
@@ -295,7 +295,7 @@ responsive(width => stdPlot({
 
 :::
 
-::: {.chart-card #ovf-dp-host title="Years to Save a 20% Down Payment, by Town (2024)" subtitle="Assumes 10% annual savings rate on median household income" chart="ovf-dp"}
+::: {.chart-card #ovf-dp-host title="`r area_label('Years to Save a 20% Down Payment, by Town (2024)', 'Years to Save a 20% Down Payment in {town} (2024)')`" subtitle="Assumes 10% annual savings rate on median household income" chart="ovf-dp"}
 
 ```{ojs}
 responsive(width => stdPlot({
@@ -333,7 +333,7 @@ responsive(width => stdPlot({
 
 Median rent by town, 2018–2024. Each line tracks what renters paid in that year's ACS survey.
 
-::: {.chart-card #rent-chart-host title="Median Rent by Town (2018–2024)" subtitle="Cornelius, Davidson, Huntersville" chart="rent-chart"}
+::: {.chart-card #rent-chart-host title="`r area_label('Median Rent by Town (2018–2024)', 'Median Rent in {town} (2018–2024)')`" subtitle="`r area_label('Cornelius, Davidson, Huntersville', '{town}')`" chart="rent-chart"}
 
 ```{ojs}
 viewof rentTown = townChips(masterTown)
@@ -408,7 +408,7 @@ viewof hvTown = townChips(masterTown)
 
 :::
 
-::: {.chart-card #income-rent-chart-host title="Rent vs. Income Growth, Indexed to 2018" subtitle="When the rent line rises above the income line, affordability is eroding · North Mecklenburg" chart="income-rent-chart" style="margin-top:22px"}
+::: {.chart-card #income-rent-chart-host title="Rent vs. Income Growth, Indexed to 2018" subtitle="`r area_label('When the rent line rises above the income line, affordability is eroding · North Mecklenburg', 'When the rent line rises above the income line, affordability is eroding · {town}')`" chart="income-rent-chart" style="margin-top:22px"}
 
 ```{ojs}
 viewof irTown = townChips(masterTown)
@@ -557,7 +557,7 @@ Rent-to-income ratio measures what share of median household income goes to rent
 
 ::: {.g2 style="margin-bottom:16px"}
 
-::: {.chart-card #rti-chart-host title="Rent-to-Income Ratio by Town (2018–2024)" subtitle="Median rent ÷ median household income · 30% HUD threshold shown" chart="rti-chart"}
+::: {.chart-card #rti-chart-host title="`r area_label('Rent-to-Income Ratio by Town (2018–2024)', 'Rent-to-Income Ratio in {town} (2018–2024)')`" subtitle="Median rent ÷ median household income · 30% HUD threshold shown" chart="rti-chart"}
 
 ```{ojs}
 viewof rtiTown = townChips(masterTown)
@@ -584,7 +584,7 @@ viewof rtiTown = townChips(masterTown)
 
 :::
 
-::: {.chart-card #hpti-chart-host title="Home Price-to-Income Ratio by Town (2018–2024)" subtitle="Median home value ÷ median household income · 4× threshold shown" chart="hpti-chart"}
+::: {.chart-card #hpti-chart-host title="`r area_label('Home Price-to-Income Ratio by Town (2018–2024)', 'Home Price-to-Income Ratio in {town} (2018–2024)')`" subtitle="Median home value ÷ median household income · 4× threshold shown" chart="hpti-chart"}
 
 ```{ojs}
 viewof hptiTown = townChips(masterTown)
@@ -634,7 +634,7 @@ viewof hptiTown = townChips(masterTown)
 
 Total population by town, 2018–2024. Rapid growth increases demand for all housing types, particularly affordable rentals.
 
-::: {.chart-card #population-chart-host title="Population Growth by Town (2018–2024)" subtitle="Cornelius, Davidson, Huntersville" chart="population-chart"}
+::: {.chart-card #population-chart-host title="`r area_label('Population Growth by Town (2018–2024)', 'Population Growth in {town} (2018–2024)')`" subtitle="`r area_label('Cornelius, Davidson, Huntersville', '{town}')`" chart="population-chart"}
 
 ```{ojs}
 viewof popTown = townChips(masterTown)
@@ -668,11 +668,12 @@ viewof popTown = townChips(masterTown)
 ::: {.question .small style="margin-bottom:0"}
 ### How many households are in each town, and how has that changed?
 
-::: {.chart-card #tenure-chart-host title="Total Households by Town (2018–2024)" subtitle="" chart="tenure-chart"}
+::: {.chart-card #tenure-chart-host title="`r area_label('Total Households by Town (2018–2024)', 'Total Households in {town} (2018–2024)')`" subtitle="" chart="tenure-chart"}
 
 ```{ojs}
 viewof hhTown = townChips(masterTown)
 {
+  showTown(hhTown, "#tenure-chart-host");
   const data = byTown(households, hhTown);
   return responsive(width => stdPlot({
     width, height: 300, marginBottom: 50,
@@ -701,7 +702,7 @@ Owner-occupied households dominate all three towns (70–80% of households), but
 ::: {.question .small style="margin-bottom:28px"}
 ### What is the mix of single-family, multifamily, duplex, manufactured, and condo units?
 
-::: {.chart-card #housing-types-host title="Housing Types by Town (2024)" subtitle="Share of housing units by structure type" chart="housing-types-chart"}
+::: {.chart-card #housing-types-host title="`r area_label('Housing Types by Town (2024)', 'Housing Types in {town} (2024)')`" subtitle="Share of housing units by structure type" chart="housing-types-chart"}
 
 ```{ojs}
 {
@@ -749,12 +750,13 @@ Cost burden broken down by income bracket and tenure. Davidson has the highest s
 
 :::
 
-::: {.chart-card #burden-chart-host title="Cost Burden by Income Bracket" subtitle="Households by housing cost burden level · North Mecklenburg" chart="burden-chart" style="margin-top:22px"}
+::: {.chart-card #burden-chart-host title="Cost Burden by Income Bracket" subtitle="`r area_label('Households by housing cost burden level · North Mecklenburg', 'Households by housing cost burden level · {town}')`" chart="burden-chart" style="margin-top:22px"}
 
 ```{ojs}
 viewof burdenTown = townChips(masterTown, {includeAll: false})
 viewof burdenTenure = chips(["Renter", "Owner"], {label: "Tenure:", style: "margin-bottom:14px"})
 {
+  showTown(burdenTown, "#burden-chart-host");
   const BRACKETS = ["Less than $10k", "$10k-$19,999", "$20k-$34,999", "$35k-$49,999", "$50k-$74,999", "$75k-$99,999", "$100k+"];
   const BURDENS = ["Not burdened (<30%)", "Cost burdened (30-50%)", "Severely burdened (50%+)"];
   const subset = burdenByBracket.filter(d => d.town === burdenTown && d.tenure === burdenTenure);
@@ -777,7 +779,7 @@ Nearly all renters earning under $20k are severely cost-burdened, spending more 
 
 :::
 
-::: {.chart-card #burden-trend-host title="Renter Cost Burden Rate Over Time" subtitle="Share of renter households spending 30%+ of income on housing · 2018–2024 · North Mecklenburg" chart="burden-trend-chart" style="margin-top:22px"}
+::: {.chart-card #burden-trend-host title="Renter Cost Burden Rate Over Time" subtitle="`r area_label('Share of renter households spending 30%+ of income on housing · 2018–2024 · North Mecklenburg', 'Share of renter households spending 30%+ of income on housing · 2018–2024 · {town}')`" chart="burden-trend-chart" style="margin-top:22px"}
 
 ```{ojs}
 viewof burdenMetric = chips([
@@ -822,11 +824,12 @@ Trend in burden rate, household count, and severe burden since 2018. 2020–2021
 
 Severely cost-burdened households (50%+ of income on rent) have less than half their income left after housing. They are one unexpected expense away from eviction.
 
-::: {.chart-card #severely-burdened-host title="Severely Cost-Burdened Households by Town (2018–2024)" subtitle="Households spending 50%+ of income on housing" chart="severely-burdened-chart"}
+::: {.chart-card #severely-burdened-host title="`r area_label('Severely Cost-Burdened Households by Town (2018–2024)', 'Severely Cost-Burdened Households in {town} (2018–2024)')`" subtitle="Households spending 50%+ of income on housing" chart="severely-burdened-chart"}
 
 ```{ojs}
 viewof sevTown = townChips(masterTown)
 {
+  showTown(sevTown, "#severely-burdened-host");
   const data = byTown(severeBurden, sevTown);
   return responsive(width => stdPlot({
     width, height: 320, marginBottom: 55,
@@ -912,7 +915,7 @@ segmentRows = (d, label) => [
 
 Nationally, the Black-white homeownership gap is larger today than it was before the Fair Housing Act. North Meck's own numbers tell a local version of that story.
 
-::: {.chart-card #race-chart-host title="Homeownership Rate by Race & Ethnicity" subtitle="Owner-occupied households as share of all households by group · North Mecklenburg" chart="race-chart" style="margin-bottom:24px"}
+::: {.chart-card #race-chart-host title="Homeownership Rate by Race & Ethnicity" subtitle="`r area_label('Owner-occupied households as share of all households by group · North Mecklenburg', 'Owner-occupied households as share of all households by group · {town}')`" chart="race-chart" style="margin-bottom:24px"}
 
 ```{ojs}
 viewof raceView = chips([{label: "Ownership rate", value: "ownership"}, {label: "Raw counts", value: "counts"}], {label: "View:", style: "margin-bottom:6px"})
@@ -1043,12 +1046,13 @@ viewof raceCompTown = townChips(masterTown)
 
 Demographic change shapes who can access homeownership and who gets displaced. Rising prices pull in higher-income, whiter households while pushing out lower-income residents of color.
 
-::: {.chart-card #race-trend-chart-host title="Racial Composition by Town (2018–2024)" subtitle="Share of total population by race · Hispanic or Latino residents can be of any race" chart="race-trend-chart"}
+::: {.chart-card #race-trend-chart-host title="`r area_label('Racial Composition by Town (2018–2024)', 'Racial Composition in {town} (2018–2024)')`" subtitle="Share of total population by race · Hispanic or Latino residents can be of any race" chart="race-trend-chart"}
 
 ```{ojs}
 viewof raceTrendTown = townChips(masterTown, {includeAll: false})
 viewof raceTrendRaces = chips(["White", "Black", "Asian", "Other or multiracial", "Hispanic or Latino"], {label: "Race:", multiple: true, style: "margin-bottom:14px"})
 {
+  showTown(raceTrendTown, "#race-trend-chart-host");
   const RACES = ["White", "Black", "Asian", "Other or multiracial", "Hispanic or Latino"];
   const long = raceTrend.flatMap(d => {
     const t = d.total || 1;
@@ -1086,7 +1090,7 @@ North Meck's towns are becoming more diverse, but at very different rates. Hunte
 
 :::
 
-::: {.chart-card #down-payment-chart-host title="Years to Save for a 20% Down Payment, by Town" subtitle="Assumes 10% annual savings rate on median household income" chart="down-payment-chart" style="margin-bottom:32px"}
+::: {.chart-card #down-payment-chart-host title="`r area_label('Years to Save for a 20% Down Payment, by Town', 'Years to Save for a 20% Down Payment in {town}')`" subtitle="Assumes 10% annual savings rate on median household income" chart="down-payment-chart" style="margin-bottom:32px"}
 
 ```{ojs}
 {
@@ -1184,7 +1188,7 @@ Standard poverty measures miss a significant share of struggling households here
 
 Median household income by town over time. The high medians conceal wide variation: income inequality within each town is substantial.
 
-::: {.chart-card #median-income-chart-host title="Median Household Income by Town (2018–2024)" subtitle="Cornelius, Davidson, Huntersville" chart="median-income-chart"}
+::: {.chart-card #median-income-chart-host title="`r area_label('Median Household Income by Town (2018–2024)', 'Median Household Income in {town} (2018–2024)')`" subtitle="`r area_label('Cornelius, Davidson, Huntersville', '{town}')`" chart="median-income-chart"}
 
 ```{ojs}
 viewof incomeTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10px 0 4px"})
@@ -1283,11 +1287,12 @@ The ALICE gap is the share of households earning above the FPL but below the ALI
 
 ::: {.g2 style="margin-bottom:22px"}
 
-::: {.chart-card #alice-bar-host title="Household financial stability by town (latest year)" subtitle="Below FPL · ALICE · Above ALICE threshold" chart="alice-bar-chart"}
+::: {.chart-card #alice-bar-host title="`r area_label('Household financial stability by town (latest year)', 'Household financial stability in {town} (latest year)')`" subtitle="Below FPL · ALICE · Above ALICE threshold" chart="alice-bar-chart"}
 
 ```{ojs}
 viewof aliceBarTown = chips(["All", ...TOWNS], {value: masterTown, style: "margin:10px 0 4px"})
 {
+  showTown(aliceBarTown, "#alice-bar-host");
   const maxYear = Math.max(...aliceTown.map(d => d.year));
   const src = byTown(aliceTown.filter(d => d.year === maxYear), aliceBarTown);
   const long = src.flatMap(d => segmentRows(d, d.town));
@@ -1310,7 +1315,7 @@ The FPL was designed in the 1960s and does not account for the true cost of livi
 
 :::
 
-::: {.chart-card #alice-county-host title="North Meck vs Mecklenburg County (latest year)" subtitle="Share below ALICE threshold · towns vs county benchmark" chart="alice-county-chart"}
+::: {.chart-card #alice-county-host title="`r area_label('North Meck vs Mecklenburg County (latest year)', '{town} vs Mecklenburg County (latest year)')`" subtitle="`r area_label('Share below ALICE threshold · towns vs county benchmark', 'Share below ALICE threshold · {town} vs county benchmark')`" chart="alice-county-chart"}
 
 ```{ojs}
 {
@@ -1341,7 +1346,7 @@ Comparing North Meck towns to Mecklenburg County as a whole reveals whether subu
 
 :::
 
-::: {.chart-card title="Combined share below ALICE threshold by town" subtitle="Poverty + ALICE households as % of all households · latest available year" chart="alice-trend-chart"}
+::: {.chart-card title="`r area_label('Combined share below ALICE threshold by town', 'Combined share below ALICE threshold in {town}')`" subtitle="Poverty + ALICE households as % of all households · latest available year" chart="alice-trend-chart"}
 
 ```{ojs}
 {
@@ -1376,7 +1381,7 @@ Comparing North Meck towns to Mecklenburg County as a whole reveals whether subu
 
 Select a metric below to see how it varies across towns over time. Renters are consistently more likely than owners to lack a vehicle — a significant barrier in a car-dependent suburb.
 
-::: {.chart-card #infra-chart-host title="Access Gaps by Town (2018–2024)" subtitle="One metric at a time" chart="infra-chart"}
+::: {.chart-card #infra-chart-host title="`r area_label('Access Gaps by Town (2018–2024)', 'Access Gaps in {town} (2018–2024)')`" subtitle="One metric at a time" chart="infra-chart"}
 
 ```{ojs}
 viewof infraMetric = chips([
@@ -1414,7 +1419,7 @@ Households without broadband face higher barriers to remote work, telehealth, an
 
 High average attainment conceals real pockets of poverty and unemployment. Select a metric to see how each town compares.
 
-::: {.chart-card #mobility-chart-host title="Education & Economic Mobility by Town (2018–2024)" subtitle="One metric at a time" chart="mobility-chart"}
+::: {.chart-card #mobility-chart-host title="`r area_label('Education & Economic Mobility by Town (2018–2024)', 'Education & Economic Mobility in {town} (2018–2024)')`" subtitle="One metric at a time" chart="mobility-chart"}
 
 ```{ojs}
 viewof mobMetric = chips([

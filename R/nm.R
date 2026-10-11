@@ -97,3 +97,8 @@ by_town <- function(all, town) {
   }, "")
   paste0("<span class='by-town' data-town='All'>", all, "</span>", paste(variants, collapse = ""))
 }
+
+# A chart title or subtitle that names the area, for a .chart-card's title= /
+# subtitle=. `town` is a template where {town} becomes each town's name:
+#   title="`r area_label('Median Rent by Town', 'Median Rent in {town}')`"
+area_label <- function(all, town) by_town(all, function(t) gsub("{town}", t, town, fixed = TRUE))

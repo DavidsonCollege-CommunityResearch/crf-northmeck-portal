@@ -5,6 +5,7 @@ pagetitle: "Education · North Meck Insights"
 ```{r}
 #| include: false
 source("R/nm.R")
+grad <- nm_data("four-year-school-graduation")  # graduation chart subtitle counts schools
 towns <- c("Cornelius", "Davidson", "Huntersville")
 
 # Residents enrolled in school and population age 3+ (ACS)
@@ -239,7 +240,7 @@ average proficiency gap between students with and without disabilities across No
 
 ::: {.chart-grid style="margin-bottom:48px"}
 
-::: {.chart-card .wide #ed-ov1-host title="Total School Enrollment by Town (2018–2024)" subtitle="All enrollment levels · preschool through graduate/professional" chart="chart-total-enrollment-trend" style="margin-bottom:28px"}
+::: {.chart-card .wide #ed-ov1-host title="`r area_label('Total School Enrollment by Town (2018–2024)', 'Total School Enrollment in {town} (2018–2024)')`" subtitle="All enrollment levels · preschool through graduate/professional" chart="chart-total-enrollment-trend" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -343,7 +344,7 @@ average proficiency gap between students with and without disabilities across No
 Population growth in Cornelius, Davidson, and Huntersville has sent school enrollment surging over the past decade. Understanding which schools are most stressed — and how growth has varied by school level — matters for planning, bonds, and staffing decisions.
 :::
 
-::: {.chart-card title="K–12 Enrollment Trend" subtitle="Total residents enrolled in K–12 school · by town" chart="chart-k12-trend" style="margin-bottom:28px"}
+::: {.chart-card title="K–12 Enrollment Trend" subtitle="`r area_label('Total residents enrolled in K–12 school · by town', 'Total residents enrolled in K–12 school · {town}')`" chart="chart-k12-trend" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -368,7 +369,7 @@ Population growth in Cornelius, Davidson, and Huntersville has sent school enrol
 
 :::
 
-::: {.chart-card title="Population growth vs. K-12 Enrollment" subtitle="Indexed to 2018 = 100 · Population (age 3+) vs. K–12 enrollment · by town" chart="chart-pop-vs-k12" style="margin-bottom:28px"}
+::: {.chart-card title="Population growth vs. K-12 Enrollment" subtitle="`r area_label('Indexed to 2018 = 100 · Population (age 3+) vs. K–12 enrollment · by town', 'Indexed to 2018 = 100 · Population (age 3+) vs. K–12 enrollment · {town}')`" chart="chart-pop-vs-k12" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -441,11 +442,12 @@ Population growth in Cornelius, Davidson, and Huntersville has sent school enrol
 
 :::
 
-::: {.chart-card title="School Academic Growth Across North Mecklenburg (2024-25)" subtitle="Growth index score by school · 0 = met expected growth" chart="chart-school-academic-growth"}
+::: {.chart-card #ed-growth-host title="`r area_label('School Academic Growth Across North Mecklenburg (2024-25)', 'School Academic Growth in {town} (2024-25)')`" subtitle="Growth index score by school · 0 = met expected growth" chart="chart-school-academic-growth"}
 
 ```{ojs}
 viewof growthTown = townChips(masterTown)
 {
+  showTown(growthTown, "#ed-growth-host");
   const data = byTown(growth, growthTown).slice().sort((a, b) => b.index_score - a.index_score);
   return responsive(width => stdPlot({
     width, height: 100 + data.length * 22, style: S,
@@ -629,11 +631,12 @@ viewof glpTown = townChips(masterTown)
 
 :::
 
-::: {.chart-card title="4-year graduation rate — North Meck High Schools" subtitle="Cohort graduation rate · Hough High & North Mecklenburg High" chart="chart-four-year-graduation-rate" style="margin-bottom:28px"}
+::: {.chart-card #ed-grad-host title="`r area_label('4-year graduation rate — North Meck High Schools', '4-year graduation rate — {town} High Schools')`" subtitle="`r by_town(paste0('Cohort graduation rate · ', nrow(grad), ' North Meck high schools'), function(t) paste0('Cohort graduation rate · ', sum(grad$town == t), if (sum(grad$town == t) == 1) ' high school in ' else ' high schools in ', t))`" chart="chart-four-year-graduation-rate" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof gradTown = townChips(masterTown)
 {
+  showTown(gradTown, "#ed-grad-host");
   const data = withParsed(byTown(graduation, gradTown), "grad_4yr").filter(d => d.grad_4yr != null).sort((a, b) => b.grad_4yr - a.grad_4yr);
   return responsive(width => stdPlot({
     width, height: 100 + data.length * 22, style: S,
@@ -651,11 +654,12 @@ viewof gradTown = townChips(masterTown)
 
 :::
 
-::: {.chart-card title="School Achievement Gap By Economic Status in North Meck Schools (2024-25)" subtitle="Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students" chart="chart-school-achievement-economic-gap" style="margin-bottom:28px"}
+::: {.chart-card #ed-econgap-host title="`r area_label('School Achievement Gap By Economic Status in North Meck Schools (2024-25)', 'School Achievement Gap By Economic Status in {town} Schools (2024-25)')`" subtitle="Grade-level proficiency: economically disadvantaged vs. non-disadvantaged students" chart="chart-school-achievement-economic-gap" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof econGapTown = townChips(masterTown)
 {
+  showTown(econGapTown, "#ed-econgap-host");
   const data = byTown(econGap, econGapTown).slice().sort((a, b) => b.gap - a.gap);
   return responsive(width => stdPlot({
     width, height: 100 + data.length * 22, style: S,
@@ -674,7 +678,7 @@ viewof econGapTown = townChips(masterTown)
 
 :::
 
-::: {.chart-card #hs-ccr-host title="High School College & Career Readiness: North Meck (2024-25)" subtitle="Grade-Level Proficient vs. College/Career Ready · Grades 9–12" chart="chart-hs-ccr" style="margin-bottom:28px"}
+::: {.chart-card #hs-ccr-host title="`r area_label('High School College & Career Readiness: North Meck (2024-25)', 'High School College & Career Readiness: {town} (2024-25)')`" subtitle="Grade-Level Proficient vs. College/Career Ready · Grades 9–12" chart="chart-hs-ccr" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof ccrTown = townChips(masterTown)
@@ -709,11 +713,12 @@ viewof ccrTown = townChips(masterTown)
 
 :::
 
-::: {.chart-card title="Achievement Gap in North Meck High Schools by Economic status (2024-25)" subtitle="Grades 9–12 grade-level proficiency: economically disadvantaged vs. not" chart="chart-hs-achievement-economic-gap" style="margin-bottom:28px"}
+::: {.chart-card #ed-hsgap-host title="`r area_label('Achievement Gap in North Meck High Schools by Economic status (2024-25)', 'Achievement Gap in {town} High Schools by Economic status (2024-25)')`" subtitle="Grades 9–12 grade-level proficiency: economically disadvantaged vs. not" chart="chart-hs-achievement-economic-gap" style="margin-bottom:28px"}
 
 ```{ojs}
 viewof hsGapTown = townChips(masterTown)
 {
+  showTown(hsGapTown, "#ed-hsgap-host");
   const data = byTown(hsEconGap, hsGapTown)
     .filter(d => d.econ_disadv != null && d.not_disadv != null && d.gap != null)
     .sort((a, b) => b.gap - a.gap);
@@ -779,7 +784,7 @@ Resident educational attainment shapes the workforce, economic mobility, and civ
 
 :::
 
-::: {.chart-card title="Attainment Breakdown, 2022" subtitle="Distribution of educational attainment for adults 25+ · by town" chart="chart-attainment-breakdown" style="margin-bottom:28px"}
+::: {.chart-card title="Attainment Breakdown, 2022" subtitle="`r area_label('Distribution of educational attainment for adults 25+ · by town', 'Distribution of educational attainment for adults 25+ · {town}')`" chart="chart-attainment-breakdown" style="margin-bottom:28px"}
 
 ```{ojs}
 {
@@ -807,7 +812,7 @@ Resident educational attainment shapes the workforce, economic mobility, and civ
 
 :::
 
-::: {.chart-card title="Median Earnings by Education Level, 2024" subtitle="Annual median earnings for full-time year-round workers 25+ · by education level and town" chart="chart-earnings" style="margin-bottom:28px"}
+::: {.chart-card title="Median Earnings by Education Level, 2024" subtitle="`r area_label('Annual median earnings for full-time year-round workers 25+ · by education level and town', 'Annual median earnings for full-time year-round workers 25+ · by education level · {town}')`" chart="chart-earnings" style="margin-bottom:28px"}
 
 ```{ojs}
 {
