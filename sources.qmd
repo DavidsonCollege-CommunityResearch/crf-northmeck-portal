@@ -19,7 +19,7 @@ sources <- yaml::read_yaml("_data/sources.yml")
 <div class="sec-head" style="max-width:680px">
 <span class="eyebrow" style="font-size:15px">Sources</span>
 <h2 class="sec-h" style="font-size:32px">Every source, in one place</h2>
-<p class="lead">A full bibliography of the open public data behind the portal. Each number on the site traces back to one of these. Open data only, all of it free to verify and download.</p>
+<p class="lead">A full bibliography of the open public data behind the portal. Every chart is built from one of these; the few outside figures quoted in the glossary and stories name their own source. Open data only, all of it free to verify and download.</p>
 </div>
 <div class="biblio">
 ```

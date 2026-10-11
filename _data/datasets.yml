@@ -195,12 +195,12 @@ sections:
 - title: Demographics & Income
   datasets:
   - id: demographics
-    name: Population, households & racial composition by town (2018–2024)
+    name: Population, households & income by town (2018–2024)
     description: >-
-      Total population, household counts, median household income, and racial/ethnic composition
-      (White, Black, Hispanic, Asian, other) for each town by year. Covers North Meck's rapid
-      growth and evolving diversity.
-    keywords: population households racial composition income by town 2018-2024
+      Total population, household counts, and median household income for each town by year.
+      Covers North Meck's population growth. Racial composition is shown in the housing
+      dashboard's charts.
+    keywords: population households income by town 2018-2024
     level: town
     topics: [demographics, economics]
     themes: [demographics]
@@ -391,7 +391,7 @@ sections:
       file: nmidw_alice_households_mecklenburg_county_2010-2024
       data: alice-county
       source: United Way of North Carolina, ALICE Economic Viability Dashboard
-      years: 2010–2024 (biennial, non-consecutive)
+      years: 2010–2024 (every two years through 2018, then yearly; no 2020)
       codebook:
       - column: county
         type: text
@@ -751,21 +751,21 @@ sections:
 - title: Healthcare
   datasets:
   - id: healthcare-insurance
-    name: Health insurance coverage by town (2024)
+    name: Health insurance coverage by town (2018–2024)
     description: >-
       Insurance and uninsurance counts broken out by age group, coverage type, employment
       status, and household income bracket, for each town.
-    keywords: health insurance coverage by age employment income town 2024
+    keywords: health insurance coverage by age employment income town 2018-2024
     level: town
     topics: [healthcare]
     themes: [affordability]
-    tags: [Town · 2024, ACS Table B27010]
+    tags: [Town · 2018–2024, ACS Table B27010]
     download:
       file: nmidw_healthcare_insurance_by_town_2024
       data: healthcare-insurance
       source: U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, Table
         B27010
-      years: '2024'
+      years: 2018–2024
       codebook:
       - column: GEOID
         type: text
@@ -948,7 +948,7 @@ sections:
       source: >-
         U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
         level, rolled up to neighborhood boundaries
-      years: 2018–2024
+      years: 2020–2024 (West Davidson from 2018)
       codebook:
       - column: neighborhood_name
         type: text
@@ -1006,7 +1006,7 @@ sections:
       source: >-
         U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
         level, rolled up to neighborhood boundaries
-      years: 2018–2024
+      years: 2020–2024 (West Davidson from 2018)
       codebook:
       - column: neighborhood_name
         type: text
@@ -1063,7 +1063,7 @@ sections:
       source: >-
         U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
         level, rolled up to neighborhood boundaries
-      years: 2018–2024
+      years: 2020–2024 (West Davidson from 2018)
       codebook:
       - column: neighborhood_name
         type: text
@@ -1126,7 +1126,7 @@ sections:
       source: >-
         U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
         level, rolled up to neighborhood boundaries
-      years: 2018–2024
+      years: 2020–2024 (West Davidson from 2018)
       codebook:
       - column: neighborhood_name
         type: text
@@ -1191,7 +1191,7 @@ sections:
       source: >-
         U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
         level, rolled up to neighborhood boundaries
-      years: 2018–2024
+      years: 2020–2024 (West Davidson from 2018)
       codebook:
       - column: neighborhood_name
         type: text
@@ -1251,7 +1251,7 @@ sections:
       source: >-
         U.S. Census Bureau, American Community Survey (ACS) 5-year estimates, block-group
         level, rolled up to neighborhood boundaries
-      years: 2018–2024
+      years: 2020–2024 (West Davidson from 2018)
       codebook:
       - column: neighborhood_name
         type: text

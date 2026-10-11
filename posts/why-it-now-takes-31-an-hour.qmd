@@ -1,6 +1,6 @@
 ---
 title: "Why it now takes $31 an hour to afford a one-bedroom home"
-description: "Rents across North Mecklenburg climbed 40% in a decade. Local wages didn't keep up. Here is what that gap actually looks like for the people living it."
+description: "Rents across Mecklenburg County climbed 40% in a decade. Local wages didn't keep up. Here is what that gap actually looks like for the people living it."
 pagetitle: "Why it now takes $31 an hour to afford a one-bedroom home · North Meck Insights"
 categories: [Housing]
 eyebrow: "Housing · Analysis"
@@ -17,7 +17,7 @@ aliases:
 
 <figure class="post-media">
 <div class="ph" style="width:100%;aspect-ratio:16/9;border-radius:16px;border:1px solid var(--line)"><i class="ti ti-building-community"></i><span>A North Meck apartment block or a For Rent sign</span></div>
-<figcaption class="post-figcap">A one-bedroom in North Mecklenburg now rents for roughly $1,647 a month at fair market rate.</figcaption>
+<figcaption class="post-figcap">HUD's fair market rent for a one-bedroom in the Charlotte metro is now $1,647 a month.</figcaption>
 </figure>
 
 <p class="post-lead">Ask anyone renting in Cornelius, Davidson, or Huntersville and you will hear a version of the same story: the rent keeps climbing, and the paycheck does not. The numbers back them up and they are starker than most people expect.</p>

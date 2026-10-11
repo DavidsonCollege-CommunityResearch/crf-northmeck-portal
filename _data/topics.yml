@@ -7,15 +7,15 @@
 - title: Housing
   page: housing
   icon: ti-building-community
-  description: Rents, cost burden, evictions, and the affordability gap across North Meck.
-  updated: Jun 2026
+  description: Rents, home prices, cost burden, and the affordability gap across North Meck.
+  updated: Oct 2026
 - title: Education
   page: education
   icon: ti-school
-  description: K–12 enrollment, school composition, and access by neighborhood.
-  updated: Jul 2026
+  description: K–12 enrollment, school performance, and educational attainment.
+  updated: Oct 2026
 - title: Healthcare
   page: healthcare
   icon: ti-heartbeat
   description: Access to care, insurance coverage, and health outcomes across North Meck.
-  updated: Jul 2026
+  updated: Oct 2026

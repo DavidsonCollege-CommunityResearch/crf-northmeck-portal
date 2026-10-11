@@ -128,7 +128,7 @@ BAR = "#3f4e75"
 ```
 
 </div>
-<figcaption class="post-figcap">Source: BLS Occupational Employment &amp; Wage Statistics, Charlotte-Concord-Gastonia MSA, 2023. 1-bed housing wage derived from the NLIHC <em>Out of Reach</em> 2024 fair market rent (`r fmt_dollar(fmr_1br)`/month). Dashed line: the 1-bed housing wage.</figcaption>
+<figcaption class="post-figcap">Source: BLS Occupational Employment &amp; Wage Statistics, Charlotte-Concord-Gastonia MSA, 2023. 1-bed housing wage derived from the NLIHC <em>Out of Reach</em> 2025 fair market rent (HUD FY2025) (`r fmt_dollar(fmr_1br)`/month). Dashed line: the 1-bed housing wage.</figcaption>
 </figure>
 
 <blockquote class="post-quote">A minimum-wage worker would need close to `r round(min_wage_hours)` hours in a single week to match what a 1-bedroom-affording paycheck brings home in 40. A week only has 168 hours.</blockquote>
@@ -171,7 +171,7 @@ The three towns didn't move at exactly the same pace. Huntersville's median rent
 
 ## Who feels it first
 
-By 2024, cost burden — spending more than 30% of income on housing — had become the norm for renters across all three towns, not the exception.
+By 2024, cost burden — spending more than 30% of income on housing — reached nearly half of renter households in all three towns, and it rose in every town.
 
 ```{r}
 #| output: asis
@@ -211,7 +211,7 @@ The full picture, town by town, lives in the Housing dashboard.
 
 <h2 class="post-sources-h">Sources</h2>
 <ul class="post-sources">
-<li>National Low Income Housing Coalition, <em>Out of Reach</em> 2024 — Charlotte-Concord-Gastonia fair market rents and affordability by income level (North Meck Insights datasets <code>charlotte-fmr-bedroom</code>, <code>charlotte-ami-gap</code>)</li>
+<li>National Low Income Housing Coalition, <em>Out of Reach</em> 2025 — Charlotte-Concord-Gastonia fair market rents and affordability by income level (North Meck Insights datasets <code>charlotte-fmr-bedroom</code>, <code>charlotte-ami-gap</code>)</li>
 <li>U.S. Bureau of Labor Statistics, Occupational Employment &amp; Wage Statistics, Charlotte-Concord-Gastonia MSA, 2023 (North Meck Insights dataset <code>charlotte-housing-wage</code>)</li>
 <li>North Meck Insights data warehouse — <code>agg_town_economic_trends</code>, <code>agg_town_housing_burden</code> (U.S. Census ACS, 2018–2024)</li>
 </ul>
