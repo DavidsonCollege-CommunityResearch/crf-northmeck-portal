@@ -184,6 +184,11 @@ rent_all_text <- paste0("Rents rose fastest in ", rent_top, " (", fmt_pct(rent_c
 - Guard per-town wording with `nm_claim()` too ("rose", "highest").
 - Text that isn't about a single town (definitions, regional data) doesn't
   need `by_town()`.
+- Chart titles and subtitles that name the area use `area_label()`, with
+  `{town}` standing in for the town's name:
+  `title="`r area_label('Median Rent by Town', 'Median Rent in {town}')`"`.
+  Share links are built from the "All North Meck" wording, so they don't
+  change with the filter.
 
 ## Charts are Observable JS
 
